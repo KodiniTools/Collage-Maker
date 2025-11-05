@@ -7,7 +7,6 @@ const collage = useCollageStore()
 const { t } = useI18n()
 
 const selectedImage = computed(() => collage.selectedImage)
-const lockAspectRatio = ref(true)
 const aspectRatio = ref(1)
 
 // Berechne Seitenverhältnis wenn Bild ausgewählt wird
@@ -20,7 +19,7 @@ watch(selectedImage, (img) => {
 function updateWidth(value: number) {
   if (collage.selectedImageId && selectedImage.value) {
     const updates: any = { width: value }
-    if (lockAspectRatio.value) {
+    if (collage.lockAspectRatio) {
       updates.height = value / aspectRatio.value
     }
     collage.updateImage(collage.selectedImageId, updates)
@@ -30,7 +29,7 @@ function updateWidth(value: number) {
 function updateHeight(value: number) {
   if (collage.selectedImageId && selectedImage.value) {
     const updates: any = { height: value }
-    if (lockAspectRatio.value) {
+    if (collage.lockAspectRatio) {
       updates.width = value * aspectRatio.value
     }
     collage.updateImage(collage.selectedImageId, updates)
@@ -38,8 +37,8 @@ function updateHeight(value: number) {
 }
 
 function toggleAspectRatio() {
-  lockAspectRatio.value = !lockAspectRatio.value
-  if (lockAspectRatio.value && selectedImage.value) {
+  collage.setLockAspectRatio(!collage.lockAspectRatio)
+  if (collage.lockAspectRatio && selectedImage.value) {
     // Aktualisiere Seitenverhältnis beim Aktivieren
     aspectRatio.value = selectedImage.value.width / selectedImage.value.height
   }
@@ -85,14 +84,14 @@ function sendToBack() {
             @click="toggleAspectRatio"
             :class="[
               'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
-              lockAspectRatio
+              collage.lockAspectRatio
                 ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
             ]"
             :title="t('imageControls.lockAspectRatio')"
           >
             <svg
-              v-if="lockAspectRatio"
+              v-if="collage.lockAspectRatio"
               class="w-3 h-3"
               fill="none"
               stroke="currentColor"
@@ -109,7 +108,7 @@ function sendToBack() {
             >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
             </svg>
-            <span>{{ lockAspectRatio ? t('imageControls.locked') : t('imageControls.unlocked') }}</span>
+            <span>{{ collage.lockAspectRatio ? t('imageControls.locked') : t('imageControls.unlocked') }}</span>
           </button>
         </div>
         <div class="space-y-2">

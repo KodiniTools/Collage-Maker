@@ -50,6 +50,6 @@
     "lockAspectRatio": "Lock aspect ratio",
     "locked": "Locked",
     "unlocked": "Unlocked",
-    "shiftHint": "Tip: Hold Shift key while dragging handles for proportional scaling"
+    "shiftHint": "Tip: Hold Shift key while dragging handles to toggle the lock"
   }
 }

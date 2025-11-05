@@ -29,7 +29,7 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
 
-watch(() => [collage.images, collage.settings], () => {
+watch(() => [collage.images, collage.settings, collage.selectedImageId], () => {
   nextTick(() => renderCanvas())
 }, { deep: true })
 
@@ -201,7 +201,8 @@ function handleMouseMove(e: MouseEvent) {
   if (isResizing.value && resizeHandle.value) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
-    const keepAspectRatio = e.shiftKey || shiftPressed.value
+    // Verwende den Lock aus dem Store, aber Shift-Taste kann es temporär überschreiben
+    const keepAspectRatio = e.shiftKey ? !collage.lockAspectRatio : collage.lockAspectRatio
 
     let newWidth = resizeStart.value.width
     let newHeight = resizeStart.value.height
