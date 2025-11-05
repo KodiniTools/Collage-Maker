@@ -50,6 +50,38 @@ function updateRotation(value: number) {
   }
 }
 
+function toggleShadow() {
+  if (collage.selectedImageId && selectedImage.value) {
+    collage.updateImage(collage.selectedImageId, {
+      shadowEnabled: !selectedImage.value.shadowEnabled
+    })
+  }
+}
+
+function updateShadowOffsetX(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { shadowOffsetX: value })
+  }
+}
+
+function updateShadowOffsetY(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { shadowOffsetY: value })
+  }
+}
+
+function updateShadowBlur(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { shadowBlur: value })
+  }
+}
+
+function updateShadowColor(value: string) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { shadowColor: value })
+  }
+}
+
 function deleteImage() {
   if (collage.selectedImageId) {
     collage.removeImage(collage.selectedImageId)
@@ -153,6 +185,92 @@ function sendToBack() {
           max="360"
           class="w-full"
         />
+      </div>
+
+      <!-- Shadow Controls -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm font-medium">{{ t('imageControls.shadow') }}</label>
+          <button
+            @click="toggleShadow"
+            :class="[
+              'px-3 py-1 text-xs rounded transition-colors',
+              selectedImage.shadowEnabled
+                ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+            ]"
+          >
+            {{ selectedImage.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled') }}
+          </button>
+        </div>
+
+        <div v-if="selectedImage.shadowEnabled" class="space-y-3">
+          <!-- Shadow Offset X -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.shadowOffsetX') }}: {{ selectedImage.shadowOffsetX }}px
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.shadowOffsetX"
+              @input="updateShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
+              min="-50"
+              max="50"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Shadow Offset Y -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.shadowOffsetY') }}: {{ selectedImage.shadowOffsetY }}px
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.shadowOffsetY"
+              @input="updateShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
+              min="-50"
+              max="50"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Shadow Blur -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.shadowBlur') }}: {{ selectedImage.shadowBlur }}px
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.shadowBlur"
+              @input="updateShadowBlur(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="50"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Shadow Color -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.shadowColor') }}
+            </label>
+            <div class="flex gap-2">
+              <input
+                type="color"
+                :value="selectedImage.shadowColor"
+                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
+                class="w-12 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+              />
+              <input
+                type="text"
+                :value="selectedImage.shadowColor"
+                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
+                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Z-Index Controls -->

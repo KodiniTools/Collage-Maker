@@ -50,6 +50,12 @@
     "lockAspectRatio": "Lock aspect ratio",
     "locked": "Locked",
     "unlocked": "Unlocked",
-    "shiftHint": "Tip: Hold Shift key while dragging handles to toggle the lock"
+    "shiftHint": "Tip: Hold Shift key while dragging handles to toggle the lock",
+    "shadow": "Image Shadow",
+    "shadowEnabled": "Enable Shadow",
+    "shadowOffsetX": "Shadow X Offset",
+    "shadowOffsetY": "Shadow Y Offset",
+    "shadowBlur": "Shadow Blur",
+    "shadowColor": "Shadow Color"
   }
 }

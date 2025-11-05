@@ -32,7 +32,12 @@ export const useCollageStore = defineStore('collage', () => {
         width: 200,
         height: 200,
         rotation: 0,
-        zIndex: images.value.length
+        zIndex: images.value.length,
+        shadowEnabled: false,
+        shadowOffsetX: 5,
+        shadowOffsetY: 5,
+        shadowBlur: 10,
+        shadowColor: '#000000'
       })
     })
 

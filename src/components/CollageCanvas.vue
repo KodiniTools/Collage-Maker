@@ -59,7 +59,22 @@ async function renderCanvas() {
     ctx.save()
     ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
     ctx.rotate((img.rotation * Math.PI) / 180)
+
+    // Schatten anwenden, wenn aktiviert
+    if (img.shadowEnabled) {
+      ctx.shadowOffsetX = img.shadowOffsetX
+      ctx.shadowOffsetY = img.shadowOffsetY
+      ctx.shadowBlur = img.shadowBlur
+      ctx.shadowColor = img.shadowColor
+    }
+
     ctx.drawImage(htmlImg, -img.width / 2, -img.height / 2, img.width, img.height)
+
+    // Schatten zurücksetzen für weitere Zeichnungen
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    ctx.shadowBlur = 0
+    ctx.shadowColor = 'transparent'
 
     // Highlight für selektiertes Bild
     if (collage.selectedImageId === img.id) {

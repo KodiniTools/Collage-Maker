@@ -8,6 +8,11 @@ export interface CollageImage {
   height: number
   rotation: number
   zIndex: number
+  shadowEnabled: boolean
+  shadowOffsetX: number
+  shadowOffsetY: number
+  shadowBlur: number
+  shadowColor: string
 }
 
 export type LayoutType = 'freestyle' | 'grid-2x2' | 'grid-3x3' | 'grid-2x3'
