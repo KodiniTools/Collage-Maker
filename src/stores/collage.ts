@@ -5,7 +5,8 @@ import type { CollageImage, CollageSettings, LayoutType } from '@/types'
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
   const selectedImageId = ref<string | null>(null)
-  
+  const lockAspectRatio = ref(true)
+
   const settings = ref<CollageSettings>({
     width: 1200,
     height: 800,
@@ -96,17 +97,23 @@ export const useCollageStore = defineStore('collage', () => {
     Object.assign(settings.value, updates)
   }
 
+  function setLockAspectRatio(value: boolean) {
+    lockAspectRatio.value = value
+  }
+
   return {
     images,
     selectedImageId,
     selectedImage,
     settings,
+    lockAspectRatio,
     addImages,
     removeImage,
     updateImage,
     selectImage,
     applyLayout,
     clearCollage,
-    updateSettings
+    updateSettings,
+    setLockAspectRatio
   }
 })

@@ -46,6 +46,10 @@
     "toFront": "Nach vorne",
     "toBack": "Nach hinten",
     "delete": "Bild löschen",
-    "noSelection": "Kein Bild ausgewählt"
+    "noSelection": "Kein Bild ausgewählt",
+    "lockAspectRatio": "Seitenverhältnis sperren",
+    "locked": "Gesperrt",
+    "unlocked": "Entsperrt",
+    "shiftHint": "Tipp: Halten Sie die Shift-Taste beim Ziehen der Handles, um das Sperren zu togglen"
   }
 }
