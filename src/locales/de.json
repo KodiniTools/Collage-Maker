@@ -50,6 +50,12 @@
     "lockAspectRatio": "Seitenverhältnis sperren",
     "locked": "Gesperrt",
     "unlocked": "Entsperrt",
-    "shiftHint": "Tipp: Halten Sie die Shift-Taste beim Ziehen der Handles, um das Sperren zu togglen"
+    "shiftHint": "Tipp: Halten Sie die Shift-Taste beim Ziehen der Handles, um das Sperren zu togglen",
+    "shadow": "Bildschatten",
+    "shadowEnabled": "Schatten aktivieren",
+    "shadowOffsetX": "Schatten X-Versatz",
+    "shadowOffsetY": "Schatten Y-Versatz",
+    "shadowBlur": "Schattenunschärfe",
+    "shadowColor": "Schattenfarbe"
   }
 }
