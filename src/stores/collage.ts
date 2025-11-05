@@ -262,6 +262,35 @@ export const useCollageStore = defineStore('collage', () => {
     lockAspectRatio.value = value
   }
 
+  function duplicateImageToPosition(sourceId: string, x: number, y: number) {
+    const sourceImage = images.value.find(img => img.id === sourceId)
+    if (!sourceImage) return
+
+    const newId = crypto.randomUUID()
+    const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+
+    // Erstelle eine Kopie des Bildes an der neuen Position
+    images.value.push({
+      id: newId,
+      file: sourceImage.file,
+      url: sourceImage.url, // Verwende dieselbe URL (keine Duplikation des Blobs nötig)
+      x: x,
+      y: y,
+      width: sourceImage.width,
+      height: sourceImage.height,
+      rotation: 0,
+      zIndex: maxZ + 1,
+      shadowEnabled: false,
+      shadowOffsetX: 5,
+      shadowOffsetY: 5,
+      shadowBlur: 10,
+      shadowColor: '#000000'
+    })
+
+    // Selektiere das neue Bild
+    selectedImageId.value = newId
+  }
+
   return {
     images,
     selectedImageId,
@@ -275,6 +304,7 @@ export const useCollageStore = defineStore('collage', () => {
     applyLayout,
     clearCollage,
     updateSettings,
-    setLockAspectRatio
+    setLockAspectRatio,
+    duplicateImageToPosition
   }
 })

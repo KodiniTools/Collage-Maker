@@ -32,7 +32,8 @@
     "title": "Bilder",
     "empty": "Keine Bilder hochgeladen",
     "remove": "Entfernen",
-    "selected": "Ausgewählt"
+    "selected": "Ausgewählt",
+    "dragToCanvas": "Ziehen Sie das Bild auf das Canvas, um es hinzuzufügen"
   },
   "export": {
     "title": "Exportieren",

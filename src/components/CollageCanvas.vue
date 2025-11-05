@@ -386,6 +386,33 @@ function handleKeyDown(e: KeyboardEvent) {
   }
 }
 
+// Drag-Drop Funktionalität für Bilder aus der Galerie
+function handleDragOver(e: DragEvent) {
+  e.preventDefault()
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'copy'
+  }
+}
+
+function handleDrop(e: DragEvent) {
+  e.preventDefault()
+
+  if (!canvas.value || !e.dataTransfer) return
+
+  const imageId = e.dataTransfer.getData('imageId')
+  if (!imageId) return
+
+  // Berechne die Drop-Position relativ zum Canvas
+  const rect = canvas.value.getBoundingClientRect()
+  const scaleX = collage.settings.width / rect.width
+  const scaleY = collage.settings.height / rect.height
+  const x = (e.clientX - rect.left) * scaleX
+  const y = (e.clientY - rect.top) * scaleY
+
+  // Dupliziere das Bild an der Drop-Position
+  collage.duplicateImageToPosition(imageId, x, y)
+}
+
 // Cleanup
 watch(() => collage.images, (newImages, oldImages) => {
   oldImages?.forEach(img => {
@@ -404,6 +431,8 @@ watch(() => collage.images, (newImages, oldImages) => {
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
+      @dragover="handleDragOver"
+      @drop="handleDrop"
       class="max-w-full max-h-full shadow-lg cursor-move"
       style="image-rendering: high-quality;"
     />
