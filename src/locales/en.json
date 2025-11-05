@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "Image Collage Maker",
+    "subtitle": "Create your own photo collage in the browser"
+  },
+  "upload": {
+    "title": "Upload Images",
+    "dragDrop": "Drag images here or click",
+    "button": "Select Images",
+    "formats": "PNG, JPG, WebP (max. 10MB per image)"
+  },
+  "layout": {
+    "title": "Layout",
+    "freestyle": "Freestyle",
+    "grid2x2": "Grid 2×2",
+    "grid3x3": "Grid 3×3",
+    "grid2x3": "Grid 2×3"
+  },
+  "canvas": {
+    "size": "Canvas Size",
+    "width": "Width",
+    "height": "Height",
+    "background": "Background"
+  },
+  "images": {
+    "title": "Images",
+    "empty": "No images uploaded",
+    "remove": "Remove",
+    "selected": "Selected"
+  },
+  "export": {
+    "title": "Export",
+    "format": "Format",
+    "quality": "Quality",
+    "download": "Download"
+  },
+  "controls": {
+    "clear": "Clear All",
+    "rotate": "Rotate",
+    "scale": "Scale"
+  }
+}

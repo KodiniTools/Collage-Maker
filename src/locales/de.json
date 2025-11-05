@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "Bilder-Collage-Macher",
+    "subtitle": "Erstelle deine eigene Foto-Collage im Browser"
+  },
+  "upload": {
+    "title": "Bilder hochladen",
+    "dragDrop": "Bilder hierher ziehen oder klicken",
+    "button": "Bilder auswählen",
+    "formats": "PNG, JPG, WebP (max. 10MB pro Bild)"
+  },
+  "layout": {
+    "title": "Layout",
+    "freestyle": "Freestyle",
+    "grid2x2": "Grid 2×2",
+    "grid3x3": "Grid 3×3",
+    "grid2x3": "Grid 2×3"
+  },
+  "canvas": {
+    "size": "Canvas-Größe",
+    "width": "Breite",
+    "height": "Höhe",
+    "background": "Hintergrund"
+  },
+  "images": {
+    "title": "Bilder",
+    "empty": "Keine Bilder hochgeladen",
+    "remove": "Entfernen",
+    "selected": "Ausgewählt"
+  },
+  "export": {
+    "title": "Exportieren",
+    "format": "Format",
+    "quality": "Qualität",
+    "download": "Herunterladen"
+  },
+  "controls": {
+    "clear": "Alles löschen",
+    "rotate": "Drehen",
+    "scale": "Skalieren"
+  }
+}
