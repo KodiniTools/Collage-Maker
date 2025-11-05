@@ -38,5 +38,14 @@
     "clear": "Clear All",
     "rotate": "Rotate",
     "scale": "Scale"
+  },
+  "imageControls": {
+    "title": "Image Editing",
+    "size": "Size",
+    "layer": "Layer",
+    "toFront": "Bring to Front",
+    "toBack": "Send to Back",
+    "delete": "Delete Image",
+    "noSelection": "No image selected"
   }
 }
