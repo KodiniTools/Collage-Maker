@@ -14,7 +14,13 @@
     "freestyle": "Freestyle",
     "grid2x2": "Grid 2×2",
     "grid3x3": "Grid 3×3",
-    "grid2x3": "Grid 2×3"
+    "grid2x3": "Grid 2×3",
+    "magazine": "Magazin",
+    "spotlight": "Spotlight",
+    "hero": "Hero",
+    "sidebar": "Sidebar",
+    "mosaic": "Mosaik",
+    "diagonal": "Diagonal"
   },
   "canvas": {
     "size": "Canvas-Größe",

@@ -15,7 +15,17 @@ export interface CollageImage {
   shadowColor: string
 }
 
-export type LayoutType = 'freestyle' | 'grid-2x2' | 'grid-3x3' | 'grid-2x3'
+export type LayoutType =
+  | 'freestyle'
+  | 'grid-2x2'
+  | 'grid-3x3'
+  | 'grid-2x3'
+  | 'magazine'
+  | 'spotlight'
+  | 'hero'
+  | 'sidebar'
+  | 'mosaic'
+  | 'diagonal'
 
 export interface CollageSettings {
   width: number
