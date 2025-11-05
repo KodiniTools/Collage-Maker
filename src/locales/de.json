@@ -38,5 +38,14 @@
     "clear": "Alles löschen",
     "rotate": "Drehen",
     "scale": "Skalieren"
+  },
+  "imageControls": {
+    "title": "Bildbearbeitung",
+    "size": "Größe",
+    "layer": "Ebene",
+    "toFront": "Nach vorne",
+    "toBack": "Nach hinten",
+    "delete": "Bild löschen",
+    "noSelection": "Kein Bild ausgewählt"
   }
 }
