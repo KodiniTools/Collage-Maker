@@ -51,5 +51,11 @@
     "locked": "Locked",
     "unlocked": "Unlocked",
     "shiftHint": "Tip: Hold Shift key while dragging handles to toggle the lock"
+  },
+  "canvasSettings": {
+    "title": "Canvas Settings",
+    "backgroundColor": "Background Color",
+    "presetColors": "Preset Colors",
+    "size": "Canvas Size"
   }
 }

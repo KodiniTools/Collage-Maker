@@ -51,5 +51,11 @@
     "locked": "Gesperrt",
     "unlocked": "Entsperrt",
     "shiftHint": "Tipp: Halten Sie die Shift-Taste beim Ziehen der Handles, um das Sperren zu togglen"
+  },
+  "canvasSettings": {
+    "title": "Canvas-Einstellungen",
+    "backgroundColor": "Hintergrundfarbe",
+    "presetColors": "Vordefinierte Farben",
+    "size": "Canvas-Größe"
   }
 }
