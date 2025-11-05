@@ -21,38 +21,46 @@ async function exportCollage() {
   ctx.fillStyle = collage.settings.backgroundColor
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  // Render images
-  const loadedImages = new Map<string, HTMLImageElement>()
-  
+  // Render images - Use File objects directly to avoid blob URL issues
   for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
-    const htmlImg = new Image()
-    htmlImg.src = img.url
-    
-    await new Promise((resolve) => {
-      htmlImg.onload = resolve
-    })
+    try {
+      // Create a fresh blob URL from the file for each export
+      const tempUrl = URL.createObjectURL(img.file)
 
-    ctx.save()
-    ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
-    ctx.rotate((img.rotation * Math.PI) / 180)
+      const htmlImg = new Image()
+      await new Promise((resolve, reject) => {
+        htmlImg.onload = resolve
+        htmlImg.onerror = reject
+        htmlImg.src = tempUrl
+      })
 
-    // Schatten anwenden, wenn aktiviert
-    if (img.shadowEnabled) {
-      ctx.shadowOffsetX = img.shadowOffsetX
-      ctx.shadowOffsetY = img.shadowOffsetY
-      ctx.shadowBlur = img.shadowBlur
-      ctx.shadowColor = img.shadowColor
+      ctx.save()
+      ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
+      ctx.rotate((img.rotation * Math.PI) / 180)
+
+      // Schatten anwenden, wenn aktiviert
+      if (img.shadowEnabled) {
+        ctx.shadowOffsetX = img.shadowOffsetX
+        ctx.shadowOffsetY = img.shadowOffsetY
+        ctx.shadowBlur = img.shadowBlur
+        ctx.shadowColor = img.shadowColor
+      }
+
+      ctx.drawImage(htmlImg, -img.width / 2, -img.height / 2, img.width, img.height)
+
+      // Schatten zurücksetzen
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
+      ctx.shadowBlur = 0
+      ctx.shadowColor = 'transparent'
+
+      ctx.restore()
+
+      // Clean up temp URL
+      URL.revokeObjectURL(tempUrl)
+    } catch (error) {
+      console.error('Fehler beim Laden des Bildes für Export:', error, img)
     }
-
-    ctx.drawImage(htmlImg, -img.width / 2, -img.height / 2, img.width, img.height)
-
-    // Schatten zurücksetzen für weitere Zeichnungen
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 0
-    ctx.shadowBlur = 0
-    ctx.shadowColor = 'transparent'
-
-    ctx.restore()
   }
 
   // Download
