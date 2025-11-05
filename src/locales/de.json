@@ -57,5 +57,18 @@
     "shadowOffsetY": "Schatten Y-Versatz",
     "shadowBlur": "Schattenunschärfe",
     "shadowColor": "Schattenfarbe"
+  },
+  "textControls": {
+    "title": "Text-Bearbeitung",
+    "addText": "Text hinzufügen",
+    "content": "Text",
+    "fontFamily": "Schriftart",
+    "fontSize": "Schriftgröße",
+    "color": "Farbe",
+    "layer": "Ebene",
+    "toFront": "Nach vorne",
+    "toBack": "Nach hinten",
+    "delete": "Text löschen",
+    "noSelection": "Kein Text ausgewählt"
   }
 }

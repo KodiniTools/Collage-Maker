@@ -8,6 +8,7 @@ import LayoutSelector from '@/components/LayoutSelector.vue'
 import ImageList from '@/components/ImageList.vue'
 import CollageCanvas from '@/components/CollageCanvas.vue'
 import ImageControls from '@/components/ImageControls.vue'
+import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
 
 const settings = useSettingsStore()
@@ -48,6 +49,7 @@ const { t } = useI18n()
         <!-- Controls -->
         <aside class="lg:col-span-3 space-y-6">
           <ImageControls />
+          <TextControls />
           <ExportControls />
         </aside>
       </div>

@@ -29,7 +29,7 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
 
-watch(() => [collage.images, collage.settings, collage.selectedImageId], () => {
+watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageId, collage.selectedTextId], () => {
   nextTick(() => renderCanvas())
 }, { deep: true })
 
@@ -96,6 +96,61 @@ async function renderCanvas() {
       ]
 
       // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
+      ctx.fillStyle = '#ffffff'
+      ctx.strokeStyle = '#3b82f6'
+      ctx.lineWidth = 2
+      handles.forEach(handle => {
+        ctx.fillRect(
+          handle.x - handleSize / 2,
+          handle.y - handleSize / 2,
+          handleSize,
+          handleSize
+        )
+        ctx.strokeRect(
+          handle.x - handleSize / 2,
+          handle.y - handleSize / 2,
+          handleSize,
+          handleSize
+        )
+      })
+    }
+
+    ctx.restore()
+  }
+
+  // Texte zeichnen
+  for (const txt of [...collage.texts].sort((a, b) => a.zIndex - b.zIndex)) {
+    ctx.save()
+    ctx.translate(txt.x, txt.y)
+    ctx.rotate((txt.rotation * Math.PI) / 180)
+
+    ctx.font = `${txt.fontSize}px ${txt.fontFamily}`
+    ctx.fillStyle = txt.color
+    ctx.textBaseline = 'top'
+
+    // Zeichne den Text
+    ctx.fillText(txt.text, 0, 0)
+
+    // Berechne Text-Dimensionen für Highlight
+    const metrics = ctx.measureText(txt.text)
+    const textWidth = metrics.width
+    const textHeight = txt.fontSize // Approximation
+
+    // Highlight für selektierten Text
+    if (collage.selectedTextId === txt.id) {
+      ctx.strokeStyle = '#3b82f6'
+      ctx.lineWidth = 2
+      ctx.strokeRect(-5, -5, textWidth + 10, textHeight + 10)
+
+      // Resize-Handles für Text (nur Ecken)
+      const handleSize = 12
+      const handles = [
+        { x: -5, y: -5 }, // top-left
+        { x: textWidth + 5, y: -5 }, // top-right
+        { x: textWidth + 5, y: textHeight + 5 }, // bottom-right
+        { x: -5, y: textHeight + 5 }, // bottom-left
+      ]
+
       ctx.fillStyle = '#ffffff'
       ctx.strokeStyle = '#3b82f6'
       ctx.lineWidth = 2
@@ -198,13 +253,45 @@ function handleMouseDown(e: MouseEvent) {
     isDragging.value = true
     dragStartPos.value = { x, y }
     dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
+    return
+  }
+
+  // Prüfe auf angeklickten Text (von oben nach unten)
+  const clickedText = [...collage.texts]
+    .sort((a, b) => b.zIndex - a.zIndex)
+    .find(txt => {
+      // Berechne Text-Dimensionen
+      if (!ctx) return false
+      ctx.font = `${txt.fontSize}px ${txt.fontFamily}`
+      const metrics = ctx.measureText(txt.text)
+      const textWidth = metrics.width
+      const textHeight = txt.fontSize
+
+      // Prüfe ob Klick innerhalb des Text-Rechtecks liegt (berücksichtige Rotation)
+      const angle = (txt.rotation * Math.PI) / 180
+      const dx = x - txt.x
+      const dy = y - txt.y
+      const rotatedX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
+      const rotatedY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
+
+      return rotatedX >= -5 && rotatedX <= textWidth + 5 &&
+             rotatedY >= -5 && rotatedY <= textHeight + 5
+    })
+
+  if (clickedText) {
+    collage.selectText(clickedText.id)
+    isDragging.value = true
+    dragStartPos.value = { x, y }
+    dragImageStart.value = { x: clickedText.x, y: clickedText.y }
   } else {
     collage.selectImage(null)
+    collage.selectText(null)
   }
 }
 
 function handleMouseMove(e: MouseEvent) {
-  if (!canvas.value || !collage.selectedImageId) return
+  if (!canvas.value) return
+  if (!collage.selectedImageId && !collage.selectedTextId) return
   if (!isDragging.value && !isResizing.value) return
 
   const rect = canvas.value.getBoundingClientRect()
@@ -213,7 +300,7 @@ function handleMouseMove(e: MouseEvent) {
   const x = (e.clientX - rect.left) * scaleX
   const y = (e.clientY - rect.top) * scaleY
 
-  if (isResizing.value && resizeHandle.value) {
+  if (isResizing.value && resizeHandle.value && collage.selectedImageId) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
     // Verwende den Lock aus dem Store, aber Shift-Taste kann es temporär überschreiben
@@ -315,10 +402,17 @@ function handleMouseMove(e: MouseEvent) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
 
-    collage.updateImage(collage.selectedImageId, {
-      x: dragImageStart.value.x + dx,
-      y: dragImageStart.value.y + dy
-    })
+    if (collage.selectedImageId) {
+      collage.updateImage(collage.selectedImageId, {
+        x: dragImageStart.value.x + dx,
+        y: dragImageStart.value.y + dy
+      })
+    } else if (collage.selectedTextId) {
+      collage.updateText(collage.selectedTextId, {
+        x: dragImageStart.value.x + dx,
+        y: dragImageStart.value.y + dy
+      })
+    }
   }
 }
 
@@ -329,9 +423,14 @@ function handleMouseUp() {
 }
 
 function handleKeyDown(e: KeyboardEvent) {
-  if ((e.key === 'Delete' || e.key === 'Backspace') && collage.selectedImageId) {
-    e.preventDefault()
-    collage.removeImage(collage.selectedImageId)
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (collage.selectedImageId) {
+      e.preventDefault()
+      collage.removeImage(collage.selectedImageId)
+    } else if (collage.selectedTextId) {
+      e.preventDefault()
+      collage.removeText(collage.selectedTextId)
+    }
   }
 }
 

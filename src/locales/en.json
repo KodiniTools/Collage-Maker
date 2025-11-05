@@ -57,5 +57,18 @@
     "shadowOffsetY": "Shadow Y Offset",
     "shadowBlur": "Shadow Blur",
     "shadowColor": "Shadow Color"
+  },
+  "textControls": {
+    "title": "Text Editing",
+    "addText": "Add Text",
+    "content": "Text",
+    "fontFamily": "Font Family",
+    "fontSize": "Font Size",
+    "color": "Color",
+    "layer": "Layer",
+    "toFront": "Bring to Front",
+    "toBack": "Send to Back",
+    "delete": "Delete Text",
+    "noSelection": "No text selected"
   }
 }
