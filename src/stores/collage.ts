@@ -24,7 +24,36 @@ export const useCollageStore = defineStore('collage', () => {
     files.forEach(file => {
       const id = crypto.randomUUID()
       const url = URL.createObjectURL(file)
-      
+
+      // Lade das Bild, um die originalen Dimensionen zu erhalten
+      const img = new Image()
+      img.onload = () => {
+        const imageData = images.value.find(i => i.id === id)
+        if (imageData) {
+          // Berechne Dimensionen unter Beibehaltung des Seitenverhältnisses
+          const maxSize = 300 // Maximale Breite oder Höhe
+          const aspectRatio = img.width / img.height
+
+          let width = maxSize
+          let height = maxSize
+
+          if (aspectRatio > 1) {
+            // Breiteres Bild (Querformat)
+            width = maxSize
+            height = maxSize / aspectRatio
+          } else {
+            // Höheres Bild (Hochformat) oder quadratisch
+            height = maxSize
+            width = maxSize * aspectRatio
+          }
+
+          imageData.width = width
+          imageData.height = height
+        }
+      }
+      img.src = url
+
+      // Füge Bild mit temporären Dimensionen hinzu (werden beim Laden aktualisiert)
       images.value.push({
         id,
         file,
@@ -72,12 +101,12 @@ export const useCollageStore = defineStore('collage', () => {
 
   function applyLayout(layout: LayoutType) {
     settings.value.layout = layout
-    
+
     if (layout === 'freestyle') return
 
     const cols = layout === 'grid-2x2' ? 2 : layout === 'grid-3x3' ? 3 : 2
     const rows = layout === 'grid-2x2' ? 2 : layout === 'grid-3x3' ? 3 : 3
-    
+
     const cellWidth = settings.value.width / cols
     const cellHeight = settings.value.height / rows
     const padding = 10
@@ -85,11 +114,27 @@ export const useCollageStore = defineStore('collage', () => {
     images.value.forEach((img, index) => {
       const col = index % cols
       const row = Math.floor(index / cols)
-      
+
+      // Positioniere das Bild in der Zelle
       img.x = col * cellWidth + padding
       img.y = row * cellHeight + padding
-      img.width = cellWidth - padding * 2
-      img.height = cellHeight - padding * 2
+
+      // Berechne das originale Seitenverhältnis
+      const aspectRatio = img.width / img.height
+      const availableWidth = cellWidth - padding * 2
+      const availableHeight = cellHeight - padding * 2
+
+      // Passe die Größe an die Zelle an, aber behalte das Seitenverhältnis bei
+      if (availableWidth / availableHeight > aspectRatio) {
+        // Zelle ist breiter als das Bild - passe an Höhe an
+        img.height = availableHeight
+        img.width = availableHeight * aspectRatio
+      } else {
+        // Zelle ist höher als das Bild - passe an Breite an
+        img.width = availableWidth
+        img.height = availableWidth / aspectRatio
+      }
+
       img.rotation = 0
     })
   }
