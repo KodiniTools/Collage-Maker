@@ -55,8 +55,59 @@ async function exportCollage() {
 
 <template>
   <div class="w-full space-y-4">
+    <!-- Canvas Settings -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+      <h3 class="text-lg font-semibold mb-4">{{ t('canvas.size') }}</h3>
+
+      <!-- Canvas Width -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium mb-2">{{ t('canvas.width') }}</label>
+        <input
+          type="number"
+          :value="collage.settings.width"
+          @input="collage.updateSettings({ width: Number(($event.target as HTMLInputElement).value) })"
+          min="100"
+          max="4000"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+        />
+      </div>
+
+      <!-- Canvas Height -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium mb-2">{{ t('canvas.height') }}</label>
+        <input
+          type="number"
+          :value="collage.settings.height"
+          @input="collage.updateSettings({ height: Number(($event.target as HTMLInputElement).value) })"
+          min="100"
+          max="4000"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+        />
+      </div>
+
+      <!-- Canvas Background Color -->
+      <div>
+        <label class="block text-sm font-medium mb-2">{{ t('canvas.background') }}</label>
+        <div class="flex gap-2">
+          <input
+            type="color"
+            :value="collage.settings.backgroundColor"
+            @input="collage.updateSettings({ backgroundColor: ($event.target as HTMLInputElement).value })"
+            class="w-12 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+          />
+          <input
+            type="text"
+            :value="collage.settings.backgroundColor"
+            @input="collage.updateSettings({ backgroundColor: ($event.target as HTMLInputElement).value })"
+            class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Settings -->
     <h2 class="text-lg font-semibold">{{ t('export.title') }}</h2>
-    
+
     <div>
       <label class="block text-sm font-medium mb-2">{{ t('export.format') }}</label>
       <select
