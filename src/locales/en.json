@@ -46,6 +46,10 @@
     "toFront": "Bring to Front",
     "toBack": "Send to Back",
     "delete": "Delete Image",
-    "noSelection": "No image selected"
+    "noSelection": "No image selected",
+    "lockAspectRatio": "Lock aspect ratio",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "shiftHint": "Tip: Hold Shift key while dragging handles for proportional scaling"
   }
 }

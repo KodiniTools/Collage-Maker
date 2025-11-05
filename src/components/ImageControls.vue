@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
 
@@ -7,16 +7,41 @@ const collage = useCollageStore()
 const { t } = useI18n()
 
 const selectedImage = computed(() => collage.selectedImage)
+const lockAspectRatio = ref(true)
+const aspectRatio = ref(1)
+
+// Berechne Seitenverhältnis wenn Bild ausgewählt wird
+watch(selectedImage, (img) => {
+  if (img) {
+    aspectRatio.value = img.width / img.height
+  }
+}, { immediate: true })
 
 function updateWidth(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { width: value })
+  if (collage.selectedImageId && selectedImage.value) {
+    const updates: any = { width: value }
+    if (lockAspectRatio.value) {
+      updates.height = value / aspectRatio.value
+    }
+    collage.updateImage(collage.selectedImageId, updates)
   }
 }
 
 function updateHeight(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { height: value })
+  if (collage.selectedImageId && selectedImage.value) {
+    const updates: any = { height: value }
+    if (lockAspectRatio.value) {
+      updates.width = value * aspectRatio.value
+    }
+    collage.updateImage(collage.selectedImageId, updates)
+  }
+}
+
+function toggleAspectRatio() {
+  lockAspectRatio.value = !lockAspectRatio.value
+  if (lockAspectRatio.value && selectedImage.value) {
+    // Aktualisiere Seitenverhältnis beim Aktivieren
+    aspectRatio.value = selectedImage.value.width / selectedImage.value.height
   }
 }
 
@@ -54,7 +79,39 @@ function sendToBack() {
     <div v-if="selectedImage" class="space-y-4">
       <!-- Größe Controls -->
       <div>
-        <label class="block text-sm font-medium mb-2">{{ t('imageControls.size') }}</label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">{{ t('imageControls.size') }}</label>
+          <button
+            @click="toggleAspectRatio"
+            :class="[
+              'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
+              lockAspectRatio
+                ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+            ]"
+            :title="t('imageControls.lockAspectRatio')"
+          >
+            <svg
+              v-if="lockAspectRatio"
+              class="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <svg
+              v-else
+              class="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+            <span>{{ lockAspectRatio ? t('imageControls.locked') : t('imageControls.unlocked') }}</span>
+          </button>
+        </div>
         <div class="space-y-2">
           <div>
             <label class="text-xs text-gray-600 dark:text-gray-400">{{ t('canvas.width') }}</label>
@@ -79,6 +136,9 @@ function sendToBack() {
             />
           </div>
         </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          💡 {{ t('imageControls.shiftHint') }}
+        </p>
       </div>
 
       <!-- Rotation Control -->

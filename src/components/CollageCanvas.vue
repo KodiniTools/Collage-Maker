@@ -11,6 +11,8 @@ const resizeHandle = ref<string | null>(null)
 const dragStartPos = ref({ x: 0, y: 0 })
 const dragImageStart = ref({ x: 0, y: 0 })
 const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
+const shiftPressed = ref(false)
+const initialAspectRatio = ref(1)
 
 let ctx: CanvasRenderingContext2D | null = null
 const loadedImages = new Map<string, HTMLImageElement>()
@@ -65,8 +67,8 @@ async function renderCanvas() {
       ctx.lineWidth = 3
       ctx.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
 
-      // Resize-Handles zeichnen
-      const handleSize = 10
+      // Resize-Handles zeichnen (größer und besser sichtbar)
+      const handleSize = 16
       const handles = [
         { x: -img.width / 2, y: -img.height / 2, cursor: 'nw' }, // top-left
         { x: 0, y: -img.height / 2, cursor: 'n' }, // top-center
@@ -78,9 +80,18 @@ async function renderCanvas() {
         { x: -img.width / 2, y: 0, cursor: 'w' }, // middle-left
       ]
 
-      ctx.fillStyle = '#3b82f6'
+      // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
+      ctx.fillStyle = '#ffffff'
+      ctx.strokeStyle = '#3b82f6'
+      ctx.lineWidth = 2
       handles.forEach(handle => {
         ctx.fillRect(
+          handle.x - handleSize / 2,
+          handle.y - handleSize / 2,
+          handleSize,
+          handleSize
+        )
+        ctx.strokeRect(
           handle.x - handleSize / 2,
           handle.y - handleSize / 2,
           handleSize,
@@ -94,7 +105,8 @@ async function renderCanvas() {
 }
 
 function getResizeHandle(x: number, y: number, img: any): string | null {
-  const handleSize = 10
+  const handleSize = 16
+  const hitRadius = handleSize // Größerer Hit-Bereich
   const centerX = img.x + img.width / 2
   const centerY = img.y + img.height / 2
 
@@ -116,11 +128,12 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
     { x: -img.width / 2, y: 0, name: 'w' },
   ]
 
+  // Prüfe jedes Handle
   for (const handle of handles) {
     const distance = Math.sqrt(
       Math.pow(rotatedX - handle.x, 2) + Math.pow(rotatedY - handle.y, 2)
     )
-    if (distance <= handleSize) {
+    if (distance <= hitRadius) {
       return handle.name
     }
   }
@@ -151,6 +164,8 @@ function handleMouseDown(e: MouseEvent) {
         width: selectedImg.width,
         height: selectedImg.height
       }
+      shiftPressed.value = e.shiftKey
+      initialAspectRatio.value = selectedImg.width / selectedImg.height
       return
     }
   }
@@ -186,6 +201,7 @@ function handleMouseMove(e: MouseEvent) {
   if (isResizing.value && resizeHandle.value) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
+    const keepAspectRatio = e.shiftKey || shiftPressed.value
 
     let newWidth = resizeStart.value.width
     let newHeight = resizeStart.value.height
@@ -199,34 +215,74 @@ function handleMouseMove(e: MouseEvent) {
         newHeight = resizeStart.value.height - dy
         newX = resizeStart.value.x + dx
         newY = resizeStart.value.y + dy
+        if (keepAspectRatio) {
+          const avgChange = (newWidth / resizeStart.value.width + newHeight / resizeStart.value.height) / 2
+          newWidth = resizeStart.value.width * avgChange
+          newHeight = resizeStart.value.height * avgChange
+          newX = resizeStart.value.x + (resizeStart.value.width - newWidth)
+          newY = resizeStart.value.y + (resizeStart.value.height - newHeight)
+        }
         break
       case 'n':
         newHeight = resizeStart.value.height - dy
         newY = resizeStart.value.y + dy
+        if (keepAspectRatio) {
+          newWidth = newHeight * initialAspectRatio.value
+          newX = resizeStart.value.x - (newWidth - resizeStart.value.width) / 2
+        }
         break
       case 'ne':
         newWidth = resizeStart.value.width + dx
         newHeight = resizeStart.value.height - dy
         newY = resizeStart.value.y + dy
+        if (keepAspectRatio) {
+          const avgChange = (newWidth / resizeStart.value.width + newHeight / resizeStart.value.height) / 2
+          newWidth = resizeStart.value.width * avgChange
+          newHeight = resizeStart.value.height * avgChange
+          newY = resizeStart.value.y + (resizeStart.value.height - newHeight)
+        }
         break
       case 'e':
         newWidth = resizeStart.value.width + dx
+        if (keepAspectRatio) {
+          newHeight = newWidth / initialAspectRatio.value
+          newY = resizeStart.value.y - (newHeight - resizeStart.value.height) / 2
+        }
         break
       case 'se':
         newWidth = resizeStart.value.width + dx
         newHeight = resizeStart.value.height + dy
+        if (keepAspectRatio) {
+          const avgChange = (newWidth / resizeStart.value.width + newHeight / resizeStart.value.height) / 2
+          newWidth = resizeStart.value.width * avgChange
+          newHeight = resizeStart.value.height * avgChange
+        }
         break
       case 's':
         newHeight = resizeStart.value.height + dy
+        if (keepAspectRatio) {
+          newWidth = newHeight * initialAspectRatio.value
+          newX = resizeStart.value.x - (newWidth - resizeStart.value.width) / 2
+        }
         break
       case 'sw':
         newWidth = resizeStart.value.width - dx
         newHeight = resizeStart.value.height + dy
         newX = resizeStart.value.x + dx
+        if (keepAspectRatio) {
+          const avgChange = (newWidth / resizeStart.value.width + newHeight / resizeStart.value.height) / 2
+          newWidth = resizeStart.value.width * avgChange
+          newHeight = resizeStart.value.height * avgChange
+          newX = resizeStart.value.x + (resizeStart.value.width - newWidth)
+        }
         break
       case 'w':
         newWidth = resizeStart.value.width - dx
         newX = resizeStart.value.x + dx
+        if (keepAspectRatio) {
+          newHeight = newWidth / initialAspectRatio.value
+          newY = resizeStart.value.y - (newHeight - resizeStart.value.height) / 2
+        }
         break
     }
 
