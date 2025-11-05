@@ -11,7 +11,9 @@ export const useCollageStore = defineStore('collage', () => {
     width: 1200,
     height: 800,
     backgroundColor: '#ffffff',
-    layout: 'freestyle'
+    layout: 'freestyle',
+    gridEnabled: false,
+    gridSize: 50
   })
 
   const selectedImage = computed(() => 

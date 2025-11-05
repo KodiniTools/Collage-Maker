@@ -22,6 +22,8 @@ export interface CollageSettings {
   height: number
   backgroundColor: string
   layout: LayoutType
+  gridEnabled: boolean
+  gridSize: number
 }
 
 export type Theme = 'light' | 'dark'

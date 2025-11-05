@@ -57,5 +57,13 @@
     "shadowOffsetY": "Schatten Y-Versatz",
     "shadowBlur": "Schattenunschärfe",
     "shadowColor": "Schattenfarbe"
+  },
+  "grid": {
+    "title": "Hilfsraster",
+    "enabled": "Raster anzeigen",
+    "on": "An",
+    "off": "Aus",
+    "size": "Rastergröße",
+    "hint": "Das Raster ist nur zur Orientierung und wird beim Export nicht mitgespeichert"
   }
 }
