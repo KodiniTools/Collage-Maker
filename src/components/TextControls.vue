@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
+import fontManager from '@/utils/fontManager'
 
 const collage = useCollageStore()
 const { t } = useI18n()
@@ -29,16 +30,19 @@ interface FontFamily {
 const customFonts = ref<Record<string, FontFamily>>({})
 const selectedFontFamily = ref<string>('Arial')
 const selectedFontVariant = ref<string>('Regular')
+const fontLoadError = ref<string | null>(null)
 
-// Load custom fonts
+// Load custom fonts using fontManager
 onMounted(async () => {
   try {
-    const basePath = import.meta.env.BASE_URL || '/'
-    const response = await fetch(basePath + 'fonts.json')
-    const data = await response.json()
-    customFonts.value = data
+    console.log('🚀 Starting font loading...')
+    const fonts = await fontManager.loadFonts()
+    customFonts.value = fonts
+    console.log('✅ TextControls: Fonts loaded:', Object.keys(fonts).length, 'families')
   } catch (error) {
-    console.error('Failed to load custom fonts:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    fontLoadError.value = errorMessage
+    console.error('❌ TextControls: Failed to load custom fonts:', error)
   }
 })
 
