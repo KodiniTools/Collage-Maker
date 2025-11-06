@@ -10,7 +10,13 @@ const layouts: { value: LayoutType; labelKey: string }[] = [
   { value: 'freestyle', labelKey: 'layout.freestyle' },
   { value: 'grid-2x2', labelKey: 'layout.grid2x2' },
   { value: 'grid-3x3', labelKey: 'layout.grid3x3' },
-  { value: 'grid-2x3', labelKey: 'layout.grid2x3' }
+  { value: 'grid-2x3', labelKey: 'layout.grid2x3' },
+  { value: 'magazine', labelKey: 'layout.magazine' },
+  { value: 'spotlight', labelKey: 'layout.spotlight' },
+  { value: 'hero', labelKey: 'layout.hero' },
+  { value: 'sidebar', labelKey: 'layout.sidebar' },
+  { value: 'mosaic', labelKey: 'layout.mosaic' },
+  { value: 'diagonal', labelKey: 'layout.diagonal' }
 ]
 
 function selectLayout(layout: LayoutType) {
@@ -21,7 +27,7 @@ function selectLayout(layout: LayoutType) {
 <template>
   <div class="w-full">
     <h2 class="text-lg font-semibold mb-3">{{ t('layout.title') }}</h2>
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1">
       <button
         v-for="layout in layouts"
         :key="layout.value"
