@@ -1,0 +1,142 @@
+/* Custom Fonts for Collage Maker - 131 Fonts */
+
+/* Alpino */
+@font-face { font-family: 'Alpino'; font-weight: 100; src: url('/fonts/Alpino-Thin.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Alpino'; font-weight: 300; src: url('/fonts/Alpino-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Alpino'; font-weight: 400; src: url('/fonts/Alpino-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Alpino'; font-weight: 500; src: url('/fonts/Alpino-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Alpino'; font-weight: 700; src: url('/fonts/Alpino-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Alpino'; font-weight: 900; src: url('/fonts/Alpino-Black.woff2') format('woff2'); font-display: swap; }
+
+/* Author */
+@font-face { font-family: 'Author'; font-weight: 200; src: url('/fonts/Author-Extralight.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 200; font-style: italic; src: url('/fonts/Author-ExtralightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 300; src: url('/fonts/Author-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 300; font-style: italic; src: url('/fonts/Author-LightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 400; src: url('/fonts/Author-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 400; font-style: italic; src: url('/fonts/Author-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 500; src: url('/fonts/Author-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 500; font-style: italic; src: url('/fonts/Author-MediumItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 600; src: url('/fonts/Author-Semibold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 600; font-style: italic; src: url('/fonts/Author-SemiboldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 700; src: url('/fonts/Author-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Author'; font-weight: 700; font-style: italic; src: url('/fonts/Author-BoldItalic.woff2') format('woff2'); font-display: swap; }
+
+/* Chillax */
+@font-face { font-family: 'Chillax'; font-weight: 200; src: url('/fonts/Chillax-Extralight.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Chillax'; font-weight: 300; src: url('/fonts/Chillax-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Chillax'; font-weight: 400; src: url('/fonts/Chillax-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Chillax'; font-weight: 500; src: url('/fonts/Chillax-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Chillax'; font-weight: 600; src: url('/fonts/Chillax-Semibold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Chillax'; font-weight: 700; src: url('/fonts/Chillax-Bold.woff2') format('woff2'); font-display: swap; }
+
+/* ClashDisplay */
+@font-face { font-family: 'Clash Display'; font-weight: 200; src: url('/fonts/ClashDisplay-Extralight.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Clash Display'; font-weight: 300; src: url('/fonts/ClashDisplay-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Clash Display'; font-weight: 400; src: url('/fonts/ClashDisplay-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Clash Display'; font-weight: 500; src: url('/fonts/ClashDisplay-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Clash Display'; font-weight: 600; src: url('/fonts/ClashDisplay-Semibold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Clash Display'; font-weight: 700; src: url('/fonts/ClashDisplay-Bold.woff2') format('woff2'); font-display: swap; }
+
+/* GeneralSans */
+@font-face { font-family: 'General Sans'; font-weight: 200; src: url('/fonts/GeneralSans-Extralight.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 200; font-style: italic; src: url('/fonts/GeneralSans-ExtralightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 300; src: url('/fonts/GeneralSans-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 300; font-style: italic; src: url('/fonts/GeneralSans-LightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 400; src: url('/fonts/GeneralSans-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 400; font-style: italic; src: url('/fonts/GeneralSans-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 500; src: url('/fonts/GeneralSans-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 500; font-style: italic; src: url('/fonts/GeneralSans-MediumItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 600; src: url('/fonts/GeneralSans-Semibold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 600; font-style: italic; src: url('/fonts/GeneralSans-SemiboldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 700; src: url('/fonts/GeneralSans-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'General Sans'; font-weight: 700; font-style: italic; src: url('/fonts/GeneralSans-BoldItalic.woff2') format('woff2'); font-display: swap; }
+
+/* Hind */
+@font-face { font-family: 'Hind'; font-weight: 300; src: url('/fonts/Hind-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Hind'; font-weight: 400; src: url('/fonts/Hind-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Hind'; font-weight: 500; src: url('/fonts/Hind-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Hind'; font-weight: 600; src: url('/fonts/Hind-SemiBold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Hind'; font-weight: 700; src: url('/fonts/Hind-Bold.woff2') format('woff2'); font-display: swap; }
+
+/* Ranade */
+@font-face { font-family: 'Ranade'; font-weight: 100; src: url('/fonts/Ranade-Thin.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 100; font-style: italic; src: url('/fonts/Ranade-ThinItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 400; src: url('/fonts/Ranade-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 400; font-style: italic; src: url('/fonts/Ranade-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 500; src: url('/fonts/Ranade-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 500; font-style: italic; src: url('/fonts/Ranade-MediumItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 700; src: url('/fonts/Ranade-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Ranade'; font-weight: 700; font-style: italic; src: url('/fonts/Ranade-BoldItalic.woff2') format('woff2'); font-display: swap; }
+
+/* Satoshi */
+@font-face { font-family: 'Satoshi'; font-weight: 300; src: url('/fonts/Satoshi-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 300; font-style: italic; src: url('/fonts/Satoshi-LightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 400; src: url('/fonts/Satoshi-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 400; font-style: italic; src: url('/fonts/Satoshi-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 500; src: url('/fonts/Satoshi-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 500; font-style: italic; src: url('/fonts/Satoshi-MediumItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 700; src: url('/fonts/Satoshi-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 700; font-style: italic; src: url('/fonts/Satoshi-BoldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 900; src: url('/fonts/Satoshi-Black.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Satoshi'; font-weight: 900; font-style: italic; src: url('/fonts/Satoshi-BlackItalic.woff2') format('woff2'); font-display: swap; }
+
+/* Supreme */
+@font-face { font-family: 'Supreme'; font-weight: 100; src: url('/fonts/Supreme-Thin.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 100; font-style: italic; src: url('/fonts/Supreme-ThinItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 200; src: url('/fonts/Supreme-Extralight.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 200; font-style: italic; src: url('/fonts/Supreme-ExtralightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 300; src: url('/fonts/Supreme-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 300; font-style: italic; src: url('/fonts/Supreme-LightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 400; src: url('/fonts/Supreme-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 400; font-style: italic; src: url('/fonts/Supreme-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 500; src: url('/fonts/Supreme-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 500; font-style: italic; src: url('/fonts/Supreme-MediumItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 700; src: url('/fonts/Supreme-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 700; font-style: italic; src: url('/fonts/Supreme-BoldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 800; src: url('/fonts/Supreme-Extrabold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Supreme'; font-weight: 800; font-style: italic; src: url('/fonts/Supreme-ExtraboldItalic.woff2') format('woff2'); font-display: swap; }
+
+/* Switzer */
+@font-face { font-family: 'Switzer'; font-weight: 100; src: url('/fonts/Switzer-Thin.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 100; font-style: italic; src: url('/fonts/Switzer-ThinItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 200; src: url('/fonts/Switzer-Extralight.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 200; font-style: italic; src: url('/fonts/Switzer-ExtralightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 300; src: url('/fonts/Switzer-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 300; font-style: italic; src: url('/fonts/Switzer-LightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 400; src: url('/fonts/Switzer-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 400; font-style: italic; src: url('/fonts/Switzer-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 500; src: url('/fonts/Switzer-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 500; font-style: italic; src: url('/fonts/Switzer-MediumItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 600; src: url('/fonts/Switzer-Semibold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 600; font-style: italic; src: url('/fonts/Switzer-SemiboldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 700; src: url('/fonts/Switzer-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 700; font-style: italic; src: url('/fonts/Switzer-BoldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 800; src: url('/fonts/Switzer-Extrabold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 800; font-style: italic; src: url('/fonts/Switzer-ExtraboldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 900; src: url('/fonts/Switzer-Black.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Switzer'; font-weight: 900; font-style: italic; src: url('/fonts/Switzer-BlackItalic.woff2') format('woff2'); font-display: swap; }
+
+/* Tanker */
+@font-face { font-family: 'Tanker'; font-weight: 400; src: url('/fonts/Tanker-Regular.woff2') format('woff2'); font-display: swap; }
+
+/* Telma */
+@font-face { font-family: 'Telma'; font-weight: 300; src: url('/fonts/Telma-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Telma'; font-weight: 400; src: url('/fonts/Telma-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Telma'; font-weight: 500; src: url('/fonts/Telma-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Telma'; font-weight: 700; src: url('/fonts/Telma-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Telma'; font-weight: 900; src: url('/fonts/Telma-Black.woff2') format('woff2'); font-display: swap; }
+
+/* Zodiak */
+@font-face { font-family: 'Zodiak'; font-weight: 100; src: url('/fonts/Zodiak-Thin.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 100; font-style: italic; src: url('/fonts/Zodiak-ThinItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 300; src: url('/fonts/Zodiak-Light.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 300; font-style: italic; src: url('/fonts/Zodiak-LightItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 400; src: url('/fonts/Zodiak-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 400; font-style: italic; src: url('/fonts/Zodiak-Italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 700; src: url('/fonts/Zodiak-Bold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 700; font-style: italic; src: url('/fonts/Zodiak-BoldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 800; src: url('/fonts/Zodiak-Extrabold.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 800; font-style: italic; src: url('/fonts/Zodiak-ExtraboldItalic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 900; src: url('/fonts/Zodiak-Black.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Zodiak'; font-weight: 900; font-style: italic; src: url('/fonts/Zodiak-BlackItalic.woff2') format('woff2'); font-display: swap; }

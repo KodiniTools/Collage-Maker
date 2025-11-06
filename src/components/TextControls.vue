@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
 
 const collage = useCollageStore()
 const { t } = useI18n()
 
-const fontFamilies = [
+// System fonts
+const systemFonts = [
   'Arial',
   'Georgia',
   'Times New Roman',
@@ -16,6 +18,106 @@ const fontFamilies = [
   'Trebuchet MS'
 ]
 
+// Custom fonts
+interface FontFamily {
+  name: string
+  variants: string[]
+  hasItalic?: boolean
+  hasVariable?: boolean
+}
+
+const customFonts = ref<Record<string, FontFamily>>({})
+const selectedFontFamily = ref<string>('Arial')
+const selectedFontVariant = ref<string>('Regular')
+
+// Load custom fonts
+onMounted(async () => {
+  try {
+    const response = await fetch('/fonts.json')
+    const data = await response.json()
+    customFonts.value = data
+  } catch (error) {
+    console.error('Failed to load custom fonts:', error)
+  }
+})
+
+// All font families (system + custom)
+const allFontFamilies = computed(() => {
+  return [...systemFonts, ...Object.keys(customFonts.value).sort()]
+})
+
+// Available variants for selected family
+const availableVariants = computed(() => {
+  const family = customFonts.value[selectedFontFamily.value]
+  return family?.variants || []
+})
+
+// Parse current font into family and variant
+function parseFontFamily(fontString: string) {
+  // Check if it's a system font
+  if (systemFonts.includes(fontString)) {
+    return { family: fontString, variant: 'Regular' }
+  }
+
+  // Parse custom font (e.g., "Switzer" or "Clash Display")
+  const families = Object.keys(customFonts.value)
+  for (const family of families) {
+    if (fontString === family) {
+      return { family, variant: 'Regular' }
+    }
+  }
+
+  // Default
+  return { family: 'Arial', variant: 'Regular' }
+}
+
+// Watch for selected text changes
+function syncFontSelection() {
+  if (!collage.selectedText) return
+  const parsed = parseFontFamily(collage.selectedText.fontFamily)
+  selectedFontFamily.value = parsed.family
+  selectedFontVariant.value = parsed.variant
+}
+
+// Update font family
+function updateFontFamily(family: string) {
+  selectedFontFamily.value = family
+
+  // If custom font, set to Regular variant with weight 400
+  if (customFonts.value[family]) {
+    selectedFontVariant.value = 'Regular'
+    applyFont(family, 'Regular')
+  } else {
+    // System font
+    applyFont(family, 'Regular')
+  }
+}
+
+// Update font variant
+function updateFontVariant(variant: string) {
+  selectedFontVariant.value = variant
+  applyFont(selectedFontFamily.value, variant)
+}
+
+// Apply font to text
+function applyFont(family: string, variant: string) {
+  if (!collage.selectedText) return
+
+  collage.updateText(collage.selectedText.id, {
+    fontFamily: family,
+    fontWeight: variantToWeight(variant) as 'normal' | 'bold'
+  })
+}
+
+// Map variant to CSS font-weight
+function variantToWeight(variant: string): 'normal' | 'bold' {
+  const lowerVariant = variant.toLowerCase()
+  if (lowerVariant.includes('bold') || lowerVariant.includes('black') || lowerVariant.includes('extrabold')) {
+    return 'bold'
+  }
+  return 'normal'
+}
+
 function updateTextContent(value: string) {
   if (!collage.selectedText) return
   collage.updateText(collage.selectedText.id, { text: value })
@@ -24,11 +126,6 @@ function updateTextContent(value: string) {
 function updateFontSize(value: number) {
   if (!collage.selectedText) return
   collage.updateText(collage.selectedText.id, { fontSize: value })
-}
-
-function updateFontFamily(value: string) {
-  if (!collage.selectedText) return
-  collage.updateText(collage.selectedText.id, { fontFamily: value })
 }
 
 function updateColor(value: string) {
@@ -78,6 +175,11 @@ function deleteText() {
   if (!collage.selectedText) return
   collage.removeText(collage.selectedText.id)
 }
+
+// Sync font selection when text is selected
+if (collage.selectedText) {
+  syncFontSelection()
+}
 </script>
 
 <template>
@@ -104,12 +206,33 @@ function deleteText() {
       <div>
         <label class="block text-sm font-medium mb-2">{{ t('text.fontFamily') }}</label>
         <select
-          :value="collage.selectedText.fontFamily"
-          @change="updateFontFamily(($event.target as HTMLSelectElement).value)"
+          v-model="selectedFontFamily"
+          @change="updateFontFamily(selectedFontFamily)"
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
         >
-          <option v-for="font in fontFamilies" :key="font" :value="font">
-            {{ font }}
+          <optgroup label="System Fonts">
+            <option v-for="font in systemFonts" :key="font" :value="font">
+              {{ font }}
+            </option>
+          </optgroup>
+          <optgroup label="Custom Fonts" v-if="Object.keys(customFonts).length > 0">
+            <option v-for="family in Object.keys(customFonts).sort()" :key="family" :value="family">
+              {{ family }}
+            </option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Font Variant (only for custom fonts) -->
+      <div v-if="customFonts[selectedFontFamily] && availableVariants.length > 0">
+        <label class="block text-sm font-medium mb-2">{{ t('text.fontVariant') }}</label>
+        <select
+          v-model="selectedFontVariant"
+          @change="updateFontVariant(selectedFontVariant)"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+        >
+          <option v-for="variant in availableVariants" :key="variant" :value="variant">
+            {{ variant }}
           </option>
         </select>
       </div>
