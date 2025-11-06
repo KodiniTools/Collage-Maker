@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/collagen/',
+  base: process.env.VITE_BASE_PATH || '/collagemaker/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
