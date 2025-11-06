@@ -14,7 +14,13 @@
     "freestyle": "Freestyle",
     "grid2x2": "Grid 2×2",
     "grid3x3": "Grid 3×3",
-    "grid2x3": "Grid 2×3"
+    "grid2x3": "Grid 2×3",
+    "magazine": "Magazin",
+    "spotlight": "Spotlight",
+    "hero": "Hero",
+    "sidebar": "Sidebar",
+    "mosaic": "Mosaik",
+    "diagonal": "Diagonal"
   },
   "canvas": {
     "size": "Canvas-Größe",
@@ -26,7 +32,8 @@
     "title": "Bilder",
     "empty": "Keine Bilder hochgeladen",
     "remove": "Entfernen",
-    "selected": "Ausgewählt"
+    "selected": "Ausgewählt",
+    "dragToCanvas": "Ziehen Sie das Bild auf das Canvas, um es hinzuzufügen"
   },
   "export": {
     "title": "Exportieren",
@@ -57,5 +64,13 @@
     "shadowOffsetY": "Schatten Y-Versatz",
     "shadowBlur": "Schattenunschärfe",
     "shadowColor": "Schattenfarbe"
+  },
+  "grid": {
+    "title": "Hilfsraster",
+    "enabled": "Raster anzeigen",
+    "on": "An",
+    "off": "Aus",
+    "size": "Rastergröße",
+    "hint": "Das Raster ist nur zur Orientierung und wird beim Export nicht mitgespeichert"
   }
 }

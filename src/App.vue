@@ -5,6 +5,8 @@ import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
 import ImageUploader from '@/components/ImageUploader.vue'
 import LayoutSelector from '@/components/LayoutSelector.vue'
+import GridControls from '@/components/GridControls.vue'
+import CanvasSettings from '@/components/CanvasSettings.vue'
 import ImageList from '@/components/ImageList.vue'
 import CollageCanvas from '@/components/CollageCanvas.vue'
 import ImageControls from '@/components/ImageControls.vue'
@@ -37,6 +39,7 @@ const { t } = useI18n()
         <aside class="lg:col-span-3 space-y-6">
           <ImageUploader />
           <LayoutSelector />
+          <GridControls />
           <ImageList />
         </aside>
 
@@ -47,6 +50,7 @@ const { t } = useI18n()
 
         <!-- Controls -->
         <aside class="lg:col-span-3 space-y-6">
+          <CanvasSettings />
           <ImageControls />
           <ExportControls />
         </aside>

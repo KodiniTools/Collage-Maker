@@ -14,7 +14,13 @@
     "freestyle": "Freestyle",
     "grid2x2": "Grid 2×2",
     "grid3x3": "Grid 3×3",
-    "grid2x3": "Grid 2×3"
+    "grid2x3": "Grid 2×3",
+    "magazine": "Magazine",
+    "spotlight": "Spotlight",
+    "hero": "Hero",
+    "sidebar": "Sidebar",
+    "mosaic": "Mosaic",
+    "diagonal": "Diagonal"
   },
   "canvas": {
     "size": "Canvas Size",
@@ -26,7 +32,8 @@
     "title": "Images",
     "empty": "No images uploaded",
     "remove": "Remove",
-    "selected": "Selected"
+    "selected": "Selected",
+    "dragToCanvas": "Drag the image to the canvas to add it"
   },
   "export": {
     "title": "Export",
@@ -57,5 +64,13 @@
     "shadowOffsetY": "Shadow Y Offset",
     "shadowBlur": "Shadow Blur",
     "shadowColor": "Shadow Color"
+  },
+  "grid": {
+    "title": "Guide Grid",
+    "enabled": "Show Grid",
+    "on": "On",
+    "off": "Off",
+    "size": "Grid Size",
+    "hint": "The grid is for guidance only and will not be included in the exported image"
   }
 }
