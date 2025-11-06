@@ -106,17 +106,25 @@ function applyFont(family: string, variant: string) {
 
   collage.updateText(collage.selectedText.id, {
     fontFamily: family,
-    fontWeight: variantToWeight(variant) as 'normal' | 'bold'
+    fontWeight: variantToWeight(variant)
   })
 }
 
-// Map variant to CSS font-weight
-function variantToWeight(variant: string): 'normal' | 'bold' {
+// Map variant to CSS font-weight (numeric)
+function variantToWeight(variant: string): number {
   const lowerVariant = variant.toLowerCase()
-  if (lowerVariant.includes('bold') || lowerVariant.includes('black') || lowerVariant.includes('extrabold')) {
-    return 'bold'
-  }
-  return 'normal'
+
+  if (lowerVariant.includes('thin')) return 100
+  if (lowerVariant.includes('extralight')) return 200
+  if (lowerVariant.includes('light')) return 300
+  if (lowerVariant.includes('regular')) return 400
+  if (lowerVariant.includes('medium')) return 500
+  if (lowerVariant.includes('semibold')) return 600
+  if (lowerVariant.includes('bold')) return 700
+  if (lowerVariant.includes('extrabold')) return 800
+  if (lowerVariant.includes('black')) return 900
+
+  return 400 // default to regular
 }
 
 function updateTextContent(value: string) {
@@ -136,7 +144,7 @@ function updateColor(value: string) {
 
 function toggleFontWeight() {
   if (!collage.selectedText) return
-  const newWeight = collage.selectedText.fontWeight === 'bold' ? 'normal' : 'bold'
+  const newWeight = collage.selectedText.fontWeight >= 700 ? 400 : 700
   collage.updateText(collage.selectedText.id, { fontWeight: newWeight })
 }
 
@@ -260,7 +268,7 @@ if (collage.selectedText) {
           @click="toggleFontWeight"
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-            collage.selectedText.fontWeight === 'bold'
+            collage.selectedText.fontWeight >= 700
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 dark:bg-gray-700'
           ]"
