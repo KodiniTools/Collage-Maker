@@ -8,8 +8,10 @@ import LayoutSelector from '@/components/LayoutSelector.vue'
 import GridControls from '@/components/GridControls.vue'
 import CanvasSettings from '@/components/CanvasSettings.vue'
 import ImageList from '@/components/ImageList.vue'
+import TextList from '@/components/TextList.vue'
 import CollageCanvas from '@/components/CollageCanvas.vue'
 import ImageControls from '@/components/ImageControls.vue'
+import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
 
 const settings = useSettingsStore()
@@ -41,6 +43,7 @@ const { t } = useI18n()
           <LayoutSelector />
           <GridControls />
           <ImageList />
+          <TextList />
         </aside>
 
         <!-- Canvas -->
@@ -52,6 +55,7 @@ const { t } = useI18n()
         <aside class="lg:col-span-3 space-y-6">
           <CanvasSettings />
           <ImageControls />
+          <TextControls />
           <ExportControls />
         </aside>
       </div>

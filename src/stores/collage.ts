@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { CollageImage, CollageSettings, LayoutType } from '@/types'
+import type { CollageImage, CollageText, CollageSettings, LayoutType } from '@/types'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
   const selectedImageId = ref<string | null>(null)
+  const texts = ref<CollageText[]>([])
+  const selectedTextId = ref<string | null>(null)
   const lockAspectRatio = ref(true)
 
   const settings = ref<CollageSettings>({
@@ -16,8 +18,12 @@ export const useCollageStore = defineStore('collage', () => {
     gridSize: 50
   })
 
-  const selectedImage = computed(() => 
+  const selectedImage = computed(() =>
     images.value.find(img => img.id === selectedImageId.value)
+  )
+
+  const selectedText = computed(() =>
+    texts.value.find(txt => txt.id === selectedTextId.value)
   )
 
   function addImages(files: File[]) {
@@ -251,7 +257,9 @@ export const useCollageStore = defineStore('collage', () => {
   function clearCollage() {
     images.value.forEach(img => URL.revokeObjectURL(img.url))
     images.value = []
+    texts.value = []
     selectedImageId.value = null
+    selectedTextId.value = null
   }
 
   function updateSettings(updates: Partial<CollageSettings>) {
@@ -291,16 +299,79 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageId.value = newId
   }
 
+  // Text-Funktionen
+  function addText(text: string = 'Neuer Text') {
+    const maxZ = Math.max(
+      ...images.value.map(img => img.zIndex),
+      ...texts.value.map(txt => txt.zIndex),
+      0
+    )
+
+    const newText: CollageText = {
+      id: crypto.randomUUID(),
+      text,
+      x: settings.value.width / 2 - 100,
+      y: settings.value.height / 2,
+      fontSize: 48,
+      fontFamily: 'Arial',
+      color: '#000000',
+      rotation: 0,
+      zIndex: maxZ + 1,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      shadowEnabled: false,
+      shadowOffsetX: 2,
+      shadowOffsetY: 2,
+      shadowBlur: 4,
+      shadowColor: '#000000'
+    }
+
+    texts.value.push(newText)
+    selectedTextId.value = newText.id
+    selectedImageId.value = null
+  }
+
+  function removeText(id: string) {
+    const index = texts.value.findIndex(txt => txt.id === id)
+    if (index !== -1) {
+      texts.value.splice(index, 1)
+    }
+    if (selectedTextId.value === id) {
+      selectedTextId.value = null
+    }
+  }
+
+  function updateText(id: string, updates: Partial<CollageText>) {
+    const text = texts.value.find(txt => txt.id === id)
+    if (text) {
+      Object.assign(text, updates)
+    }
+  }
+
+  function selectText(id: string | null) {
+    selectedTextId.value = id
+    if (id !== null) {
+      selectedImageId.value = null
+    }
+  }
+
   return {
     images,
     selectedImageId,
     selectedImage,
+    texts,
+    selectedTextId,
+    selectedText,
     settings,
     lockAspectRatio,
     addImages,
     removeImage,
     updateImage,
     selectImage,
+    addText,
+    removeText,
+    updateText,
+    selectText,
     applyLayout,
     clearCollage,
     updateSettings,

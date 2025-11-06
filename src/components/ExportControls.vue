@@ -55,6 +55,44 @@ async function exportCollage() {
     ctx.restore()
   }
 
+  // Texte zeichnen (nach Bildern, sortiert nach zIndex)
+  for (const text of [...collage.texts].sort((a, b) => a.zIndex - b.zIndex)) {
+    ctx.save()
+    ctx.translate(text.x, text.y)
+    ctx.rotate((text.rotation * Math.PI) / 180)
+
+    // Schatten anwenden, wenn aktiviert
+    if (text.shadowEnabled) {
+      ctx.shadowOffsetX = text.shadowOffsetX
+      ctx.shadowOffsetY = text.shadowOffsetY
+      ctx.shadowBlur = text.shadowBlur
+      ctx.shadowColor = text.shadowColor
+    }
+
+    // Text-Styling
+    ctx.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+    ctx.fillStyle = text.color
+    ctx.textAlign = text.textAlign
+    ctx.textBaseline = 'middle'
+
+    // Multi-line Text-Rendering
+    const lines = text.text.split('\n')
+    const lineHeight = text.fontSize * 1.2
+
+    lines.forEach((line, index) => {
+      const y = (index - (lines.length - 1) / 2) * lineHeight
+      ctx.fillText(line, 0, y)
+    })
+
+    // Schatten zurücksetzen
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    ctx.shadowBlur = 0
+    ctx.shadowColor = 'transparent'
+
+    ctx.restore()
+  }
+
   // Download
   const mimeType =
     exportFormat.value === 'png' ? 'image/png' :

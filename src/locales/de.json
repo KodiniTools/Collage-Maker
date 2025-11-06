@@ -72,5 +72,25 @@
     "off": "Aus",
     "size": "Rastergröße",
     "hint": "Das Raster ist nur zur Orientierung und wird beim Export nicht mitgespeichert"
+  },
+  "text": {
+    "title": "Text",
+    "addText": "Text hinzufügen",
+    "empty": "Keine Texte hinzugefügt",
+    "noSelection": "Kein Text ausgewählt",
+    "content": "Textinhalt",
+    "fontFamily": "Schriftart",
+    "fontSize": "Schriftgröße",
+    "fontWeight": "Schriftstärke",
+    "textAlign": "Ausrichtung",
+    "color": "Textfarbe",
+    "shadow": "Textschatten",
+    "shadowOn": "An",
+    "shadowOff": "Aus",
+    "shadowOffsetX": "Schatten X-Versatz",
+    "shadowOffsetY": "Schatten Y-Versatz",
+    "shadowBlur": "Schattenunschärfe",
+    "shadowColor": "Schattenfarbe",
+    "delete": "Text löschen"
   }
 }
