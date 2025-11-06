@@ -33,7 +33,8 @@ const selectedFontVariant = ref<string>('Regular')
 // Load custom fonts
 onMounted(async () => {
   try {
-    const response = await fetch('/fonts.json')
+    const basePath = import.meta.env.BASE_URL || '/'
+    const response = await fetch(basePath + 'fonts.json')
     const data = await response.json()
     customFonts.value = data
   } catch (error) {
