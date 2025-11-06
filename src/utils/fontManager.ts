@@ -73,6 +73,9 @@ class FontManager {
       // fonts.css laden und in DOM einfügen
       await this.loadFontCSS(basePath)
 
+      // WICHTIG: Warten bis alle Fonts vom Browser geladen sind
+      await this.waitForFontsReady()
+
       return this.fonts
     } catch (error) {
       this.error = error as Error
@@ -114,6 +117,36 @@ class FontManager {
       // In den DOM einfügen
       document.head.appendChild(link)
     })
+  }
+
+  /**
+   * Wartet, bis alle Fonts vom Browser geladen sind (Font Loading API)
+   */
+  private async waitForFontsReady(): Promise<void> {
+    try {
+      console.log('⏳ Waiting for fonts to be ready...')
+
+      // Font Loading API verwenden
+      if ('fonts' in document) {
+        await document.fonts.ready
+        console.log('✅ All fonts are ready!')
+
+        // Alle geladenen Fonts loggen
+        const loadedFonts = Array.from(document.fonts.values())
+          .map(font => font.family)
+          .filter((family, index, self) => self.indexOf(family) === index)
+
+        console.log('📦 Loaded font families:', loadedFonts.length, 'fonts')
+        console.log('   ', loadedFonts.join(', '))
+      } else {
+        console.warn('⚠️ Font Loading API not supported, using fallback delay')
+        // Fallback: Warte 1 Sekunde
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    } catch (error) {
+      console.error('❌ Error waiting for fonts:', error)
+      // Trotzdem weitermachen
+    }
   }
 
   /**
