@@ -29,7 +29,7 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
 
-watch(() => [collage.images, collage.settings, collage.selectedImageId], () => {
+watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageId, collage.selectedTextId], () => {
   nextTick(() => renderCanvas())
 }, { deep: true })
 
@@ -168,6 +168,61 @@ async function renderCanvas() {
 
     ctx.restore()
   }
+
+  // Texte zeichnen (nach Bildern, sortiert nach zIndex)
+  for (const text of [...collage.texts].sort((a, b) => a.zIndex - b.zIndex)) {
+    ctx.save()
+    ctx.translate(text.x, text.y)
+    ctx.rotate((text.rotation * Math.PI) / 180)
+
+    // Schatten anwenden, wenn aktiviert
+    if (text.shadowEnabled) {
+      ctx.shadowOffsetX = text.shadowOffsetX
+      ctx.shadowOffsetY = text.shadowOffsetY
+      ctx.shadowBlur = text.shadowBlur
+      ctx.shadowColor = text.shadowColor
+    }
+
+    // Text-Styling
+    ctx.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+    ctx.fillStyle = text.color
+    ctx.textAlign = text.textAlign
+    ctx.textBaseline = 'middle'
+
+    // Multi-line Text-Rendering
+    const lines = text.text.split('\n')
+    const lineHeight = text.fontSize * 1.2
+    const totalHeight = lines.length * lineHeight
+
+    lines.forEach((line, index) => {
+      const y = (index - (lines.length - 1) / 2) * lineHeight
+      ctx.fillText(line, 0, y)
+    })
+
+    // Schatten zurücksetzen
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+    ctx.shadowBlur = 0
+    ctx.shadowColor = 'transparent'
+
+    // Highlight für selektierten Text
+    if (collage.selectedTextId === text.id) {
+      // Berechne Text-Bounding-Box
+      const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width))
+      const boxWidth = maxWidth
+      const boxHeight = totalHeight
+
+      let offsetX = 0
+      if (text.textAlign === 'center') offsetX = -boxWidth / 2
+      else if (text.textAlign === 'right') offsetX = -boxWidth
+
+      ctx.strokeStyle = '#3b82f6'
+      ctx.lineWidth = 2
+      ctx.strokeRect(offsetX - 5, -boxHeight / 2 - 5, boxWidth + 10, boxHeight + 10)
+    }
+
+    ctx.restore()
+  }
 }
 
 function getResizeHandle(x: number, y: number, img: any): string | null {
@@ -236,6 +291,43 @@ function handleMouseDown(e: MouseEvent) {
     }
   }
 
+  // Finde angeklickten Text (von oben nach unten, höchster zIndex zuerst)
+  const clickedText = [...collage.texts]
+    .sort((a, b) => b.zIndex - a.zIndex)
+    .find(text => {
+      if (!ctx) return false
+
+      ctx.save()
+      ctx.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+      ctx.textAlign = text.textAlign
+
+      const lines = text.text.split('\n')
+      const lineHeight = text.fontSize * 1.2
+      const totalHeight = lines.length * lineHeight
+      const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width))
+
+      let offsetX = 0
+      if (text.textAlign === 'center') offsetX = -maxWidth / 2
+      else if (text.textAlign === 'right') offsetX = -maxWidth
+
+      const boxX = text.x + offsetX - 5
+      const boxY = text.y - totalHeight / 2 - 5
+      const boxWidth = maxWidth + 10
+      const boxHeight = totalHeight + 10
+
+      ctx.restore()
+
+      return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight
+    })
+
+  if (clickedText) {
+    collage.selectText(clickedText.id)
+    isDragging.value = true
+    dragStartPos.value = { x, y }
+    dragImageStart.value = { x: clickedText.x, y: clickedText.y }
+    return
+  }
+
   // Finde angeklicktes Bild (von oben nach unten)
   const clickedImage = [...collage.images]
     .sort((a, b) => b.zIndex - a.zIndex)
@@ -251,18 +343,30 @@ function handleMouseDown(e: MouseEvent) {
     dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
   } else {
     collage.selectImage(null)
+    collage.selectText(null)
   }
 }
 
 function handleMouseMove(e: MouseEvent) {
-  if (!canvas.value || !collage.selectedImageId) return
-  if (!isDragging.value && !isResizing.value) return
+  if (!canvas.value) return
+  if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
 
   const rect = canvas.value.getBoundingClientRect()
   const scaleX = collage.settings.width / rect.width
   const scaleY = collage.settings.height / rect.height
   const x = (e.clientX - rect.left) * scaleX
   const y = (e.clientY - rect.top) * scaleY
+
+  // Text-Drag-Funktionalität
+  if (isDragging.value && collage.selectedTextId && collage.selectedText) {
+    const dx = x - dragStartPos.value.x
+    const dy = y - dragStartPos.value.y
+    collage.updateText(collage.selectedText.id, {
+      x: dragImageStart.value.x + dx,
+      y: dragImageStart.value.y + dy
+    })
+    return
+  }
 
   if (isResizing.value && resizeHandle.value) {
     const dx = x - dragStartPos.value.x

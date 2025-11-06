@@ -72,5 +72,25 @@
     "off": "Off",
     "size": "Grid Size",
     "hint": "The grid is for guidance only and will not be included in the exported image"
+  },
+  "text": {
+    "title": "Text",
+    "addText": "Add Text",
+    "empty": "No texts added",
+    "noSelection": "No text selected",
+    "content": "Text Content",
+    "fontFamily": "Font Family",
+    "fontSize": "Font Size",
+    "fontWeight": "Font Weight",
+    "textAlign": "Text Alignment",
+    "color": "Text Color",
+    "shadow": "Text Shadow",
+    "shadowOn": "On",
+    "shadowOff": "Off",
+    "shadowOffsetX": "Shadow X Offset",
+    "shadowOffsetY": "Shadow Y Offset",
+    "shadowBlur": "Shadow Blur",
+    "shadowColor": "Shadow Color",
+    "delete": "Delete Text"
   }
 }

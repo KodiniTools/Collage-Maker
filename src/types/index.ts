@@ -15,6 +15,25 @@ export interface CollageImage {
   shadowColor: string
 }
 
+export interface CollageText {
+  id: string
+  text: string
+  x: number
+  y: number
+  fontSize: number
+  fontFamily: string
+  color: string
+  rotation: number
+  zIndex: number
+  fontWeight: 'normal' | 'bold'
+  textAlign: 'left' | 'center' | 'right'
+  shadowEnabled: boolean
+  shadowOffsetX: number
+  shadowOffsetY: number
+  shadowBlur: number
+  shadowColor: string
+}
+
 export type LayoutType =
   | 'freestyle'
   | 'grid-2x2'
