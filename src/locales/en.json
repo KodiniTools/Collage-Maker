@@ -80,6 +80,7 @@
     "noSelection": "No text selected",
     "content": "Text Content",
     "fontFamily": "Font Family",
+    "fontVariant": "Font Variant",
     "fontSize": "Font Size",
     "fontWeight": "Font Weight",
     "textAlign": "Text Alignment",

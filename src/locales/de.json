@@ -80,6 +80,7 @@
     "noSelection": "Kein Text ausgewählt",
     "content": "Textinhalt",
     "fontFamily": "Schriftart",
+    "fontVariant": "Schriftvariante",
     "fontSize": "Schriftgröße",
     "fontWeight": "Schriftstärke",
     "textAlign": "Ausrichtung",
