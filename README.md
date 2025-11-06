@@ -9,7 +9,7 @@ Moderne Vue 3 Anwendung zum Erstellen von Foto-Collagen direkt im Browser.
 - 🎯 Bilder positionieren, skalieren, rotieren per Drag & Drop
 - 🌓 Dark/Light Mode mit persistentem State
 - 🌍 Zweisprachig (Deutsch/Englisch) mit vue-i18n
-- 💾 Export als PNG oder JPEG mit einstellbarer Qualität
+- 💾 Export als PNG, WEBp oder JPEG mit einstellbarer Qualität
 - 🔒 100% client-seitige Verarbeitung (GDPR-konform)
 - 📱 Responsive Design für Desktop, Tablet, Mobile
 
