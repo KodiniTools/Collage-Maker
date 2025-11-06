@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
 import fontManager from '@/utils/fontManager.ts'
@@ -105,12 +105,24 @@ function updateFontVariant(variant: string) {
 }
 
 // Apply font to text
-function applyFont(family: string, variant: string) {
+async function applyFont(family: string, variant: string) {
   if (!collage.selectedText) return
 
   collage.updateText(collage.selectedText.id, {
     fontFamily: family,
     fontWeight: variantToWeight(variant)
+  })
+
+  // Warten auf Vue-Update und dann Canvas-Repaint forcieren
+  await nextTick()
+
+  // Force browser repaint mit requestAnimationFrame
+  requestAnimationFrame(() => {
+    if (collage.selectedText) {
+      // Trigger re-render by nudging position minimal
+      const currentX = collage.selectedText.x
+      collage.updateText(collage.selectedText.id, { x: currentX + 0.00001 })
+    }
   })
 }
 
