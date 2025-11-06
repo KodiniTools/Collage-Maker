@@ -4,6 +4,13 @@ import { useI18n } from 'vue-i18n'
 
 const collage = useCollageStore()
 const { t } = useI18n()
+
+function handleDragStart(event: DragEvent, imageId: string) {
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'copy'
+    event.dataTransfer.setData('imageId', imageId)
+  }
+}
 </script>
 
 <template>
@@ -18,13 +25,16 @@ const { t } = useI18n()
       <div
         v-for="image in collage.images"
         :key="image.id"
+        draggable="true"
+        @dragstart="handleDragStart($event, image.id)"
         @click="collage.selectImage(image.id)"
         :class="[
-          'flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors',
+          'flex items-center gap-3 p-2 rounded-lg cursor-move transition-colors',
           collage.selectedImageId === image.id
             ? 'bg-blue-100 dark:bg-blue-900/30'
             : 'hover:bg-gray-100 dark:hover:bg-gray-700'
         ]"
+        :title="t('images.dragToCanvas') || 'Ziehen Sie das Bild auf das Canvas'"
       >
         <img :src="image.url" :alt="image.file.name" class="w-12 h-12 object-cover rounded" />
         <div class="flex-1 min-w-0">

@@ -33,6 +33,54 @@ watch(() => [collage.images, collage.settings, collage.selectedImageId], () => {
   nextTick(() => renderCanvas())
 }, { deep: true })
 
+function getContrastColor(hexColor: string): string {
+  // Konvertiere Hex zu RGB
+  const r = parseInt(hexColor.slice(1, 3), 16)
+  const g = parseInt(hexColor.slice(3, 5), 16)
+  const b = parseInt(hexColor.slice(5, 7), 16)
+
+  // Berechne Helligkeit (Luminanz)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+
+  // Rückgabe einer kontrastierenden Farbe (dunkel für helle Hintergründe, hell für dunkle)
+  return luminance > 0.5 ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'
+}
+
+function drawGrid() {
+  if (!canvas.value || !ctx || !collage.settings.gridEnabled) return
+
+  const gridSize = collage.settings.gridSize
+  const width = canvas.value.width
+  const height = canvas.value.height
+
+  // Bestimme die Grid-Farbe basierend auf dem Hintergrund
+  const gridColor = getContrastColor(collage.settings.backgroundColor)
+
+  ctx.save()
+  ctx.strokeStyle = gridColor
+  ctx.lineWidth = 1
+  ctx.setLineDash([5, 5])
+
+  // Vertikale Linien
+  for (let x = gridSize; x < width; x += gridSize) {
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.lineTo(x, height)
+    ctx.stroke()
+  }
+
+  // Horizontale Linien
+  for (let y = gridSize; y < height; y += gridSize) {
+    ctx.beginPath()
+    ctx.moveTo(0, y)
+    ctx.lineTo(width, y)
+    ctx.stroke()
+  }
+
+  ctx.setLineDash([])
+  ctx.restore()
+}
+
 async function renderCanvas() {
   if (!canvas.value || !ctx) return
 
@@ -42,6 +90,9 @@ async function renderCanvas() {
   // Background
   ctx.fillStyle = collage.settings.backgroundColor
   ctx.fillRect(0, 0, canvas.value.width, canvas.value.height)
+
+  // Grid zeichnen (nach Hintergrund, vor Bildern)
+  drawGrid()
 
   // Bilder laden und zeichnen
   for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
@@ -335,6 +386,33 @@ function handleKeyDown(e: KeyboardEvent) {
   }
 }
 
+// Drag-Drop Funktionalität für Bilder aus der Galerie
+function handleDragOver(e: DragEvent) {
+  e.preventDefault()
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'copy'
+  }
+}
+
+function handleDrop(e: DragEvent) {
+  e.preventDefault()
+
+  if (!canvas.value || !e.dataTransfer) return
+
+  const imageId = e.dataTransfer.getData('imageId')
+  if (!imageId) return
+
+  // Berechne die Drop-Position relativ zum Canvas
+  const rect = canvas.value.getBoundingClientRect()
+  const scaleX = collage.settings.width / rect.width
+  const scaleY = collage.settings.height / rect.height
+  const x = (e.clientX - rect.left) * scaleX
+  const y = (e.clientY - rect.top) * scaleY
+
+  // Dupliziere das Bild an der Drop-Position
+  collage.duplicateImageToPosition(imageId, x, y)
+}
+
 // Cleanup
 watch(() => collage.images, (newImages, oldImages) => {
   oldImages?.forEach(img => {
@@ -353,6 +431,8 @@ watch(() => collage.images, (newImages, oldImages) => {
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
+      @dragover="handleDragOver"
+      @drop="handleDrop"
       class="max-w-full max-h-full shadow-lg cursor-move"
       style="image-rendering: high-quality;"
     />
