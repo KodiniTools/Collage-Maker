@@ -140,4 +140,5 @@ vue-collage-maker/
 
 ## Lizenz
 
-© 2025 kodinitools.com
+## Autor
+Dinko Ramić , Kodini Tools, kodinitools.com
