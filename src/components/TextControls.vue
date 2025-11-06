@@ -108,9 +108,26 @@ function updateFontVariant(variant: string) {
 async function applyFont(family: string, variant: string) {
   if (!collage.selectedText) return
 
+  const weight = variantToWeight(variant)
+
+  // Für Custom Fonts: Explizit die spezifische Font-Variante laden
+  if (customFonts.value[family]) {
+    try {
+      console.log(`⏳ Loading font: ${weight} 48px "${family}"`)
+
+      // Font Loading API: Lade die spezifische Variante
+      await document.fonts.load(`${weight} 48px "${family}"`)
+
+      console.log(`✅ Font loaded: ${family} ${variant} (${weight})`)
+    } catch (error) {
+      console.warn(`⚠️ Could not preload font ${family} ${variant}:`, error)
+    }
+  }
+
+  // Update Text mit neuer Font-Familie und Weight
   collage.updateText(collage.selectedText.id, {
     fontFamily: family,
-    fontWeight: variantToWeight(variant)
+    fontWeight: weight
   })
 
   // Warten auf Vue-Update und dann Canvas-Repaint forcieren
