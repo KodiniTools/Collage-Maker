@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
-import fontManager from '@/utils/fontManager'
+import fontManager from '@/utils/fontManager.ts'
 
 const collage = useCollageStore()
 const { t } = useI18n()
