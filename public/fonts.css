@@ -60,9 +60,7 @@
 @font-face { font-family: 'Hind'; font-weight: 700; src: url('/collagemaker/fonts/Hind-Bold.woff2') format('woff2'); font-display: swap; }
 
 /* Ranade */
-@font-face { font-family: 'Ranade'; font-weight: 100; src: url('/collagemaker/fonts/Ranade-Thin.woff2') format('woff2'); font-display: swap; }
 @font-face { font-family: 'Ranade'; font-weight: 100; font-style: italic; src: url('/collagemaker/fonts/Ranade-ThinItalic.woff2') format('woff2'); font-display: swap; }
-@font-face { font-family: 'Ranade'; font-weight: 400; src: url('/collagemaker/fonts/Ranade-Regular.woff2') format('woff2'); font-display: swap; }
 @font-face { font-family: 'Ranade'; font-weight: 400; font-style: italic; src: url('/collagemaker/fonts/Ranade-Italic.woff2') format('woff2'); font-display: swap; }
 @font-face { font-family: 'Ranade'; font-weight: 500; src: url('/collagemaker/fonts/Ranade-Medium.woff2') format('woff2'); font-display: swap; }
 @font-face { font-family: 'Ranade'; font-weight: 500; font-style: italic; src: url('/collagemaker/fonts/Ranade-MediumItalic.woff2') format('woff2'); font-display: swap; }

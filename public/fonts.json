@@ -26,7 +26,7 @@
     "hasVariable": true
   },
   "Ranade": {
-    "variants": ["Thin", "Regular", "Medium", "Bold"],
+    "variants": ["Medium", "Bold"],
     "hasItalic": true,
     "hasVariable": true
   },
