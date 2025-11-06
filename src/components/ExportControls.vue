@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n'
 const collage = useCollageStore()
 const { t } = useI18n()
 
-const exportFormat = ref<'png' | 'jpeg'>('png')
+const exportFormat = ref<'png' | 'jpeg' | 'webp'>('png')
 const exportQuality = ref(0.95)
 
 async function exportCollage() {
@@ -40,7 +40,10 @@ async function exportCollage() {
   }
 
   // Download
-  const mimeType = exportFormat.value === 'png' ? 'image/png' : 'image/jpeg'
+  const mimeType =
+    exportFormat.value === 'png' ? 'image/png' :
+    exportFormat.value === 'webp' ? 'image/webp' :
+    'image/jpeg'
   canvas.toBlob((blob) => {
     if (!blob) return
     const url = URL.createObjectURL(blob)
@@ -65,10 +68,11 @@ async function exportCollage() {
       >
         <option value="png">PNG</option>
         <option value="jpeg">JPEG</option>
+        <option value="webp">WebP</option>
       </select>
     </div>
 
-    <div v-if="exportFormat === 'jpeg'">
+    <div v-if="exportFormat === 'jpeg' || exportFormat === 'webp'">
       <label class="block text-sm font-medium mb-2">
         {{ t('export.quality') }}: {{ Math.round(exportQuality * 100) }}%
       </label>
