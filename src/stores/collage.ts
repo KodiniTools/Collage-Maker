@@ -246,7 +246,6 @@ export const useCollageStore = defineStore('collage', () => {
     }
     // Diagonal-Layout: Bilder diagonal angeordnet
     else if (layout === 'diagonal') {
-      const count = Math.min(images.value.length, 4)
       const imgSize = Math.min(w, h) * 0.4
 
       images.value.forEach((img, index) => {

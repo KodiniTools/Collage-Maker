@@ -22,8 +22,6 @@ async function exportCollage() {
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   // Render images
-  const loadedImages = new Map<string, HTMLImageElement>()
-  
   for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
     const htmlImg = new Image()
     htmlImg.src = img.url
