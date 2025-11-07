@@ -9,6 +9,16 @@ export interface CollageImage {
   rotation: number
   zIndex: number
   opacity: number
+  borderRadius: number
+  borderEnabled: boolean
+  borderWidth: number
+  borderColor: string
+  borderStyle: 'solid' | 'dashed' | 'dotted' | 'double'
+  borderShadowEnabled: boolean
+  borderShadowOffsetX: number
+  borderShadowOffsetY: number
+  borderShadowBlur: number
+  borderShadowColor: string
   shadowEnabled: boolean
   shadowOffsetX: number
   shadowOffsetY: number
