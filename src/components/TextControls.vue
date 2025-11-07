@@ -101,12 +101,28 @@ function updateFontVariant(variant: string) {
 }
 
 // Apply font to text
-function applyFont(family: string, variant: string) {
+async function applyFont(family: string, variant: string) {
   if (!collage.selectedText) return
+
+  const weight = variantToWeight(variant)
+
+  // Für Custom Fonts: Explizit die spezifische Font-Variante laden
+  if (customFonts.value[family]) {
+    try {
+      console.log(`⏳ Loading font: ${weight} 48px "${family}"`)
+
+      // Font Loading API: Lade die spezifische Variante
+      await document.fonts.load(`${weight} 48px "${family}"`)
+
+      console.log(`✅ Font loaded: ${family} ${variant} (${weight})`)
+    } catch (error) {
+      console.warn(`⚠️ Could not preload font ${family} ${variant}:`, error)
+    }
+  }
 
   collage.updateText(collage.selectedText.id, {
     fontFamily: family,
-    fontWeight: variantToWeight(variant)
+    fontWeight: weight
   })
 }
 
