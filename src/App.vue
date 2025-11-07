@@ -61,8 +61,19 @@ const { t } = useI18n()
       </div>
     </main>
 
+    <!-- Donate Section -->
+    <section class="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 pb-8">
+      <div class="container mx-auto px-4 text-center">
+        <form action="https://www.paypal.com/donate" method="post" target="_top" class="inline-block">
+          <input type="hidden" name="hosted_button_id" value="8RGLGQ2BFMHU6" />
+          <input type="image" src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Spenden mit dem PayPal-Button" />
+          <img alt="" border="0" src="https://www.paypal.com/de_CH/i/scr/pixel.gif" width="1" height="1" />
+        </form>
+      </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800 mt-12">
+    <footer class="border-t border-gray-200 dark:border-gray-800">
       <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
         <p>© 2025 kodinitools.com – 100% client-seitige Verarbeitung</p>
       </div>
