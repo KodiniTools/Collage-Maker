@@ -36,6 +36,9 @@ async function exportCollage() {
     ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
     ctx.rotate((img.rotation * Math.PI) / 180)
 
+    // Deckkraft anwenden
+    ctx.globalAlpha = img.opacity
+
     // Schatten anwenden, wenn aktiviert
     if (img.shadowEnabled) {
       ctx.shadowOffsetX = img.shadowOffsetX
