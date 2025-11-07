@@ -328,6 +328,7 @@ function handleMouseDown(e: MouseEvent) {
       ctx.restore()
 
       if (x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight) {
+        console.log('🎯 TEXT clicked:', text.id, 'zIndex:', text.zIndex)
         collage.selectText(text.id)
         isDragging.value = true
         dragStartPos.value = { x, y }
@@ -338,6 +339,7 @@ function handleMouseDown(e: MouseEvent) {
       // Bild
       const img = item.element
       if (x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height) {
+        console.log('🎯 BILD clicked:', img.id, 'zIndex:', img.zIndex)
         collage.selectImage(img.id)
         isDragging.value = true
         dragStartPos.value = { x, y }
