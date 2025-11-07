@@ -265,6 +265,10 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
+  // Scroll-Position VORHER speichern
+  const scrollX = window.scrollX
+  const scrollY = window.scrollY
+
   // Verhindere Default-Verhalten UND Event-Propagation
   e.preventDefault()
   e.stopPropagation()
@@ -341,6 +345,13 @@ function handleMouseDown(e: MouseEvent) {
         isDragging.value = true
         dragStartPos.value = { x, y }
         dragImageStart.value = { x: text.x, y: text.y }
+
+        // Scroll-Position nach Vue-Update wiederherstellen
+        nextTick(() => {
+          requestAnimationFrame(() => {
+            window.scrollTo(scrollX, scrollY)
+          })
+        })
         return
       }
     } else {
@@ -354,6 +365,13 @@ function handleMouseDown(e: MouseEvent) {
         isDragging.value = true
         dragStartPos.value = { x, y }
         dragImageStart.value = { x: img.x, y: img.y }
+
+        // Scroll-Position nach Vue-Update wiederherstellen
+        nextTick(() => {
+          requestAnimationFrame(() => {
+            window.scrollTo(scrollX, scrollY)
+          })
+        })
         return
       }
     }
@@ -362,6 +380,13 @@ function handleMouseDown(e: MouseEvent) {
   // Nichts getroffen - deselektiere alles
   collage.selectImage(null)
   collage.selectText(null)
+
+  // Scroll-Position nach Vue-Update wiederherstellen
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo(scrollX, scrollY)
+    })
+  })
 }
 
 function handleMouseMove(e: MouseEvent) {
