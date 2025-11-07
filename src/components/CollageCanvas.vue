@@ -265,8 +265,14 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
-  // Verhindere Default-Verhalten (Scrolling, Focus-Probleme)
+  // Verhindere Default-Verhalten UND Event-Propagation
   e.preventDefault()
+  e.stopPropagation()
+
+  console.log('🖱️ MouseDown - Aktuell selektiert:', {
+    imageId: collage.selectedImageId,
+    textId: collage.selectedTextId
+  })
 
   const rect = canvas.value.getBoundingClientRect()
   const scaleX = collage.settings.width / rect.width
@@ -361,6 +367,9 @@ function handleMouseDown(e: MouseEvent) {
 function handleMouseMove(e: MouseEvent) {
   if (!canvas.value) return
   if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
+
+  e.preventDefault()
+  e.stopPropagation()
 
   const rect = canvas.value.getBoundingClientRect()
   const scaleX = collage.settings.width / rect.width
@@ -488,7 +497,10 @@ function handleMouseMove(e: MouseEvent) {
   }
 }
 
-function handleMouseUp() {
+function handleMouseUp(e: MouseEvent) {
+  e.preventDefault()
+  e.stopPropagation()
+
   isDragging.value = false
   isResizing.value = false
   resizeHandle.value = null
