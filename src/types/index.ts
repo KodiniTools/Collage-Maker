@@ -8,6 +8,7 @@ export interface CollageImage {
   height: number
   rotation: number
   zIndex: number
+  opacity: number
   shadowEnabled: boolean
   shadowOffsetX: number
   shadowOffsetY: number
