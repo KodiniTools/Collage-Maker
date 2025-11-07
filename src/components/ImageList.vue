@@ -11,6 +11,12 @@ function handleDragStart(event: DragEvent, imageId: string) {
     event.dataTransfer.setData('imageId', imageId)
   }
 }
+
+function handleImageClick(event: MouseEvent, imageId: string) {
+  event.preventDefault()
+  collage.selectImage(imageId)
+}
+
 </script>
 
 <template>
@@ -27,7 +33,7 @@ function handleDragStart(event: DragEvent, imageId: string) {
         :key="image.id"
         draggable="true"
         @dragstart="handleDragStart($event, image.id)"
-        @click="collage.selectImage(image.id)"
+        @click="handleImageClick($event, image.id)"
         :class="[
           'flex items-center gap-3 p-2 rounded-lg cursor-move transition-colors',
           collage.selectedImageId === image.id
