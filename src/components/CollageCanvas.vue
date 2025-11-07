@@ -396,6 +396,9 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
+  // Verhindere Standard-Verhalten (z.B. Text-Selektion, Scrolling)
+  e.preventDefault()
+
   const rect = canvas.value.getBoundingClientRect()
   const scaleX = collage.settings.width / rect.width
   const scaleY = collage.settings.height / rect.height
@@ -484,6 +487,9 @@ function handleMouseDown(e: MouseEvent) {
 function handleMouseMove(e: MouseEvent) {
   if (!canvas.value) return
   if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
+
+  // Verhindere Standard-Verhalten während Drag/Resize
+  e.preventDefault()
 
   const rect = canvas.value.getBoundingClientRect()
   const scaleX = collage.settings.width / rect.width
@@ -672,7 +678,7 @@ watch(() => collage.images, (newImages, oldImages) => {
       @dragover="handleDragOver"
       @drop="handleDrop"
       class="max-w-full max-h-full shadow-lg cursor-move"
-      style="image-rendering: high-quality;"
+      style="image-rendering: high-quality; user-select: none; -webkit-user-select: none; touch-action: none;"
     />
   </div>
 </template>
