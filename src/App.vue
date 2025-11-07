@@ -66,8 +66,13 @@ const { t } = useI18n()
       <div class="container mx-auto px-4 text-center">
         <form action="https://www.paypal.com/donate" method="post" target="_top" class="inline-block">
           <input type="hidden" name="hosted_button_id" value="8RGLGQ2BFMHU6" />
-          <input type="image" src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Spenden mit dem PayPal-Button" />
-          <img alt="" border="0" src="https://www.paypal.com/de_CH/i/scr/pixel.gif" width="1" height="1" />
+          <button type="submit" class="px-8 py-3 bg-[#0070ba] hover:bg-[#005ea6] text-white font-semibold rounded-lg shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.028.15a.805.805 0 0 1-.794.68H8.032c-.3 0-.54-.266-.475-.558l1.918-12.157-.002-.01.162-1.026a.805.805 0 0 1 .794-.68h2.535c3.238 0 5.774-1.314 6.514-5.12.132-.68.168-1.32.112-1.918a4.695 4.695 0 0 0-.544-1.736C20.183 3.505 21.538 5.978 20.067 8.478z"/>
+              <path d="M18.814 1.444c-.3-.354-.664-.64-1.08-.854C16.714.09 15.483 0 13.953 0H7.95a.804.804 0 0 0-.794.68L4.97 16.806c-.07.448.26.85.715.85h5.214l1.31-8.307-.04.257a.805.805 0 0 1 .794-.68h1.656c3.238 0 5.774-1.314 6.514-5.12.13-.68.168-1.32.112-1.918-.056-.448-.172-.863-.344-1.236a4.647 4.647 0 0 0-.087-.208z"/>
+            </svg>
+            <span>Spenden mit PayPal</span>
+          </button>
         </form>
       </div>
     </section>
