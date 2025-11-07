@@ -4,11 +4,6 @@ import { useI18n } from 'vue-i18n'
 
 const collage = useCollageStore()
 const { t } = useI18n()
-
-function handleTextClick(event: MouseEvent, textId: string) {
-  event.preventDefault()
-  collage.selectText(textId)
-}
 </script>
 
 <template>
@@ -31,7 +26,7 @@ function handleTextClick(event: MouseEvent, textId: string) {
       <div
         v-for="text in collage.texts"
         :key="text.id"
-        @click="handleTextClick($event, text.id)"
+        @click="collage.selectText(text.id)"
         :class="[
           'p-3 rounded-lg cursor-pointer transition-colors border',
           collage.selectedTextId === text.id
