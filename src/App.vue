@@ -36,7 +36,7 @@ const { t } = useI18n()
     <main class="container mx-auto px-4 py-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Sidebar -->
-        <aside class="lg:col-span-3 space-y-6">
+        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pr-2">
           <ImageUploader />
           <LayoutSelector />
           <GridControls />
@@ -45,12 +45,12 @@ const { t } = useI18n()
         </aside>
 
         <!-- Canvas -->
-        <section class="lg:col-span-6 min-h-[600px]">
+        <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start" style="height: fit-content;">
           <CollageCanvas />
         </section>
 
         <!-- Controls -->
-        <aside class="lg:col-span-3 space-y-6">
+        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pl-2">
           <CanvasSettings />
           <ImageControls />
           <TextControls />
