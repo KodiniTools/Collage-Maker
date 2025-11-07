@@ -265,6 +265,9 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
+  // Verhindere Default-Verhalten (Scrolling, Focus-Probleme)
+  e.preventDefault()
+
   const rect = canvas.value.getBoundingClientRect()
   const scaleX = collage.settings.width / rect.width
   const scaleY = collage.settings.height / rect.height
@@ -291,11 +294,18 @@ function handleMouseDown(e: MouseEvent) {
     }
   }
 
-  // Finde angeklickten Text (von oben nach unten, höchster zIndex zuerst)
-  const clickedText = [...collage.texts]
-    .sort((a, b) => b.zIndex - a.zIndex)
-    .find(text => {
-      if (!ctx) return false
+  // WICHTIG: Kombiniere Bilder und Texte und sortiere nach zIndex
+  // Höchster zIndex zuerst (wird zuerst geprüft)
+  const allElements: Array<{ type: 'image' | 'text', element: any, zIndex: number }> = [
+    ...collage.images.map(img => ({ type: 'image' as const, element: img, zIndex: img.zIndex })),
+    ...collage.texts.map(text => ({ type: 'text' as const, element: text, zIndex: text.zIndex }))
+  ].sort((a, b) => b.zIndex - a.zIndex)
+
+  // Finde das erste angeklickte Element (höchster zIndex gewinnt)
+  for (const item of allElements) {
+    if (item.type === 'text') {
+      const text = item.element
+      if (!ctx) continue
 
       ctx.save()
       ctx.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
@@ -304,7 +314,7 @@ function handleMouseDown(e: MouseEvent) {
       const lines = text.text.split('\n')
       const lineHeight = text.fontSize * 1.2
       const totalHeight = lines.length * lineHeight
-      const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width))
+      const maxWidth = Math.max(...lines.map((line: string) => ctx.measureText(line).width))
 
       let offsetX = 0
       if (text.textAlign === 'center') offsetX = -maxWidth / 2
@@ -317,34 +327,29 @@ function handleMouseDown(e: MouseEvent) {
 
       ctx.restore()
 
-      return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight
-    })
-
-  if (clickedText) {
-    collage.selectText(clickedText.id)
-    isDragging.value = true
-    dragStartPos.value = { x, y }
-    dragImageStart.value = { x: clickedText.x, y: clickedText.y }
-    return
+      if (x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight) {
+        collage.selectText(text.id)
+        isDragging.value = true
+        dragStartPos.value = { x, y }
+        dragImageStart.value = { x: text.x, y: text.y }
+        return
+      }
+    } else {
+      // Bild
+      const img = item.element
+      if (x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height) {
+        collage.selectImage(img.id)
+        isDragging.value = true
+        dragStartPos.value = { x, y }
+        dragImageStart.value = { x: img.x, y: img.y }
+        return
+      }
+    }
   }
 
-  // Finde angeklicktes Bild (von oben nach unten)
-  const clickedImage = [...collage.images]
-    .sort((a, b) => b.zIndex - a.zIndex)
-    .find(img =>
-      x >= img.x && x <= img.x + img.width &&
-      y >= img.y && y <= img.y + img.height
-    )
-
-  if (clickedImage) {
-    collage.selectImage(clickedImage.id)
-    isDragging.value = true
-    dragStartPos.value = { x, y }
-    dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
-  } else {
-    collage.selectImage(null)
-    collage.selectText(null)
-  }
+  // Nichts getroffen - deselektiere alles
+  collage.selectImage(null)
+  collage.selectText(null)
 }
 
 function handleMouseMove(e: MouseEvent) {
