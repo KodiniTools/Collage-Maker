@@ -104,11 +104,10 @@ function sendToBack() {
 </script>
 
 <template>
-  <div style="min-height: 600px;">
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-      <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+    <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
 
-      <div v-if="selectedImage" class="space-y-4">
+    <div v-if="selectedImage" class="space-y-4">
       <!-- Größe Controls -->
       <div>
         <div class="flex items-center justify-between mb-2">
@@ -304,7 +303,6 @@ function sendToBack() {
 
     <div v-if="!selectedImage" class="text-center text-gray-500 dark:text-gray-400 py-8">
       {{ t('imageControls.noSelection') }}
-    </div>
     </div>
   </div>
 </template>

@@ -228,15 +228,14 @@ if (collage.selectedText) {
 </script>
 
 <template>
-  <div style="min-height: 600px;">
-    <div class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-      <h2 class="text-lg font-semibold mb-4">{{ t('text.title') }}</h2>
+  <div class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+    <h2 class="text-lg font-semibold mb-4">{{ t('text.title') }}</h2>
 
-      <div v-if="!collage.selectedText" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-        {{ t('text.noSelection') }}
-      </div>
+    <div v-if="!collage.selectedText" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+      {{ t('text.noSelection') }}
+    </div>
 
-      <div v-if="collage.selectedText" class="space-y-4">
+    <div v-if="collage.selectedText" class="space-y-4">
       <!-- Text Content -->
       <div>
         <label class="block text-sm font-medium mb-2">{{ t('text.content') }}</label>
@@ -469,7 +468,6 @@ if (collage.selectedText) {
       >
         {{ t('text.delete') }}
       </button>
-    </div>
     </div>
   </div>
 </template>
