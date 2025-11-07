@@ -144,21 +144,25 @@ async function renderCanvas() {
 
     ctx.drawImage(htmlImg, x, y, img.width, img.height)
 
-    // Schatten zurücksetzen für weitere Zeichnungen
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 0
-    ctx.shadowBlur = 0
-    ctx.shadowColor = 'transparent'
+    // Schatten nur zurücksetzen, wenn kein Border oder wenn Border-Shadow verwendet wird
+    // Damit der Bildschatten auch auf den Border angewendet wird
+    if (!img.borderEnabled || img.borderShadowEnabled) {
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
+      ctx.shadowBlur = 0
+      ctx.shadowColor = 'transparent'
+    }
 
     // Border zeichnen (falls aktiviert)
     if (img.borderEnabled) {
-      // Border-Shadow anwenden (falls aktiviert)
+      // Border-Shadow anwenden (falls aktiviert) - überschreibt Bildschatten
       if (img.borderShadowEnabled) {
         ctx.shadowOffsetX = img.borderShadowOffsetX
         ctx.shadowOffsetY = img.borderShadowOffsetY
         ctx.shadowBlur = img.borderShadowBlur
         ctx.shadowColor = img.borderShadowColor
       }
+      // Sonst bleibt der Bildschatten aktiv (falls er aktiviert war)
 
       ctx.beginPath()
       if (radius > 0) {
@@ -212,13 +216,11 @@ async function renderCanvas() {
       ctx.stroke()
       ctx.setLineDash([])
 
-      // Border-Shadow zurücksetzen
-      if (img.borderShadowEnabled) {
-        ctx.shadowOffsetX = 0
-        ctx.shadowOffsetY = 0
-        ctx.shadowBlur = 0
-        ctx.shadowColor = 'transparent'
-      }
+      // Schatten zurücksetzen (Bild- oder Border-Shadow)
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
+      ctx.shadowBlur = 0
+      ctx.shadowColor = 'transparent'
     }
 
     // Highlight für selektiertes Bild
