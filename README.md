@@ -139,6 +139,7 @@ vue-collage-maker/
 - Edge 90+
 
 ## Lizenz
+MIT Lizenz
 
 ## Autor
 Dinko Ramić , Kodini Tools, kodinitools.com
