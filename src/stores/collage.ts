@@ -320,6 +320,7 @@ export const useCollageStore = defineStore('collage', () => {
       rotation: 0,
       zIndex: maxZ + 1,
       fontWeight: 400,
+      fontStyle: 'normal',
       textAlign: 'center',
       shadowEnabled: false,
       shadowOffsetX: 2,

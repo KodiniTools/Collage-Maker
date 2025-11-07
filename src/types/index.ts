@@ -27,6 +27,7 @@ export interface CollageText {
   rotation: number
   zIndex: number
   fontWeight: number | 'normal' | 'bold'
+  fontStyle: 'normal' | 'italic'
   textAlign: 'left' | 'center' | 'right'
   shadowEnabled: boolean
   shadowOffsetX: number
