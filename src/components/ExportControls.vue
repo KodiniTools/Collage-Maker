@@ -77,6 +77,14 @@ async function exportCollage() {
 
     // Border zeichnen (falls aktiviert)
     if (img.borderEnabled) {
+      // Border-Shadow anwenden (falls aktiviert)
+      if (img.borderShadowEnabled) {
+        ctx.shadowOffsetX = img.borderShadowOffsetX
+        ctx.shadowOffsetY = img.borderShadowOffsetY
+        ctx.shadowBlur = img.borderShadowBlur
+        ctx.shadowColor = img.borderShadowColor
+      }
+
       ctx.beginPath()
       if (radius > 0) {
         ctx.moveTo(x + radius, y)
@@ -128,6 +136,14 @@ async function exportCollage() {
 
       ctx.stroke()
       ctx.setLineDash([])
+
+      // Border-Shadow zurücksetzen
+      if (img.borderShadowEnabled) {
+        ctx.shadowOffsetX = 0
+        ctx.shadowOffsetY = 0
+        ctx.shadowBlur = 0
+        ctx.shadowColor = 'transparent'
+      }
     }
 
     ctx.restore()

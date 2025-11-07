@@ -88,6 +88,38 @@ function updateBorderStyle(value: 'solid' | 'dashed' | 'dotted' | 'double') {
   }
 }
 
+function toggleBorderShadow() {
+  if (collage.selectedImageId && selectedImage.value) {
+    collage.updateImage(collage.selectedImageId, {
+      borderShadowEnabled: !selectedImage.value.borderShadowEnabled
+    })
+  }
+}
+
+function updateBorderShadowOffsetX(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { borderShadowOffsetX: value })
+  }
+}
+
+function updateBorderShadowOffsetY(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { borderShadowOffsetY: value })
+  }
+}
+
+function updateBorderShadowBlur(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { borderShadowBlur: value })
+  }
+}
+
+function updateBorderShadowColor(value: string) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { borderShadowColor: value })
+  }
+}
+
 function toggleShadow() {
   if (collage.selectedImageId && selectedImage.value) {
     collage.updateImage(collage.selectedImageId, {
@@ -324,6 +356,92 @@ function sendToBack() {
                 @input="updateBorderColor(($event.target as HTMLInputElement).value)"
                 class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm"
               />
+            </div>
+          </div>
+
+          <!-- Border Shadow Toggle -->
+          <div class="border-t border-gray-300 dark:border-gray-600 pt-3 mt-3">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs text-gray-600 dark:text-gray-400">{{ t('imageControls.borderShadow') }}</label>
+              <button
+                @click="toggleBorderShadow"
+                :class="[
+                  'px-2 py-1 text-xs rounded transition-colors',
+                  selectedImage.borderShadowEnabled
+                    ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                ]"
+              >
+                {{ selectedImage.borderShadowEnabled ? t('imageControls.borderShadowEnabled') : t('imageControls.borderShadowDisabled') }}
+              </button>
+            </div>
+
+            <div v-if="selectedImage.borderShadowEnabled" class="space-y-2">
+              <!-- Border Shadow Offset X -->
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  {{ t('imageControls.borderShadowOffsetX') }}: {{ selectedImage.borderShadowOffsetX }}px
+                </label>
+                <input
+                  type="range"
+                  :value="selectedImage.borderShadowOffsetX"
+                  @input="updateBorderShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
+                  min="-20"
+                  max="20"
+                  class="w-full"
+                />
+              </div>
+
+              <!-- Border Shadow Offset Y -->
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  {{ t('imageControls.borderShadowOffsetY') }}: {{ selectedImage.borderShadowOffsetY }}px
+                </label>
+                <input
+                  type="range"
+                  :value="selectedImage.borderShadowOffsetY"
+                  @input="updateBorderShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
+                  min="-20"
+                  max="20"
+                  class="w-full"
+                />
+              </div>
+
+              <!-- Border Shadow Blur -->
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  {{ t('imageControls.borderShadowBlur') }}: {{ selectedImage.borderShadowBlur }}px
+                </label>
+                <input
+                  type="range"
+                  :value="selectedImage.borderShadowBlur"
+                  @input="updateBorderShadowBlur(Number(($event.target as HTMLInputElement).value))"
+                  min="0"
+                  max="30"
+                  class="w-full"
+                />
+              </div>
+
+              <!-- Border Shadow Color -->
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  {{ t('imageControls.borderShadowColor') }}
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    type="color"
+                    :value="selectedImage.borderShadowColor"
+                    @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
+                    class="w-12 h-8 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    :value="selectedImage.borderShadowColor"
+                    @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
+                    class="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-xs font-mono"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

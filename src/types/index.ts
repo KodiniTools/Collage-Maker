@@ -14,6 +14,11 @@ export interface CollageImage {
   borderWidth: number
   borderColor: string
   borderStyle: 'solid' | 'dashed' | 'dotted' | 'double'
+  borderShadowEnabled: boolean
+  borderShadowOffsetX: number
+  borderShadowOffsetY: number
+  borderShadowBlur: number
+  borderShadowColor: string
   shadowEnabled: boolean
   shadowOffsetX: number
   shadowOffsetY: number
