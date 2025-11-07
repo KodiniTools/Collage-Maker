@@ -39,8 +39,40 @@ async function exportCollage() {
     // Deckkraft anwenden
     ctx.globalAlpha = img.opacity
 
-    // Schatten anwenden, wenn aktiviert
-    if (img.shadowEnabled) {
+    const x = -img.width / 2
+    const y = -img.height / 2
+    const radius = Math.min(img.borderRadius, img.width / 2, img.height / 2)
+
+    // Wenn abgerundete Ecken + Schatten: Erst Schatten-Form zeichnen, dann Bild mit Clipping
+    if (radius > 0 && img.shadowEnabled) {
+      // Schatten auf abgerundete Form anwenden
+      ctx.shadowOffsetX = img.shadowOffsetX
+      ctx.shadowOffsetY = img.shadowOffsetY
+      ctx.shadowBlur = img.shadowBlur
+      ctx.shadowColor = img.shadowColor
+
+      // Gefüllten Pfad für Schatten zeichnen
+      ctx.beginPath()
+      ctx.moveTo(x + radius, y)
+      ctx.lineTo(x + img.width - radius, y)
+      ctx.arcTo(x + img.width, y, x + img.width, y + radius, radius)
+      ctx.lineTo(x + img.width, y + img.height - radius)
+      ctx.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
+      ctx.lineTo(x + radius, y + img.height)
+      ctx.arcTo(x, y + img.height, x, y + img.height - radius, radius)
+      ctx.lineTo(x, y + radius)
+      ctx.arcTo(x, y, x + radius, y, radius)
+      ctx.closePath()
+      ctx.fillStyle = '#000000' // Farbe egal, wird vom Bild überdeckt
+      ctx.fill()
+
+      // Schatten zurücksetzen vor dem eigentlichen Bild
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
+      ctx.shadowBlur = 0
+      ctx.shadowColor = 'transparent'
+    } else if (img.shadowEnabled) {
+      // Normaler Schatten ohne abgerundete Ecken
       ctx.shadowOffsetX = img.shadowOffsetX
       ctx.shadowOffsetY = img.shadowOffsetY
       ctx.shadowBlur = img.shadowBlur
@@ -48,10 +80,6 @@ async function exportCollage() {
     }
 
     // Clip-Pfad mit abgerundeten Ecken erstellen
-    const x = -img.width / 2
-    const y = -img.height / 2
-    const radius = Math.min(img.borderRadius, img.width / 2, img.height / 2)
-
     if (radius > 0) {
       ctx.beginPath()
       ctx.moveTo(x + radius, y)
@@ -69,26 +97,29 @@ async function exportCollage() {
 
     ctx.drawImage(htmlImg, x, y, img.width, img.height)
 
-    // Schatten nur zurücksetzen, wenn weder Border noch abgerundete Ecken mit Schatten vorhanden sind
-    // Damit der Bildschatten auch auf den Border/abgerundeten Rand angewendet wird
-    const needsShadowOnBorder = img.borderEnabled || (radius > 0 && img.shadowEnabled)
-    if (!needsShadowOnBorder || img.borderShadowEnabled) {
+    // Schatten für normale Bilder (ohne abgerundete Ecken) zurücksetzen
+    if (img.shadowEnabled && radius === 0) {
       ctx.shadowOffsetX = 0
       ctx.shadowOffsetY = 0
       ctx.shadowBlur = 0
       ctx.shadowColor = 'transparent'
     }
 
-    // Border oder Schatten-Rand zeichnen (bei aktiviertem Border oder abgerundeten Ecken mit Schatten)
-    if (img.borderEnabled || (radius > 0 && img.shadowEnabled)) {
-      // Border-Shadow anwenden (falls aktiviert) - überschreibt Bildschatten
+    // Border zeichnen (falls aktiviert)
+    if (img.borderEnabled) {
+      // Border-Shadow anwenden (falls aktiviert) oder Bildschatten beibehalten
       if (img.borderShadowEnabled) {
         ctx.shadowOffsetX = img.borderShadowOffsetX
         ctx.shadowOffsetY = img.borderShadowOffsetY
         ctx.shadowBlur = img.borderShadowBlur
         ctx.shadowColor = img.borderShadowColor
+      } else if (img.shadowEnabled) {
+        // Bildschatten auf Border anwenden
+        ctx.shadowOffsetX = img.shadowOffsetX
+        ctx.shadowOffsetY = img.shadowOffsetY
+        ctx.shadowBlur = img.shadowBlur
+        ctx.shadowColor = img.shadowColor
       }
-      // Sonst bleibt der Bildschatten aktiv (falls er aktiviert war)
 
       ctx.beginPath()
       if (radius > 0) {
@@ -106,45 +137,37 @@ async function exportCollage() {
         ctx.rect(x, y, img.width, img.height)
       }
 
-      // Wenn kein Border aktiviert ist, zeichnen wir einen unsichtbaren Rand nur für den Schatten
-      if (!img.borderEnabled && radius > 0 && img.shadowEnabled) {
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.01)' // Fast transparent
-        ctx.lineWidth = 1
-        ctx.setLineDash([])
-      } else {
-        // Normaler Border
-        ctx.strokeStyle = img.borderColor
-        ctx.lineWidth = img.borderWidth
+      ctx.strokeStyle = img.borderColor
+      ctx.lineWidth = img.borderWidth
 
-        // Border-Stil anwenden
-        if (img.borderStyle === 'dashed') {
-          ctx.setLineDash([10, 5])
-        } else if (img.borderStyle === 'dotted') {
-          ctx.setLineDash([2, 3])
-        } else if (img.borderStyle === 'double') {
-          ctx.setLineDash([])
-          ctx.lineWidth = img.borderWidth / 3
-          ctx.stroke()
-          const offset = img.borderWidth * 0.66
-          ctx.beginPath()
-          if (radius > 0) {
-            const innerRadius = Math.max(0, radius - offset)
-            ctx.moveTo(x + innerRadius + offset, y + offset)
-            ctx.lineTo(x + img.width - innerRadius - offset, y + offset)
-            ctx.arcTo(x + img.width - offset, y + offset, x + img.width - offset, y + innerRadius + offset, innerRadius)
-            ctx.lineTo(x + img.width - offset, y + img.height - innerRadius - offset)
-            ctx.arcTo(x + img.width - offset, y + img.height - offset, x + img.width - innerRadius - offset, y + img.height - offset, innerRadius)
-            ctx.lineTo(x + innerRadius + offset, y + img.height - offset)
-            ctx.arcTo(x + offset, y + img.height - offset, x + offset, y + img.height - innerRadius - offset, innerRadius)
-            ctx.lineTo(x + offset, y + innerRadius + offset)
-            ctx.arcTo(x + offset, y + offset, x + innerRadius + offset, y + offset, innerRadius)
-            ctx.closePath()
-          } else {
-            ctx.rect(x + offset, y + offset, img.width - offset * 2, img.height - offset * 2)
-          }
+      // Border-Stil anwenden
+      if (img.borderStyle === 'dashed') {
+        ctx.setLineDash([10, 5])
+      } else if (img.borderStyle === 'dotted') {
+        ctx.setLineDash([2, 3])
+      } else if (img.borderStyle === 'double') {
+        ctx.setLineDash([])
+        ctx.lineWidth = img.borderWidth / 3
+        ctx.stroke()
+        const offset = img.borderWidth * 0.66
+        ctx.beginPath()
+        if (radius > 0) {
+          const innerRadius = Math.max(0, radius - offset)
+          ctx.moveTo(x + innerRadius + offset, y + offset)
+          ctx.lineTo(x + img.width - innerRadius - offset, y + offset)
+          ctx.arcTo(x + img.width - offset, y + offset, x + img.width - offset, y + innerRadius + offset, innerRadius)
+          ctx.lineTo(x + img.width - offset, y + img.height - innerRadius - offset)
+          ctx.arcTo(x + img.width - offset, y + img.height - offset, x + img.width - innerRadius - offset, y + img.height - offset, innerRadius)
+          ctx.lineTo(x + innerRadius + offset, y + img.height - offset)
+          ctx.arcTo(x + offset, y + img.height - offset, x + offset, y + img.height - innerRadius - offset, innerRadius)
+          ctx.lineTo(x + offset, y + innerRadius + offset)
+          ctx.arcTo(x + offset, y + offset, x + innerRadius + offset, y + offset, innerRadius)
+          ctx.closePath()
         } else {
-          ctx.setLineDash([])
+          ctx.rect(x + offset, y + offset, img.width - offset * 2, img.height - offset * 2)
         }
+      } else {
+        ctx.setLineDash([])
       }
 
       ctx.stroke()
