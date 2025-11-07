@@ -329,6 +329,8 @@ function handleMouseDown(e: MouseEvent) {
 
       if (x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight) {
         console.log('🎯 TEXT clicked:', text.id, 'zIndex:', text.zIndex)
+        // WICHTIG: Deselektiere Bild beim Text-Click
+        collage.selectImage(null)
         collage.selectText(text.id)
         isDragging.value = true
         dragStartPos.value = { x, y }
@@ -340,6 +342,8 @@ function handleMouseDown(e: MouseEvent) {
       const img = item.element
       if (x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height) {
         console.log('🎯 BILD clicked:', img.id, 'zIndex:', img.zIndex)
+        // WICHTIG: Deselektiere Text beim Bild-Click
+        collage.selectText(null)
         collage.selectImage(img.id)
         isDragging.value = true
         dragStartPos.value = { x, y }
