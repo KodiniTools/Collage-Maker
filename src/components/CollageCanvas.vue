@@ -111,6 +111,9 @@ async function renderCanvas() {
     ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
     ctx.rotate((img.rotation * Math.PI) / 180)
 
+    // Deckkraft anwenden
+    ctx.globalAlpha = img.opacity
+
     // Schatten anwenden, wenn aktiviert
     if (img.shadowEnabled) {
       ctx.shadowOffsetX = img.shadowOffsetX
@@ -184,7 +187,7 @@ async function renderCanvas() {
     }
 
     // Text-Styling
-    ctx.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+    ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
     ctx.fillStyle = text.color
     ctx.textAlign = text.textAlign
     ctx.textBaseline = 'middle'
@@ -338,6 +341,7 @@ function handleMouseDown(e: MouseEvent) {
 
   if (clickedImage) {
     collage.selectImage(clickedImage.id)
+    collage.selectText(null) // Text explizit deselektieren beim Bildklick
     isDragging.value = true
     dragStartPos.value = { x, y }
     dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }

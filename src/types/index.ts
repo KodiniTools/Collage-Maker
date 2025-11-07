@@ -8,6 +8,7 @@ export interface CollageImage {
   height: number
   rotation: number
   zIndex: number
+  opacity: number
   shadowEnabled: boolean
   shadowOffsetX: number
   shadowOffsetY: number
@@ -26,6 +27,7 @@ export interface CollageText {
   rotation: number
   zIndex: number
   fontWeight: number | 'normal' | 'bold'
+  fontStyle: 'normal' | 'italic'
   textAlign: 'left' | 'center' | 'right'
   shadowEnabled: boolean
   shadowOffsetX: number

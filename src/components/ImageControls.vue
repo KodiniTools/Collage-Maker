@@ -50,6 +50,12 @@ function updateRotation(value: number) {
   }
 }
 
+function updateOpacity(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { opacity: value })
+  }
+}
+
 function toggleShadow() {
   if (collage.selectedImageId && selectedImage.value) {
     collage.updateImage(collage.selectedImageId, {
@@ -183,6 +189,22 @@ function sendToBack() {
           @input="updateRotation(Number(($event.target as HTMLInputElement).value))"
           min="0"
           max="360"
+          class="w-full"
+        />
+      </div>
+
+      <!-- Opacity Control -->
+      <div>
+        <label class="block text-sm font-medium mb-2">
+          {{ t('imageControls.opacity') }}: {{ Math.round(selectedImage.opacity * 100) }}%
+        </label>
+        <input
+          type="range"
+          :value="selectedImage.opacity"
+          @input="updateOpacity(Number(($event.target as HTMLInputElement).value))"
+          min="0"
+          max="1"
+          step="0.01"
           class="w-full"
         />
       </div>

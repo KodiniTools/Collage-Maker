@@ -58,6 +58,7 @@
     "locked": "Locked",
     "unlocked": "Unlocked",
     "shiftHint": "Tip: Hold Shift key while dragging handles to toggle the lock",
+    "opacity": "Opacity",
     "shadow": "Image Shadow",
     "shadowEnabled": "Enable Shadow",
     "shadowOffsetX": "Shadow X Offset",

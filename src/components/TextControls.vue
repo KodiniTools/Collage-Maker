@@ -50,7 +50,17 @@ const allFontFamilies = computed(() => {
 // Available variants for selected family
 const availableVariants = computed(() => {
   const family = customFonts.value[selectedFontFamily.value]
-  return family?.variants || []
+  if (!family) return []
+
+  const variants = [...family.variants]
+
+  // Füge Italic-Varianten hinzu, wenn verfügbar
+  if (family.hasItalic) {
+    const italicVariants = family.variants.map(v => `${v} Italic`)
+    variants.push(...italicVariants)
+  }
+
+  return variants
 })
 
 // Parse current font into family and variant
@@ -100,19 +110,44 @@ function updateFontVariant(variant: string) {
   applyFont(selectedFontFamily.value, variant)
 }
 
+// Check if variant is italic
+function isItalicVariant(variant: string): boolean {
+  return variant.toLowerCase().includes('italic')
+}
+
 // Apply font to text
-function applyFont(family: string, variant: string) {
+async function applyFont(family: string, variant: string) {
   if (!collage.selectedText) return
+
+  const weight = variantToWeight(variant)
+  const fontStyle: 'normal' | 'italic' = isItalicVariant(variant) ? 'italic' : 'normal'
+
+  // Für Custom Fonts: Explizit die spezifische Font-Variante laden
+  if (customFonts.value[family]) {
+    try {
+      const styleString = fontStyle === 'italic' ? 'italic' : ''
+      console.log(`⏳ Loading font: ${styleString} ${weight} 48px "${family}"`)
+
+      // Font Loading API: Lade die spezifische Variante
+      await document.fonts.load(`${styleString} ${weight} 48px "${family}"`.trim())
+
+      console.log(`✅ Font loaded: ${family} ${variant} (${weight}, ${fontStyle})`)
+    } catch (error) {
+      console.warn(`⚠️ Could not preload font ${family} ${variant}:`, error)
+    }
+  }
 
   collage.updateText(collage.selectedText.id, {
     fontFamily: family,
-    fontWeight: variantToWeight(variant)
+    fontWeight: weight,
+    fontStyle: fontStyle
   })
 }
 
 // Map variant to CSS font-weight (numeric values 100-900)
 function variantToWeight(variant: string): number {
-  const lowerVariant = variant.toLowerCase()
+  // Entferne "Italic" aus dem Variant-Namen für die Weight-Bestimmung
+  const lowerVariant = variant.toLowerCase().replace(/\s*italic\s*/g, '').trim()
 
   if (lowerVariant.includes('thin')) return 100
   if (lowerVariant.includes('extralight')) return 200
