@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings'
 import { useI18n } from 'vue-i18n'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
@@ -14,7 +13,6 @@ import ImageControls from '@/components/ImageControls.vue'
 import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
 
-const settings = useSettingsStore()
 const { t } = useI18n()
 </script>
 

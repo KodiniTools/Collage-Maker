@@ -84,12 +84,15 @@ function drawGrid() {
 async function renderCanvas() {
   if (!canvas.value || !ctx) return
 
+  // Type guard: ctx ist ab hier garantiert nicht null
+  const context = ctx
+
   canvas.value.width = collage.settings.width
   canvas.value.height = collage.settings.height
 
   // Background
-  ctx.fillStyle = collage.settings.backgroundColor
-  ctx.fillRect(0, 0, canvas.value.width, canvas.value.height)
+  context.fillStyle = collage.settings.backgroundColor
+  context.fillRect(0, 0, canvas.value.width, canvas.value.height)
 
   // Grid zeichnen (nach Hintergrund, vor Bildern)
   drawGrid()
@@ -97,7 +100,7 @@ async function renderCanvas() {
   // Bilder laden und zeichnen
   for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
     let htmlImg = loadedImages.get(img.id)
-    
+
     if (!htmlImg) {
       htmlImg = new Image()
       htmlImg.src = img.url
@@ -107,12 +110,12 @@ async function renderCanvas() {
       })
     }
 
-    ctx.save()
-    ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
-    ctx.rotate((img.rotation * Math.PI) / 180)
+    context.save()
+    context.translate(img.x + img.width / 2, img.y + img.height / 2)
+    context.rotate((img.rotation * Math.PI) / 180)
 
     // Deckkraft anwenden
-    ctx.globalAlpha = img.opacity
+    context.globalAlpha = img.opacity
 
     const x = -img.width / 2
     const y = -img.height / 2
@@ -121,145 +124,145 @@ async function renderCanvas() {
     // Wenn abgerundete Ecken + Schatten: Erst Schatten-Form zeichnen, dann Bild mit Clipping
     if (radius > 0 && img.shadowEnabled) {
       // Schatten auf abgerundete Form anwenden
-      ctx.shadowOffsetX = img.shadowOffsetX
-      ctx.shadowOffsetY = img.shadowOffsetY
-      ctx.shadowBlur = img.shadowBlur
-      ctx.shadowColor = img.shadowColor
+      context.shadowOffsetX = img.shadowOffsetX
+      context.shadowOffsetY = img.shadowOffsetY
+      context.shadowBlur = img.shadowBlur
+      context.shadowColor = img.shadowColor
 
       // Gefüllten Pfad für Schatten zeichnen
-      ctx.beginPath()
-      ctx.moveTo(x + radius, y)
-      ctx.lineTo(x + img.width - radius, y)
-      ctx.arcTo(x + img.width, y, x + img.width, y + radius, radius)
-      ctx.lineTo(x + img.width, y + img.height - radius)
-      ctx.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
-      ctx.lineTo(x + radius, y + img.height)
-      ctx.arcTo(x, y + img.height, x, y + img.height - radius, radius)
-      ctx.lineTo(x, y + radius)
-      ctx.arcTo(x, y, x + radius, y, radius)
-      ctx.closePath()
-      ctx.fillStyle = '#000000' // Farbe egal, wird vom Bild überdeckt
-      ctx.fill()
+      context.beginPath()
+      context.moveTo(x + radius, y)
+      context.lineTo(x + img.width - radius, y)
+      context.arcTo(x + img.width, y, x + img.width, y + radius, radius)
+      context.lineTo(x + img.width, y + img.height - radius)
+      context.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
+      context.lineTo(x + radius, y + img.height)
+      context.arcTo(x, y + img.height, x, y + img.height - radius, radius)
+      context.lineTo(x, y + radius)
+      context.arcTo(x, y, x + radius, y, radius)
+      context.closePath()
+      context.fillStyle = '#000000' // Farbe egal, wird vom Bild überdeckt
+      context.fill()
 
       // Schatten zurücksetzen vor dem eigentlichen Bild
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
-      ctx.shadowBlur = 0
-      ctx.shadowColor = 'transparent'
+      context.shadowOffsetX = 0
+      context.shadowOffsetY = 0
+      context.shadowBlur = 0
+      context.shadowColor = 'transparent'
     } else if (img.shadowEnabled) {
       // Normaler Schatten ohne abgerundete Ecken
-      ctx.shadowOffsetX = img.shadowOffsetX
-      ctx.shadowOffsetY = img.shadowOffsetY
-      ctx.shadowBlur = img.shadowBlur
-      ctx.shadowColor = img.shadowColor
+      context.shadowOffsetX = img.shadowOffsetX
+      context.shadowOffsetY = img.shadowOffsetY
+      context.shadowBlur = img.shadowBlur
+      context.shadowColor = img.shadowColor
     }
 
     // Clip-Pfad mit abgerundeten Ecken erstellen
     if (radius > 0) {
-      ctx.beginPath()
-      ctx.moveTo(x + radius, y)
-      ctx.lineTo(x + img.width - radius, y)
-      ctx.arcTo(x + img.width, y, x + img.width, y + radius, radius)
-      ctx.lineTo(x + img.width, y + img.height - radius)
-      ctx.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
-      ctx.lineTo(x + radius, y + img.height)
-      ctx.arcTo(x, y + img.height, x, y + img.height - radius, radius)
-      ctx.lineTo(x, y + radius)
-      ctx.arcTo(x, y, x + radius, y, radius)
-      ctx.closePath()
-      ctx.clip()
+      context.beginPath()
+      context.moveTo(x + radius, y)
+      context.lineTo(x + img.width - radius, y)
+      context.arcTo(x + img.width, y, x + img.width, y + radius, radius)
+      context.lineTo(x + img.width, y + img.height - radius)
+      context.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
+      context.lineTo(x + radius, y + img.height)
+      context.arcTo(x, y + img.height, x, y + img.height - radius, radius)
+      context.lineTo(x, y + radius)
+      context.arcTo(x, y, x + radius, y, radius)
+      context.closePath()
+      context.clip()
     }
 
-    ctx.drawImage(htmlImg, x, y, img.width, img.height)
+    context.drawImage(htmlImg, x, y, img.width, img.height)
 
     // Schatten für normale Bilder (ohne abgerundete Ecken) zurücksetzen
     if (img.shadowEnabled && radius === 0) {
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
-      ctx.shadowBlur = 0
-      ctx.shadowColor = 'transparent'
+      context.shadowOffsetX = 0
+      context.shadowOffsetY = 0
+      context.shadowBlur = 0
+      context.shadowColor = 'transparent'
     }
 
     // Border zeichnen (falls aktiviert)
     if (img.borderEnabled) {
       // Border-Shadow anwenden (falls aktiviert) oder Bildschatten beibehalten
       if (img.borderShadowEnabled) {
-        ctx.shadowOffsetX = img.borderShadowOffsetX
-        ctx.shadowOffsetY = img.borderShadowOffsetY
-        ctx.shadowBlur = img.borderShadowBlur
-        ctx.shadowColor = img.borderShadowColor
+        context.shadowOffsetX = img.borderShadowOffsetX
+        context.shadowOffsetY = img.borderShadowOffsetY
+        context.shadowBlur = img.borderShadowBlur
+        context.shadowColor = img.borderShadowColor
       } else if (img.shadowEnabled) {
         // Bildschatten auf Border anwenden
-        ctx.shadowOffsetX = img.shadowOffsetX
-        ctx.shadowOffsetY = img.shadowOffsetY
-        ctx.shadowBlur = img.shadowBlur
-        ctx.shadowColor = img.shadowColor
+        context.shadowOffsetX = img.shadowOffsetX
+        context.shadowOffsetY = img.shadowOffsetY
+        context.shadowBlur = img.shadowBlur
+        context.shadowColor = img.shadowColor
       }
 
-      ctx.beginPath()
+      context.beginPath()
       if (radius > 0) {
-        ctx.moveTo(x + radius, y)
-        ctx.lineTo(x + img.width - radius, y)
-        ctx.arcTo(x + img.width, y, x + img.width, y + radius, radius)
-        ctx.lineTo(x + img.width, y + img.height - radius)
-        ctx.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
-        ctx.lineTo(x + radius, y + img.height)
-        ctx.arcTo(x, y + img.height, x, y + img.height - radius, radius)
-        ctx.lineTo(x, y + radius)
-        ctx.arcTo(x, y, x + radius, y, radius)
-        ctx.closePath()
+        context.moveTo(x + radius, y)
+        context.lineTo(x + img.width - radius, y)
+        context.arcTo(x + img.width, y, x + img.width, y + radius, radius)
+        context.lineTo(x + img.width, y + img.height - radius)
+        context.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
+        context.lineTo(x + radius, y + img.height)
+        context.arcTo(x, y + img.height, x, y + img.height - radius, radius)
+        context.lineTo(x, y + radius)
+        context.arcTo(x, y, x + radius, y, radius)
+        context.closePath()
       } else {
-        ctx.rect(x, y, img.width, img.height)
+        context.rect(x, y, img.width, img.height)
       }
 
-      ctx.strokeStyle = img.borderColor
-      ctx.lineWidth = img.borderWidth
+      context.strokeStyle = img.borderColor
+      context.lineWidth = img.borderWidth
 
       // Border-Stil anwenden
       if (img.borderStyle === 'dashed') {
-        ctx.setLineDash([10, 5])
+        context.setLineDash([10, 5])
       } else if (img.borderStyle === 'dotted') {
-        ctx.setLineDash([2, 3])
+        context.setLineDash([2, 3])
       } else if (img.borderStyle === 'double') {
-        ctx.setLineDash([])
-        ctx.lineWidth = img.borderWidth / 3
-        ctx.stroke()
+        context.setLineDash([])
+        context.lineWidth = img.borderWidth / 3
+        context.stroke()
         const offset = img.borderWidth * 0.66
-        ctx.beginPath()
+        context.beginPath()
         if (radius > 0) {
           const innerRadius = Math.max(0, radius - offset)
-          ctx.moveTo(x + innerRadius + offset, y + offset)
-          ctx.lineTo(x + img.width - innerRadius - offset, y + offset)
-          ctx.arcTo(x + img.width - offset, y + offset, x + img.width - offset, y + innerRadius + offset, innerRadius)
-          ctx.lineTo(x + img.width - offset, y + img.height - innerRadius - offset)
-          ctx.arcTo(x + img.width - offset, y + img.height - offset, x + img.width - innerRadius - offset, y + img.height - offset, innerRadius)
-          ctx.lineTo(x + innerRadius + offset, y + img.height - offset)
-          ctx.arcTo(x + offset, y + img.height - offset, x + offset, y + img.height - innerRadius - offset, innerRadius)
-          ctx.lineTo(x + offset, y + innerRadius + offset)
-          ctx.arcTo(x + offset, y + offset, x + innerRadius + offset, y + offset, innerRadius)
-          ctx.closePath()
+          context.moveTo(x + innerRadius + offset, y + offset)
+          context.lineTo(x + img.width - innerRadius - offset, y + offset)
+          context.arcTo(x + img.width - offset, y + offset, x + img.width - offset, y + innerRadius + offset, innerRadius)
+          context.lineTo(x + img.width - offset, y + img.height - innerRadius - offset)
+          context.arcTo(x + img.width - offset, y + img.height - offset, x + img.width - innerRadius - offset, y + img.height - offset, innerRadius)
+          context.lineTo(x + innerRadius + offset, y + img.height - offset)
+          context.arcTo(x + offset, y + img.height - offset, x + offset, y + img.height - innerRadius - offset, innerRadius)
+          context.lineTo(x + offset, y + innerRadius + offset)
+          context.arcTo(x + offset, y + offset, x + innerRadius + offset, y + offset, innerRadius)
+          context.closePath()
         } else {
-          ctx.rect(x + offset, y + offset, img.width - offset * 2, img.height - offset * 2)
+          context.rect(x + offset, y + offset, img.width - offset * 2, img.height - offset * 2)
         }
       } else {
-        ctx.setLineDash([])
+        context.setLineDash([])
       }
 
-      ctx.stroke()
-      ctx.setLineDash([])
+      context.stroke()
+      context.setLineDash([])
 
       // Schatten zurücksetzen (Bild- oder Border-Shadow)
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
-      ctx.shadowBlur = 0
-      ctx.shadowColor = 'transparent'
+      context.shadowOffsetX = 0
+      context.shadowOffsetY = 0
+      context.shadowBlur = 0
+      context.shadowColor = 'transparent'
     }
 
     // Highlight für selektiertes Bild
     if (collage.selectedImageId === img.id) {
-      ctx.strokeStyle = '#3b82f6'
-      ctx.lineWidth = 3
-      ctx.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
+      context.strokeStyle = '#3b82f6'
+      context.lineWidth = 3
+      context.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
 
       // Resize-Handles zeichnen (größer und besser sichtbar)
       const handleSize = 16
@@ -275,17 +278,17 @@ async function renderCanvas() {
       ]
 
       // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
-      ctx.fillStyle = '#ffffff'
-      ctx.strokeStyle = '#3b82f6'
-      ctx.lineWidth = 2
+      context.fillStyle = '#ffffff'
+      context.strokeStyle = '#3b82f6'
+      context.lineWidth = 2
       handles.forEach(handle => {
-        ctx.fillRect(
+        context.fillRect(
           handle.x - handleSize / 2,
           handle.y - handleSize / 2,
           handleSize,
           handleSize
         )
-        ctx.strokeRect(
+        context.strokeRect(
           handle.x - handleSize / 2,
           handle.y - handleSize / 2,
           handleSize,
@@ -294,28 +297,28 @@ async function renderCanvas() {
       })
     }
 
-    ctx.restore()
+    context.restore()
   }
 
   // Texte zeichnen (nach Bildern, sortiert nach zIndex)
   for (const text of [...collage.texts].sort((a, b) => a.zIndex - b.zIndex)) {
-    ctx.save()
-    ctx.translate(text.x, text.y)
-    ctx.rotate((text.rotation * Math.PI) / 180)
+    context.save()
+    context.translate(text.x, text.y)
+    context.rotate((text.rotation * Math.PI) / 180)
 
     // Schatten anwenden, wenn aktiviert
     if (text.shadowEnabled) {
-      ctx.shadowOffsetX = text.shadowOffsetX
-      ctx.shadowOffsetY = text.shadowOffsetY
-      ctx.shadowBlur = text.shadowBlur
-      ctx.shadowColor = text.shadowColor
+      context.shadowOffsetX = text.shadowOffsetX
+      context.shadowOffsetY = text.shadowOffsetY
+      context.shadowBlur = text.shadowBlur
+      context.shadowColor = text.shadowColor
     }
 
     // Text-Styling
-    ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
-    ctx.fillStyle = text.color
-    ctx.textAlign = text.textAlign
-    ctx.textBaseline = 'middle'
+    context.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+    context.fillStyle = text.color
+    context.textAlign = text.textAlign
+    context.textBaseline = 'middle'
 
     // Multi-line Text-Rendering
     const lines = text.text.split('\n')
@@ -324,19 +327,19 @@ async function renderCanvas() {
 
     lines.forEach((line, index) => {
       const y = (index - (lines.length - 1) / 2) * lineHeight
-      ctx.fillText(line, 0, y)
+      context.fillText(line, 0, y)
     })
 
     // Schatten zurücksetzen
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 0
-    ctx.shadowBlur = 0
-    ctx.shadowColor = 'transparent'
+    context.shadowOffsetX = 0
+    context.shadowOffsetY = 0
+    context.shadowBlur = 0
+    context.shadowColor = 'transparent'
 
     // Highlight für selektierten Text
     if (collage.selectedTextId === text.id) {
       // Berechne Text-Bounding-Box
-      const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width))
+      const maxWidth = Math.max(...lines.map(line => context.measureText(line).width))
       const boxWidth = maxWidth
       const boxHeight = totalHeight
 
@@ -344,12 +347,12 @@ async function renderCanvas() {
       if (text.textAlign === 'center') offsetX = -boxWidth / 2
       else if (text.textAlign === 'right') offsetX = -boxWidth
 
-      ctx.strokeStyle = '#3b82f6'
-      ctx.lineWidth = 2
-      ctx.strokeRect(offsetX - 5, -boxHeight / 2 - 5, boxWidth + 10, boxHeight + 10)
+      context.strokeStyle = '#3b82f6'
+      context.lineWidth = 2
+      context.strokeRect(offsetX - 5, -boxHeight / 2 - 5, boxWidth + 10, boxHeight + 10)
     }
 
-    ctx.restore()
+    context.restore()
   }
 }
 
@@ -425,14 +428,16 @@ function handleMouseDown(e: MouseEvent) {
     .find(text => {
       if (!ctx) return false
 
-      ctx.save()
-      ctx.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
-      ctx.textAlign = text.textAlign
+      const context = ctx
+
+      context.save()
+      context.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+      context.textAlign = text.textAlign
 
       const lines = text.text.split('\n')
       const lineHeight = text.fontSize * 1.2
       const totalHeight = lines.length * lineHeight
-      const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width))
+      const maxWidth = Math.max(...lines.map(line => context.measureText(line).width))
 
       let offsetX = 0
       if (text.textAlign === 'center') offsetX = -maxWidth / 2
@@ -443,7 +448,7 @@ function handleMouseDown(e: MouseEvent) {
       const boxWidth = maxWidth + 10
       const boxHeight = totalHeight + 10
 
-      ctx.restore()
+      context.restore()
 
       return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight
     })
@@ -497,7 +502,7 @@ function handleMouseMove(e: MouseEvent) {
     return
   }
 
-  if (isResizing.value && resizeHandle.value) {
+  if (isResizing.value && resizeHandle.value && collage.selectedImageId) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
     // Verwende den Lock aus dem Store, aber Shift-Taste kann es temporär überschreiben
@@ -595,7 +600,7 @@ function handleMouseMove(e: MouseEvent) {
         height: newHeight
       })
     }
-  } else if (isDragging.value) {
+  } else if (isDragging.value && collage.selectedImageId) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
 

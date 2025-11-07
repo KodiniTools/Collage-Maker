@@ -42,11 +42,6 @@ onMounted(async () => {
   }
 })
 
-// All font families (system + custom)
-const allFontFamilies = computed(() => {
-  return [...systemFonts, ...Object.keys(customFonts.value).sort()]
-})
-
 // Available variants for selected family
 const availableVariants = computed(() => {
   const family = customFonts.value[selectedFontFamily.value]
