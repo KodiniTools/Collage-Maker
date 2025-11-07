@@ -341,6 +341,7 @@ function handleMouseDown(e: MouseEvent) {
 
   if (clickedImage) {
     collage.selectImage(clickedImage.id)
+    collage.selectText(null) // Text explizit deselektieren beim Bildklick
     isDragging.value = true
     dragStartPos.value = { x, y }
     dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
