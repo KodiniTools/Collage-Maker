@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
@@ -12,8 +13,10 @@ import CollageCanvas from '@/components/CollageCanvas.vue'
 import ImageControls from '@/components/ImageControls.vue'
 import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
+import TemplateLibrary from '@/components/TemplateLibrary.vue'
 
 const { t } = useI18n()
+const showTemplates = ref(false)
 </script>
 
 <template>
@@ -26,6 +29,15 @@ const { t } = useI18n()
           <p class="text-sm text-gray-600 dark:text-gray-400">{{ t('app.subtitle') }}</p>
         </div>
         <div class="flex items-center gap-3">
+          <button
+            @click="showTemplates = true"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
+            </svg>
+            <span class="hidden sm:inline">{{ t('templates.library') }}</span>
+          </button>
           <LanguageToggle />
           <ThemeToggle />
         </div>
@@ -81,5 +93,8 @@ const { t } = useI18n()
         <p>© 2025 kodinitools.com – 100% client-seitige Verarbeitung</p>
       </div>
     </footer>
+
+    <!-- Template Library Modal -->
+    <TemplateLibrary v-model:isOpen="showTemplates" />
   </div>
 </template>

@@ -1,0 +1,184 @@
+{
+  "templates": [
+    {
+      "id": "template-blank-landscape",
+      "name": "Leere Leinwand (Querformat)",
+      "description": "Querformat 1200x800 mit weißem Hintergrund",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1200,
+          "height": 800,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-blank-portrait",
+      "name": "Leere Leinwand (Hochformat)",
+      "description": "Hochformat 800x1200 mit weißem Hintergrund",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 800,
+          "height": 1200,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-blank-square",
+      "name": "Leere Leinwand (Quadrat)",
+      "description": "Quadrat 1000x1000 mit weißem Hintergrund",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1000,
+          "height": 1000,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-instagram-post",
+      "name": "Instagram Post",
+      "description": "Optimiert für Instagram Posts (1080x1080)",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1080,
+          "height": 1080,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-instagram-story",
+      "name": "Instagram Story",
+      "description": "Optimiert für Instagram Stories (1080x1920)",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1080,
+          "height": 1920,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-facebook-cover",
+      "name": "Facebook Titelbild",
+      "description": "Optimiert für Facebook Titelbilder (820x312)",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 820,
+          "height": 312,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-youtube-thumbnail",
+      "name": "YouTube Thumbnail",
+      "description": "Optimiert für YouTube Thumbnails (1280x720)",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1280,
+          "height": 720,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "free",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-grid-2x2",
+      "name": "2x2 Raster",
+      "description": "Einfaches 2x2 Bildergitter",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1200,
+          "height": 1200,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": true,
+          "gridSize": 20
+        },
+        "layout": "grid-2x2",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-grid-3x3",
+      "name": "3x3 Raster",
+      "description": "3x3 Bildergitter für viele Bilder",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1200,
+          "height": 1200,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": true,
+          "gridSize": 20
+        },
+        "layout": "grid-3x3",
+        "images": [],
+        "texts": []
+      }
+    }
+  ]
+}

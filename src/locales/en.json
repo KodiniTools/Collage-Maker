@@ -112,5 +112,26 @@
     "shadowBlur": "Shadow Blur",
     "shadowColor": "Shadow Color",
     "delete": "Delete Text"
+  },
+  "templates": {
+    "library": "Template Library",
+    "all": "All",
+    "predefined": "Predefined",
+    "custom": "Custom",
+    "noTemplates": "No templates available",
+    "useTemplate": "Use Template",
+    "deleteTemplate": "Delete Template",
+    "saveAsCurrent": "Save as Template",
+    "templateName": "Template Name",
+    "templateDescription": "Description",
+    "namePlaceholder": "e.g. My Birthday Collage",
+    "descriptionPlaceholder": "Optional: Template description",
+    "nameRequired": "Please enter a name for the template",
+    "confirmLoad": "Do you want to load this template? Your current work will be lost.",
+    "confirmDelete": "Do you really want to delete this template?"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }

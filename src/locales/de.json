@@ -112,5 +112,26 @@
     "shadowBlur": "Schattenunschärfe",
     "shadowColor": "Schattenfarbe",
     "delete": "Text löschen"
+  },
+  "templates": {
+    "library": "Vorlagenbibliothek",
+    "all": "Alle",
+    "predefined": "Vorgefertigt",
+    "custom": "Eigene",
+    "noTemplates": "Keine Vorlagen verfügbar",
+    "useTemplate": "Vorlage verwenden",
+    "deleteTemplate": "Vorlage löschen",
+    "saveAsCurrent": "Als Vorlage speichern",
+    "templateName": "Vorlagenname",
+    "templateDescription": "Beschreibung",
+    "namePlaceholder": "z.B. Meine Geburtstagscollage",
+    "descriptionPlaceholder": "Optional: Beschreibung der Vorlage",
+    "nameRequired": "Bitte geben Sie einen Namen für die Vorlage ein",
+    "confirmLoad": "Möchten Sie diese Vorlage laden? Ihre aktuelle Arbeit geht verloren.",
+    "confirmDelete": "Möchten Sie diese Vorlage wirklich löschen?"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen"
   }
 }
