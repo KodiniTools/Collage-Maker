@@ -171,5 +171,34 @@
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen"
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "questions": [
+      {
+        "question": "Ist die Anwendung wirklich kostenlos?",
+        "answer": "Ja, der Bilder-Collage-Macher ist zu 100% kostenlos. Es gibt keine versteckten Kosten oder Premium-Funktionen."
+      },
+      {
+        "question": "Werden meine Bilder auf einem Server hochgeladen?",
+        "answer": "Nein, alle Bilder werden ausschließlich in Ihrem Browser verarbeitet. Nichts wird auf einen Server hochgeladen. Ihre Daten bleiben vollständig privat und lokal auf Ihrem Gerät."
+      },
+      {
+        "question": "Welche Bildformate werden unterstützt?",
+        "answer": "Die Anwendung unterstützt PNG, JPG und WebP Formate. Die maximale Dateigröße pro Bild beträgt 10MB."
+      },
+      {
+        "question": "Kann ich meine Collage speichern und später weiterbearbeiten?",
+        "answer": "Ja! Nutzen Sie die Vorlagenbibliothek, um Ihre aktuelle Collage als Vorlage zu speichern. Diese wird lokal in Ihrem Browser gespeichert und kann jederzeit wieder geladen werden."
+      },
+      {
+        "question": "In welchen Formaten kann ich meine Collage exportieren?",
+        "answer": "Sie können Ihre fertige Collage als PNG, JPEG oder WebP herunterladen. Bei JPEG und WebP können Sie zusätzlich die Qualität einstellen."
+      },
+      {
+        "question": "Funktioniert die Anwendung offline?",
+        "answer": "Nach dem ersten Laden der Seite funktioniert die Anwendung offline, da alle Verarbeitungen im Browser stattfinden. Sie benötigen nur eine Internetverbindung für den initialen Seitenaufruf."
+      }
+    ]
   }
 }

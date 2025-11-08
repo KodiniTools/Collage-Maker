@@ -14,6 +14,7 @@ import ImageControls from '@/components/ImageControls.vue'
 import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
 import TemplateLibrary from '@/components/TemplateLibrary.vue'
+import FaqSection from '@/components/FaqSection.vue'
 
 const { t } = useI18n()
 const showTemplates = ref(false)
@@ -87,14 +88,11 @@ const showTemplates = ref(false)
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800">
-      <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-        <p>© 2025 kodinitools.com – 100% client-seitige Verarbeitung</p>
-      </div>
-    </footer>
+    <!-- FAQ Section -->
+    <FaqSection />
 
     <!-- Template Library Modal -->
     <TemplateLibrary v-model:isOpen="showTemplates" />
   </div>
+  <!--#include virtual="/partials/footer.html" -->
 </template>
