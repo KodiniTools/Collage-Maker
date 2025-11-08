@@ -94,5 +94,4 @@ const showTemplates = ref(false)
     <!-- Template Library Modal -->
     <TemplateLibrary v-model:isOpen="showTemplates" />
   </div>
-  <!--#include virtual="/partials/footer.html" -->
 </template>

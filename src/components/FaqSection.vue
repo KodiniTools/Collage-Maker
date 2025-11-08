@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, tm } = useI18n()
 const openIndex = ref<number | null>(null)
+
+// Hole die FAQ-Fragen aus den Übersetzungen
+const faqQuestions = computed(() => {
+  const questions = tm('faq.questions') as Array<{ question: string; answer: string }>
+  return questions
+})
 
 function toggleQuestion(index: number) {
   openIndex.value = openIndex.value === index ? null : index
@@ -17,7 +23,7 @@ function toggleQuestion(index: number) {
 
       <div class="space-y-4">
         <div
-          v-for="(item, index) in t('faq.questions')"
+          v-for="(item, index) in faqQuestions"
           :key="index"
           class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
         >
