@@ -3,8 +3,10 @@ import { ref } from 'vue'
 
 export interface Template {
   id: string
-  name: string
-  description: string
+  name?: string
+  description?: string
+  nameKey?: string
+  descriptionKey?: string
   thumbnail: string
   category: 'predefined' | 'user'
   createdAt: number

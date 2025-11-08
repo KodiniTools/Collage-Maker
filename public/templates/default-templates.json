@@ -2,8 +2,8 @@
   "templates": [
     {
       "id": "template-blank-landscape",
-      "name": "Leere Leinwand (Querformat)",
-      "description": "Querformat 1200x800 mit weißem Hintergrund",
+      "nameKey": "templates.predefinedTemplates.blankLandscape.name",
+      "descriptionKey": "templates.predefinedTemplates.blankLandscape.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -22,8 +22,8 @@
     },
     {
       "id": "template-blank-portrait",
-      "name": "Leere Leinwand (Hochformat)",
-      "description": "Hochformat 800x1200 mit weißem Hintergrund",
+      "nameKey": "templates.predefinedTemplates.blankPortrait.name",
+      "descriptionKey": "templates.predefinedTemplates.blankPortrait.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -42,8 +42,8 @@
     },
     {
       "id": "template-blank-square",
-      "name": "Leere Leinwand (Quadrat)",
-      "description": "Quadrat 1000x1000 mit weißem Hintergrund",
+      "nameKey": "templates.predefinedTemplates.blankSquare.name",
+      "descriptionKey": "templates.predefinedTemplates.blankSquare.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -62,8 +62,8 @@
     },
     {
       "id": "template-instagram-post",
-      "name": "Instagram Post",
-      "description": "Optimiert für Instagram Posts (1080x1080)",
+      "nameKey": "templates.predefinedTemplates.instagramPost.name",
+      "descriptionKey": "templates.predefinedTemplates.instagramPost.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -82,8 +82,8 @@
     },
     {
       "id": "template-instagram-story",
-      "name": "Instagram Story",
-      "description": "Optimiert für Instagram Stories (1080x1920)",
+      "nameKey": "templates.predefinedTemplates.instagramStory.name",
+      "descriptionKey": "templates.predefinedTemplates.instagramStory.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -102,8 +102,8 @@
     },
     {
       "id": "template-facebook-cover",
-      "name": "Facebook Titelbild",
-      "description": "Optimiert für Facebook Titelbilder (820x312)",
+      "nameKey": "templates.predefinedTemplates.facebookCover.name",
+      "descriptionKey": "templates.predefinedTemplates.facebookCover.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -122,8 +122,8 @@
     },
     {
       "id": "template-youtube-thumbnail",
-      "name": "YouTube Thumbnail",
-      "description": "Optimiert für YouTube Thumbnails (1280x720)",
+      "nameKey": "templates.predefinedTemplates.youtubeThumbnail.name",
+      "descriptionKey": "templates.predefinedTemplates.youtubeThumbnail.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -142,8 +142,8 @@
     },
     {
       "id": "template-grid-2x2",
-      "name": "2x2 Raster",
-      "description": "Einfaches 2x2 Bildergitter",
+      "nameKey": "templates.predefinedTemplates.grid2x2.name",
+      "descriptionKey": "templates.predefinedTemplates.grid2x2.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,
@@ -162,8 +162,8 @@
     },
     {
       "id": "template-grid-3x3",
-      "name": "3x3 Raster",
-      "description": "3x3 Bildergitter für viele Bilder",
+      "nameKey": "templates.predefinedTemplates.grid3x3.name",
+      "descriptionKey": "templates.predefinedTemplates.grid3x3.description",
       "thumbnail": "",
       "category": "predefined",
       "createdAt": 1699564800000,

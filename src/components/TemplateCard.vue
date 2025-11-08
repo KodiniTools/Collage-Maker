@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { Template } from '@/stores/templates'
 
@@ -14,6 +15,22 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+
+// Verwende nameKey für Übersetzung, falls vorhanden, sonst direkten Wert
+const displayName = computed(() => {
+  if (props.template.nameKey) {
+    return t(props.template.nameKey)
+  }
+  return props.template.name || ''
+})
+
+// Verwende descriptionKey für Übersetzung, falls vorhanden, sonst direkten Wert
+const displayDescription = computed(() => {
+  if (props.template.descriptionKey) {
+    return t(props.template.descriptionKey)
+  }
+  return props.template.description || ''
+})
 </script>
 
 <template>
@@ -26,7 +43,7 @@ const { t } = useI18n()
       <img
         v-if="template.thumbnail"
         :src="template.thumbnail"
-        :alt="template.name"
+        :alt="displayName"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
       <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
@@ -47,9 +64,9 @@ const { t } = useI18n()
     <div class="p-4">
       <div class="flex items-start justify-between gap-2">
         <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-sm truncate">{{ template.name }}</h3>
-          <p v-if="template.description" class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-            {{ template.description }}
+          <h3 class="font-semibold text-sm truncate">{{ displayName }}</h3>
+          <p v-if="displayDescription" class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+            {{ displayDescription }}
           </p>
         </div>
 

@@ -128,7 +128,45 @@
     "descriptionPlaceholder": "Optional: Template description",
     "nameRequired": "Please enter a name for the template",
     "confirmLoad": "Do you want to load this template? Your current work will be lost.",
-    "confirmDelete": "Do you really want to delete this template?"
+    "confirmDelete": "Do you really want to delete this template?",
+    "predefinedTemplates": {
+      "blankLandscape": {
+        "name": "Blank Canvas (Landscape)",
+        "description": "Landscape 1200x800 with white background"
+      },
+      "blankPortrait": {
+        "name": "Blank Canvas (Portrait)",
+        "description": "Portrait 800x1200 with white background"
+      },
+      "blankSquare": {
+        "name": "Blank Canvas (Square)",
+        "description": "Square 1000x1000 with white background"
+      },
+      "instagramPost": {
+        "name": "Instagram Post",
+        "description": "Optimized for Instagram posts (1080x1080)"
+      },
+      "instagramStory": {
+        "name": "Instagram Story",
+        "description": "Optimized for Instagram stories (1080x1920)"
+      },
+      "facebookCover": {
+        "name": "Facebook Cover",
+        "description": "Optimized for Facebook cover images (820x312)"
+      },
+      "youtubeThumbnail": {
+        "name": "YouTube Thumbnail",
+        "description": "Optimized for YouTube thumbnails (1280x720)"
+      },
+      "grid2x2": {
+        "name": "2x2 Grid",
+        "description": "Simple 2x2 image grid"
+      },
+      "grid3x3": {
+        "name": "3x3 Grid",
+        "description": "3x3 image grid for many pictures"
+      }
+    }
   },
   "common": {
     "save": "Save",

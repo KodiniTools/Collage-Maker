@@ -128,7 +128,45 @@
     "descriptionPlaceholder": "Optional: Beschreibung der Vorlage",
     "nameRequired": "Bitte geben Sie einen Namen für die Vorlage ein",
     "confirmLoad": "Möchten Sie diese Vorlage laden? Ihre aktuelle Arbeit geht verloren.",
-    "confirmDelete": "Möchten Sie diese Vorlage wirklich löschen?"
+    "confirmDelete": "Möchten Sie diese Vorlage wirklich löschen?",
+    "predefinedTemplates": {
+      "blankLandscape": {
+        "name": "Leere Leinwand (Querformat)",
+        "description": "Querformat 1200x800 mit weißem Hintergrund"
+      },
+      "blankPortrait": {
+        "name": "Leere Leinwand (Hochformat)",
+        "description": "Hochformat 800x1200 mit weißem Hintergrund"
+      },
+      "blankSquare": {
+        "name": "Leere Leinwand (Quadrat)",
+        "description": "Quadrat 1000x1000 mit weißem Hintergrund"
+      },
+      "instagramPost": {
+        "name": "Instagram Post",
+        "description": "Optimiert für Instagram Posts (1080x1080)"
+      },
+      "instagramStory": {
+        "name": "Instagram Story",
+        "description": "Optimiert für Instagram Stories (1080x1920)"
+      },
+      "facebookCover": {
+        "name": "Facebook Titelbild",
+        "description": "Optimiert für Facebook Titelbilder (820x312)"
+      },
+      "youtubeThumbnail": {
+        "name": "YouTube Thumbnail",
+        "description": "Optimiert für YouTube Thumbnails (1280x720)"
+      },
+      "grid2x2": {
+        "name": "2x2 Raster",
+        "description": "Einfaches 2x2 Bildergitter"
+      },
+      "grid3x3": {
+        "name": "3x3 Raster",
+        "description": "3x3 Bildergitter für viele Bilder"
+      }
+    }
   },
   "common": {
     "save": "Speichern",
