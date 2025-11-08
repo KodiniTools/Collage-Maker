@@ -29,7 +29,11 @@ export const useTemplatesStore = defineStore('templates', () => {
   // Lade vordefinierte Vorlagen
   async function loadPredefinedTemplates() {
     try {
-      const response = await fetch('/templates/default-templates.json')
+      // Nutze import.meta.env.BASE_URL für korrekten Base-Path
+      const basePath = import.meta.env.BASE_URL || '/'
+      const url = `${basePath}templates/default-templates.json`.replace(/\/+/g, '/').replace(':/', '://')
+      console.log('Fetching templates from:', url)
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
