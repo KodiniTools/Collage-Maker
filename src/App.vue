@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
@@ -12,55 +13,69 @@ import CollageCanvas from '@/components/CollageCanvas.vue'
 import ImageControls from '@/components/ImageControls.vue'
 import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
+import TemplateLibrary from '@/components/TemplateLibrary.vue'
+import FaqSection from '@/components/FaqSection.vue'
 
 const { t } = useI18n()
+const showTemplates = ref(false)
 </script>
 
 <template>
-  <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-    <!-- Header -->
-    <header class="border-b border-gray-200 dark:border-gray-800">
-      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">{{ t('app.subtitle') }}</p>
+  <div>
+    <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+      <!-- Header -->
+      <header class="border-b border-gray-200 dark:border-gray-800">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ t('app.subtitle') }}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              @click="showTemplates = true"
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
+              </svg>
+              <span class="hidden sm:inline">{{ t('templates.library') }}</span>
+            </button>
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
         </div>
-        <div class="flex items-center gap-3">
-          <LanguageToggle />
-          <ThemeToggle />
+      </header>
+
+      <!-- Main Content -->
+      <main class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Sidebar -->
+          <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pr-2">
+            <ImageUploader />
+            <LayoutSelector />
+            <GridControls />
+            <ImageList />
+            <TextList />
+          </aside>
+
+          <!-- Canvas -->
+          <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start" style="height: fit-content;">
+            <CollageCanvas />
+          </section>
+
+          <!-- Controls -->
+          <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pl-2">
+            <CanvasSettings />
+            <ImageControls />
+            <TextControls />
+            <ExportControls />
+          </aside>
         </div>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Sidebar -->
-        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pr-2">
-          <ImageUploader />
-          <LayoutSelector />
-          <GridControls />
-          <ImageList />
-          <TextList />
-        </aside>
-
-        <!-- Canvas -->
-        <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start" style="height: fit-content;">
-          <CollageCanvas />
-        </section>
-
-        <!-- Controls -->
-        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pl-2">
-          <CanvasSettings />
-          <ImageControls />
-          <TextControls />
-          <ExportControls />
-        </aside>
-      </div>
-    </main>
+      </main>
+    </div>
 
     <!-- Donate Section -->
-    <section class="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 pb-8">
+    <section class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-8">
       <div class="container mx-auto px-4 text-center">
         <form action="https://www.paypal.com/donate" method="post" target="_top" class="inline-block">
           <input type="hidden" name="hosted_button_id" value="8RGLGQ2BFMHU6" />
@@ -75,11 +90,12 @@ const { t } = useI18n()
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800">
-      <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-        <p>© 2025 kodinitools.com – 100% client-seitige Verarbeitung</p>
-      </div>
-    </footer>
+    <!-- FAQ Section -->
+    <div class="bg-white dark:bg-gray-900">
+      <FaqSection />
+    </div>
+
+    <!-- Template Library Modal -->
+    <TemplateLibrary v-model:isOpen="showTemplates" />
   </div>
 </template>

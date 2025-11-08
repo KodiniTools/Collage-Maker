@@ -112,5 +112,93 @@
     "shadowBlur": "Shadow Blur",
     "shadowColor": "Shadow Color",
     "delete": "Delete Text"
+  },
+  "templates": {
+    "library": "Template Library",
+    "all": "All",
+    "predefined": "Predefined",
+    "custom": "Custom",
+    "noTemplates": "No templates available",
+    "useTemplate": "Use Template",
+    "deleteTemplate": "Delete Template",
+    "saveAsCurrent": "Save as Template",
+    "templateName": "Template Name",
+    "templateDescription": "Description",
+    "namePlaceholder": "e.g. My Birthday Collage",
+    "descriptionPlaceholder": "Optional: Template description",
+    "nameRequired": "Please enter a name for the template",
+    "confirmLoad": "Do you want to load this template? Your current work will be lost.",
+    "confirmDelete": "Do you really want to delete this template?",
+    "predefinedTemplates": {
+      "blankLandscape": {
+        "name": "Blank Canvas (Landscape)",
+        "description": "Landscape 1200x800 with white background"
+      },
+      "blankPortrait": {
+        "name": "Blank Canvas (Portrait)",
+        "description": "Portrait 800x1200 with white background"
+      },
+      "blankSquare": {
+        "name": "Blank Canvas (Square)",
+        "description": "Square 1000x1000 with white background"
+      },
+      "instagramPost": {
+        "name": "Instagram Post",
+        "description": "Optimized for Instagram posts (1080x1080)"
+      },
+      "instagramStory": {
+        "name": "Instagram Story",
+        "description": "Optimized for Instagram stories (1080x1920)"
+      },
+      "facebookCover": {
+        "name": "Facebook Cover",
+        "description": "Optimized for Facebook cover images (820x312)"
+      },
+      "youtubeThumbnail": {
+        "name": "YouTube Thumbnail",
+        "description": "Optimized for YouTube thumbnails (1280x720)"
+      },
+      "grid2x2": {
+        "name": "2x2 Grid",
+        "description": "Simple 2x2 image grid"
+      },
+      "grid3x3": {
+        "name": "3x3 Grid",
+        "description": "3x3 image grid for many pictures"
+      }
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "questions": [
+      {
+        "question": "Is the application really free?",
+        "answer": "Yes, the Image Collage Maker is 100% free. There are no hidden costs or premium features."
+      },
+      {
+        "question": "Are my images uploaded to a server?",
+        "answer": "No, all images are processed exclusively in your browser. Nothing is uploaded to a server. Your data remains completely private and local on your device."
+      },
+      {
+        "question": "Which image formats are supported?",
+        "answer": "The application supports PNG, JPG, and WebP formats. The maximum file size per image is 10MB."
+      },
+      {
+        "question": "Can I save my collage and continue editing it later?",
+        "answer": "Yes! Use the template library to save your current collage as a template. It will be stored locally in your browser and can be loaded at any time."
+      },
+      {
+        "question": "In which formats can I export my collage?",
+        "answer": "You can download your finished collage as PNG, JPEG, or WebP. For JPEG and WebP, you can also adjust the quality."
+      },
+      {
+        "question": "Does the application work offline?",
+        "answer": "After the initial page load, the application works offline since all processing happens in the browser. You only need an internet connection for the initial page visit."
+      }
+    ]
   }
 }

@@ -1,0 +1,184 @@
+{
+  "templates": [
+    {
+      "id": "template-blank-landscape",
+      "nameKey": "templates.predefinedTemplates.blankLandscape.name",
+      "descriptionKey": "templates.predefinedTemplates.blankLandscape.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1200,
+          "height": 800,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-blank-portrait",
+      "nameKey": "templates.predefinedTemplates.blankPortrait.name",
+      "descriptionKey": "templates.predefinedTemplates.blankPortrait.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 800,
+          "height": 1200,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-blank-square",
+      "nameKey": "templates.predefinedTemplates.blankSquare.name",
+      "descriptionKey": "templates.predefinedTemplates.blankSquare.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1000,
+          "height": 1000,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-instagram-post",
+      "nameKey": "templates.predefinedTemplates.instagramPost.name",
+      "descriptionKey": "templates.predefinedTemplates.instagramPost.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1080,
+          "height": 1080,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-instagram-story",
+      "nameKey": "templates.predefinedTemplates.instagramStory.name",
+      "descriptionKey": "templates.predefinedTemplates.instagramStory.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1080,
+          "height": 1920,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-facebook-cover",
+      "nameKey": "templates.predefinedTemplates.facebookCover.name",
+      "descriptionKey": "templates.predefinedTemplates.facebookCover.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 820,
+          "height": 312,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-youtube-thumbnail",
+      "nameKey": "templates.predefinedTemplates.youtubeThumbnail.name",
+      "descriptionKey": "templates.predefinedTemplates.youtubeThumbnail.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1280,
+          "height": 720,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": false,
+          "gridSize": 20
+        },
+        "layout": "freestyle",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-grid-2x2",
+      "nameKey": "templates.predefinedTemplates.grid2x2.name",
+      "descriptionKey": "templates.predefinedTemplates.grid2x2.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1200,
+          "height": 1200,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": true,
+          "gridSize": 20
+        },
+        "layout": "grid-2x2",
+        "images": [],
+        "texts": []
+      }
+    },
+    {
+      "id": "template-grid-3x3",
+      "nameKey": "templates.predefinedTemplates.grid3x3.name",
+      "descriptionKey": "templates.predefinedTemplates.grid3x3.description",
+      "thumbnail": "",
+      "category": "predefined",
+      "createdAt": 1699564800000,
+      "collageState": {
+        "settings": {
+          "width": 1200,
+          "height": 1200,
+          "backgroundColor": "#ffffff",
+          "gridEnabled": true,
+          "gridSize": 20
+        },
+        "layout": "grid-3x3",
+        "images": [],
+        "texts": []
+      }
+    }
+  ]
+}

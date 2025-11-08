@@ -377,6 +377,50 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
+  // Template-Methoden (NEU für Vorlagenbibliothek)
+  async function saveAsTemplate(name: string, description: string) {
+    // Screenshot des aktuellen Canvas erstellen (als Thumbnail)
+    const canvas = document.querySelector('canvas')
+    let thumbnail = ''
+    if (canvas) {
+      try {
+        thumbnail = canvas.toDataURL('image/jpeg', 0.3)
+      } catch (error) {
+        console.warn('Could not create thumbnail:', error)
+      }
+    }
+
+    return {
+      id: `template-user-${Date.now()}`,
+      name,
+      description,
+      thumbnail,
+      category: 'user' as const,
+      createdAt: Date.now(),
+      collageState: {
+        settings: { ...settings.value },
+        layout: settings.value.layout,
+        images: images.value.map(img => ({ ...img })),
+        texts: texts.value.map(txt => ({ ...txt }))
+      }
+    }
+  }
+
+  function loadFromTemplate(template: any) {
+    // Lösche alle aktuellen Daten
+    images.value = []
+    texts.value = []
+    selectedImageId.value = null
+    selectedTextId.value = null
+
+    // Lade Template-Daten
+    if (template.collageState) {
+      settings.value = { ...template.collageState.settings }
+      // Bilder und Texte nicht laden (nur Settings), da Bild-URLs nicht mehr gültig sind
+      // Benutzer muss neue Bilder hochladen
+    }
+  }
+
   return {
     images,
     selectedImageId,
@@ -398,6 +442,8 @@ export const useCollageStore = defineStore('collage', () => {
     clearCollage,
     updateSettings,
     setLockAspectRatio,
-    duplicateImageToPosition
+    duplicateImageToPosition,
+    saveAsTemplate,
+    loadFromTemplate
   }
 })

@@ -112,5 +112,93 @@
     "shadowBlur": "Schattenunschärfe",
     "shadowColor": "Schattenfarbe",
     "delete": "Text löschen"
+  },
+  "templates": {
+    "library": "Vorlagenbibliothek",
+    "all": "Alle",
+    "predefined": "Vorgefertigt",
+    "custom": "Eigene",
+    "noTemplates": "Keine Vorlagen verfügbar",
+    "useTemplate": "Vorlage verwenden",
+    "deleteTemplate": "Vorlage löschen",
+    "saveAsCurrent": "Als Vorlage speichern",
+    "templateName": "Vorlagenname",
+    "templateDescription": "Beschreibung",
+    "namePlaceholder": "z.B. Meine Geburtstagscollage",
+    "descriptionPlaceholder": "Optional: Beschreibung der Vorlage",
+    "nameRequired": "Bitte geben Sie einen Namen für die Vorlage ein",
+    "confirmLoad": "Möchten Sie diese Vorlage laden? Ihre aktuelle Arbeit geht verloren.",
+    "confirmDelete": "Möchten Sie diese Vorlage wirklich löschen?",
+    "predefinedTemplates": {
+      "blankLandscape": {
+        "name": "Leere Leinwand (Querformat)",
+        "description": "Querformat 1200x800 mit weißem Hintergrund"
+      },
+      "blankPortrait": {
+        "name": "Leere Leinwand (Hochformat)",
+        "description": "Hochformat 800x1200 mit weißem Hintergrund"
+      },
+      "blankSquare": {
+        "name": "Leere Leinwand (Quadrat)",
+        "description": "Quadrat 1000x1000 mit weißem Hintergrund"
+      },
+      "instagramPost": {
+        "name": "Instagram Post",
+        "description": "Optimiert für Instagram Posts (1080x1080)"
+      },
+      "instagramStory": {
+        "name": "Instagram Story",
+        "description": "Optimiert für Instagram Stories (1080x1920)"
+      },
+      "facebookCover": {
+        "name": "Facebook Titelbild",
+        "description": "Optimiert für Facebook Titelbilder (820x312)"
+      },
+      "youtubeThumbnail": {
+        "name": "YouTube Thumbnail",
+        "description": "Optimiert für YouTube Thumbnails (1280x720)"
+      },
+      "grid2x2": {
+        "name": "2x2 Raster",
+        "description": "Einfaches 2x2 Bildergitter"
+      },
+      "grid3x3": {
+        "name": "3x3 Raster",
+        "description": "3x3 Bildergitter für viele Bilder"
+      }
+    }
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "questions": [
+      {
+        "question": "Ist die Anwendung wirklich kostenlos?",
+        "answer": "Ja, der Bilder-Collage-Macher ist zu 100% kostenlos. Es gibt keine versteckten Kosten oder Premium-Funktionen."
+      },
+      {
+        "question": "Werden meine Bilder auf einem Server hochgeladen?",
+        "answer": "Nein, alle Bilder werden ausschließlich in Ihrem Browser verarbeitet. Nichts wird auf einen Server hochgeladen. Ihre Daten bleiben vollständig privat und lokal auf Ihrem Gerät."
+      },
+      {
+        "question": "Welche Bildformate werden unterstützt?",
+        "answer": "Die Anwendung unterstützt PNG, JPG und WebP Formate. Die maximale Dateigröße pro Bild beträgt 10MB."
+      },
+      {
+        "question": "Kann ich meine Collage speichern und später weiterbearbeiten?",
+        "answer": "Ja! Nutzen Sie die Vorlagenbibliothek, um Ihre aktuelle Collage als Vorlage zu speichern. Diese wird lokal in Ihrem Browser gespeichert und kann jederzeit wieder geladen werden."
+      },
+      {
+        "question": "In welchen Formaten kann ich meine Collage exportieren?",
+        "answer": "Sie können Ihre fertige Collage als PNG, JPEG oder WebP herunterladen. Bei JPEG und WebP können Sie zusätzlich die Qualität einstellen."
+      },
+      {
+        "question": "Funktioniert die Anwendung offline?",
+        "answer": "Nach dem ersten Laden der Seite funktioniert die Anwendung offline, da alle Verarbeitungen im Browser stattfinden. Sie benötigen nur eine Internetverbindung für den initialen Seitenaufruf."
+      }
+    ]
   }
 }
