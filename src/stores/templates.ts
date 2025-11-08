@@ -30,10 +30,15 @@ export const useTemplatesStore = defineStore('templates', () => {
   async function loadPredefinedTemplates() {
     try {
       const response = await fetch('/templates/default-templates.json')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
+      console.log('Loaded templates:', data)
       templates.value = data.templates || []
+      console.log('Templates in store:', templates.value.length)
     } catch (error) {
-      console.warn('Could not load predefined templates:', error)
+      console.error('Could not load predefined templates:', error)
       templates.value = []
     }
   }

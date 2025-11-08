@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTemplatesStore } from '@/stores/templates'
 import { useCollageStore } from '@/stores/collage'
@@ -16,10 +16,15 @@ const templateName = ref('')
 const templateDescription = ref('')
 const showSaveDialog = ref(false)
 
-onMounted(() => {
-  templatesStore.loadPredefinedTemplates()
-  templatesStore.loadUserTemplates()
-})
+// Lade Templates beim ersten Öffnen
+let templatesLoaded = false
+watch(isOpen, (newValue) => {
+  if (newValue && !templatesLoaded) {
+    templatesStore.loadPredefinedTemplates()
+    templatesStore.loadUserTemplates()
+    templatesLoaded = true
+  }
+}, { immediate: true })
 
 const filteredTemplates = computed(() => {
   const all = templatesStore.getAllTemplates()
