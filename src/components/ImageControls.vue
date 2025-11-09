@@ -214,6 +214,39 @@ function updateSharpness(value: number) {
     collage.updateImage(collage.selectedImageId, { sharpness: value })
   }
 }
+
+function resetImageChanges() {
+  if (collage.selectedImageId && selectedImage.value) {
+    // Setze alle Bearbeitungen auf Standardwerte zurück
+    // Position und Größe bleiben erhalten (gehören zum Layout)
+    collage.updateImage(collage.selectedImageId, {
+      rotation: 0,
+      opacity: 1,
+      borderRadius: 0,
+      borderEnabled: false,
+      borderWidth: 4,
+      borderColor: '#000000',
+      borderStyle: 'solid',
+      borderShadowEnabled: false,
+      borderShadowOffsetX: 3,
+      borderShadowOffsetY: 3,
+      borderShadowBlur: 6,
+      borderShadowColor: '#000000',
+      shadowEnabled: false,
+      shadowOffsetX: 5,
+      shadowOffsetY: 5,
+      shadowBlur: 10,
+      shadowColor: '#000000',
+      brightness: 100,
+      contrast: 100,
+      highlights: 0,
+      shadows: 0,
+      saturation: 100,
+      warmth: 0,
+      sharpness: 0
+    })
+  }
+}
 </script>
 
 <template>
@@ -706,6 +739,14 @@ function updateSharpness(value: number) {
           </button>
         </div>
       </div>
+
+      <!-- Reset Changes Button -->
+      <button
+        @click="resetImageChanges"
+        class="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium"
+      >
+        {{ t('imageControls.resetChanges') }}
+      </button>
 
       <!-- Delete Button -->
       <button

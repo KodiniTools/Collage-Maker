@@ -52,6 +52,7 @@
     "layer": "Ebene",
     "toFront": "Nach vorne",
     "toBack": "Nach hinten",
+    "resetChanges": "Änderungen zurücksetzen",
     "delete": "Bild löschen",
     "noSelection": "Kein Bild ausgewählt",
     "lockAspectRatio": "Seitenverhältnis sperren",
