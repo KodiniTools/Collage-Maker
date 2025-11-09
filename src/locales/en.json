@@ -52,6 +52,7 @@
     "layer": "Layer",
     "toFront": "Bring to Front",
     "toBack": "Send to Back",
+    "resetChanges": "Reset Changes",
     "delete": "Delete Image",
     "noSelection": "No image selected",
     "lockAspectRatio": "Lock aspect ratio",
