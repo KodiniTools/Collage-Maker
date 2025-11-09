@@ -24,6 +24,14 @@ export interface CollageImage {
   shadowOffsetY: number
   shadowBlur: number
   shadowColor: string
+  // Bildbearbeitungs-Filter
+  brightness: number
+  contrast: number
+  highlights: number
+  shadows: number
+  saturation: number
+  warmth: number
+  sharpness: number
 }
 
 export interface CollageText {

@@ -171,6 +171,49 @@ function sendToBack() {
     collage.updateImage(collage.selectedImageId, { zIndex: minZ - 1 })
   }
 }
+
+// Bildbearbeitungs-Filter Funktionen
+function updateBrightness(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { brightness: value })
+  }
+}
+
+function updateContrast(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { contrast: value })
+  }
+}
+
+function updateHighlights(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { highlights: value })
+  }
+}
+
+function updateShadows(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { shadows: value })
+  }
+}
+
+function updateSaturation(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { saturation: value })
+  }
+}
+
+function updateWarmth(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { warmth: value })
+  }
+}
+
+function updateSharpness(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { sharpness: value })
+  }
+}
 </script>
 
 <template>
@@ -286,6 +329,118 @@ function sendToBack() {
           max="100"
           class="w-full"
         />
+      </div>
+
+      <!-- Bildbearbeitungs-Filter -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <h4 class="text-sm font-semibold mb-3">{{ t('imageControls.imageFilters') }}</h4>
+
+        <div class="space-y-3">
+          <!-- Helligkeit -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.brightness') }}: {{ Math.round(selectedImage.brightness) }}%
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.brightness"
+              @input="updateBrightness(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="200"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Kontrast -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.contrast') }}: {{ Math.round(selectedImage.contrast) }}%
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.contrast"
+              @input="updateContrast(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="200"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Lichter -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.highlights') }}: {{ Math.round(selectedImage.highlights) }}
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.highlights"
+              @input="updateHighlights(Number(($event.target as HTMLInputElement).value))"
+              min="-100"
+              max="100"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Tiefen -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.shadows') }}: {{ Math.round(selectedImage.shadows) }}
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.shadows"
+              @input="updateShadows(Number(($event.target as HTMLInputElement).value))"
+              min="-100"
+              max="100"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Sättigung -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.saturation') }}: {{ Math.round(selectedImage.saturation) }}%
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.saturation"
+              @input="updateSaturation(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="200"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Wärme -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.warmth') }}: {{ Math.round(selectedImage.warmth) }}
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.warmth"
+              @input="updateWarmth(Number(($event.target as HTMLInputElement).value))"
+              min="-100"
+              max="100"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Schärfen -->
+          <div>
+            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+              {{ t('imageControls.sharpness') }}: {{ Math.round(selectedImage.sharpness) }}
+            </label>
+            <input
+              type="range"
+              :value="selectedImage.sharpness"
+              @input="updateSharpness(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="100"
+              class="w-full"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Border Controls -->
