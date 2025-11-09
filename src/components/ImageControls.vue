@@ -339,11 +339,11 @@ function updateSharpness(value: number) {
           <!-- Helligkeit -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.brightness') }}: {{ Math.round(selectedImage.brightness) }}%
+              {{ t('imageControls.brightness') }}: {{ Math.round(selectedImage.brightness ?? 100) }}%
             </label>
             <input
               type="range"
-              :value="selectedImage.brightness"
+              :value="selectedImage.brightness ?? 100"
               @input="updateBrightness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
@@ -354,11 +354,11 @@ function updateSharpness(value: number) {
           <!-- Kontrast -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.contrast') }}: {{ Math.round(selectedImage.contrast) }}%
+              {{ t('imageControls.contrast') }}: {{ Math.round(selectedImage.contrast ?? 100) }}%
             </label>
             <input
               type="range"
-              :value="selectedImage.contrast"
+              :value="selectedImage.contrast ?? 100"
               @input="updateContrast(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
@@ -369,11 +369,11 @@ function updateSharpness(value: number) {
           <!-- Lichter -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.highlights') }}: {{ Math.round(selectedImage.highlights) }}
+              {{ t('imageControls.highlights') }}: {{ Math.round(selectedImage.highlights ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.highlights"
+              :value="selectedImage.highlights ?? 0"
               @input="updateHighlights(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
@@ -384,11 +384,11 @@ function updateSharpness(value: number) {
           <!-- Tiefen -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.shadows') }}: {{ Math.round(selectedImage.shadows) }}
+              {{ t('imageControls.shadows') }}: {{ Math.round(selectedImage.shadows ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.shadows"
+              :value="selectedImage.shadows ?? 0"
               @input="updateShadows(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
@@ -399,11 +399,11 @@ function updateSharpness(value: number) {
           <!-- Sättigung -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.saturation') }}: {{ Math.round(selectedImage.saturation) }}%
+              {{ t('imageControls.saturation') }}: {{ Math.round(selectedImage.saturation ?? 100) }}%
             </label>
             <input
               type="range"
-              :value="selectedImage.saturation"
+              :value="selectedImage.saturation ?? 100"
               @input="updateSaturation(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
@@ -414,11 +414,11 @@ function updateSharpness(value: number) {
           <!-- Wärme -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.warmth') }}: {{ Math.round(selectedImage.warmth) }}
+              {{ t('imageControls.warmth') }}: {{ Math.round(selectedImage.warmth ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.warmth"
+              :value="selectedImage.warmth ?? 0"
               @input="updateWarmth(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
@@ -429,11 +429,11 @@ function updateSharpness(value: number) {
           <!-- Schärfen -->
           <div>
             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-              {{ t('imageControls.sharpness') }}: {{ Math.round(selectedImage.sharpness) }}
+              {{ t('imageControls.sharpness') }}: {{ Math.round(selectedImage.sharpness ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.sharpness"
+              :value="selectedImage.sharpness ?? 0"
               @input="updateSharpness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="100"
