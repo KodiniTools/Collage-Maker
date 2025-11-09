@@ -85,7 +85,15 @@ export const useCollageStore = defineStore('collage', () => {
         shadowOffsetX: 5,
         shadowOffsetY: 5,
         shadowBlur: 10,
-        shadowColor: '#000000'
+        shadowColor: '#000000',
+        // Bildbearbeitungs-Filter (Standard = keine Anpassung)
+        brightness: 100,
+        contrast: 100,
+        highlights: 0,
+        shadows: 0,
+        saturation: 100,
+        warmth: 0,
+        sharpness: 0
       })
     })
 
@@ -313,7 +321,15 @@ export const useCollageStore = defineStore('collage', () => {
       shadowOffsetX: 5,
       shadowOffsetY: 5,
       shadowBlur: 10,
-      shadowColor: '#000000'
+      shadowColor: '#000000',
+      // Bildbearbeitungs-Filter (Standard = keine Anpassung)
+      brightness: 100,
+      contrast: 100,
+      highlights: 0,
+      shadows: 0,
+      saturation: 100,
+      warmth: 0,
+      sharpness: 0
     })
 
     // Selektiere das neue Bild

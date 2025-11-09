@@ -173,7 +173,125 @@ async function renderCanvas() {
       context.clip()
     }
 
-    context.drawImage(htmlImg, x, y, img.width, img.height)
+    // Bildbearbeitungs-Filter anwenden (mit Abwärtskompatibilität)
+    const brightness = img.brightness ?? 100
+    const contrast = img.contrast ?? 100
+    const saturation = img.saturation ?? 100
+    const highlights = img.highlights ?? 0
+    const shadows = img.shadows ?? 0
+    const warmth = img.warmth ?? 0
+    const sharpness = img.sharpness ?? 0
+
+    // Prüfe ob erweiterte Filter benötigt werden (Pixel-basiert)
+    if (highlights !== 0 || shadows !== 0 || warmth !== 0 || sharpness !== 0) {
+      // Erstelle ein temporäres Canvas für die Bildmanipulation
+      const tempCanvas = document.createElement('canvas')
+      tempCanvas.width = img.width
+      tempCanvas.height = img.height
+      const tempCtx = tempCanvas.getContext('2d')
+
+      if (tempCtx) {
+        // Wende CSS-Filter auf das temporäre Canvas an
+        const filters = []
+        if (brightness !== 100) {
+          filters.push(`brightness(${brightness}%)`)
+        }
+        if (contrast !== 100) {
+          filters.push(`contrast(${contrast}%)`)
+        }
+        if (saturation !== 100) {
+          filters.push(`saturate(${saturation}%)`)
+        }
+        if (filters.length > 0) {
+          tempCtx.filter = filters.join(' ')
+        }
+
+        // Zeichne das Bild auf das temporäre Canvas mit CSS-Filtern
+        tempCtx.drawImage(htmlImg, 0, 0, img.width, img.height)
+        tempCtx.filter = 'none'
+
+        // Hole die Bilddaten für Pixel-basierte Manipulation
+        const imageData = tempCtx.getImageData(0, 0, img.width, img.height)
+        const data = imageData.data
+
+        // Wende Pixel-basierte Filter an
+        for (let i = 0; i < data.length; i += 4) {
+          let r = data[i]
+          let g = data[i + 1]
+          let b = data[i + 2]
+
+          // Berechne Helligkeit des Pixels
+          const pixelBrightness = (r + g + b) / 3
+
+          // Lichter (Highlights): Hellt helle Bereiche auf/ab
+          if (highlights !== 0) {
+            const highlightFactor = highlights / 100
+            const highlightMask = Math.pow(pixelBrightness / 255, 2) // Stärker bei helleren Pixeln
+            const adjustment = highlightFactor * highlightMask * 50
+            r = Math.max(0, Math.min(255, r + adjustment))
+            g = Math.max(0, Math.min(255, g + adjustment))
+            b = Math.max(0, Math.min(255, b + adjustment))
+          }
+
+          // Tiefen (Shadows): Hellt dunkle Bereiche auf/ab
+          if (shadows !== 0) {
+            const shadowFactor = shadows / 100
+            const shadowMask = Math.pow(1 - pixelBrightness / 255, 2) // Stärker bei dunkleren Pixeln
+            const adjustment = shadowFactor * shadowMask * 50
+            r = Math.max(0, Math.min(255, r + adjustment))
+            g = Math.max(0, Math.min(255, g + adjustment))
+            b = Math.max(0, Math.min(255, b + adjustment))
+          }
+
+          // Wärme: Verschiebt Farben zu Orange (warm) oder Blau (kalt)
+          if (warmth !== 0) {
+            const warmthFactor = warmth / 100
+            r = Math.max(0, Math.min(255, r + warmthFactor * 30))
+            b = Math.max(0, Math.min(255, b - warmthFactor * 30))
+          }
+
+          // Schärfen: Erhöht den Kontrast zwischen benachbarten Pixeln
+          if (sharpness !== 0) {
+            const sharpnessFactor = sharpness / 100
+            const average = (r + g + b) / 3
+            r = Math.max(0, Math.min(255, r + (r - average) * sharpnessFactor))
+            g = Math.max(0, Math.min(255, g + (g - average) * sharpnessFactor))
+            b = Math.max(0, Math.min(255, b + (b - average) * sharpnessFactor))
+          }
+
+          data[i] = r
+          data[i + 1] = g
+          data[i + 2] = b
+        }
+
+        // Setze die manipulierten Bilddaten zurück
+        tempCtx.putImageData(imageData, 0, 0)
+
+        // Zeichne das manipulierte Bild zurück auf das Haupt-Canvas
+        context.drawImage(tempCanvas, x, y, img.width, img.height)
+      }
+    } else {
+      // Verwende nur CSS-Filter (schneller)
+      const filters = []
+      if (brightness !== 100) {
+        filters.push(`brightness(${brightness}%)`)
+      }
+      if (contrast !== 100) {
+        filters.push(`contrast(${contrast}%)`)
+      }
+      if (saturation !== 100) {
+        filters.push(`saturate(${saturation}%)`)
+      }
+      if (filters.length > 0) {
+        context.filter = filters.join(' ')
+      }
+
+      // Zeichne das Bild mit CSS-Filtern
+      context.drawImage(htmlImg, x, y, img.width, img.height)
+
+      // Filter zurücksetzen
+      context.filter = 'none'
+    }
 
     // Schatten für normale Bilder (ohne abgerundete Ecken) zurücksetzen
     if (img.shadowEnabled && radius === 0) {
