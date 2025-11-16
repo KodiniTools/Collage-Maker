@@ -310,7 +310,10 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function clearCollage() {
-    images.value.forEach(img => URL.revokeObjectURL(img.url))
+    // Sammle nur unique URLs (Templates und Instanzen teilen URLs)
+    const uniqueUrls = new Set(images.value.map(img => img.url))
+    uniqueUrls.forEach(url => URL.revokeObjectURL(url))
+
     images.value = []
     texts.value = []
     selectedImageId.value = null
