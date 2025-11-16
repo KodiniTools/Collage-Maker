@@ -59,7 +59,7 @@ export const useCollageStore = defineStore('collage', () => {
       }
       img.src = url
 
-      // Füge Bild mit temporären Dimensionen hinzu (werden beim Laden aktualisiert)
+      // Füge Galerie-Template hinzu (wird beim Drag-and-Drop dupliziert)
       images.value.push({
         id,
         file,
@@ -93,7 +93,9 @@ export const useCollageStore = defineStore('collage', () => {
         shadows: 0,
         saturation: 100,
         warmth: 0,
-        sharpness: 0
+        sharpness: 0,
+        // Als Galerie-Template markieren
+        isGalleryTemplate: true
       })
     })
 
@@ -295,7 +297,7 @@ export const useCollageStore = defineStore('collage', () => {
     const newId = crypto.randomUUID()
     const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
 
-    // Erstelle eine Kopie des Bildes an der neuen Position
+    // Erstelle eine Canvas-Instanz (kein Template) an der neuen Position
     images.value.push({
       id: newId,
       file: sourceImage.file,
@@ -329,7 +331,9 @@ export const useCollageStore = defineStore('collage', () => {
       shadows: 0,
       saturation: 100,
       warmth: 0,
-      sharpness: 0
+      sharpness: 0,
+      // Als Canvas-Instanz markieren (kein Galerie-Template)
+      isGalleryTemplate: false
     })
 
     // Selektiere das neue Bild

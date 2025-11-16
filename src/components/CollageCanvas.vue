@@ -97,8 +97,11 @@ async function renderCanvas() {
   // Grid zeichnen (nach Hintergrund, vor Bildern)
   drawGrid()
 
+  // Nur Canvas-Instanzen rendern (keine Gallery-Templates)
+  const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
+
   // Bilder laden und zeichnen
-  for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
+  for (const img of [...canvasImages].sort((a, b) => a.zIndex - b.zIndex)) {
     let htmlImg = loadedImages.get(img.id)
 
     if (!htmlImg) {
@@ -640,8 +643,9 @@ function handleMouseDown(e: MouseEvent) {
     return
   }
 
-  // Finde angeklicktes Bild (von oben nach unten)
-  const clickedImage = [...collage.images]
+  // Finde angeklicktes Bild (von oben nach unten, nur Canvas-Instanzen)
+  const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
+  const clickedImage = [...canvasImages]
     .sort((a, b) => b.zIndex - a.zIndex)
     .find(img =>
       x >= img.x && x <= img.x + img.width &&

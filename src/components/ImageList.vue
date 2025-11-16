@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
 
 const collage = useCollageStore()
 const { t } = useI18n()
+
+// Nur Galerie-Templates anzeigen (keine Canvas-Instanzen)
+const galleryImages = computed(() =>
+  collage.images.filter(img => img.isGalleryTemplate === true)
+)
 
 function handleDragStart(event: DragEvent, imageId: string) {
   if (event.dataTransfer) {
@@ -15,15 +21,15 @@ function handleDragStart(event: DragEvent, imageId: string) {
 
 <template>
   <div class="w-full">
-    <h2 class="text-lg font-semibold mb-3">{{ t('images.title') }} ({{ collage.images.length }})</h2>
-    
-    <div v-if="collage.images.length === 0" class="text-center py-8 text-gray-500">
+    <h2 class="text-lg font-semibold mb-3">{{ t('images.title') }} ({{ galleryImages.length }})</h2>
+
+    <div v-if="galleryImages.length === 0" class="text-center py-8 text-gray-500">
       {{ t('images.empty') }}
     </div>
-    
+
     <div v-else class="space-y-2 max-h-64 overflow-y-auto">
       <div
-        v-for="image in collage.images"
+        v-for="image in galleryImages"
         :key="image.id"
         draggable="true"
         @dragstart="handleDragStart($event, image.id)"
