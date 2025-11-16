@@ -21,7 +21,7 @@ const showTemplates = ref(false)
 </script>
 
 <template>
-  <div>
+  <div class="pb-32">
     <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
       <!-- Header -->
       <header class="border-b border-gray-200 dark:border-gray-800">
@@ -59,7 +59,7 @@ const showTemplates = ref(false)
           </aside>
 
           <!-- Canvas -->
-          <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start" style="height: fit-content;">
+          <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-200px)] lg:overflow-auto" style="height: fit-content;">
             <CollageCanvas />
           </section>
 
