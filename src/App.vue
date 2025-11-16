@@ -59,7 +59,7 @@ const showTemplates = ref(false)
           </aside>
 
           <!-- Canvas -->
-          <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start" style="height: fit-content;">
+          <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-80px)] lg:overflow-auto" style="height: fit-content;">
             <CollageCanvas />
           </section>
 
