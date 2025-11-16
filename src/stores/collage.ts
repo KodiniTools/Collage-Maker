@@ -128,7 +128,18 @@ export const useCollageStore = defineStore('collage', () => {
   function removeImage(id: string) {
     const index = images.value.findIndex(img => img.id === id)
     if (index !== -1) {
-      URL.revokeObjectURL(images.value[index].url)
+      const imageToRemove = images.value[index]
+
+      // Prüfe ob andere Bilder diese URL noch verwenden (Template + Instanzen teilen URLs)
+      const otherImagesWithSameUrl = images.value.filter(
+        img => img.id !== id && img.url === imageToRemove.url
+      )
+
+      // Nur URL revoken, wenn KEIN anderes Bild diese URL mehr verwendet
+      if (otherImagesWithSameUrl.length === 0) {
+        URL.revokeObjectURL(imageToRemove.url)
+      }
+
       images.value.splice(index, 1)
     }
     if (selectedImageId.value === id) {
