@@ -97,8 +97,11 @@ async function renderCanvas() {
   // Grid zeichnen (nach Hintergrund, vor Bildern)
   drawGrid()
 
+  // Nur Canvas-Instanzen rendern (keine Gallery-Templates)
+  const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
+
   // Bilder laden und zeichnen
-  for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
+  for (const img of [...canvasImages].sort((a, b) => a.zIndex - b.zIndex)) {
     let htmlImg = loadedImages.get(img.id)
 
     if (!htmlImg) {
@@ -376,6 +379,32 @@ async function renderCanvas() {
       context.shadowColor = 'transparent'
     }
 
+    // Löschbutton zeichnen (oben rechts, immer sichtbar für alle Bilder)
+    const deleteButtonSize = 24
+    const deleteButtonX = img.width / 2 - deleteButtonSize / 2
+    const deleteButtonY = -img.height / 2 - deleteButtonSize / 2
+
+    // Roter Kreis für Löschbutton
+    context.fillStyle = '#ef4444'
+    context.strokeStyle = '#ffffff'
+    context.lineWidth = 2
+    context.beginPath()
+    context.arc(deleteButtonX, deleteButtonY, deleteButtonSize / 2, 0, Math.PI * 2)
+    context.fill()
+    context.stroke()
+
+    // Weißes X im Löschbutton
+    context.strokeStyle = '#ffffff'
+    context.lineWidth = 2
+    context.lineCap = 'round'
+    const xSize = deleteButtonSize * 0.4
+    context.beginPath()
+    context.moveTo(deleteButtonX - xSize / 2, deleteButtonY - xSize / 2)
+    context.lineTo(deleteButtonX + xSize / 2, deleteButtonY + xSize / 2)
+    context.moveTo(deleteButtonX + xSize / 2, deleteButtonY - xSize / 2)
+    context.lineTo(deleteButtonX - xSize / 2, deleteButtonY + xSize / 2)
+    context.stroke()
+
     // Highlight für selektiertes Bild
     if (collage.selectedImageId === img.id) {
       context.strokeStyle = '#3b82f6'
@@ -511,6 +540,30 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
   return null
 }
 
+function isDeleteButtonClicked(x: number, y: number, img: any): boolean {
+  const deleteButtonSize = 24
+  const centerX = img.x + img.width / 2
+  const centerY = img.y + img.height / 2
+
+  // Transform click point to image coordinate system (considering rotation)
+  const angle = (img.rotation * Math.PI) / 180
+  const dx = x - centerX
+  const dy = y - centerY
+  const rotatedX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
+  const rotatedY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
+
+  // Position des Löschbuttons im Bild-Koordinatensystem
+  const deleteButtonX = img.width / 2 - deleteButtonSize / 2
+  const deleteButtonY = -img.height / 2 - deleteButtonSize / 2
+
+  // Prüfe ob Klick innerhalb des Löschbuttons ist (Kreis)
+  const distance = Math.sqrt(
+    Math.pow(rotatedX - deleteButtonX, 2) + Math.pow(rotatedY - deleteButtonY, 2)
+  )
+
+  return distance <= deleteButtonSize / 2
+}
+
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
@@ -519,6 +572,18 @@ function handleMouseDown(e: MouseEvent) {
   const scaleY = collage.settings.height / rect.height
   const x = (e.clientX - rect.left) * scaleX
   const y = (e.clientY - rect.top) * scaleY
+
+  // Prüfe ob ein Löschbutton angeklickt wurde (NUR Canvas-Instanzen, keine Templates!)
+  const clickedDeleteImage = collage.images
+    .filter(img => img.isGalleryTemplate !== true)
+    .sort((a, b) => b.zIndex - a.zIndex)
+    .find(img => isDeleteButtonClicked(x, y, img))
+
+  if (clickedDeleteImage) {
+    // Bild aus Canvas entfernen
+    collage.removeImage(clickedDeleteImage.id)
+    return
+  }
 
   // Prüfe ob ein Resize-Handle des ausgewählten Bildes angeklickt wurde
   const selectedImg = collage.selectedImage
@@ -579,8 +644,9 @@ function handleMouseDown(e: MouseEvent) {
     return
   }
 
-  // Finde angeklicktes Bild (von oben nach unten)
-  const clickedImage = [...collage.images]
+  // Finde angeklicktes Bild (von oben nach unten, nur Canvas-Instanzen)
+  const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
+  const clickedImage = [...canvasImages]
     .sort((a, b) => b.zIndex - a.zIndex)
     .find(img =>
       x >= img.x && x <= img.x + img.width &&
