@@ -573,8 +573,9 @@ function handleMouseDown(e: MouseEvent) {
   const x = (e.clientX - rect.left) * scaleX
   const y = (e.clientY - rect.top) * scaleY
 
-  // Prüfe ob ein Löschbutton angeklickt wurde (von oben nach unten, höchster zIndex zuerst)
-  const clickedDeleteImage = [...collage.images]
+  // Prüfe ob ein Löschbutton angeklickt wurde (NUR Canvas-Instanzen, keine Templates!)
+  const clickedDeleteImage = collage.images
+    .filter(img => img.isGalleryTemplate !== true)
     .sort((a, b) => b.zIndex - a.zIndex)
     .find(img => isDeleteButtonClicked(x, y, img))
 
