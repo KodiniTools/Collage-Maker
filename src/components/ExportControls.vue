@@ -21,8 +21,9 @@ async function exportCollage() {
   ctx.fillStyle = collage.settings.backgroundColor
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  // Render images
-  for (const img of [...collage.images].sort((a, b) => a.zIndex - b.zIndex)) {
+  // Render images - NUR Canvas-Instanzen exportieren (keine Gallery-Templates)
+  const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
+  for (const img of [...canvasImages].sort((a, b) => a.zIndex - b.zIndex)) {
     const htmlImg = new Image()
     htmlImg.src = img.url
     
