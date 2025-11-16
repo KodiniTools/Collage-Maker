@@ -27,15 +27,56 @@ export const useCollageStore = defineStore('collage', () => {
   )
 
   function addImages(files: File[]) {
+    const newTemplateIds: string[] = []
+
     files.forEach(file => {
-      const id = crypto.randomUUID()
+      const templateId = crypto.randomUUID()
       const url = URL.createObjectURL(file)
+
+      // Füge Template zur Galerie hinzu (wird nicht im Canvas angezeigt)
+      images.value.push({
+        id: templateId,
+        file,
+        url,
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 200,
+        rotation: 0,
+        zIndex: 0,
+        opacity: 1,
+        borderRadius: 0,
+        borderEnabled: false,
+        borderWidth: 4,
+        borderColor: '#000000',
+        borderStyle: 'solid',
+        borderShadowEnabled: false,
+        borderShadowOffsetX: 3,
+        borderShadowOffsetY: 3,
+        borderShadowBlur: 6,
+        borderShadowColor: '#000000',
+        shadowEnabled: false,
+        shadowOffsetX: 5,
+        shadowOffsetY: 5,
+        shadowBlur: 10,
+        shadowColor: '#000000',
+        brightness: 100,
+        contrast: 100,
+        highlights: 0,
+        shadows: 0,
+        saturation: 100,
+        warmth: 0,
+        sharpness: 0,
+        isGalleryTemplate: true
+      })
+
+      newTemplateIds.push(templateId)
 
       // Lade das Bild, um die originalen Dimensionen zu erhalten
       const img = new Image()
       img.onload = () => {
-        const imageData = images.value.find(i => i.id === id)
-        if (imageData) {
+        const templateData = images.value.find(i => i.id === templateId)
+        if (templateData) {
           // Berechne Dimensionen unter Beibehaltung des Seitenverhältnisses
           const maxSize = 300 // Maximale Breite oder Höhe
           const aspectRatio = img.width / img.height
@@ -53,15 +94,26 @@ export const useCollageStore = defineStore('collage', () => {
             width = maxSize * aspectRatio
           }
 
-          imageData.width = width
-          imageData.height = height
+          templateData.width = width
+          templateData.height = height
+
+          // Aktualisiere auch alle Instanzen dieses Templates
+          images.value.forEach(instance => {
+            if (!instance.isGalleryTemplate && instance.url === url) {
+              instance.width = width
+              instance.height = height
+            }
+          })
         }
       }
       img.src = url
 
-      // Füge Bild mit temporären Dimensionen hinzu (werden beim Laden aktualisiert)
+      // Erstelle automatisch eine Instanz für das Canvas
+      const instanceId = crypto.randomUUID()
+      const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+
       images.value.push({
-        id,
+        id: instanceId,
         file,
         url,
         x: 50,
@@ -69,7 +121,7 @@ export const useCollageStore = defineStore('collage', () => {
         width: 200,
         height: 200,
         rotation: 0,
-        zIndex: images.value.length,
+        zIndex: maxZ + 1,
         opacity: 1,
         borderRadius: 0,
         borderEnabled: false,
@@ -86,14 +138,14 @@ export const useCollageStore = defineStore('collage', () => {
         shadowOffsetY: 5,
         shadowBlur: 10,
         shadowColor: '#000000',
-        // Bildbearbeitungs-Filter (Standard = keine Anpassung)
         brightness: 100,
         contrast: 100,
         highlights: 0,
         shadows: 0,
         saturation: 100,
         warmth: 0,
-        sharpness: 0
+        sharpness: 0,
+        isGalleryTemplate: false
       })
     })
 
@@ -133,6 +185,9 @@ export const useCollageStore = defineStore('collage', () => {
     const h = settings.value.height
     const padding = 10
 
+    // Nur Canvas-Instanzen (keine Templates) für Layout berücksichtigen
+    const canvasImages = images.value.filter(img => !img.isGalleryTemplate)
+
     // Hilfsfunktion zum Einpassen von Bildern mit Seitenverhältnis
     function fitImage(img: any, x: number, y: number, width: number, height: number) {
       const aspectRatio = img.width / img.height
@@ -160,7 +215,7 @@ export const useCollageStore = defineStore('collage', () => {
       const cellWidth = w / cols
       const cellHeight = h / rows
 
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         const col = index % cols
         const row = Math.floor(index / cols)
         fitImage(img, col * cellWidth, row * cellHeight, cellWidth, cellHeight)
@@ -168,7 +223,7 @@ export const useCollageStore = defineStore('collage', () => {
     }
     // Magazin-Layout: Großes Bild links, 2 kleinere rechts gestapelt
     else if (layout === 'magazine') {
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         if (index === 0) {
           // Großes Hauptbild links (2/3 Breite)
           fitImage(img, 0, 0, w * 0.66, h)
@@ -187,7 +242,7 @@ export const useCollageStore = defineStore('collage', () => {
     }
     // Spotlight-Layout: Ein großes Bild oben, 3 kleinere unten
     else if (layout === 'spotlight') {
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         if (index === 0) {
           // Großes Spotlight-Bild oben (70% Höhe)
           fitImage(img, 0, 0, w, h * 0.7)
@@ -204,13 +259,13 @@ export const useCollageStore = defineStore('collage', () => {
     }
     // Hero-Layout: Großes Bild oben, kleinere unten in einer Reihe
     else if (layout === 'hero') {
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         if (index === 0) {
           // Hero-Bild oben (60% Höhe)
           fitImage(img, 0, 0, w, h * 0.6)
         } else {
           // Kleinere Bilder unten nebeneinander
-          const cols = Math.max(images.value.length - 1, 1)
+          const cols = Math.max(canvasImages.length - 1, 1)
           const col = index - 1
           fitImage(img, (w / cols) * col, h * 0.6, w / cols, h * 0.4)
         }
@@ -221,14 +276,14 @@ export const useCollageStore = defineStore('collage', () => {
       const sidebarWidth = w * 0.25
       const mainWidth = w * 0.75
 
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         if (index <= 2) {
           // Erste 3 Bilder in der Sidebar
           fitImage(img, 0, (h / 3) * index, sidebarWidth, h / 3)
         } else {
           // Weitere Bilder rechts
           const rightIndex = index - 3
-          const rows = Math.ceil((images.value.length - 3) / 2)
+          const rows = Math.ceil((canvasImages.length - 3) / 2)
           const col = rightIndex % 2
           const row = Math.floor(rightIndex / 2)
           fitImage(img, sidebarWidth + (mainWidth / 2) * col, (h / rows) * row, mainWidth / 2, h / rows)
@@ -247,7 +302,7 @@ export const useCollageStore = defineStore('collage', () => {
         { x: 0.67, y: 0.67, w: 0.33, h: 0.33 }
       ]
 
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         const pos = positions[index % positions.length]
         fitImage(img, w * pos.x, h * pos.y, w * pos.w, h * pos.h)
       })
@@ -256,7 +311,7 @@ export const useCollageStore = defineStore('collage', () => {
     else if (layout === 'diagonal') {
       const imgSize = Math.min(w, h) * 0.4
 
-      images.value.forEach((img, index) => {
+      canvasImages.forEach((img, index) => {
         if (index < 4) {
           const offsetX = (w - imgSize) * (index / 3)
           const offsetY = (h - imgSize) * (index / 3)
@@ -295,7 +350,7 @@ export const useCollageStore = defineStore('collage', () => {
     const newId = crypto.randomUUID()
     const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
 
-    // Erstelle eine Kopie des Bildes an der neuen Position
+    // Erstelle eine Instanz (kein Template) des Bildes an der neuen Position
     images.value.push({
       id: newId,
       file: sourceImage.file,
@@ -329,7 +384,9 @@ export const useCollageStore = defineStore('collage', () => {
       shadows: 0,
       saturation: 100,
       warmth: 0,
-      sharpness: 0
+      sharpness: 0,
+      // Immer eine Instanz erstellen (für Canvas)
+      isGalleryTemplate: false
     })
 
     // Selektiere das neue Bild

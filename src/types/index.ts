@@ -32,6 +32,8 @@ export interface CollageImage {
   saturation: number
   warmth: number
   sharpness: number
+  // Template/Instanz-System: Templates sind in der Galerie, Instanzen im Canvas
+  isGalleryTemplate?: boolean
 }
 
 export interface CollageText {
