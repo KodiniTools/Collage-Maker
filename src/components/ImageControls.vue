@@ -6,7 +6,13 @@ import { useI18n } from 'vue-i18n'
 const collage = useCollageStore()
 const { t } = useI18n()
 
+// Einzelauswahl (Backward-kompatibel)
 const selectedImage = computed(() => collage.selectedImage)
+// Mehrfachauswahl
+const selectedImages = computed(() => collage.selectedImages)
+const selectedCount = computed(() => collage.selectedImageIds.length)
+const isMultiSelection = computed(() => selectedCount.value > 1)
+
 const aspectRatio = ref(1)
 
 // Berechne Seitenverhältnis wenn Bild ausgewählt wird
@@ -15,6 +21,18 @@ watch(selectedImage, (img) => {
     aspectRatio.value = img.width / img.height
   }
 }, { immediate: true })
+
+// Referenzbild für Slider-Werte (erstes ausgewähltes Bild)
+const displayImage = computed(() => selectedImages.value[0] || null)
+
+// Hilfsfunktion: Updates auf alle ausgewählten Bilder anwenden
+function applyToSelected(updates: Record<string, any>) {
+  if (isMultiSelection.value) {
+    collage.updateSelectedImages(updates)
+  } else if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, updates)
+  }
+}
 
 function updateWidth(value: number) {
   if (collage.selectedImageId && selectedImage.value) {
@@ -45,207 +63,190 @@ function toggleAspectRatio() {
 }
 
 function updateRotation(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { rotation: value })
-  }
+  applyToSelected({ rotation: value })
 }
 
 function updateOpacity(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { opacity: value })
-  }
+  applyToSelected({ opacity: value })
 }
 
 function updateBorderRadius(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderRadius: value })
-  }
+  applyToSelected({ borderRadius: value })
 }
 
 function toggleBorder() {
-  if (collage.selectedImageId && selectedImage.value) {
-    collage.updateImage(collage.selectedImageId, {
-      borderEnabled: !selectedImage.value.borderEnabled
-    })
+  // Bei Mehrfachauswahl: Einheitlich aktivieren oder deaktivieren
+  if (isMultiSelection.value) {
+    const anyEnabled = selectedImages.value.some(img => img.borderEnabled)
+    applyToSelected({ borderEnabled: !anyEnabled })
+  } else if (selectedImage.value) {
+    applyToSelected({ borderEnabled: !selectedImage.value.borderEnabled })
   }
 }
 
 function updateBorderWidth(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderWidth: value })
-  }
+  applyToSelected({ borderWidth: value })
 }
 
 function updateBorderColor(value: string) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderColor: value })
-  }
+  applyToSelected({ borderColor: value })
 }
 
 function updateBorderStyle(value: 'solid' | 'dashed' | 'dotted' | 'double') {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderStyle: value })
-  }
+  applyToSelected({ borderStyle: value })
 }
 
 function toggleBorderShadow() {
-  if (collage.selectedImageId && selectedImage.value) {
-    collage.updateImage(collage.selectedImageId, {
-      borderShadowEnabled: !selectedImage.value.borderShadowEnabled
-    })
+  if (isMultiSelection.value) {
+    const anyEnabled = selectedImages.value.some(img => img.borderShadowEnabled)
+    applyToSelected({ borderShadowEnabled: !anyEnabled })
+  } else if (selectedImage.value) {
+    applyToSelected({ borderShadowEnabled: !selectedImage.value.borderShadowEnabled })
   }
 }
 
 function updateBorderShadowOffsetX(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderShadowOffsetX: value })
-  }
+  applyToSelected({ borderShadowOffsetX: value })
 }
 
 function updateBorderShadowOffsetY(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderShadowOffsetY: value })
-  }
+  applyToSelected({ borderShadowOffsetY: value })
 }
 
 function updateBorderShadowBlur(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderShadowBlur: value })
-  }
+  applyToSelected({ borderShadowBlur: value })
 }
 
 function updateBorderShadowColor(value: string) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { borderShadowColor: value })
-  }
+  applyToSelected({ borderShadowColor: value })
 }
 
 function toggleShadow() {
-  if (collage.selectedImageId && selectedImage.value) {
-    collage.updateImage(collage.selectedImageId, {
-      shadowEnabled: !selectedImage.value.shadowEnabled
-    })
+  if (isMultiSelection.value) {
+    const anyEnabled = selectedImages.value.some(img => img.shadowEnabled)
+    applyToSelected({ shadowEnabled: !anyEnabled })
+  } else if (selectedImage.value) {
+    applyToSelected({ shadowEnabled: !selectedImage.value.shadowEnabled })
   }
 }
 
 function updateShadowOffsetX(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { shadowOffsetX: value })
-  }
+  applyToSelected({ shadowOffsetX: value })
 }
 
 function updateShadowOffsetY(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { shadowOffsetY: value })
-  }
+  applyToSelected({ shadowOffsetY: value })
 }
 
 function updateShadowBlur(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { shadowBlur: value })
-  }
+  applyToSelected({ shadowBlur: value })
 }
 
 function updateShadowColor(value: string) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { shadowColor: value })
-  }
+  applyToSelected({ shadowColor: value })
 }
 
 function deleteImage() {
-  if (collage.selectedImageId) {
+  if (isMultiSelection.value) {
+    collage.removeSelectedImages()
+  } else if (collage.selectedImageId) {
     collage.removeImage(collage.selectedImageId)
   }
 }
 
 function bringToFront() {
-  if (collage.selectedImageId && selectedImage.value) {
+  if (selectedImages.value.length > 0) {
     const maxZ = Math.max(...collage.images.map(img => img.zIndex), 0)
-    collage.updateImage(collage.selectedImageId, { zIndex: maxZ + 1 })
+    // Bei Mehrfachauswahl: Alle nach vorne, aber relative Reihenfolge beibehalten
+    selectedImages.value
+      .sort((a, b) => a.zIndex - b.zIndex)
+      .forEach((img, index) => {
+        collage.updateImage(img.id, { zIndex: maxZ + 1 + index })
+      })
   }
 }
 
 function sendToBack() {
-  if (collage.selectedImageId && selectedImage.value) {
+  if (selectedImages.value.length > 0) {
     const minZ = Math.min(...collage.images.map(img => img.zIndex), 0)
-    collage.updateImage(collage.selectedImageId, { zIndex: minZ - 1 })
+    // Bei Mehrfachauswahl: Alle nach hinten, aber relative Reihenfolge beibehalten
+    selectedImages.value
+      .sort((a, b) => b.zIndex - a.zIndex)
+      .forEach((img, index) => {
+        collage.updateImage(img.id, { zIndex: minZ - 1 - index })
+      })
   }
 }
 
 // Bildbearbeitungs-Filter Funktionen
 function updateBrightness(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { brightness: value })
-  }
+  applyToSelected({ brightness: value })
 }
 
 function updateContrast(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { contrast: value })
-  }
+  applyToSelected({ contrast: value })
 }
 
 function updateHighlights(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { highlights: value })
-  }
+  applyToSelected({ highlights: value })
 }
 
 function updateShadows(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { shadows: value })
-  }
+  applyToSelected({ shadows: value })
 }
 
 function updateSaturation(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { saturation: value })
-  }
+  applyToSelected({ saturation: value })
 }
 
 function updateWarmth(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { warmth: value })
-  }
+  applyToSelected({ warmth: value })
 }
 
 function updateSharpness(value: number) {
-  if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, { sharpness: value })
-  }
+  applyToSelected({ sharpness: value })
 }
 
 function resetImageChanges() {
-  if (collage.selectedImageId && selectedImage.value) {
-    // Setze alle Bearbeitungen auf Standardwerte zurück
-    // Position und Größe bleiben erhalten (gehören zum Layout)
-    collage.updateImage(collage.selectedImageId, {
-      rotation: 0,
-      opacity: 1,
-      borderRadius: 0,
-      borderEnabled: false,
-      borderWidth: 4,
-      borderColor: '#000000',
-      borderStyle: 'solid',
-      borderShadowEnabled: false,
-      borderShadowOffsetX: 3,
-      borderShadowOffsetY: 3,
-      borderShadowBlur: 6,
-      borderShadowColor: '#000000',
-      shadowEnabled: false,
-      shadowOffsetX: 5,
-      shadowOffsetY: 5,
-      shadowBlur: 10,
-      shadowColor: '#000000',
-      brightness: 100,
-      contrast: 100,
-      highlights: 0,
-      shadows: 0,
-      saturation: 100,
-      warmth: 0,
-      sharpness: 0
-    })
+  // Setze alle Bearbeitungen auf Standardwerte zurück
+  // Position und Größe bleiben erhalten (gehören zum Layout)
+  const defaultValues = {
+    rotation: 0,
+    opacity: 1,
+    borderRadius: 0,
+    borderEnabled: false,
+    borderWidth: 4,
+    borderColor: '#000000',
+    borderStyle: 'solid' as const,
+    borderShadowEnabled: false,
+    borderShadowOffsetX: 3,
+    borderShadowOffsetY: 3,
+    borderShadowBlur: 6,
+    borderShadowColor: '#000000',
+    shadowEnabled: false,
+    shadowOffsetX: 5,
+    shadowOffsetY: 5,
+    shadowBlur: 10,
+    shadowColor: '#000000',
+    brightness: 100,
+    contrast: 100,
+    highlights: 0,
+    shadows: 0,
+    saturation: 100,
+    warmth: 0,
+    sharpness: 0
   }
+  applyToSelected(defaultValues)
+}
+
+// Alle Canvas-Bilder auswählen
+function selectAllImages() {
+  collage.selectAllCanvasImages()
+}
+
+// Auswahl aufheben
+function deselectAll() {
+  collage.deselectAllImages()
 }
 </script>
 
@@ -253,9 +254,49 @@ function resetImageChanges() {
   <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4">
     <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
 
-    <div v-if="selectedImage" class="space-y-4">
-      <!-- Größe Controls -->
-      <div>
+    <!-- Mehrfachauswahl-Anzeige -->
+    <div v-if="selectedCount > 0" class="space-y-4">
+      <!-- Info-Banner für Mehrfachauswahl -->
+      <div v-if="isMultiSelection" class="bg-accent/20 border border-accent/50 rounded-lg p-3 mb-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-accent-dark dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-medium text-sm">
+              {{ t('imageControls.multiSelection', { count: selectedCount }) }}
+            </span>
+          </div>
+          <button
+            @click="deselectAll"
+            class="text-xs text-muted hover:text-slate-dark dark:hover:text-muted underline"
+          >
+            {{ t('imageControls.deselectAll') }}
+          </button>
+        </div>
+        <p class="text-xs text-muted mt-1">
+          {{ t('imageControls.multiSelectionHint') }}
+        </p>
+      </div>
+
+      <!-- Auswahl-Buttons -->
+      <div class="flex gap-2 mb-4">
+        <button
+          @click="selectAllImages"
+          class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded-md transition-colors"
+        >
+          {{ t('imageControls.selectAll') }}
+        </button>
+        <button
+          v-if="selectedCount > 0"
+          @click="deselectAll"
+          class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded-md transition-colors"
+        >
+          {{ t('imageControls.deselectAll') }}
+        </button>
+      </div>
+      <!-- Größe Controls (nur bei Einzelauswahl) -->
+      <div v-if="!isMultiSelection && selectedImage">
         <div class="flex items-center justify-between mb-2">
           <label class="text-sm font-medium">{{ t('imageControls.size') }}</label>
           <button
@@ -314,18 +355,18 @@ function resetImageChanges() {
           </div>
         </div>
         <p class="text-xs text-muted mt-1">
-          💡 {{ t('imageControls.shiftHint') }}
+          {{ t('imageControls.shiftHint') }}
         </p>
       </div>
 
       <!-- Rotation Control -->
-      <div>
+      <div v-if="displayImage">
         <label class="block text-sm font-medium mb-2">
-          {{ t('controls.rotate') }}: {{ Math.round(selectedImage.rotation) }}°
+          {{ t('controls.rotate') }}: {{ Math.round(displayImage.rotation) }}°
         </label>
         <input
           type="range"
-          :value="selectedImage.rotation"
+          :value="displayImage.rotation"
           @input="updateRotation(Number(($event.target as HTMLInputElement).value))"
           min="0"
           max="360"
@@ -334,13 +375,13 @@ function resetImageChanges() {
       </div>
 
       <!-- Opacity Control -->
-      <div>
+      <div v-if="displayImage">
         <label class="block text-sm font-medium mb-2">
-          {{ t('imageControls.opacity') }}: {{ Math.round(selectedImage.opacity * 100) }}%
+          {{ t('imageControls.opacity') }}: {{ Math.round(displayImage.opacity * 100) }}%
         </label>
         <input
           type="range"
-          :value="selectedImage.opacity"
+          :value="displayImage.opacity"
           @input="updateOpacity(Number(($event.target as HTMLInputElement).value))"
           min="0"
           max="1"
@@ -350,13 +391,13 @@ function resetImageChanges() {
       </div>
 
       <!-- Border Radius Control -->
-      <div>
+      <div v-if="displayImage">
         <label class="block text-sm font-medium mb-2">
-          {{ t('imageControls.borderRadius') }}: {{ Math.round(selectedImage.borderRadius) }}px
+          {{ t('imageControls.borderRadius') }}: {{ Math.round(displayImage.borderRadius) }}px
         </label>
         <input
           type="range"
-          :value="selectedImage.borderRadius"
+          :value="displayImage.borderRadius"
           @input="updateBorderRadius(Number(($event.target as HTMLInputElement).value))"
           min="0"
           max="100"
@@ -365,18 +406,18 @@ function resetImageChanges() {
       </div>
 
       <!-- Bildbearbeitungs-Filter -->
-      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+      <div v-if="displayImage" class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <h4 class="text-sm font-semibold mb-3">{{ t('imageControls.imageFilters') }}</h4>
 
         <div class="space-y-3">
           <!-- Helligkeit -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.brightness') }}: {{ Math.round(selectedImage.brightness ?? 100) }}%
+              {{ t('imageControls.brightness') }}: {{ Math.round(displayImage.brightness ?? 100) }}%
             </label>
             <input
               type="range"
-              :value="selectedImage.brightness ?? 100"
+              :value="displayImage.brightness ?? 100"
               @input="updateBrightness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
@@ -387,11 +428,11 @@ function resetImageChanges() {
           <!-- Kontrast -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.contrast') }}: {{ Math.round(selectedImage.contrast ?? 100) }}%
+              {{ t('imageControls.contrast') }}: {{ Math.round(displayImage.contrast ?? 100) }}%
             </label>
             <input
               type="range"
-              :value="selectedImage.contrast ?? 100"
+              :value="displayImage.contrast ?? 100"
               @input="updateContrast(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
@@ -402,11 +443,11 @@ function resetImageChanges() {
           <!-- Lichter -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.highlights') }}: {{ Math.round(selectedImage.highlights ?? 0) }}
+              {{ t('imageControls.highlights') }}: {{ Math.round(displayImage.highlights ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.highlights ?? 0"
+              :value="displayImage.highlights ?? 0"
               @input="updateHighlights(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
@@ -417,11 +458,11 @@ function resetImageChanges() {
           <!-- Tiefen -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadows') }}: {{ Math.round(selectedImage.shadows ?? 0) }}
+              {{ t('imageControls.shadows') }}: {{ Math.round(displayImage.shadows ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.shadows ?? 0"
+              :value="displayImage.shadows ?? 0"
               @input="updateShadows(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
@@ -432,11 +473,11 @@ function resetImageChanges() {
           <!-- Sättigung -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.saturation') }}: {{ Math.round(selectedImage.saturation ?? 100) }}%
+              {{ t('imageControls.saturation') }}: {{ Math.round(displayImage.saturation ?? 100) }}%
             </label>
             <input
               type="range"
-              :value="selectedImage.saturation ?? 100"
+              :value="displayImage.saturation ?? 100"
               @input="updateSaturation(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
@@ -447,11 +488,11 @@ function resetImageChanges() {
           <!-- Wärme -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.warmth') }}: {{ Math.round(selectedImage.warmth ?? 0) }}
+              {{ t('imageControls.warmth') }}: {{ Math.round(displayImage.warmth ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.warmth ?? 0"
+              :value="displayImage.warmth ?? 0"
               @input="updateWarmth(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
@@ -462,11 +503,11 @@ function resetImageChanges() {
           <!-- Schärfen -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.sharpness') }}: {{ Math.round(selectedImage.sharpness ?? 0) }}
+              {{ t('imageControls.sharpness') }}: {{ Math.round(displayImage.sharpness ?? 0) }}
             </label>
             <input
               type="range"
-              :value="selectedImage.sharpness ?? 0"
+              :value="displayImage.sharpness ?? 0"
               @input="updateSharpness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="100"
@@ -477,31 +518,31 @@ function resetImageChanges() {
       </div>
 
       <!-- Border Controls -->
-      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+      <div v-if="displayImage" class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('imageControls.border') }}</label>
           <button
             @click="toggleBorder"
             :class="[
               'px-3 py-1 text-xs rounded transition-colors',
-              selectedImage.borderEnabled
+              displayImage.borderEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
                 : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
             ]"
           >
-            {{ selectedImage.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled') }}
+            {{ displayImage.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled') }}
           </button>
         </div>
 
-        <div v-if="selectedImage.borderEnabled" class="space-y-3">
+        <div v-if="displayImage.borderEnabled" class="space-y-3">
           <!-- Border Width -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.borderWidth') }}: {{ selectedImage.borderWidth }}px
+              {{ t('imageControls.borderWidth') }}: {{ displayImage.borderWidth }}px
             </label>
             <input
               type="range"
-              :value="selectedImage.borderWidth"
+              :value="displayImage.borderWidth"
               @input="updateBorderWidth(Number(($event.target as HTMLInputElement).value))"
               min="1"
               max="20"
@@ -515,7 +556,7 @@ function resetImageChanges() {
               {{ t('imageControls.borderStyle') }}
             </label>
             <select
-              :value="selectedImage.borderStyle"
+              :value="displayImage.borderStyle"
               @change="updateBorderStyle(($event.target as HTMLSelectElement).value as any)"
               class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
             >
@@ -534,13 +575,13 @@ function resetImageChanges() {
             <div class="flex gap-2">
               <input
                 type="color"
-                :value="selectedImage.borderColor"
+                :value="displayImage.borderColor"
                 @input="updateBorderColor(($event.target as HTMLInputElement).value)"
                 class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
               />
               <input
                 type="text"
-                :value="selectedImage.borderColor"
+                :value="displayImage.borderColor"
                 @input="updateBorderColor(($event.target as HTMLInputElement).value)"
                 class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
               />
@@ -555,24 +596,24 @@ function resetImageChanges() {
                 @click="toggleBorderShadow"
                 :class="[
                   'px-2 py-1 text-xs rounded transition-colors',
-                  selectedImage.borderShadowEnabled
+                  displayImage.borderShadowEnabled
                     ? 'bg-blue-500 hover:bg-blue-600 text-white'
                     : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
                 ]"
               >
-                {{ selectedImage.borderShadowEnabled ? t('imageControls.borderShadowEnabled') : t('imageControls.borderShadowDisabled') }}
+                {{ displayImage.borderShadowEnabled ? t('imageControls.borderShadowEnabled') : t('imageControls.borderShadowDisabled') }}
               </button>
             </div>
 
-            <div v-if="selectedImage.borderShadowEnabled" class="space-y-2">
+            <div v-if="displayImage.borderShadowEnabled" class="space-y-2">
               <!-- Border Shadow Offset X -->
               <div>
                 <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowOffsetX') }}: {{ selectedImage.borderShadowOffsetX }}px
+                  {{ t('imageControls.borderShadowOffsetX') }}: {{ displayImage.borderShadowOffsetX }}px
                 </label>
                 <input
                   type="range"
-                  :value="selectedImage.borderShadowOffsetX"
+                  :value="displayImage.borderShadowOffsetX"
                   @input="updateBorderShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
                   min="-20"
                   max="20"
@@ -583,11 +624,11 @@ function resetImageChanges() {
               <!-- Border Shadow Offset Y -->
               <div>
                 <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowOffsetY') }}: {{ selectedImage.borderShadowOffsetY }}px
+                  {{ t('imageControls.borderShadowOffsetY') }}: {{ displayImage.borderShadowOffsetY }}px
                 </label>
                 <input
                   type="range"
-                  :value="selectedImage.borderShadowOffsetY"
+                  :value="displayImage.borderShadowOffsetY"
                   @input="updateBorderShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
                   min="-20"
                   max="20"
@@ -598,11 +639,11 @@ function resetImageChanges() {
               <!-- Border Shadow Blur -->
               <div>
                 <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowBlur') }}: {{ selectedImage.borderShadowBlur }}px
+                  {{ t('imageControls.borderShadowBlur') }}: {{ displayImage.borderShadowBlur }}px
                 </label>
                 <input
                   type="range"
-                  :value="selectedImage.borderShadowBlur"
+                  :value="displayImage.borderShadowBlur"
                   @input="updateBorderShadowBlur(Number(($event.target as HTMLInputElement).value))"
                   min="0"
                   max="30"
@@ -618,13 +659,13 @@ function resetImageChanges() {
                 <div class="flex gap-2">
                   <input
                     type="color"
-                    :value="selectedImage.borderShadowColor"
+                    :value="displayImage.borderShadowColor"
                     @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
                     class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
                   />
                   <input
                     type="text"
-                    :value="selectedImage.borderShadowColor"
+                    :value="displayImage.borderShadowColor"
                     @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
                     class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
                   />
@@ -636,31 +677,31 @@ function resetImageChanges() {
       </div>
 
       <!-- Shadow Controls -->
-      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+      <div v-if="displayImage" class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('imageControls.shadow') }}</label>
           <button
             @click="toggleShadow"
             :class="[
               'px-3 py-1 text-xs rounded transition-colors',
-              selectedImage.shadowEnabled
+              displayImage.shadowEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
                 : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
             ]"
           >
-            {{ selectedImage.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled') }}
+            {{ displayImage.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled') }}
           </button>
         </div>
 
-        <div v-if="selectedImage.shadowEnabled" class="space-y-3">
+        <div v-if="displayImage.shadowEnabled" class="space-y-3">
           <!-- Shadow Offset X -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadowOffsetX') }}: {{ selectedImage.shadowOffsetX }}px
+              {{ t('imageControls.shadowOffsetX') }}: {{ displayImage.shadowOffsetX }}px
             </label>
             <input
               type="range"
-              :value="selectedImage.shadowOffsetX"
+              :value="displayImage.shadowOffsetX"
               @input="updateShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
               min="-50"
               max="50"
@@ -671,11 +712,11 @@ function resetImageChanges() {
           <!-- Shadow Offset Y -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadowOffsetY') }}: {{ selectedImage.shadowOffsetY }}px
+              {{ t('imageControls.shadowOffsetY') }}: {{ displayImage.shadowOffsetY }}px
             </label>
             <input
               type="range"
-              :value="selectedImage.shadowOffsetY"
+              :value="displayImage.shadowOffsetY"
               @input="updateShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
               min="-50"
               max="50"
@@ -686,11 +727,11 @@ function resetImageChanges() {
           <!-- Shadow Blur -->
           <div>
             <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadowBlur') }}: {{ selectedImage.shadowBlur }}px
+              {{ t('imageControls.shadowBlur') }}: {{ displayImage.shadowBlur }}px
             </label>
             <input
               type="range"
-              :value="selectedImage.shadowBlur"
+              :value="displayImage.shadowBlur"
               @input="updateShadowBlur(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="50"
@@ -706,13 +747,13 @@ function resetImageChanges() {
             <div class="flex gap-2">
               <input
                 type="color"
-                :value="selectedImage.shadowColor"
+                :value="displayImage.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
                 class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
               />
               <input
                 type="text"
-                :value="selectedImage.shadowColor"
+                :value="displayImage.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
                 class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
               />
@@ -753,12 +794,13 @@ function resetImageChanges() {
         @click="deleteImage"
         class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
       >
-        {{ t('imageControls.delete') }}
+        {{ isMultiSelection ? t('imageControls.deleteMultiple', { count: selectedCount }) : t('imageControls.delete') }}
       </button>
     </div>
 
     <div v-else class="text-center text-muted py-8">
-      {{ t('imageControls.noSelection') }}
+      <p>{{ t('imageControls.noSelection') }}</p>
+      <p class="text-xs mt-2">{{ t('imageControls.ctrlClickHint') }}</p>
     </div>
   </div>
 </template>

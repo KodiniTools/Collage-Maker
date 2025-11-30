@@ -29,7 +29,7 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
 
-watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageId, collage.selectedTextId], () => {
+watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageIds, collage.selectedTextId], () => {
   nextTick(() => renderCanvas())
 }, { deep: true })
 
@@ -409,43 +409,73 @@ async function renderCanvas() {
     context.lineTo(deleteButtonX - xSize / 2, deleteButtonY + xSize / 2)
     context.stroke()
 
-    // Highlight für selektiertes Bild
-    if (collage.selectedImageId === img.id) {
-      context.strokeStyle = '#3b82f6'
-      context.lineWidth = 3
+    // Highlight für ausgewählte Bilder (Mehrfachauswahl)
+    const isSelected = collage.isImageSelected(img.id)
+    const isPrimarySelected = collage.selectedImageId === img.id
+
+    if (isSelected) {
+      // Primär ausgewähltes Bild: Blau, sekundäre: Cyan
+      context.strokeStyle = isPrimarySelected ? '#3b82f6' : '#06b6d4'
+      context.lineWidth = isPrimarySelected ? 3 : 2
       context.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
 
-      // Resize-Handles zeichnen (größer und besser sichtbar)
-      const handleSize = 16
-      const handles = [
-        { x: -img.width / 2, y: -img.height / 2, cursor: 'nw' }, // top-left
-        { x: 0, y: -img.height / 2, cursor: 'n' }, // top-center
-        { x: img.width / 2, y: -img.height / 2, cursor: 'ne' }, // top-right
-        { x: img.width / 2, y: 0, cursor: 'e' }, // middle-right
-        { x: img.width / 2, y: img.height / 2, cursor: 'se' }, // bottom-right
-        { x: 0, y: img.height / 2, cursor: 's' }, // bottom-center
-        { x: -img.width / 2, y: img.height / 2, cursor: 'sw' }, // bottom-left
-        { x: -img.width / 2, y: 0, cursor: 'w' }, // middle-left
-      ]
+      // Resize-Handles nur für das primär ausgewählte Bild zeichnen
+      if (isPrimarySelected) {
+        const handleSize = 16
+        const handles = [
+          { x: -img.width / 2, y: -img.height / 2, cursor: 'nw' }, // top-left
+          { x: 0, y: -img.height / 2, cursor: 'n' }, // top-center
+          { x: img.width / 2, y: -img.height / 2, cursor: 'ne' }, // top-right
+          { x: img.width / 2, y: 0, cursor: 'e' }, // middle-right
+          { x: img.width / 2, y: img.height / 2, cursor: 'se' }, // bottom-right
+          { x: 0, y: img.height / 2, cursor: 's' }, // bottom-center
+          { x: -img.width / 2, y: img.height / 2, cursor: 'sw' }, // bottom-left
+          { x: -img.width / 2, y: 0, cursor: 'w' }, // middle-left
+        ]
 
-      // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
-      context.fillStyle = '#ffffff'
-      context.strokeStyle = '#3b82f6'
-      context.lineWidth = 2
-      handles.forEach(handle => {
-        context.fillRect(
-          handle.x - handleSize / 2,
-          handle.y - handleSize / 2,
-          handleSize,
-          handleSize
-        )
-        context.strokeRect(
-          handle.x - handleSize / 2,
-          handle.y - handleSize / 2,
-          handleSize,
-          handleSize
-        )
-      })
+        // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
+        context.fillStyle = '#ffffff'
+        context.strokeStyle = '#3b82f6'
+        context.lineWidth = 2
+        handles.forEach(handle => {
+          context.fillRect(
+            handle.x - handleSize / 2,
+            handle.y - handleSize / 2,
+            handleSize,
+            handleSize
+          )
+          context.strokeRect(
+            handle.x - handleSize / 2,
+            handle.y - handleSize / 2,
+            handleSize,
+            handleSize
+          )
+        })
+      }
+
+      // Auswahl-Indikator für Mehrfachauswahl (kleine Markierung oben links)
+      if (collage.selectedImageIds.length > 1) {
+        const checkSize = 18
+        const checkX = -img.width / 2 + 8
+        const checkY = -img.height / 2 + 8
+
+        // Grüner Kreis mit Häkchen
+        context.fillStyle = '#22c55e'
+        context.beginPath()
+        context.arc(checkX, checkY, checkSize / 2, 0, Math.PI * 2)
+        context.fill()
+
+        // Weißes Häkchen
+        context.strokeStyle = '#ffffff'
+        context.lineWidth = 2
+        context.lineCap = 'round'
+        context.lineJoin = 'round'
+        context.beginPath()
+        context.moveTo(checkX - 4, checkY)
+        context.lineTo(checkX - 1, checkY + 3)
+        context.lineTo(checkX + 5, checkY - 4)
+        context.stroke()
+      }
     }
 
     context.restore()
@@ -665,11 +695,23 @@ function handleMouseDown(e: MouseEvent) {
     )
 
   if (clickedImage) {
-    collage.selectImage(clickedImage.id)
+    // Ctrl/Cmd+Click für Mehrfachauswahl
+    if (e.ctrlKey || e.metaKey) {
+      collage.toggleImageSelection(clickedImage.id)
+      // Bei Mehrfachauswahl: Dragging nur starten, wenn das Bild bereits ausgewählt war
+      if (collage.isImageSelected(clickedImage.id)) {
+        isDragging.value = true
+        dragStartPos.value = { x, y }
+        dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
+      }
+    } else {
+      // Normaler Klick: Ersetzt die Auswahl
+      collage.selectImage(clickedImage.id)
+      isDragging.value = true
+      dragStartPos.value = { x, y }
+      dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
+    }
     collage.selectText(null) // Text explizit deselektieren beim Bildklick
-    isDragging.value = true
-    dragStartPos.value = { x, y }
-    dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
   } else {
     collage.selectImage(null)
     collage.selectText(null)
@@ -813,9 +855,22 @@ function handleMouseUp() {
 }
 
 function handleKeyDown(e: KeyboardEvent) {
-  if ((e.key === 'Delete' || e.key === 'Backspace') && collage.selectedImageId) {
+  // Delete/Backspace: Alle ausgewählten Bilder löschen
+  if ((e.key === 'Delete' || e.key === 'Backspace') && collage.selectedImageIds.length > 0) {
     e.preventDefault()
-    collage.removeImage(collage.selectedImageId)
+    collage.removeSelectedImages()
+  }
+
+  // Ctrl/Cmd+A: Alle Canvas-Bilder auswählen
+  if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+    e.preventDefault()
+    collage.selectAllCanvasImages()
+  }
+
+  // Escape: Auswahl aufheben
+  if (e.key === 'Escape') {
+    collage.deselectAllImages()
+    collage.selectText(null)
   }
 }
 
