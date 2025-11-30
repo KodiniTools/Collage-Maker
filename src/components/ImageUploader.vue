@@ -3,12 +3,14 @@ import { ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useToastStore } from '@/stores/toast'
 import { useI18n } from 'vue-i18n'
+import { compressImages } from '@/utils/imageCompression'
 
 const collage = useCollageStore()
 const toast = useToastStore()
 const { t } = useI18n()
 
 const isDragging = ref(false)
+const isProcessing = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 
 function handleDrop(e: DragEvent) {
@@ -23,7 +25,7 @@ function handleFileSelect(e: Event) {
   processFiles(files)
 }
 
-function processFiles(files: File[]) {
+async function processFiles(files: File[]) {
   const validFiles = files.filter(file => {
     const isImage = file.type.startsWith('image/')
     const isValidSize = file.size <= 50 * 1024 * 1024 // 50MB
@@ -31,8 +33,17 @@ function processFiles(files: File[]) {
   })
 
   if (validFiles.length > 0) {
-    collage.addImages(validFiles)
-    toast.success(t('toast.uploadSuccess', { count: validFiles.length }))
+    isProcessing.value = true
+    try {
+      // Compress large images for better canvas performance
+      const compressedFiles = await compressImages(validFiles)
+      collage.addImages(compressedFiles)
+      toast.success(t('toast.uploadSuccess', { count: validFiles.length }))
+    } catch {
+      toast.error(t('toast.uploadError'))
+    } finally {
+      isProcessing.value = false
+    }
   }
 }
 
@@ -62,17 +73,25 @@ function openFileDialog() {
           : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5'
       ]"
     >
-      <!-- upload icon -->
+      <!-- upload icon / loading spinner -->
       <div class="flex flex-col items-center gap-2">
         <div :class="[
           'p-3 rounded-full transition-colors',
           isDragging ? 'bg-accent text-slate-dark' : 'bg-muted/20 dark:bg-slate/30 text-muted dark:text-muted-light'
         ]">
-          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <!-- Loading spinner -->
+          <svg v-if="isProcessing" class="h-8 w-8 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <!-- Upload icon -->
+          <svg v-else class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
         </div>
-        <p class="text-xs text-muted dark:text-muted">{{ t('upload.formats') }}</p>
+        <p class="text-xs text-muted dark:text-muted">
+          {{ isProcessing ? t('upload.processing') : t('upload.formats') }}
+        </p>
       </div>
 
       <input
