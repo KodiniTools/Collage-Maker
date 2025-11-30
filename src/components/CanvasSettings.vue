@@ -21,8 +21,8 @@ function updateZoom(value: number) {
   collage.setCanvasZoom(value)
 }
 
-function resetZoom() {
-  collage.setCanvasZoom(1)
+function resetView() {
+  collage.resetCanvasView()
 }
 </script>
 
@@ -92,10 +92,10 @@ function resetZoom() {
             {{ t('canvas.zoom') }}: {{ Math.round(collage.canvasZoom * 100) }}%
           </label>
           <button
-            @click="resetZoom"
+            @click="resetView"
             class="text-xs px-2 py-1 bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded transition-colors"
           >
-            {{ t('canvas.resetZoom') }}
+            {{ t('canvas.resetView') }}
           </button>
         </div>
         <input

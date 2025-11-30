@@ -7,10 +7,13 @@ const canvas = ref<HTMLCanvasElement | null>(null)
 const container = ref<HTMLDivElement | null>(null)
 const isDragging = ref(false)
 const isResizing = ref(false)
+const isPanning = ref(false)
+const spacePressed = ref(false)
 const resizeHandle = ref<string | null>(null)
 const dragStartPos = ref({ x: 0, y: 0 })
 const dragImageStart = ref({ x: 0, y: 0 })
 const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
+const panStart = ref({ x: 0, y: 0, panX: 0, panY: 0 })
 const shiftPressed = ref(false)
 const initialAspectRatio = ref(1)
 
@@ -23,10 +26,12 @@ onMounted(() => {
     renderCanvas()
   }
   window.addEventListener('keydown', handleKeyDown)
+  window.addEventListener('keyup', handleKeyUp)
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
+  window.removeEventListener('keyup', handleKeyUp)
 })
 
 watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageIds, collage.selectedTextId], () => {
@@ -608,13 +613,24 @@ function isDeleteButtonClicked(x: number, y: number, img: any): boolean {
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
+  // Pan-Modus: Leertaste gedrückt oder mittlere Maustaste
+  if (spacePressed.value || e.button === 1) {
+    e.preventDefault()
+    isPanning.value = true
+    panStart.value = {
+      x: e.clientX,
+      y: e.clientY,
+      panX: collage.canvasPanX,
+      panY: collage.canvasPanY
+    }
+    return
+  }
+
   const rect = canvas.value.getBoundingClientRect()
-  // Berücksichtige Zoom beim Berechnen der Koordinaten
+  // Berücksichtige Zoom und Pan beim Berechnen der Koordinaten
   const zoom = collage.canvasZoom
-  const scaleX = collage.settings.width / (rect.width / zoom)
-  const scaleY = collage.settings.height / (rect.height / zoom)
-  const x = (e.clientX - rect.left) * scaleX / zoom
-  const y = (e.clientY - rect.top) * scaleY / zoom
+  const x = (e.clientX - rect.left - collage.canvasPanX) / zoom
+  const y = (e.clientY - rect.top - collage.canvasPanY) / zoom
 
   // Prüfe ob ein Löschbutton angeklickt wurde (NUR Canvas-Instanzen, keine Templates!)
   const clickedDeleteImage = collage.images
@@ -722,15 +738,22 @@ function handleMouseDown(e: MouseEvent) {
 
 function handleMouseMove(e: MouseEvent) {
   if (!canvas.value) return
+
+  // Pan-Modus: Verschiebe die Ansicht
+  if (isPanning.value) {
+    const dx = e.clientX - panStart.value.x
+    const dy = e.clientY - panStart.value.y
+    collage.setCanvasPan(panStart.value.panX + dx, panStart.value.panY + dy)
+    return
+  }
+
   if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
 
   const rect = canvas.value.getBoundingClientRect()
-  // Berücksichtige Zoom beim Berechnen der Koordinaten
+  // Berücksichtige Zoom und Pan beim Berechnen der Koordinaten
   const zoom = collage.canvasZoom
-  const scaleX = collage.settings.width / (rect.width / zoom)
-  const scaleY = collage.settings.height / (rect.height / zoom)
-  const x = (e.clientX - rect.left) * scaleX / zoom
-  const y = (e.clientY - rect.top) * scaleY / zoom
+  const x = (e.clientX - rect.left - collage.canvasPanX) / zoom
+  const y = (e.clientY - rect.top - collage.canvasPanY) / zoom
 
   // Text-Drag-Funktionalität
   if (isDragging.value && collage.selectedTextId && collage.selectedText) {
@@ -855,10 +878,16 @@ function handleMouseMove(e: MouseEvent) {
 function handleMouseUp() {
   isDragging.value = false
   isResizing.value = false
+  isPanning.value = false
   resizeHandle.value = null
 }
 
 function handleKeyDown(e: KeyboardEvent) {
+  // Leertaste für Pan-Modus
+  if (e.code === 'Space' && !spacePressed.value) {
+    spacePressed.value = true
+  }
+
   // Delete/Backspace: Alle ausgewählten Bilder löschen
   if ((e.key === 'Delete' || e.key === 'Backspace') && collage.selectedImageIds.length > 0) {
     e.preventDefault()
@@ -878,6 +907,12 @@ function handleKeyDown(e: KeyboardEvent) {
   }
 }
 
+function handleKeyUp(e: KeyboardEvent) {
+  if (e.code === 'Space') {
+    spacePressed.value = false
+  }
+}
+
 // Drag-Drop Funktionalität für Bilder aus der Galerie
 function handleDragOver(e: DragEvent) {
   e.preventDefault()
@@ -894,14 +929,11 @@ function handleDrop(e: DragEvent) {
   const imageId = e.dataTransfer.getData('imageId')
   if (!imageId) return
 
-  // Berechne die Drop-Position relativ zum Canvas
+  // Berechne die Drop-Position relativ zum Canvas (mit Zoom und Pan)
   const rect = canvas.value.getBoundingClientRect()
-  // Berücksichtige Zoom beim Berechnen der Koordinaten
   const zoom = collage.canvasZoom
-  const scaleX = collage.settings.width / (rect.width / zoom)
-  const scaleY = collage.settings.height / (rect.height / zoom)
-  const x = (e.clientX - rect.left) * scaleX / zoom
-  const y = (e.clientY - rect.top) * scaleY / zoom
+  const x = (e.clientX - rect.left - collage.canvasPanX) / zoom
+  const y = (e.clientY - rect.top - collage.canvasPanY) / zoom
 
   // Dupliziere das Bild an der Drop-Position
   collage.duplicateImageToPosition(imageId, x, y)
@@ -918,23 +950,37 @@ watch(() => collage.images, (newImages, oldImages) => {
 </script>
 
 <template>
-  <div ref="container" class="w-full flex items-center justify-center bg-muted/10 dark:bg-slate/30 rounded-lg p-4 overflow-auto">
+  <div ref="container" class="w-full bg-muted/10 dark:bg-slate/30 rounded-lg p-4 overflow-hidden relative">
+    <!-- Zoom/Pan Info-Badge -->
     <div
-      class="transition-transform duration-150 origin-center"
-      :style="{ transform: `scale(${collage.canvasZoom})` }"
+      v-if="collage.canvasZoom !== 1 || collage.canvasPanX !== 0 || collage.canvasPanY !== 0"
+      class="absolute top-2 right-2 z-10 bg-slate-dark/80 text-surface-light text-xs px-2 py-1 rounded"
     >
-      <canvas
-        ref="canvas"
-        tabindex="-1"
-        @mousedown.prevent="handleMouseDown"
-        @mousemove="handleMouseMove"
-        @mouseup="handleMouseUp"
-        @mouseleave="handleMouseUp"
-        @dragover="handleDragOver"
-        @drop="handleDrop"
-        class="shadow-lg cursor-move outline-none"
-        style="image-rendering: high-quality;"
-      />
+      {{ Math.round(collage.canvasZoom * 100) }}%
+    </div>
+    <!-- Viewport Container -->
+    <div class="w-full flex items-center justify-center min-h-[400px]">
+      <div
+        class="origin-top-left"
+        :style="{
+          transform: `translate(${collage.canvasPanX}px, ${collage.canvasPanY}px) scale(${collage.canvasZoom})`,
+          transformOrigin: 'center center'
+        }"
+      >
+        <canvas
+          ref="canvas"
+          tabindex="-1"
+          @mousedown.prevent="handleMouseDown"
+          @mousemove="handleMouseMove"
+          @mouseup="handleMouseUp"
+          @mouseleave="handleMouseUp"
+          @dragover="handleDragOver"
+          @drop="handleDrop"
+          class="shadow-lg outline-none"
+          :class="[spacePressed || isPanning ? 'cursor-grab' : 'cursor-move', isPanning && 'cursor-grabbing']"
+          style="image-rendering: high-quality;"
+        />
+      </div>
     </div>
   </div>
 </template>

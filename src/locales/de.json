@@ -29,8 +29,8 @@
     "height": "Höhe",
     "background": "Hintergrund",
     "zoom": "Zoom",
-    "resetZoom": "Zurücksetzen",
-    "zoomHint": "Zoom betrifft nur die Anzeige, nicht den Export"
+    "resetView": "Ansicht zurücksetzen",
+    "zoomHint": "Leertaste + Ziehen zum Verschieben. Zoom und Verschiebung betreffen nur die Anzeige, nicht den Export."
   },
   "images": {
     "title": "Bilder",
