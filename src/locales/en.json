@@ -7,7 +7,8 @@
     "title": "Upload Images",
     "dragDrop": "Drag images here or click",
     "button": "Select Images",
-    "formats": "PNG, JPG, WebP (max. 50MB per image)"
+    "formats": "PNG, JPG, WebP (max. 50MB per image)",
+    "processing": "Optimizing images..."
   },
   "layout": {
     "title": "Layout",
@@ -183,6 +184,7 @@
   },
   "toast": {
     "uploadSuccess": "{count} image(s) uploaded successfully",
+    "uploadError": "Error processing images",
     "exportSuccess": "Collage exported successfully",
     "exportError": "Error exporting collage"
   },

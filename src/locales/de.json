@@ -7,7 +7,8 @@
     "title": "Bilder hochladen",
     "dragDrop": "Bilder hierher ziehen oder klicken",
     "button": "Bilder auswählen",
-    "formats": "PNG, JPG, WebP (max. 50MB pro Bild)"
+    "formats": "PNG, JPG, WebP (max. 50MB pro Bild)",
+    "processing": "Bilder werden optimiert..."
   },
   "layout": {
     "title": "Layout",
@@ -183,6 +184,7 @@
   },
   "toast": {
     "uploadSuccess": "{count} Bild(er) erfolgreich hochgeladen",
+    "uploadError": "Fehler beim Verarbeiten der Bilder",
     "exportSuccess": "Collage erfolgreich exportiert",
     "exportError": "Fehler beim Exportieren der Collage"
   },
