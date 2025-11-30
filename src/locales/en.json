@@ -27,7 +27,10 @@
     "size": "Canvas Size",
     "width": "Width",
     "height": "Height",
-    "background": "Background"
+    "background": "Background",
+    "zoom": "Zoom",
+    "resetZoom": "Reset",
+    "zoomHint": "Zoom only affects display, not the export"
   },
   "images": {
     "title": "Images",
