@@ -43,6 +43,10 @@
     "title": "Exportieren",
     "format": "Format",
     "quality": "Qualität",
+    "preview": "Vorschau",
+    "previewTitle": "Vorschau der Collage",
+    "previewAlt": "Vorschau der fertigen Collage",
+    "close": "Schließen",
     "download": "Herunterladen"
   },
   "controls": {
