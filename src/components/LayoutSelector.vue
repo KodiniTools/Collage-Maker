@@ -33,11 +33,11 @@ function selectLayout(layout: LayoutType) {
         :key="layout.value"
         @click="selectLayout(layout.value)"
         :class="[
-          'p-3 rounded-lg border-2 transition-all duration-200 text-sm font-medium',
+          'p-3 rounded-lg border-2 transition-colors duration-150 text-sm font-medium',
           'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark',
           collage.settings.layout === layout.value
-            ? 'border-accent bg-accent/10 dark:bg-accent/5 text-slate-dark dark:text-muted-light scale-[1.02]'
-            : 'border-muted/50 dark:border-slate hover:border-accent hover:scale-[1.02]'
+            ? 'border-accent bg-accent/10 dark:bg-accent/5 text-slate-dark dark:text-muted-light'
+            : 'border-muted/50 dark:border-slate hover:border-accent'
         ]"
         :aria-pressed="collage.settings.layout === layout.value"
       >

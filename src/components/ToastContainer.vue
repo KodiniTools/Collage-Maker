@@ -7,19 +7,18 @@ const toast = useToastStore()
 <template>
   <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm" role="alert" aria-live="polite">
     <TransitionGroup
-      enter-active-class="transition-all duration-300 ease-out"
-      leave-active-class="transition-all duration-200 ease-in"
-      enter-from-class="opacity-0 translate-x-8 scale-95"
-      enter-to-class="opacity-100 translate-x-0 scale-100"
-      leave-from-class="opacity-100 translate-x-0 scale-100"
-      leave-to-class="opacity-0 translate-x-8 scale-95"
+      enter-active-class="transition-[opacity,transform] duration-200 ease-out"
+      leave-active-class="transition-[opacity,transform] duration-150 ease-in"
+      enter-from-class="opacity-0 translate-x-4"
+      enter-to-class="opacity-100 translate-x-0"
+      leave-from-class="opacity-100 translate-x-0"
+      leave-to-class="opacity-0 translate-x-4"
     >
       <div
         v-for="t in toast.toasts"
         :key="t.id"
         :class="[
           'px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 cursor-pointer',
-          'transform transition-transform hover:scale-[1.02]',
           t.type === 'success' && 'bg-green-600 text-white',
           t.type === 'error' && 'bg-red-600 text-white',
           t.type === 'info' && 'bg-slate text-white'

@@ -7,7 +7,7 @@ const settings = useSettingsStore()
 <template>
   <button
     @click="settings.toggleTheme"
-    class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/50 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
+    class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
     :aria-label="settings.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
     :title="settings.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
   >

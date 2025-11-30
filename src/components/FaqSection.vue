@@ -44,8 +44,8 @@ function toggleQuestion(index: number) {
           </button>
 
           <transition
-            enter-active-class="transition-all duration-200 ease-out"
-            leave-active-class="transition-all duration-200 ease-in"
+            enter-active-class="transition-[max-height,opacity] duration-150 ease-out"
+            leave-active-class="transition-[max-height,opacity] duration-150 ease-in"
             enter-from-class="max-h-0 opacity-0"
             enter-to-class="max-h-96 opacity-100"
             leave-from-class="max-h-96 opacity-100"

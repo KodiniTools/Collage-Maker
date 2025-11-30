@@ -414,7 +414,7 @@ async function exportCollage() {
     <button
       @click="exportCollage"
       :disabled="collage.images.length === 0 || isExporting"
-      class="w-full px-4 py-3 bg-accent hover:bg-accent-dark disabled:bg-muted/50 text-slate-dark font-medium rounded-lg transition-all duration-200 hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
+      class="w-full px-4 py-3 bg-accent hover:bg-accent-dark disabled:bg-muted/50 text-slate-dark font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
       aria-label="Download collage"
     >
       <!-- loading spinner -->
@@ -433,7 +433,7 @@ async function exportCollage() {
     <button
       @click="collage.clearCollage"
       :disabled="collage.images.length === 0"
-      class="w-full px-4 py-2 border border-warm text-warm hover:bg-warm/10 dark:hover:bg-warm/5 disabled:opacity-50 font-medium rounded-lg transition-all duration-200 hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-warm focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
+      class="w-full px-4 py-2 border border-warm text-warm hover:bg-warm/10 dark:hover:bg-warm/5 disabled:opacity-50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
       aria-label="Clear all images"
     >
       {{ t('controls.clear') }}

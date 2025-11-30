@@ -17,10 +17,10 @@ function switchLocale(newLocale: Locale) {
     <button
       @click="switchLocale('de')"
       :class="[
-        'px-3 py-1 rounded text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent',
+        'px-3 py-1 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent',
         settings.locale === 'de'
           ? 'bg-surface-light dark:bg-surface-dark shadow'
-          : 'hover:bg-muted/30 dark:hover:bg-slate/70 hover:scale-105'
+          : 'hover:bg-muted/30 dark:hover:bg-slate/70'
       ]"
       :aria-pressed="settings.locale === 'de'"
       aria-label="Deutsch"
@@ -30,10 +30,10 @@ function switchLocale(newLocale: Locale) {
     <button
       @click="switchLocale('en')"
       :class="[
-        'px-3 py-1 rounded text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent',
+        'px-3 py-1 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent',
         settings.locale === 'en'
           ? 'bg-surface-light dark:bg-surface-dark shadow'
-          : 'hover:bg-muted/30 dark:hover:bg-slate/70 hover:scale-105'
+          : 'hover:bg-muted/30 dark:hover:bg-slate/70'
       ]"
       :aria-pressed="settings.locale === 'en'"
       aria-label="English"

@@ -55,11 +55,11 @@ function openFileDialog() {
       tabindex="0"
       :aria-label="t('upload.dragDrop')"
       :class="[
-        'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-200',
+        'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors duration-150',
         'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark',
         isDragging
-          ? 'border-accent bg-accent/10 dark:bg-accent/5 scale-[1.02]'
-          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5 hover:scale-[1.01]'
+          ? 'border-accent bg-accent/10 dark:bg-accent/5'
+          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5'
       ]"
     >
       <!-- upload icon -->
