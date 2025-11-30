@@ -87,6 +87,10 @@ async function renderCanvas() {
   // Type guard: ctx ist ab hier garantiert nicht null
   const context = ctx
 
+  // Save scroll position before potential layout change
+  const scrollY = window.scrollY
+  const scrollX = window.scrollX
+
   canvas.value.width = collage.settings.width
   canvas.value.height = collage.settings.height
 
@@ -501,6 +505,13 @@ async function renderCanvas() {
 
     context.restore()
   }
+
+  // Restore scroll position after all rendering is complete (prevents jump)
+  requestAnimationFrame(() => {
+    if (window.scrollY !== scrollY || window.scrollX !== scrollX) {
+      window.scrollTo(scrollX, scrollY)
+    }
+  })
 }
 
 function getResizeHandle(x: number, y: number, img: any): string | null {
@@ -846,16 +857,17 @@ watch(() => collage.images, (newImages, oldImages) => {
 </script>
 
 <template>
-  <div ref="container" class="w-full h-full flex items-center justify-center bg-muted/10 dark:bg-slate/30 rounded-lg p-4">
+  <div ref="container" class="w-full flex items-center justify-center bg-muted/10 dark:bg-slate/30 rounded-lg p-4">
     <canvas
       ref="canvas"
-      @mousedown="handleMouseDown"
+      tabindex="-1"
+      @mousedown.prevent="handleMouseDown"
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
       @dragover="handleDragOver"
       @drop="handleDrop"
-      class="max-w-full max-h-full shadow-lg cursor-move"
+      class="max-w-full shadow-lg cursor-move outline-none"
       style="image-rendering: high-quality;"
     />
   </div>
