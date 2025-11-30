@@ -27,7 +27,10 @@
     "size": "Canvas-Größe",
     "width": "Breite",
     "height": "Höhe",
-    "background": "Hintergrund"
+    "background": "Hintergrund",
+    "zoom": "Zoom",
+    "resetView": "Ansicht zurücksetzen",
+    "zoomHint": "Leertaste + Ziehen zum Verschieben. Zoom und Verschiebung betreffen nur die Anzeige, nicht den Export."
   },
   "images": {
     "title": "Bilder",

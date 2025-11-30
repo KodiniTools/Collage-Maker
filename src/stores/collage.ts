@@ -9,6 +9,9 @@ export const useCollageStore = defineStore('collage', () => {
   const texts = ref<CollageText[]>([])
   const selectedTextId = ref<string | null>(null)
   const lockAspectRatio = ref(true)
+  const canvasZoom = ref(1) // Zoom-Level für Canvas-Anzeige (1 = 100%)
+  const canvasPanX = ref(0) // Pan-Offset X für Canvas-Anzeige
+  const canvasPanY = ref(0) // Pan-Offset Y für Canvas-Anzeige
 
   const settings = ref<CollageSettings>({
     width: 1200,
@@ -387,6 +390,22 @@ export const useCollageStore = defineStore('collage', () => {
     lockAspectRatio.value = value
   }
 
+  function setCanvasZoom(value: number) {
+    // Begrenzen zwischen 25% und 200%
+    canvasZoom.value = Math.max(0.25, Math.min(2, value))
+  }
+
+  function setCanvasPan(x: number, y: number) {
+    canvasPanX.value = x
+    canvasPanY.value = y
+  }
+
+  function resetCanvasView() {
+    canvasZoom.value = 1
+    canvasPanX.value = 0
+    canvasPanY.value = 0
+  }
+
   function duplicateImageToPosition(sourceId: string, x: number, y: number) {
     const sourceImage = images.value.find(img => img.id === sourceId)
     if (!sourceImage) return
@@ -552,6 +571,9 @@ export const useCollageStore = defineStore('collage', () => {
     // Einstellungen
     settings,
     lockAspectRatio,
+    canvasZoom,
+    canvasPanX,
+    canvasPanY,
     // Bild-Funktionen
     addImages,
     removeImage,
@@ -573,6 +595,9 @@ export const useCollageStore = defineStore('collage', () => {
     clearCollage,
     updateSettings,
     setLockAspectRatio,
+    setCanvasZoom,
+    setCanvasPan,
+    resetCanvasView,
     duplicateImageToPosition,
     saveAsTemplate,
     loadFromTemplate

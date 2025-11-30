@@ -16,6 +16,14 @@ function updateHeight(value: number) {
 function updateBackgroundColor(value: string) {
   collage.updateSettings({ backgroundColor: value })
 }
+
+function updateZoom(value: number) {
+  collage.setCanvasZoom(value)
+}
+
+function resetView() {
+  collage.resetCanvasView()
+}
 </script>
 
 <template>
@@ -75,6 +83,33 @@ function updateBackgroundColor(value: string) {
             class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
           />
         </div>
+      </div>
+
+      <!-- Zoom Control -->
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-sm font-medium">
+            {{ t('canvas.zoom') }}: {{ Math.round(collage.canvasZoom * 100) }}%
+          </label>
+          <button
+            @click="resetView"
+            class="text-xs px-2 py-1 bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded transition-colors"
+          >
+            {{ t('canvas.resetView') }}
+          </button>
+        </div>
+        <input
+          type="range"
+          :value="collage.canvasZoom"
+          @input="updateZoom(Number(($event.target as HTMLInputElement).value))"
+          min="0.25"
+          max="2"
+          step="0.05"
+          class="w-full"
+        />
+        <p class="text-xs text-muted mt-1">
+          {{ t('canvas.zoomHint') }}
+        </p>
       </div>
     </div>
   </div>
