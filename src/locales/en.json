@@ -7,7 +7,7 @@
     "title": "Upload Images",
     "dragDrop": "Drag images here or click",
     "button": "Select Images",
-    "formats": "PNG, JPG, WebP (max. 10MB per image)"
+    "formats": "PNG, JPG, WebP (max. 50MB per image)"
   },
   "layout": {
     "title": "Layout",
@@ -194,7 +194,7 @@
       },
       {
         "question": "Which image formats are supported?",
-        "answer": "The application supports PNG, JPG, and WebP formats. The maximum file size per image is 10MB."
+        "answer": "The application supports PNG, JPG, and WebP formats. The maximum file size per image is 50MB."
       },
       {
         "question": "Can I save my collage and continue editing it later?",
