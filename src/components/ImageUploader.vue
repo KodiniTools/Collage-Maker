@@ -47,18 +47,25 @@ function openFileDialog() {
       @dragleave="isDragging = false"
       @click="openFileDialog"
       :class="[
-        'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
+        'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all',
         isDragging
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-          : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+          ? 'border-accent bg-accent/10 dark:bg-accent/5'
+          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5'
       ]"
     >
-      <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <p class="mt-2 text-sm font-medium">{{ t('upload.dragDrop') }}</p>
-      <p class="mt-1 text-xs text-gray-500">{{ t('upload.formats') }}</p>
-      
+      <!-- upload icon -->
+      <div class="flex flex-col items-center gap-2">
+        <div :class="[
+          'p-3 rounded-full transition-colors',
+          isDragging ? 'bg-accent text-slate-dark' : 'bg-muted/20 dark:bg-slate/30 text-muted dark:text-muted-light'
+        ]">
+          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+        </div>
+        <p class="text-xs text-muted dark:text-muted">{{ t('upload.formats') }}</p>
+      </div>
+
       <input
         ref="fileInput"
         type="file"

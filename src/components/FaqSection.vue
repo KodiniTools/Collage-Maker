@@ -17,7 +17,7 @@ function toggleQuestion(index: number) {
 </script>
 
 <template>
-  <section class="border-t border-gray-200 dark:border-gray-800 py-12">
+  <section class="border-t border-muted/30 dark:border-slate/30 py-12">
     <div class="container mx-auto px-4 max-w-4xl">
       <h2 class="text-3xl font-bold text-center mb-8">{{ t('faq.title') }}</h2>
 
@@ -25,11 +25,11 @@ function toggleQuestion(index: number) {
         <div
           v-for="(item, index) in faqQuestions"
           :key="index"
-          class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+          class="border border-muted/30 dark:border-slate/30 rounded-lg overflow-hidden"
         >
           <button
             @click="toggleQuestion(index)"
-            class="w-full px-6 py-4 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors flex items-center justify-between gap-4"
+            class="w-full px-6 py-4 text-left bg-surface-light dark:bg-surface-dark hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors flex items-center justify-between gap-4"
           >
             <span class="font-semibold text-lg">{{ item.question }}</span>
             <svg
@@ -52,7 +52,7 @@ function toggleQuestion(index: number) {
             leave-to-class="max-h-0 opacity-0"
           >
             <div v-show="openIndex === index" class="overflow-hidden">
-              <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+              <div class="px-6 py-4 bg-muted/5 dark:bg-slate/20 text-slate dark:text-muted-light">
                 {{ item.answer }}
               </div>
             </div>

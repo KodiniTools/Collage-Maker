@@ -13,28 +13,28 @@ function switchLocale(newLocale: Locale) {
 </script>
 
 <template>
-  <div class="flex gap-1 p-1 bg-gray-200 dark:bg-gray-700 rounded-lg">
+  <div class="flex gap-1 p-1 bg-muted/20 dark:bg-slate/50 rounded-lg">
     <button
       @click="switchLocale('de')"
       :class="[
         'px-3 py-1 rounded text-sm font-medium transition-colors',
         settings.locale === 'de'
-          ? 'bg-white dark:bg-gray-800 shadow'
-          : 'hover:bg-gray-300 dark:hover:bg-gray-600'
+          ? 'bg-surface-light dark:bg-surface-dark shadow'
+          : 'hover:bg-muted/30 dark:hover:bg-slate/70'
       ]"
     >
-      DE
+      de
     </button>
     <button
       @click="switchLocale('en')"
       :class="[
         'px-3 py-1 rounded text-sm font-medium transition-colors',
         settings.locale === 'en'
-          ? 'bg-white dark:bg-gray-800 shadow'
-          : 'hover:bg-gray-300 dark:hover:bg-gray-600'
+          ? 'bg-surface-light dark:bg-surface-dark shadow'
+          : 'hover:bg-muted/30 dark:hover:bg-slate/70'
       ]"
     >
-      EN
+      en
     </button>
   </div>
 </template>

@@ -358,12 +358,12 @@ async function exportCollage() {
 <template>
   <div class="w-full space-y-4">
     <h2 class="text-lg font-semibold">{{ t('export.title') }}</h2>
-    
+
     <div>
       <label class="block text-sm font-medium mb-2">{{ t('export.format') }}</label>
       <select
         v-model="exportFormat"
-        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+        class="w-full px-3 py-2 rounded-lg border border-muted/50 dark:border-slate bg-surface-light dark:bg-surface-dark"
       >
         <option value="png">PNG</option>
         <option value="jpeg">JPEG</option>
@@ -381,14 +381,14 @@ async function exportCollage() {
         min="0.1"
         max="1"
         step="0.05"
-        class="w-full"
+        class="w-full accent-accent"
       />
     </div>
 
     <button
       @click="exportCollage"
       :disabled="collage.images.length === 0"
-      class="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
+      class="w-full px-4 py-3 bg-accent hover:bg-accent-dark disabled:bg-muted/50 text-slate-dark font-medium rounded-lg transition-colors"
     >
       {{ t('export.download') }}
     </button>
@@ -396,7 +396,7 @@ async function exportCollage() {
     <button
       @click="collage.clearCollage"
       :disabled="collage.images.length === 0"
-      class="w-full px-4 py-2 border border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 font-medium rounded-lg transition-colors"
+      class="w-full px-4 py-2 border border-warm text-warm hover:bg-warm/10 dark:hover:bg-warm/5 disabled:opacity-50 font-medium rounded-lg transition-colors"
     >
       {{ t('controls.clear') }}
     </button>

@@ -846,7 +846,7 @@ watch(() => collage.images, (newImages, oldImages) => {
 </script>
 
 <template>
-  <div ref="container" class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+  <div ref="container" class="w-full h-full flex items-center justify-center bg-muted/10 dark:bg-slate/30 rounded-lg p-4">
     <canvas
       ref="canvas"
       @mousedown="handleMouseDown"

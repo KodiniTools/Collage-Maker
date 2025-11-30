@@ -35,8 +35,8 @@ function selectLayout(layout: LayoutType) {
         :class="[
           'p-3 rounded-lg border-2 transition-all text-sm font-medium',
           collage.settings.layout === layout.value
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-            : 'border-gray-300 dark:border-gray-600 hover:border-blue-300'
+            ? 'border-accent bg-accent/10 dark:bg-accent/5 text-slate-dark dark:text-muted-light'
+            : 'border-muted/50 dark:border-slate hover:border-accent'
         ]"
       >
         {{ t(layout.labelKey) }}

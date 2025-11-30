@@ -31,8 +31,8 @@ function updateGridSize(value: number) {
           :class="[
             'px-4 py-2 text-sm rounded-lg font-medium transition-colors',
             collage.settings.gridEnabled
-              ? 'bg-blue-500 hover:bg-blue-600 text-white'
-              : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+              ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+              : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
           ]"
         >
           {{ collage.settings.gridEnabled ? t('grid.on') : t('grid.off') }}
@@ -51,17 +51,17 @@ function updateGridSize(value: number) {
           min="10"
           max="200"
           step="5"
-          class="w-full"
+          class="w-full accent-accent"
         />
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <div class="flex justify-between text-xs text-muted mt-1">
           <span>10px</span>
           <span>200px</span>
         </div>
       </div>
 
       <!-- Info Text -->
-      <p class="text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-3">
-        💡 {{ t('grid.hint') }}
+      <p class="text-xs text-muted border-t border-muted/30 dark:border-slate/30 pt-3">
+        {{ t('grid.hint') }}
       </p>
     </div>
   </div>

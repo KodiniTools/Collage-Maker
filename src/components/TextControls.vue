@@ -225,10 +225,10 @@ if (collage.selectedText) {
 </script>
 
 <template>
-  <div class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+  <div class="w-full bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4">
     <h2 class="text-lg font-semibold mb-4">{{ t('text.title') }}</h2>
 
-    <div v-if="!collage.selectedText" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+    <div v-if="!collage.selectedText" class="text-sm text-muted text-center py-4">
       {{ t('text.noSelection') }}
     </div>
 
@@ -240,7 +240,7 @@ if (collage.selectedText) {
           :value="collage.selectedText.text"
           @input="updateTextContent(($event.target as HTMLTextAreaElement).value)"
           rows="3"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 resize-none"
+          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark resize-none"
         />
       </div>
 
@@ -250,7 +250,7 @@ if (collage.selectedText) {
         <select
           v-model="selectedFontFamily"
           @change="updateFontFamily(selectedFontFamily)"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         >
           <optgroup label="System Fonts">
             <option v-for="font in systemFonts" :key="font" :value="font">
@@ -271,7 +271,7 @@ if (collage.selectedText) {
         <select
           v-model="selectedFontVariant"
           @change="updateFontVariant(selectedFontVariant)"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         >
           <option v-for="variant in availableVariants" :key="variant" :value="variant">
             {{ variant }}
@@ -304,8 +304,8 @@ if (collage.selectedText) {
             (typeof collage.selectedText.fontWeight === 'number'
               ? collage.selectedText.fontWeight >= 700
               : collage.selectedText.fontWeight === 'bold')
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 dark:bg-gray-700'
+              ? 'bg-accent text-slate-dark'
+              : 'bg-muted/20 dark:bg-slate/50'
           ]"
         >
           <strong>B</strong>
@@ -316,8 +316,8 @@ if (collage.selectedText) {
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'left'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 dark:bg-gray-700'
+              ? 'bg-accent text-slate-dark'
+              : 'bg-muted/20 dark:bg-slate/50'
           ]"
         >
           ←
@@ -328,8 +328,8 @@ if (collage.selectedText) {
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'center'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 dark:bg-gray-700'
+              ? 'bg-accent text-slate-dark'
+              : 'bg-muted/20 dark:bg-slate/50'
           ]"
         >
           ↔
@@ -340,8 +340,8 @@ if (collage.selectedText) {
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'right'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 dark:bg-gray-700'
+              ? 'bg-accent text-slate-dark'
+              : 'bg-muted/20 dark:bg-slate/50'
           ]"
         >
           →
@@ -356,20 +356,20 @@ if (collage.selectedText) {
             type="color"
             :value="collage.selectedText.color"
             @input="updateColor(($event.target as HTMLInputElement).value)"
-            class="w-16 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+            class="w-16 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
           />
           <input
             type="text"
             :value="collage.selectedText.color"
             @input="updateColor(($event.target as HTMLInputElement).value)"
             placeholder="#000000"
-            class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm font-mono"
+            class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
           />
         </div>
       </div>
 
       <!-- Shadow Controls -->
-      <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('text.shadow') }}</label>
           <button
@@ -388,7 +388,7 @@ if (collage.selectedText) {
         <div v-if="collage.selectedText.shadowEnabled" class="space-y-3">
           <!-- Shadow X Offset -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('text.shadowOffsetX') }}: {{ collage.selectedText.shadowOffsetX }}px
             </label>
             <input
@@ -404,7 +404,7 @@ if (collage.selectedText) {
 
           <!-- Shadow Y Offset -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('text.shadowOffsetY') }}: {{ collage.selectedText.shadowOffsetY }}px
             </label>
             <input
@@ -420,7 +420,7 @@ if (collage.selectedText) {
 
           <!-- Shadow Blur -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('text.shadowBlur') }}: {{ collage.selectedText.shadowBlur }}px
             </label>
             <input
@@ -436,7 +436,7 @@ if (collage.selectedText) {
 
           <!-- Shadow Color -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('text.shadowColor') }}
             </label>
             <div class="flex gap-2">
@@ -444,14 +444,14 @@ if (collage.selectedText) {
                 type="color"
                 :value="collage.selectedText.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
-                class="w-12 h-8 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
               />
               <input
                 type="text"
                 :value="collage.selectedText.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
                 placeholder="#000000"
-                class="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-xs font-mono"
+                class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
               />
             </div>
           </div>
@@ -461,7 +461,7 @@ if (collage.selectedText) {
       <!-- Delete Button -->
       <button
         @click="deleteText"
-        class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light font-medium rounded-lg transition-colors"
       >
         {{ t('text.delete') }}
       </button>

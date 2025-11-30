@@ -95,13 +95,13 @@ function closeModal() {
         @click.self="closeModal"
       >
         <!-- Modal Content -->
-        <div class="bg-white dark:bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
           <!-- Header -->
-          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+          <div class="flex items-center justify-between p-6 border-b border-muted/30 dark:border-slate/30">
             <h2 class="text-2xl font-bold">{{ t('templates.library') }}</h2>
             <button
               @click="closeModal"
-              class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              class="p-2 hover:bg-muted/20 dark:hover:bg-slate/30 rounded-lg transition-colors"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -110,15 +110,15 @@ function closeModal() {
           </div>
 
           <!-- Tabs + Save Button -->
-          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+          <div class="flex items-center justify-between p-6 border-b border-muted/30 dark:border-slate/30">
             <div class="flex gap-2">
               <button
                 @click="activeTab = 'all'"
                 :class="[
                   'px-4 py-2 rounded-lg font-medium transition-colors',
                   activeTab === 'all'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-accent text-slate-dark'
+                    : 'bg-muted/10 dark:bg-slate/30 hover:bg-muted/20 dark:hover:bg-slate/50'
                 ]"
               >
                 {{ t('templates.all') }}
@@ -128,8 +128,8 @@ function closeModal() {
                 :class="[
                   'px-4 py-2 rounded-lg font-medium transition-colors',
                   activeTab === 'predefined'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-accent text-slate-dark'
+                    : 'bg-muted/10 dark:bg-slate/30 hover:bg-muted/20 dark:hover:bg-slate/50'
                 ]"
               >
                 {{ t('templates.predefined') }}
@@ -139,8 +139,8 @@ function closeModal() {
                 :class="[
                   'px-4 py-2 rounded-lg font-medium transition-colors',
                   activeTab === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-accent text-slate-dark'
+                    : 'bg-muted/10 dark:bg-slate/30 hover:bg-muted/20 dark:hover:bg-slate/50'
                 ]"
               >
                 {{ t('templates.custom') }} ({{ templatesStore.userTemplates.length }})
@@ -149,7 +149,7 @@ function closeModal() {
 
             <button
               @click="openSaveDialog"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+              class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors"
             >
               {{ t('templates.saveAsCurrent') }}
             </button>
@@ -157,7 +157,7 @@ function closeModal() {
 
           <!-- Templates Grid -->
           <div class="flex-1 overflow-y-auto p-6">
-            <div v-if="filteredTemplates.length === 0" class="text-center py-12 text-gray-500">
+            <div v-if="filteredTemplates.length === 0" class="text-center py-12 text-muted">
               {{ t('templates.noTemplates') }}
             </div>
 
@@ -186,7 +186,7 @@ function closeModal() {
             class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
             @click.self="showSaveDialog = false"
           >
-            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-2xl w-full max-w-md p-6">
+            <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-md p-6">
               <h3 class="text-xl font-bold mb-4">{{ t('templates.saveAsCurrent') }}</h3>
 
               <div class="space-y-4">
@@ -197,7 +197,7 @@ function closeModal() {
                   <input
                     v-model="templateName"
                     type="text"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                    class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-lg bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-accent outline-none"
                     :placeholder="t('templates.namePlaceholder')"
                   />
                 </div>
@@ -209,7 +209,7 @@ function closeModal() {
                   <textarea
                     v-model="templateDescription"
                     rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                    class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-lg bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-accent outline-none resize-none"
                     :placeholder="t('templates.descriptionPlaceholder')"
                   ></textarea>
                 </div>
@@ -218,13 +218,13 @@ function closeModal() {
               <div class="flex gap-3 mt-6">
                 <button
                   @click="showSaveDialog = false"
-                  class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate rounded-lg hover:bg-muted/10 dark:hover:bg-slate/30 transition-colors"
                 >
                   {{ t('common.cancel') }}
                 </button>
                 <button
                   @click="saveCurrentAsTemplate"
-                  class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+                  class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors"
                 >
                   {{ t('common.save') }}
                 </button>
