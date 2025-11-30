@@ -49,8 +49,8 @@ const showTemplates = ref(false)
     <!-- Main Content -->
     <main class="flex-1 container mx-auto px-4 py-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Sidebar -->
-        <aside class="lg:col-span-3 space-y-6">
+        <!-- Sidebar - scrollable -->
+        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2">
           <ImageUploader />
           <LayoutSelector />
           <GridControls />
@@ -63,8 +63,8 @@ const showTemplates = ref(false)
           <CollageCanvas />
         </section>
 
-        <!-- Controls -->
-        <aside class="lg:col-span-3 space-y-6">
+        <!-- Controls - scrollable sidebar -->
+        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2">
           <CanvasSettings />
           <ImageControls />
           <TextControls />
