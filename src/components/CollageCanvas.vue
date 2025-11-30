@@ -609,10 +609,12 @@ function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
   const rect = canvas.value.getBoundingClientRect()
-  const scaleX = collage.settings.width / rect.width
-  const scaleY = collage.settings.height / rect.height
-  const x = (e.clientX - rect.left) * scaleX
-  const y = (e.clientY - rect.top) * scaleY
+  // Berücksichtige Zoom beim Berechnen der Koordinaten
+  const zoom = collage.canvasZoom
+  const scaleX = collage.settings.width / (rect.width / zoom)
+  const scaleY = collage.settings.height / (rect.height / zoom)
+  const x = (e.clientX - rect.left) * scaleX / zoom
+  const y = (e.clientY - rect.top) * scaleY / zoom
 
   // Prüfe ob ein Löschbutton angeklickt wurde (NUR Canvas-Instanzen, keine Templates!)
   const clickedDeleteImage = collage.images
@@ -723,10 +725,12 @@ function handleMouseMove(e: MouseEvent) {
   if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
 
   const rect = canvas.value.getBoundingClientRect()
-  const scaleX = collage.settings.width / rect.width
-  const scaleY = collage.settings.height / rect.height
-  const x = (e.clientX - rect.left) * scaleX
-  const y = (e.clientY - rect.top) * scaleY
+  // Berücksichtige Zoom beim Berechnen der Koordinaten
+  const zoom = collage.canvasZoom
+  const scaleX = collage.settings.width / (rect.width / zoom)
+  const scaleY = collage.settings.height / (rect.height / zoom)
+  const x = (e.clientX - rect.left) * scaleX / zoom
+  const y = (e.clientY - rect.top) * scaleY / zoom
 
   // Text-Drag-Funktionalität
   if (isDragging.value && collage.selectedTextId && collage.selectedText) {
@@ -892,10 +896,12 @@ function handleDrop(e: DragEvent) {
 
   // Berechne die Drop-Position relativ zum Canvas
   const rect = canvas.value.getBoundingClientRect()
-  const scaleX = collage.settings.width / rect.width
-  const scaleY = collage.settings.height / rect.height
-  const x = (e.clientX - rect.left) * scaleX
-  const y = (e.clientY - rect.top) * scaleY
+  // Berücksichtige Zoom beim Berechnen der Koordinaten
+  const zoom = collage.canvasZoom
+  const scaleX = collage.settings.width / (rect.width / zoom)
+  const scaleY = collage.settings.height / (rect.height / zoom)
+  const x = (e.clientX - rect.left) * scaleX / zoom
+  const y = (e.clientY - rect.top) * scaleY / zoom
 
   // Dupliziere das Bild an der Drop-Position
   collage.duplicateImageToPosition(imageId, x, y)
@@ -912,18 +918,23 @@ watch(() => collage.images, (newImages, oldImages) => {
 </script>
 
 <template>
-  <div ref="container" class="w-full flex items-center justify-center bg-muted/10 dark:bg-slate/30 rounded-lg p-4">
-    <canvas
-      ref="canvas"
-      tabindex="-1"
-      @mousedown.prevent="handleMouseDown"
-      @mousemove="handleMouseMove"
-      @mouseup="handleMouseUp"
-      @mouseleave="handleMouseUp"
-      @dragover="handleDragOver"
-      @drop="handleDrop"
-      class="max-w-full shadow-lg cursor-move outline-none"
-      style="image-rendering: high-quality;"
-    />
+  <div ref="container" class="w-full flex items-center justify-center bg-muted/10 dark:bg-slate/30 rounded-lg p-4 overflow-auto">
+    <div
+      class="transition-transform duration-150 origin-center"
+      :style="{ transform: `scale(${collage.canvasZoom})` }"
+    >
+      <canvas
+        ref="canvas"
+        tabindex="-1"
+        @mousedown.prevent="handleMouseDown"
+        @mousemove="handleMouseMove"
+        @mouseup="handleMouseUp"
+        @mouseleave="handleMouseUp"
+        @dragover="handleDragOver"
+        @drop="handleDrop"
+        class="shadow-lg cursor-move outline-none"
+        style="image-rendering: high-quality;"
+      />
+    </div>
   </div>
 </template>
