@@ -22,65 +22,63 @@ const showTemplates = ref(false)
 </script>
 
 <template>
-  <div class="pb-32">
-    <div class="min-h-screen bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light transition-colors">
-      <!-- Header -->
-      <header class="border-b border-muted/30 dark:border-slate/30">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
-            <p class="text-sm text-muted dark:text-muted">{{ t('app.subtitle') }}</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <button
-              @click="showTemplates = true"
-              class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors flex items-center gap-2"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
-              </svg>
-              <span class="hidden sm:inline">{{ t('templates.library') }}</span>
-            </button>
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
+  <div class="flex flex-col min-h-screen bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light transition-colors">
+    <!-- Header -->
+    <header class="border-b border-muted/30 dark:border-slate/30">
+      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
+          <p class="text-sm text-muted dark:text-muted">{{ t('app.subtitle') }}</p>
         </div>
-      </header>
-
-      <!-- Main Content -->
-      <main class="container mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Sidebar -->
-          <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pr-2">
-            <ImageUploader />
-            <LayoutSelector />
-            <GridControls />
-            <ImageList />
-            <TextList />
-          </aside>
-
-          <!-- Canvas -->
-          <section class="lg:col-span-6 lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-200px)] lg:overflow-auto" style="height: fit-content;">
-            <CollageCanvas />
-          </section>
-
-          <!-- Controls -->
-          <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pl-2">
-            <CanvasSettings />
-            <ImageControls />
-            <TextControls />
-            <ExportControls />
-          </aside>
+        <div class="flex items-center gap-3">
+          <button
+            @click="showTemplates = true"
+            class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors flex items-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
+            </svg>
+            <span class="hidden sm:inline">{{ t('templates.library') }}</span>
+          </button>
+          <LanguageToggle />
+          <ThemeToggle />
         </div>
-      </main>
-    </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Sidebar -->
+        <aside class="lg:col-span-3 space-y-6">
+          <ImageUploader />
+          <LayoutSelector />
+          <GridControls />
+          <ImageList />
+          <TextList />
+        </aside>
+
+        <!-- Canvas - scrollable for large canvases up to 4000px -->
+        <section class="lg:col-span-6">
+          <CollageCanvas />
+        </section>
+
+        <!-- Controls -->
+        <aside class="lg:col-span-3 space-y-6">
+          <CanvasSettings />
+          <ImageControls />
+          <TextControls />
+          <ExportControls />
+        </aside>
+      </div>
+    </main>
 
     <!-- Donate Section -->
-    <section class="border-t border-muted/30 dark:border-slate/30 bg-surface-light dark:bg-surface-dark py-8">
+    <section class="border-t border-muted/30 dark:border-slate/30 py-8">
       <div class="container mx-auto px-4 text-center">
         <form action="https://www.paypal.com/donate" method="post" target="_top" class="inline-block">
           <input type="hidden" name="hosted_button_id" value="8RGLGQ2BFMHU6" />
-          <button type="submit" class="px-8 py-3 bg-warm hover:bg-warm-dark text-surface-light font-semibold rounded-lg shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto">
+          <button type="submit" class="px-8 py-3 bg-warm hover:bg-warm-dark text-surface-light font-semibold rounded-lg shadow-lg transition-colors duration-150 flex items-center gap-2 mx-auto">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.028.15a.805.805 0 0 1-.794.68H8.032c-.3 0-.54-.266-.475-.558l1.918-12.157-.002-.01.162-1.026a.805.805 0 0 1 .794-.68h2.535c3.238 0 5.774-1.314 6.514-5.12.132-.68.168-1.32.112-1.918a4.695 4.695 0 0 0-.544-1.736C20.183 3.505 21.538 5.978 20.067 8.478z"/>
               <path d="M18.814 1.444c-.3-.354-.664-.64-1.08-.854C16.714.09 15.483 0 13.953 0H7.95a.804.804 0 0 0-.794.68L4.97 16.806c-.07.448.26.85.715.85h5.214l1.31-8.307-.04.257a.805.805 0 0 1 .794-.68h1.656c3.238 0 5.774-1.314 6.514-5.12.13-.68.168-1.32.112-1.918-.056-.448-.172-.863-.344-1.236a4.647 4.647 0 0 0-.087-.208z"/>
@@ -92,9 +90,7 @@ const showTemplates = ref(false)
     </section>
 
     <!-- FAQ Section -->
-    <div class="bg-surface-light dark:bg-surface-dark">
-      <FaqSection />
-    </div>
+    <FaqSection />
 
     <!-- Template Library Modal -->
     <TemplateLibrary v-model:isOpen="showTemplates" />
