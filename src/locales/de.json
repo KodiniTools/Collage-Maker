@@ -7,7 +7,7 @@
     "title": "Bilder hochladen",
     "dragDrop": "Bilder hierher ziehen oder klicken",
     "button": "Bilder auswählen",
-    "formats": "PNG, JPG, WebP (max. 10MB pro Bild)"
+    "formats": "PNG, JPG, WebP (max. 50MB pro Bild)"
   },
   "layout": {
     "title": "Layout",
@@ -194,7 +194,7 @@
       },
       {
         "question": "Welche Bildformate werden unterstützt?",
-        "answer": "Die Anwendung unterstützt PNG, JPG und WebP Formate. Die maximale Dateigröße pro Bild beträgt 10MB."
+        "answer": "Die Anwendung unterstützt PNG, JPG und WebP Formate. Die maximale Dateigröße pro Bild beträgt 50MB."
       },
       {
         "question": "Kann ich meine Collage speichern und später weiterbearbeiten?",
