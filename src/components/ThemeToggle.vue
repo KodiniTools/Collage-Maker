@@ -7,8 +7,9 @@ const settings = useSettingsStore()
 <template>
   <button
     @click="settings.toggleTheme"
-    class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/50 transition-colors"
+    class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/50 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
     :aria-label="settings.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
+    :title="settings.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
   >
     <svg v-if="settings.theme === 'light'" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />

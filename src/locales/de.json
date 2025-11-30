@@ -181,6 +181,11 @@
     "save": "Speichern",
     "cancel": "Abbrechen"
   },
+  "toast": {
+    "uploadSuccess": "{count} Bild(er) erfolgreich hochgeladen",
+    "exportSuccess": "Collage erfolgreich exportiert",
+    "exportError": "Fehler beim Exportieren der Collage"
+  },
   "faq": {
     "title": "Häufig gestellte Fragen",
     "questions": [

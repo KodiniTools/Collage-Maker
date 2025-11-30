@@ -15,6 +15,7 @@ import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
 import TemplateLibrary from '@/components/TemplateLibrary.vue'
 import FaqSection from '@/components/FaqSection.vue'
+import ToastContainer from '@/components/ToastContainer.vue'
 
 const { t } = useI18n()
 const showTemplates = ref(false)
@@ -97,5 +98,8 @@ const showTemplates = ref(false)
 
     <!-- Template Library Modal -->
     <TemplateLibrary v-model:isOpen="showTemplates" />
+
+    <!-- Toast Notifications -->
+    <ToastContainer />
   </div>
 </template>

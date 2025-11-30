@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
+import { useToastStore } from '@/stores/toast'
 import { useI18n } from 'vue-i18n'
 
 const collage = useCollageStore()
+const toast = useToastStore()
 const { t } = useI18n()
 
 const isDragging = ref(false)
@@ -27,9 +29,10 @@ function processFiles(files: File[]) {
     const isValidSize = file.size <= 50 * 1024 * 1024 // 50MB
     return isImage && isValidSize
   })
-  
+
   if (validFiles.length > 0) {
     collage.addImages(validFiles)
+    toast.success(t('toast.uploadSuccess', { count: validFiles.length }))
   }
 }
 
@@ -46,11 +49,17 @@ function openFileDialog() {
       @dragover.prevent="isDragging = true"
       @dragleave="isDragging = false"
       @click="openFileDialog"
+      @keydown.enter="openFileDialog"
+      @keydown.space.prevent="openFileDialog"
+      role="button"
+      tabindex="0"
+      :aria-label="t('upload.dragDrop')"
       :class="[
-        'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all',
+        'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-200',
+        'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark',
         isDragging
-          ? 'border-accent bg-accent/10 dark:bg-accent/5'
-          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5'
+          ? 'border-accent bg-accent/10 dark:bg-accent/5 scale-[1.02]'
+          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5 hover:scale-[1.01]'
       ]"
     >
       <!-- upload icon -->

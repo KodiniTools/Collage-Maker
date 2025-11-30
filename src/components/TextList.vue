@@ -12,7 +12,8 @@ const { t } = useI18n()
       <h2 class="text-lg font-semibold">{{ t('text.title') }}</h2>
       <button
         @click="collage.addText()"
-        class="px-3 py-1.5 bg-accent hover:bg-accent-dark text-slate-dark text-sm font-medium rounded-md transition-colors"
+        class="px-3 py-1.5 bg-accent hover:bg-accent-dark text-slate-dark text-sm font-medium rounded-md transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark"
+        aria-label="Add new text"
       >
         + {{ t('text.addText') }}
       </button>
@@ -27,11 +28,17 @@ const { t } = useI18n()
         v-for="text in collage.texts"
         :key="text.id"
         @click="collage.selectText(text.id)"
+        @keydown.enter="collage.selectText(text.id)"
+        @keydown.space.prevent="collage.selectText(text.id)"
+        tabindex="0"
+        role="button"
+        :aria-pressed="collage.selectedTextId === text.id"
         :class="[
-          'p-3 rounded-lg cursor-pointer transition-colors border',
+          'p-3 rounded-lg cursor-pointer transition-all duration-200 border',
+          'focus:outline-none focus:ring-2 focus:ring-accent',
           collage.selectedTextId === text.id
-            ? 'bg-accent/10 dark:bg-accent/5 border-accent'
-            : 'bg-muted/5 dark:bg-slate/20 border-muted/30 dark:border-slate/30 hover:bg-muted/10 dark:hover:bg-slate/30'
+            ? 'bg-accent/10 dark:bg-accent/5 border-accent scale-[1.01]'
+            : 'bg-muted/5 dark:bg-slate/20 border-muted/30 dark:border-slate/30 hover:bg-muted/10 dark:hover:bg-slate/30 hover:scale-[1.01]'
         ]"
       >
         <div class="flex items-start justify-between gap-2">

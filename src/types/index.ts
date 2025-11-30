@@ -79,3 +79,10 @@ export interface CollageSettings {
 
 export type Theme = 'light' | 'dark'
 export type Locale = 'de' | 'en'
+
+export interface Toast {
+  id: string
+  message: string
+  type: 'success' | 'error' | 'info'
+  duration?: number
+}
