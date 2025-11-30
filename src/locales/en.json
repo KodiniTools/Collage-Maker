@@ -43,6 +43,10 @@
     "title": "Export",
     "format": "Format",
     "quality": "Quality",
+    "preview": "Preview",
+    "previewTitle": "Collage Preview",
+    "previewAlt": "Preview of the finished collage",
+    "close": "Close",
     "download": "Download"
   },
   "controls": {
