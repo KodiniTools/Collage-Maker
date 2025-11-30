@@ -39,11 +39,11 @@ function handleDragStart(event: DragEvent, imageId: string) {
         role="button"
         :aria-label="`Select image ${image.file.name}`"
         :class="[
-          'flex items-center gap-3 p-2 rounded-lg cursor-move transition-all duration-200',
+          'flex items-center gap-3 p-2 rounded-lg cursor-move transition-colors duration-150',
           'focus:outline-none focus:ring-2 focus:ring-accent',
           collage.selectedImageId === image.id
-            ? 'bg-accent/10 dark:bg-accent/5 scale-[1.02]'
-            : 'hover:bg-muted/10 dark:hover:bg-slate/30 hover:scale-[1.02]'
+            ? 'bg-accent/10 dark:bg-accent/5'
+            : 'hover:bg-muted/10 dark:hover:bg-slate/30'
         ]"
         :title="t('images.dragToCanvas') || 'Ziehen Sie das Bild auf das Canvas'"
       >
@@ -54,7 +54,7 @@ function handleDragStart(event: DragEvent, imageId: string) {
         </div>
         <button
           @click.stop="collage.removeImage(image.id)"
-          class="p-1 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-warm"
+          class="p-1 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm"
           :aria-label="t('images.remove')"
         >
           <svg class="w-5 h-5 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">

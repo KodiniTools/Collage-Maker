@@ -34,7 +34,7 @@ const displayDescription = computed(() => {
 </script>
 
 <template>
-  <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 overflow-hidden hover:shadow-lg transition-all cursor-pointer group">
+  <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 overflow-hidden hover:shadow-lg transition-shadow duration-150 cursor-pointer group">
     <!-- Thumbnail -->
     <div
       @click="emit('load', template)"
@@ -53,7 +53,7 @@ const displayDescription = computed(() => {
       </div>
 
       <!-- Overlay on hover -->
-      <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+      <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-150 flex items-center justify-center opacity-0 group-hover:opacity-100">
         <button class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium">
           {{ t('templates.useTemplate') }}
         </button>
