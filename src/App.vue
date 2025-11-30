@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
@@ -16,9 +16,21 @@ import ExportControls from '@/components/ExportControls.vue'
 import TemplateLibrary from '@/components/TemplateLibrary.vue'
 import FaqSection from '@/components/FaqSection.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
+import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
+import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 
 const { t } = useI18n()
 const showTemplates = ref(false)
+
+const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } = useKeyboardShortcuts()
+
+onMounted(() => {
+  setupKeyboardListeners()
+})
+
+onUnmounted(() => {
+  cleanupKeyboardListeners()
+})
 </script>
 
 <template>
@@ -39,6 +51,16 @@ const showTemplates = ref(false)
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
             </svg>
             <span class="hidden sm:inline">{{ t('templates.library') }}</span>
+          </button>
+          <button
+            @click="showShortcutsModal = true"
+            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+            :title="t('shortcuts.title')"
+            :aria-label="t('shortcuts.title')"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+            </svg>
           </button>
           <LanguageToggle />
           <ThemeToggle />
@@ -94,6 +116,9 @@ const showTemplates = ref(false)
 
     <!-- Template Library Modal -->
     <TemplateLibrary v-model:isOpen="showTemplates" />
+
+    <!-- Keyboard Shortcuts Modal -->
+    <KeyboardShortcutsModal v-model="showShortcutsModal" />
 
     <!-- Toast Notifications -->
     <ToastContainer />
