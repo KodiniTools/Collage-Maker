@@ -25,15 +25,15 @@ function toggleQuestion(index: number) {
         <div
           v-for="(item, index) in faqQuestions"
           :key="index"
-          class="border border-muted/30 dark:border-slate/30 rounded-lg overflow-hidden"
+          class="border border-muted/30 dark:border-slate/50 rounded-lg overflow-hidden"
         >
           <button
             @click="toggleQuestion(index)"
-            class="w-full px-6 py-4 text-left bg-surface-light dark:bg-surface-dark hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors flex items-center justify-between gap-4"
+            class="w-full px-6 py-4 text-left bg-surface-light dark:bg-slate/30 hover:bg-muted/10 dark:hover:bg-slate/40 transition-colors flex items-center justify-between gap-4"
           >
-            <span class="font-semibold text-lg">{{ item.question }}</span>
+            <span class="font-semibold text-lg text-slate-dark dark:text-white">{{ item.question }}</span>
             <svg
-              class="w-5 h-5 flex-shrink-0 transition-transform"
+              class="w-5 h-5 flex-shrink-0 transition-transform text-slate dark:text-muted-light"
               :class="{ 'rotate-180': openIndex === index }"
               fill="none"
               stroke="currentColor"
@@ -52,7 +52,7 @@ function toggleQuestion(index: number) {
             leave-to-class="max-h-0 opacity-0"
           >
             <div v-show="openIndex === index" class="overflow-hidden">
-              <div class="px-6 py-4 bg-muted/5 dark:bg-slate/20 text-slate dark:text-muted-light">
+              <div class="px-6 py-4 bg-muted/10 dark:bg-slate/50 text-slate-dark dark:text-gray-100">
                 {{ item.answer }}
               </div>
             </div>

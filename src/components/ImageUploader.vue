@@ -24,7 +24,7 @@ function handleFileSelect(e: Event) {
 function processFiles(files: File[]) {
   const validFiles = files.filter(file => {
     const isImage = file.type.startsWith('image/')
-    const isValidSize = file.size <= 10 * 1024 * 1024 // 10MB
+    const isValidSize = file.size <= 50 * 1024 * 1024 // 50MB
     return isImage && isValidSize
   })
   
