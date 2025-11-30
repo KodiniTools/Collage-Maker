@@ -250,7 +250,7 @@ function resetImageChanges() {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+  <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4">
     <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
 
     <div v-if="selectedImage" class="space-y-4">
@@ -263,8 +263,8 @@ function resetImageChanges() {
             :class="[
               'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
               collage.lockAspectRatio
-                ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                ? 'bg-accent/20 text-slate-dark dark:text-accent'
+                : 'bg-muted/10 dark:bg-slate/30 text-slate dark:text-muted'
             ]"
             :title="t('imageControls.lockAspectRatio')"
           >
@@ -291,29 +291,29 @@ function resetImageChanges() {
         </div>
         <div class="space-y-2">
           <div>
-            <label class="text-xs text-gray-600 dark:text-gray-400">{{ t('canvas.width') }}</label>
+            <label class="text-xs text-muted">{{ t('canvas.width') }}</label>
             <input
               type="number"
               :value="Math.round(selectedImage.width)"
               @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
               min="10"
               max="2000"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+              class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
             />
           </div>
           <div>
-            <label class="text-xs text-gray-600 dark:text-gray-400">{{ t('canvas.height') }}</label>
+            <label class="text-xs text-muted">{{ t('canvas.height') }}</label>
             <input
               type="number"
               :value="Math.round(selectedImage.height)"
               @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
               min="10"
               max="2000"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+              class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
             />
           </div>
         </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p class="text-xs text-muted mt-1">
           💡 {{ t('imageControls.shiftHint') }}
         </p>
       </div>
@@ -365,13 +365,13 @@ function resetImageChanges() {
       </div>
 
       <!-- Bildbearbeitungs-Filter -->
-      <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <h4 class="text-sm font-semibold mb-3">{{ t('imageControls.imageFilters') }}</h4>
 
         <div class="space-y-3">
           <!-- Helligkeit -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.brightness') }}: {{ Math.round(selectedImage.brightness ?? 100) }}%
             </label>
             <input
@@ -386,7 +386,7 @@ function resetImageChanges() {
 
           <!-- Kontrast -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.contrast') }}: {{ Math.round(selectedImage.contrast ?? 100) }}%
             </label>
             <input
@@ -401,7 +401,7 @@ function resetImageChanges() {
 
           <!-- Lichter -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.highlights') }}: {{ Math.round(selectedImage.highlights ?? 0) }}
             </label>
             <input
@@ -416,7 +416,7 @@ function resetImageChanges() {
 
           <!-- Tiefen -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.shadows') }}: {{ Math.round(selectedImage.shadows ?? 0) }}
             </label>
             <input
@@ -431,7 +431,7 @@ function resetImageChanges() {
 
           <!-- Sättigung -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.saturation') }}: {{ Math.round(selectedImage.saturation ?? 100) }}%
             </label>
             <input
@@ -446,7 +446,7 @@ function resetImageChanges() {
 
           <!-- Wärme -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.warmth') }}: {{ Math.round(selectedImage.warmth ?? 0) }}
             </label>
             <input
@@ -461,7 +461,7 @@ function resetImageChanges() {
 
           <!-- Schärfen -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.sharpness') }}: {{ Math.round(selectedImage.sharpness ?? 0) }}
             </label>
             <input
@@ -477,7 +477,7 @@ function resetImageChanges() {
       </div>
 
       <!-- Border Controls -->
-      <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('imageControls.border') }}</label>
           <button
@@ -485,8 +485,8 @@ function resetImageChanges() {
             :class="[
               'px-3 py-1 text-xs rounded transition-colors',
               selectedImage.borderEnabled
-                ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+                : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
             ]"
           >
             {{ selectedImage.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled') }}
@@ -496,7 +496,7 @@ function resetImageChanges() {
         <div v-if="selectedImage.borderEnabled" class="space-y-3">
           <!-- Border Width -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.borderWidth') }}: {{ selectedImage.borderWidth }}px
             </label>
             <input
@@ -511,13 +511,13 @@ function resetImageChanges() {
 
           <!-- Border Style -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.borderStyle') }}
             </label>
             <select
               :value="selectedImage.borderStyle"
               @change="updateBorderStyle(($event.target as HTMLSelectElement).value as any)"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm"
+              class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
             >
               <option value="solid">{{ t('imageControls.borderStyleSolid') }}</option>
               <option value="dashed">{{ t('imageControls.borderStyleDashed') }}</option>
@@ -528,7 +528,7 @@ function resetImageChanges() {
 
           <!-- Border Color -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.borderColor') }}
             </label>
             <div class="flex gap-2">
@@ -536,21 +536,21 @@ function resetImageChanges() {
                 type="color"
                 :value="selectedImage.borderColor"
                 @input="updateBorderColor(($event.target as HTMLInputElement).value)"
-                class="w-12 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
               />
               <input
                 type="text"
                 :value="selectedImage.borderColor"
                 @input="updateBorderColor(($event.target as HTMLInputElement).value)"
-                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm"
+                class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
               />
             </div>
           </div>
 
           <!-- Border Shadow Toggle -->
-          <div class="border-t border-gray-300 dark:border-gray-600 pt-3 mt-3">
+          <div class="border-t border-muted/50 dark:border-slate pt-3 mt-3">
             <div class="flex items-center justify-between mb-2">
-              <label class="text-xs text-gray-600 dark:text-gray-400">{{ t('imageControls.borderShadow') }}</label>
+              <label class="text-xs text-muted">{{ t('imageControls.borderShadow') }}</label>
               <button
                 @click="toggleBorderShadow"
                 :class="[
@@ -567,7 +567,7 @@ function resetImageChanges() {
             <div v-if="selectedImage.borderShadowEnabled" class="space-y-2">
               <!-- Border Shadow Offset X -->
               <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <label class="block text-xs text-muted mb-1">
                   {{ t('imageControls.borderShadowOffsetX') }}: {{ selectedImage.borderShadowOffsetX }}px
                 </label>
                 <input
@@ -582,7 +582,7 @@ function resetImageChanges() {
 
               <!-- Border Shadow Offset Y -->
               <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <label class="block text-xs text-muted mb-1">
                   {{ t('imageControls.borderShadowOffsetY') }}: {{ selectedImage.borderShadowOffsetY }}px
                 </label>
                 <input
@@ -597,7 +597,7 @@ function resetImageChanges() {
 
               <!-- Border Shadow Blur -->
               <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <label class="block text-xs text-muted mb-1">
                   {{ t('imageControls.borderShadowBlur') }}: {{ selectedImage.borderShadowBlur }}px
                 </label>
                 <input
@@ -612,7 +612,7 @@ function resetImageChanges() {
 
               <!-- Border Shadow Color -->
               <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <label class="block text-xs text-muted mb-1">
                   {{ t('imageControls.borderShadowColor') }}
                 </label>
                 <div class="flex gap-2">
@@ -620,13 +620,13 @@ function resetImageChanges() {
                     type="color"
                     :value="selectedImage.borderShadowColor"
                     @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
-                    class="w-12 h-8 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                    class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
                   />
                   <input
                     type="text"
                     :value="selectedImage.borderShadowColor"
                     @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
-                    class="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-xs font-mono"
+                    class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
                   />
                 </div>
               </div>
@@ -636,7 +636,7 @@ function resetImageChanges() {
       </div>
 
       <!-- Shadow Controls -->
-      <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('imageControls.shadow') }}</label>
           <button
@@ -644,8 +644,8 @@ function resetImageChanges() {
             :class="[
               'px-3 py-1 text-xs rounded transition-colors',
               selectedImage.shadowEnabled
-                ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+                : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
             ]"
           >
             {{ selectedImage.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled') }}
@@ -655,7 +655,7 @@ function resetImageChanges() {
         <div v-if="selectedImage.shadowEnabled" class="space-y-3">
           <!-- Shadow Offset X -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.shadowOffsetX') }}: {{ selectedImage.shadowOffsetX }}px
             </label>
             <input
@@ -670,7 +670,7 @@ function resetImageChanges() {
 
           <!-- Shadow Offset Y -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.shadowOffsetY') }}: {{ selectedImage.shadowOffsetY }}px
             </label>
             <input
@@ -685,7 +685,7 @@ function resetImageChanges() {
 
           <!-- Shadow Blur -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.shadowBlur') }}: {{ selectedImage.shadowBlur }}px
             </label>
             <input
@@ -700,7 +700,7 @@ function resetImageChanges() {
 
           <!-- Shadow Color -->
           <div>
-            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <label class="block text-xs text-muted mb-1">
               {{ t('imageControls.shadowColor') }}
             </label>
             <div class="flex gap-2">
@@ -708,13 +708,13 @@ function resetImageChanges() {
                 type="color"
                 :value="selectedImage.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
-                class="w-12 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
               />
               <input
                 type="text"
                 :value="selectedImage.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
-                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm"
+                class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
               />
             </div>
           </div>
@@ -727,13 +727,13 @@ function resetImageChanges() {
         <div class="flex gap-2">
           <button
             @click="bringToFront"
-            class="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm"
+            class="flex-1 px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
           >
             {{ t('imageControls.toFront') }}
           </button>
           <button
             @click="sendToBack"
-            class="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm"
+            class="flex-1 px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
           >
             {{ t('imageControls.toBack') }}
           </button>
@@ -743,7 +743,7 @@ function resetImageChanges() {
       <!-- Reset Changes Button -->
       <button
         @click="resetImageChanges"
-        class="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium"
+        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
       >
         {{ t('imageControls.resetChanges') }}
       </button>
@@ -751,13 +751,13 @@ function resetImageChanges() {
       <!-- Delete Button -->
       <button
         @click="deleteImage"
-        class="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md font-medium"
+        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
       >
         {{ t('imageControls.delete') }}
       </button>
     </div>
 
-    <div v-else class="text-center text-gray-500 dark:text-gray-400 py-8">
+    <div v-else class="text-center text-muted py-8">
       {{ t('imageControls.noSelection') }}
     </div>
   </div>

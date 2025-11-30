@@ -19,7 +19,7 @@ function updateBackgroundColor(value: string) {
 </script>
 
 <template>
-  <div class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+  <div class="w-full bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4">
     <h2 class="text-lg font-semibold mb-4">{{ t('canvas.size') }}</h2>
 
     <div class="space-y-4">
@@ -35,7 +35,7 @@ function updateBackgroundColor(value: string) {
           min="400"
           max="4000"
           step="10"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         />
       </div>
 
@@ -51,7 +51,7 @@ function updateBackgroundColor(value: string) {
           min="400"
           max="4000"
           step="10"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         />
       </div>
 
@@ -65,14 +65,14 @@ function updateBackgroundColor(value: string) {
             type="color"
             :value="collage.settings.backgroundColor"
             @input="updateBackgroundColor(($event.target as HTMLInputElement).value)"
-            class="w-16 h-10 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+            class="w-16 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
           />
           <input
             type="text"
             :value="collage.settings.backgroundColor"
             @input="updateBackgroundColor(($event.target as HTMLInputElement).value)"
             placeholder="#ffffff"
-            class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm font-mono"
+            class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
           />
         </div>
       </div>

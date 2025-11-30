@@ -12,13 +12,13 @@ const { t } = useI18n()
       <h2 class="text-lg font-semibold">{{ t('text.title') }}</h2>
       <button
         @click="collage.addText()"
-        class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors"
+        class="px-3 py-1.5 bg-accent hover:bg-accent-dark text-slate-dark text-sm font-medium rounded-md transition-colors"
       >
         + {{ t('text.addText') }}
       </button>
     </div>
 
-    <div v-if="collage.texts.length === 0" class="text-sm text-gray-500 dark:text-gray-400 text-center py-6 border border-gray-200 dark:border-gray-700 rounded-lg">
+    <div v-if="collage.texts.length === 0" class="text-sm text-muted text-center py-6 border border-muted/30 dark:border-slate/30 rounded-lg">
       {{ t('text.empty') }}
     </div>
 
@@ -30,8 +30,8 @@ const { t } = useI18n()
         :class="[
           'p-3 rounded-lg cursor-pointer transition-colors border',
           collage.selectedTextId === text.id
-            ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-500'
-            : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+            ? 'bg-accent/10 dark:bg-accent/5 border-accent'
+            : 'bg-muted/5 dark:bg-slate/20 border-muted/30 dark:border-slate/30 hover:bg-muted/10 dark:hover:bg-slate/30'
         ]"
       >
         <div class="flex items-start justify-between gap-2">
@@ -39,12 +39,12 @@ const { t } = useI18n()
             <p class="text-sm font-medium truncate">
               {{ text.text || t('text.empty') }}
             </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p class="text-xs text-muted mt-1">
               {{ text.fontFamily }} • {{ text.fontSize }}px
             </p>
           </div>
           <div
-            class="w-6 h-6 rounded border border-gray-300 dark:border-gray-600 flex-shrink-0"
+            class="w-6 h-6 rounded border border-muted/50 dark:border-slate flex-shrink-0"
             :style="{ backgroundColor: text.color }"
             :title="text.color"
           />
