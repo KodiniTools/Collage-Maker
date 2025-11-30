@@ -50,6 +50,9 @@
   "imageControls": {
     "title": "Image Editing",
     "size": "Size",
+    "position": "Position",
+    "positionX": "X-Position",
+    "positionY": "Y-Position",
     "layer": "Layer",
     "toFront": "Bring to Front",
     "toBack": "Send to Back",

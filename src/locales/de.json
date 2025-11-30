@@ -50,6 +50,9 @@
   "imageControls": {
     "title": "Bildbearbeitung",
     "size": "Größe",
+    "position": "Position",
+    "positionX": "X-Position",
+    "positionY": "Y-Position",
     "layer": "Ebene",
     "toFront": "Nach vorne",
     "toBack": "Nach hinten",
