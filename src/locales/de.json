@@ -30,7 +30,7 @@
     "background": "Hintergrund",
     "zoom": "Zoom",
     "resetView": "Ansicht zurücksetzen",
-    "zoomHint": "Leertaste + Ziehen zum Verschieben. Zoom und Verschiebung betreffen nur die Anzeige, nicht den Export."
+    "zoomHint": "Nutzen Sie die Scrollbalken zur Navigation bei Vergrößerung. Zoom betrifft nur die Anzeige, nicht den Export."
   },
   "images": {
     "title": "Bilder",

@@ -30,7 +30,7 @@
     "background": "Background",
     "zoom": "Zoom",
     "resetView": "Reset View",
-    "zoomHint": "Hold Space + drag to pan. Zoom and pan only affect display, not the export."
+    "zoomHint": "Use scroll bars to navigate when zoomed in. Zoom only affects display, not the export."
   },
   "images": {
     "title": "Images",
