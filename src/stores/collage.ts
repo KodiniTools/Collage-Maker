@@ -4,7 +4,8 @@ import type { CollageImage, CollageText, CollageSettings, LayoutType } from '@/t
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
-  const selectedImageId = ref<string | null>(null)
+  // Mehrfachauswahl: Array von ausgewählten Bild-IDs
+  const selectedImageIds = ref<string[]>([])
   const texts = ref<CollageText[]>([])
   const selectedTextId = ref<string | null>(null)
   const lockAspectRatio = ref(true)
@@ -18,8 +19,18 @@ export const useCollageStore = defineStore('collage', () => {
     gridSize: 50
   })
 
+  // Backward compatibility: Einzelauswahl (erstes ausgewähltes Bild)
+  const selectedImageId = computed(() =>
+    selectedImageIds.value.length > 0 ? selectedImageIds.value[0] : null
+  )
+
   const selectedImage = computed(() =>
     images.value.find(img => img.id === selectedImageId.value)
+  )
+
+  // Alle ausgewählten Bilder (für Batch-Bearbeitung)
+  const selectedImages = computed(() =>
+    images.value.filter(img => selectedImageIds.value.includes(img.id))
   )
 
   const selectedText = computed(() =>
@@ -142,9 +153,17 @@ export const useCollageStore = defineStore('collage', () => {
 
       images.value.splice(index, 1)
     }
-    if (selectedImageId.value === id) {
-      selectedImageId.value = null
+    // Entferne ID aus der Mehrfachauswahl
+    const selectionIndex = selectedImageIds.value.indexOf(id)
+    if (selectionIndex !== -1) {
+      selectedImageIds.value.splice(selectionIndex, 1)
     }
+  }
+
+  // Alle ausgewählten Bilder entfernen
+  function removeSelectedImages() {
+    const idsToRemove = [...selectedImageIds.value]
+    idsToRemove.forEach(id => removeImage(id))
   }
 
   function updateImage(id: string, updates: Partial<CollageImage>) {
@@ -154,8 +173,48 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
+  // Einfache Auswahl (ersetzt die komplette Auswahl)
   function selectImage(id: string | null) {
-    selectedImageId.value = id
+    if (id === null) {
+      selectedImageIds.value = []
+    } else {
+      selectedImageIds.value = [id]
+    }
+  }
+
+  // Mehrfachauswahl: Bild zur Auswahl hinzufügen/entfernen (für Ctrl+Click)
+  function toggleImageSelection(id: string) {
+    const index = selectedImageIds.value.indexOf(id)
+    if (index !== -1) {
+      // Bild ist bereits ausgewählt - entfernen
+      selectedImageIds.value.splice(index, 1)
+    } else {
+      // Bild zur Auswahl hinzufügen
+      selectedImageIds.value.push(id)
+    }
+  }
+
+  // Alle Canvas-Bilder auswählen
+  function selectAllCanvasImages() {
+    const canvasImages = images.value.filter(img => img.isGalleryTemplate !== true)
+    selectedImageIds.value = canvasImages.map(img => img.id)
+  }
+
+  // Alle Bilder abwählen
+  function deselectAllImages() {
+    selectedImageIds.value = []
+  }
+
+  // Prüfen, ob ein Bild ausgewählt ist
+  function isImageSelected(id: string): boolean {
+    return selectedImageIds.value.includes(id)
+  }
+
+  // Updates auf alle ausgewählten Bilder anwenden (für Batch-Bearbeitung)
+  function updateSelectedImages(updates: Partial<CollageImage>) {
+    selectedImageIds.value.forEach(id => {
+      updateImage(id, updates)
+    })
   }
 
   function applyLayout(layout: LayoutType) {
@@ -316,7 +375,7 @@ export const useCollageStore = defineStore('collage', () => {
 
     images.value = []
     texts.value = []
-    selectedImageId.value = null
+    selectedImageIds.value = []
     selectedTextId.value = null
   }
 
@@ -374,8 +433,8 @@ export const useCollageStore = defineStore('collage', () => {
       isGalleryTemplate: false
     })
 
-    // Selektiere das neue Bild
-    selectedImageId.value = newId
+    // Selektiere das neue Bild (ersetzt vorherige Auswahl)
+    selectedImageIds.value = [newId]
   }
 
   // Text-Funktionen
@@ -408,7 +467,7 @@ export const useCollageStore = defineStore('collage', () => {
 
     texts.value.push(newText)
     selectedTextId.value = newText.id
-    selectedImageId.value = null
+    selectedImageIds.value = []
   }
 
   function removeText(id: string) {
@@ -431,7 +490,7 @@ export const useCollageStore = defineStore('collage', () => {
   function selectText(id: string | null) {
     selectedTextId.value = id
     if (id !== null) {
-      selectedImageId.value = null
+      selectedImageIds.value = []
     }
   }
 
@@ -468,7 +527,7 @@ export const useCollageStore = defineStore('collage', () => {
     // Lösche alle aktuellen Daten
     images.value = []
     texts.value = []
-    selectedImageId.value = null
+    selectedImageIds.value = []
     selectedTextId.value = null
 
     // Lade Template-Daten
@@ -481,21 +540,35 @@ export const useCollageStore = defineStore('collage', () => {
 
   return {
     images,
+    // Mehrfachauswahl
+    selectedImageIds,
+    selectedImages,
     selectedImageId,
     selectedImage,
+    // Text
     texts,
     selectedTextId,
     selectedText,
+    // Einstellungen
     settings,
     lockAspectRatio,
+    // Bild-Funktionen
     addImages,
     removeImage,
+    removeSelectedImages,
     updateImage,
+    updateSelectedImages,
     selectImage,
+    toggleImageSelection,
+    selectAllCanvasImages,
+    deselectAllImages,
+    isImageSelected,
+    // Text-Funktionen
     addText,
     removeText,
     updateText,
     selectText,
+    // Layout & Einstellungen
     applyLayout,
     clearCollage,
     updateSettings,
