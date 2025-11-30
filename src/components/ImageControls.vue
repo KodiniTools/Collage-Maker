@@ -54,6 +54,18 @@ function updateHeight(value: number) {
   }
 }
 
+function updatePositionX(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { x: value })
+  }
+}
+
+function updatePositionY(value: number) {
+  if (collage.selectedImageId) {
+    collage.updateImage(collage.selectedImageId, { y: value })
+  }
+}
+
 function toggleAspectRatio() {
   collage.setLockAspectRatio(!collage.lockAspectRatio)
   if (collage.lockAspectRatio && selectedImage.value) {
@@ -357,6 +369,31 @@ function deselectAll() {
         <p class="text-xs text-muted mt-1">
           {{ t('imageControls.shiftHint') }}
         </p>
+      </div>
+
+      <!-- Position Controls (nur bei Einzelauswahl) -->
+      <div v-if="!isMultiSelection && selectedImage">
+        <label class="text-sm font-medium mb-2 block">{{ t('imageControls.position') }}</label>
+        <div class="space-y-2">
+          <div>
+            <label class="text-xs text-muted">{{ t('imageControls.positionX') }}</label>
+            <input
+              type="number"
+              :value="Math.round(selectedImage.x)"
+              @input="updatePositionX(Number(($event.target as HTMLInputElement).value))"
+              class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+            />
+          </div>
+          <div>
+            <label class="text-xs text-muted">{{ t('imageControls.positionY') }}</label>
+            <input
+              type="number"
+              :value="Math.round(selectedImage.y)"
+              @input="updatePositionY(Number(($event.target as HTMLInputElement).value))"
+              class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Rotation Control -->
