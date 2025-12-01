@@ -447,6 +447,89 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageIds.value = [newId]
   }
 
+  // Ausgewählte Bilder duplizieren (für Ctrl+D)
+  function duplicateSelectedImages() {
+    const imagesToDuplicate = [...selectedImages.value]
+    const newIds: string[] = []
+
+    imagesToDuplicate.forEach(sourceImage => {
+      const newId = crypto.randomUUID()
+      const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+
+      // Erstelle Kopie mit Versatz
+      images.value.push({
+        ...sourceImage,
+        id: newId,
+        x: sourceImage.x + 20,
+        y: sourceImage.y + 20,
+        zIndex: maxZ + 1,
+        isGalleryTemplate: false
+      })
+
+      newIds.push(newId)
+    })
+
+    // Neue Bilder auswählen
+    if (newIds.length > 0) {
+      selectedImageIds.value = newIds
+    }
+  }
+
+  // Ausgewählte Bilder nach vorne bringen
+  function bringSelectedToFront() {
+    if (selectedImageIds.value.length === 0) return
+
+    const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+    selectedImageIds.value.forEach((id, index) => {
+      updateImage(id, { zIndex: maxZ + 1 + index })
+    })
+  }
+
+  // Ausgewählte Bilder nach hinten senden
+  function sendSelectedToBack() {
+    if (selectedImageIds.value.length === 0) return
+
+    const minZ = Math.min(...images.value.map(img => img.zIndex), 0)
+    selectedImageIds.value.forEach((id, index) => {
+      updateImage(id, { zIndex: minZ - 1 - index })
+    })
+  }
+
+  // Ausgewählte Bilder um Grad drehen
+  function rotateSelectedImages(degrees: number) {
+    selectedImageIds.value.forEach(id => {
+      const img = images.value.find(i => i.id === id)
+      if (img) {
+        updateImage(id, { rotation: (img.rotation + degrees) % 360 })
+      }
+    })
+  }
+
+  // Ausgewählte Bilder verschieben
+  function moveSelectedImages(dx: number, dy: number) {
+    selectedImageIds.value.forEach(id => {
+      const img = images.value.find(i => i.id === id)
+      if (img) {
+        updateImage(id, { x: img.x + dx, y: img.y + dy })
+      }
+    })
+  }
+
+  // Ausgewählten Text verschieben
+  function moveSelectedText(dx: number, dy: number) {
+    if (selectedTextId.value) {
+      const txt = texts.value.find(t => t.id === selectedTextId.value)
+      if (txt) {
+        updateText(selectedTextId.value, { x: txt.x + dx, y: txt.y + dy })
+      }
+    }
+  }
+
+  // Grid umschalten
+  function toggleGrid() {
+    settings.value.gridEnabled = !settings.value.gridEnabled
+  }
+
   // Text-Funktionen
   function addText(text: string = 'Neuer Text') {
     const maxZ = Math.max(
@@ -587,6 +670,13 @@ export const useCollageStore = defineStore('collage', () => {
     setCanvasZoom,
     resetCanvasView,
     duplicateImageToPosition,
+    duplicateSelectedImages,
+    bringSelectedToFront,
+    sendSelectedToBack,
+    rotateSelectedImages,
+    moveSelectedImages,
+    moveSelectedText,
+    toggleGrid,
     saveAsTemplate,
     loadFromTemplate
   }

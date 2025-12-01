@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 
 const collage = useCollageStore()
@@ -22,11 +22,6 @@ onMounted(() => {
     ctx = canvas.value.getContext('2d')
     renderCanvas()
   }
-  window.addEventListener('keydown', handleKeyDown)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
 })
 
 watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageIds, collage.selectedTextId], () => {
@@ -853,26 +848,6 @@ function handleMouseUp() {
   isDragging.value = false
   isResizing.value = false
   resizeHandle.value = null
-}
-
-function handleKeyDown(e: KeyboardEvent) {
-  // Delete/Backspace: Alle ausgewählten Bilder löschen
-  if ((e.key === 'Delete' || e.key === 'Backspace') && collage.selectedImageIds.length > 0) {
-    e.preventDefault()
-    collage.removeSelectedImages()
-  }
-
-  // Ctrl/Cmd+A: Alle Canvas-Bilder auswählen
-  if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-    e.preventDefault()
-    collage.selectAllCanvasImages()
-  }
-
-  // Escape: Auswahl aufheben
-  if (e.key === 'Escape') {
-    collage.deselectAllImages()
-    collage.selectText(null)
-  }
 }
 
 // Drag-Drop Funktionalität für Bilder aus der Galerie

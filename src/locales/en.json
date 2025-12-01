@@ -198,6 +198,46 @@
     "save": "Save",
     "cancel": "Cancel"
   },
+  "shortcuts": {
+    "title": "Keyboard Shortcuts",
+    "close": "Close",
+    "pressToOpen": "Press Shift + ? to open this window",
+    "categories": {
+      "selection": "Selection",
+      "editing": "Editing",
+      "navigation": "Navigation",
+      "canvas": "Canvas",
+      "general": "General"
+    },
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "delete": "Delete selected",
+    "duplicate": "Duplicate",
+    "rotateRight": "Rotate 90° clockwise",
+    "rotateLeft": "Rotate 90° counter-clockwise",
+    "bringToFront": "Bring to front",
+    "sendToBack": "Send to back",
+    "addText": "Add new text",
+    "moveUp": "Move up (1px)",
+    "moveDown": "Move down (1px)",
+    "moveLeft": "Move left (1px)",
+    "moveRight": "Move right (1px)",
+    "moveUp10": "Move up (10px)",
+    "moveDown10": "Move down (10px)",
+    "moveLeft10": "Move left (10px)",
+    "moveRight10": "Move right (10px)",
+    "toggleGrid": "Toggle grid",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetZoom": "Reset zoom",
+    "showHelp": "Show keyboard shortcuts",
+    "shiftHint": "+ Shift for 10px steps",
+    "tips": {
+      "title": "Tips",
+      "multiSelect": "Ctrl+Click for multi-select of images",
+      "shiftResize": "Shift while resizing keeps aspect ratio (or releases it)"
+    }
+  },
   "toast": {
     "uploadSuccess": "{count} image(s) uploaded successfully",
     "uploadError": "Error processing images",

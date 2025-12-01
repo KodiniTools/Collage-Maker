@@ -198,6 +198,46 @@
     "save": "Speichern",
     "cancel": "Abbrechen"
   },
+  "shortcuts": {
+    "title": "Tastaturkurzbefehle",
+    "close": "Schließen",
+    "pressToOpen": "Drücken Sie Shift + ? um dieses Fenster zu öffnen",
+    "categories": {
+      "selection": "Auswahl",
+      "editing": "Bearbeitung",
+      "navigation": "Navigation",
+      "canvas": "Canvas",
+      "general": "Allgemein"
+    },
+    "selectAll": "Alle auswählen",
+    "deselectAll": "Auswahl aufheben",
+    "delete": "Ausgewählte löschen",
+    "duplicate": "Duplizieren",
+    "rotateRight": "90° im Uhrzeigersinn drehen",
+    "rotateLeft": "90° gegen Uhrzeigersinn drehen",
+    "bringToFront": "In den Vordergrund",
+    "sendToBack": "In den Hintergrund",
+    "addText": "Neuen Text hinzufügen",
+    "moveUp": "Nach oben verschieben (1px)",
+    "moveDown": "Nach unten verschieben (1px)",
+    "moveLeft": "Nach links verschieben (1px)",
+    "moveRight": "Nach rechts verschieben (1px)",
+    "moveUp10": "Nach oben verschieben (10px)",
+    "moveDown10": "Nach unten verschieben (10px)",
+    "moveLeft10": "Nach links verschieben (10px)",
+    "moveRight10": "Nach rechts verschieben (10px)",
+    "toggleGrid": "Raster ein/ausblenden",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "resetZoom": "Zoom zurücksetzen",
+    "showHelp": "Tastaturkürzel anzeigen",
+    "shiftHint": "+ Shift für 10px Schritte",
+    "tips": {
+      "title": "Tipps",
+      "multiSelect": "Strg+Klick für Mehrfachauswahl von Bildern",
+      "shiftResize": "Shift beim Skalieren hält das Seitenverhältnis (oder hebt es auf)"
+    }
+  },
   "toast": {
     "uploadSuccess": "{count} Bild(er) erfolgreich hochgeladen",
     "uploadError": "Fehler beim Verarbeiten der Bilder",
