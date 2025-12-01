@@ -1,7 +1,5 @@
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
-import { useToastStore } from '@/stores/toast'
-import { useI18n } from 'vue-i18n'
 
 export interface KeyboardShortcut {
   key: string
@@ -16,8 +14,6 @@ export interface KeyboardShortcut {
 
 export function useKeyboardShortcuts() {
   const collage = useCollageStore()
-  const toast = useToastStore()
-  const { t } = useI18n()
 
   const showShortcutsModal = ref(false)
 
