@@ -60,46 +60,62 @@ function toggleSelectAll() {
     </div>
 
     <template v-else>
-      <!-- Action Buttons -->
-      <div class="flex flex-wrap gap-2 mb-3">
-        <!-- Select All / Deselect All -->
+      <!-- Selection Info Banner -->
+      <div
+        v-if="selectedCount > 0"
+        class="mb-3 p-2 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/30"
+      >
+        <p class="text-sm font-medium text-primary dark:text-primary-light mb-2">
+          {{ t('gallery.selectedInfo', { count: selectedCount }) }}
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <!-- Add to Canvas Button -->
+          <button
+            @click="collage.addSelectedGalleryToCanvas()"
+            class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-1"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {{ t('gallery.addToCanvas', { count: selectedCount }) }}
+          </button>
+
+          <!-- Delete Selected Button -->
+          <button
+            @click="collage.removeSelectedGalleryImages()"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            {{ t('gallery.deleteSelected', { count: selectedCount }) }}
+          </button>
+
+          <!-- Deselect Button -->
+          <button
+            @click="collage.deselectAllGalleryImages()"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
+          >
+            {{ t('gallery.deselectAll') }}
+          </button>
+        </div>
+        <p class="text-[10px] text-muted mt-2">
+          {{ t('gallery.layoutHint') }}
+        </p>
+      </div>
+
+      <!-- Action Buttons (when nothing selected) -->
+      <div v-else class="flex flex-wrap gap-2 mb-3">
         <button
           @click="toggleSelectAll"
           class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
         >
-          {{ allSelected ? t('gallery.deselectAll') : t('gallery.selectAll') }}
-        </button>
-
-        <!-- Add to Canvas Button -->
-        <button
-          v-if="selectedCount > 0"
-          @click="collage.addSelectedGalleryToCanvas()"
-          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-1"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          {{ t('gallery.addToCanvas', { count: selectedCount }) }}
-        </button>
-
-        <!-- Delete Selected Button -->
-        <button
-          v-if="selectedCount > 0"
-          @click="collage.removeSelectedGalleryImages()"
-          class="px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-          {{ t('gallery.deleteSelected', { count: selectedCount }) }}
+          {{ t('gallery.selectAll') }}
         </button>
       </div>
 
-      <!-- Selection Info -->
-      <p v-if="selectedCount > 0" class="text-xs text-muted mb-2">
-        {{ t('gallery.selectedInfo', { count: selectedCount }) }}
-      </p>
-      <p v-else class="text-xs text-muted/70 mb-2">
+      <!-- Hint -->
+      <p v-if="selectedCount === 0" class="text-[10px] text-muted/70 mb-2">
         {{ t('gallery.hint') }}
       </p>
 

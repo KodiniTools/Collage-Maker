@@ -21,7 +21,9 @@
     "hero": "Hero",
     "sidebar": "Sidebar",
     "mosaic": "Mosaik",
-    "diagonal": "Diagonal"
+    "diagonal": "Diagonal",
+    "withSelectedImages": "{count} ausgewählte Bilder werden mit Layout hinzugefügt",
+    "noImages": "Wählen Sie Bilder aus der Galerie oder laden Sie neue hoch"
   },
   "canvas": {
     "size": "Canvas-Größe",
@@ -54,7 +56,8 @@
     "addToCanvas": "{count} zu Canvas",
     "deleteSelected": "{count} löschen",
     "selectedInfo": "{count} Bild(er) ausgewählt",
-    "hint": "Klicken zum Auswählen, Strg+Klick für Mehrfachauswahl, oder per Drag-Drop auf Canvas ziehen"
+    "hint": "Klicken zum Auswählen, Strg+Klick für Mehrfachauswahl, oder per Drag-Drop auf Canvas ziehen",
+    "layoutHint": "Tipp: Wählen Sie ein Layout, um ausgewählte Bilder direkt mit Layout hinzuzufügen"
   },
   "export": {
     "title": "Exportieren",
