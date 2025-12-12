@@ -48,6 +48,14 @@
     "deselectAll": "Deselect all",
     "hint": "Ctrl+click for multi-select"
   },
+  "gallery": {
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "addToCanvas": "{count} to canvas",
+    "deleteSelected": "Delete {count}",
+    "selectedInfo": "{count} image(s) selected",
+    "hint": "Click to select, Ctrl+click for multi-select, or drag-drop to canvas"
+  },
   "export": {
     "title": "Export",
     "format": "Format",
