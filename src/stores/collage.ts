@@ -12,8 +12,8 @@ export const useCollageStore = defineStore('collage', () => {
   const canvasZoom = ref(1) // Zoom-Level für Canvas-Anzeige (1 = 100%)
 
   const settings = ref<CollageSettings>({
-    width: 1200,
-    height: 800,
+    width: 700,
+    height: 740,
     backgroundColor: '#ffffff',
     layout: 'freestyle',
     gridEnabled: false,
