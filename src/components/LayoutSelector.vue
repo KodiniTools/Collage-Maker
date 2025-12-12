@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
 import type { LayoutType } from '@/types'
@@ -19,7 +20,20 @@ const layouts: { value: LayoutType; labelKey: string }[] = [
   { value: 'diagonal', labelKey: 'layout.diagonal' }
 ]
 
+// Anzahl ausgewählter Galerie-Bilder
+const selectedGalleryCount = computed(() => collage.selectedGalleryIds.length)
+
+// Anzahl Canvas-Bilder
+const canvasImageCount = computed(() =>
+  collage.images.filter(img => img.isGalleryTemplate !== true).length
+)
+
 function selectLayout(layout: LayoutType) {
+  // Wenn Galerie-Bilder ausgewählt sind, füge sie zuerst zum Canvas hinzu
+  if (selectedGalleryCount.value > 0) {
+    collage.addSelectedGalleryToCanvas()
+  }
+  // Dann Layout anwenden
   collage.applyLayout(layout)
 }
 </script>
@@ -27,6 +41,25 @@ function selectLayout(layout: LayoutType) {
 <template>
   <div class="w-full">
     <h2 class="text-lg font-semibold mb-3">{{ t('layout.title') }}</h2>
+
+    <!-- Info wenn Galerie-Bilder ausgewählt -->
+    <div
+      v-if="selectedGalleryCount > 0"
+      class="mb-3 p-2 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/30 text-xs"
+    >
+      <p class="font-medium text-accent-dark dark:text-accent">
+        {{ t('layout.withSelectedImages', { count: selectedGalleryCount }) }}
+      </p>
+    </div>
+
+    <!-- Info wenn keine Bilder zum Layouten -->
+    <div
+      v-else-if="canvasImageCount === 0"
+      class="mb-3 p-2 bg-muted/10 dark:bg-slate/20 rounded-lg text-xs text-muted"
+    >
+      {{ t('layout.noImages') }}
+    </div>
+
     <div class="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1" role="group" aria-label="Layout options">
       <button
         v-for="layout in layouts"
