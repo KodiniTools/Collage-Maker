@@ -54,10 +54,20 @@
     "selectAll": "Alle auswählen",
     "deselectAll": "Auswahl aufheben",
     "addToCanvas": "{count} zu Canvas",
+    "addSelectedToCanvas": "Ausgewählte zu Canvas hinzufügen",
     "deleteSelected": "{count} löschen",
     "selectedInfo": "{count} Bild(er) ausgewählt",
     "hint": "Klicken zum Auswählen, Strg+Klick für Mehrfachauswahl, oder per Drag-Drop auf Canvas ziehen",
-    "layoutHint": "Tipp: Wählen Sie ein Layout, um ausgewählte Bilder direkt mit Layout hinzuzufügen"
+    "layoutHint": "Tipp: Wählen Sie ein Layout, um ausgewählte Bilder direkt mit Layout hinzuzufügen",
+    "doubleClickHint": "Doppelklick für Vorschau",
+    "preview": "Bildvorschau",
+    "previewTitle": "Dateiname",
+    "previewFormat": "Format",
+    "previewSize": "Größe",
+    "previewDimensions": "Abmessungen",
+    "selectImage": "Bild auswählen",
+    "deselectImage": "Auswahl aufheben",
+    "addThisToCanvas": "Zu Canvas hinzufügen"
   },
   "export": {
     "title": "Exportieren",
