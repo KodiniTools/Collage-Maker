@@ -39,6 +39,15 @@
     "selected": "Ausgewählt",
     "dragToCanvas": "Ziehen Sie das Bild auf das Canvas, um es hinzuzufügen"
   },
+  "thumbnailBar": {
+    "title": "Bilder auf Canvas:",
+    "clickToSelect": "Klicken zum Auswählen",
+    "imageAlt": "Bild {index}",
+    "remove": "Bild entfernen",
+    "selected": "{count} ausgewählt",
+    "deselectAll": "Auswahl aufheben",
+    "hint": "Strg+Klick für Mehrfachauswahl"
+  },
   "export": {
     "title": "Exportieren",
     "format": "Format",
