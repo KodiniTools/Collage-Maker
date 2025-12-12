@@ -4,8 +4,10 @@ import type { CollageImage, CollageText, CollageSettings, LayoutType } from '@/t
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
-  // Mehrfachauswahl: Array von ausgewählten Bild-IDs
+  // Mehrfachauswahl: Array von ausgewählten Bild-IDs (Canvas)
   const selectedImageIds = ref<string[]>([])
+  // Mehrfachauswahl: Array von ausgewählten Galerie-Bild-IDs
+  const selectedGalleryIds = ref<string[]>([])
   const texts = ref<CollageText[]>([])
   const selectedTextId = ref<string | null>(null)
   const lockAspectRatio = ref(true)
@@ -217,6 +219,118 @@ export const useCollageStore = defineStore('collage', () => {
       updateImage(id, updates)
     })
   }
+
+  // ========== Galerie-Auswahl Funktionen ==========
+
+  // Galerie-Bild zur Auswahl hinzufügen/entfernen
+  function toggleGallerySelection(id: string) {
+    const index = selectedGalleryIds.value.indexOf(id)
+    if (index !== -1) {
+      selectedGalleryIds.value.splice(index, 1)
+    } else {
+      selectedGalleryIds.value.push(id)
+    }
+  }
+
+  // Alle Galerie-Bilder auswählen
+  function selectAllGalleryImages() {
+    const galleryImages = images.value.filter(img => img.isGalleryTemplate === true)
+    selectedGalleryIds.value = galleryImages.map(img => img.id)
+  }
+
+  // Alle Galerie-Bilder abwählen
+  function deselectAllGalleryImages() {
+    selectedGalleryIds.value = []
+  }
+
+  // Prüfen, ob ein Galerie-Bild ausgewählt ist
+  function isGalleryImageSelected(id: string): boolean {
+    return selectedGalleryIds.value.includes(id)
+  }
+
+  // Ausgewählte Galerie-Bilder zum Canvas hinzufügen
+  function addSelectedGalleryToCanvas() {
+    const selectedGalleryImages = images.value.filter(
+      img => img.isGalleryTemplate === true && selectedGalleryIds.value.includes(img.id)
+    )
+
+    if (selectedGalleryImages.length === 0) return
+
+    const newIds: string[] = []
+
+    selectedGalleryImages.forEach((sourceImage, index) => {
+      const newId = crypto.randomUUID()
+      const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+
+      // Erstelle Canvas-Instanz mit Versatz für jedes Bild
+      images.value.push({
+        id: newId,
+        file: sourceImage.file,
+        url: sourceImage.url,
+        x: 50 + (index * 20),
+        y: 50 + (index * 20),
+        width: sourceImage.width,
+        height: sourceImage.height,
+        rotation: 0,
+        zIndex: maxZ + 1 + index,
+        opacity: 1,
+        borderRadius: 0,
+        borderEnabled: false,
+        borderWidth: 4,
+        borderColor: '#000000',
+        borderStyle: 'solid',
+        borderShadowEnabled: false,
+        borderShadowOffsetX: 3,
+        borderShadowOffsetY: 3,
+        borderShadowBlur: 6,
+        borderShadowColor: '#000000',
+        shadowEnabled: false,
+        shadowOffsetX: 5,
+        shadowOffsetY: 5,
+        shadowBlur: 10,
+        shadowColor: '#000000',
+        brightness: 100,
+        contrast: 100,
+        highlights: 0,
+        shadows: 0,
+        saturation: 100,
+        warmth: 0,
+        sharpness: 0,
+        isGalleryTemplate: false
+      })
+
+      newIds.push(newId)
+    })
+
+    // Galerie-Auswahl zurücksetzen
+    selectedGalleryIds.value = []
+
+    // Neue Canvas-Bilder auswählen
+    selectedImageIds.value = newIds
+
+    // Layout anwenden wenn nicht Freestyle
+    if (settings.value.layout !== 'freestyle') {
+      applyLayout(settings.value.layout)
+    }
+  }
+
+  // Ausgewählte Galerie-Bilder entfernen (Template + alle Canvas-Instanzen)
+  function removeSelectedGalleryImages() {
+    const idsToRemove = [...selectedGalleryIds.value]
+
+    idsToRemove.forEach(galleryId => {
+      const galleryImage = images.value.find(img => img.id === galleryId)
+      if (galleryImage) {
+        // Finde alle Canvas-Instanzen mit der gleichen URL
+        const relatedImages = images.value.filter(img => img.url === galleryImage.url)
+        relatedImages.forEach(img => removeImage(img.id))
+      }
+    })
+
+    selectedGalleryIds.value = []
+  }
+
+  // ========== Layout Funktionen ==========
 
   function applyLayout(layout: LayoutType) {
     settings.value.layout = layout
@@ -668,6 +782,14 @@ export const useCollageStore = defineStore('collage', () => {
     selectAllCanvasImages,
     deselectAllImages,
     isImageSelected,
+    // Galerie-Auswahl
+    selectedGalleryIds,
+    toggleGallerySelection,
+    selectAllGalleryImages,
+    deselectAllGalleryImages,
+    isGalleryImageSelected,
+    addSelectedGalleryToCanvas,
+    removeSelectedGalleryImages,
     // Text-Funktionen
     addText,
     removeText,
