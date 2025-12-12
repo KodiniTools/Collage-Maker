@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
+import type { CollageImage } from '@/types'
 
 const collage = useCollageStore()
 const { t } = useI18n()
+
+// Preview Modal State
+const showPreview = ref(false)
+const previewImage = ref<CollageImage | null>(null)
 
 // Nur Galerie-Templates anzeigen (keine Canvas-Instanzen)
 const galleryImages = computed(() =>
@@ -42,12 +47,36 @@ function handleImageClick(imageId: string, event: MouseEvent) {
   }
 }
 
+function handleDoubleClick(image: CollageImage) {
+  previewImage.value = image
+  showPreview.value = true
+}
+
+function closePreview() {
+  showPreview.value = false
+  previewImage.value = null
+}
+
 function toggleSelectAll() {
   if (allSelected.value) {
     collage.deselectAllGalleryImages()
   } else {
     collage.selectAllGalleryImages()
   }
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return bytes + ' B'
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+}
+
+function getImageDimensions(image: CollageImage): string {
+  return `${Math.round(image.width)} × ${Math.round(image.height)} px`
+}
+
+function getFileExtension(filename: string): string {
+  return filename.split('.').pop()?.toUpperCase() || 'UNKNOWN'
 }
 </script>
 
@@ -63,41 +92,43 @@ function toggleSelectAll() {
       <!-- Selection Info Banner -->
       <div
         v-if="selectedCount > 0"
-        class="mb-3 p-2 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/30"
+        class="mb-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/30"
       >
         <p class="text-sm font-medium text-primary dark:text-primary-light mb-2">
           {{ t('gallery.selectedInfo', { count: selectedCount }) }}
         </p>
-        <div class="flex flex-wrap gap-2">
-          <!-- Add to Canvas Button -->
+        <div class="flex flex-col gap-2">
+          <!-- Add to Canvas Button - Prominent -->
           <button
             @click="collage.addSelectedGalleryToCanvas()"
-            class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-1"
+            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-2"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            {{ t('gallery.addToCanvas', { count: selectedCount }) }}
+            {{ t('gallery.addSelectedToCanvas') }}
           </button>
 
-          <!-- Delete Selected Button -->
-          <button
-            @click="collage.removeSelectedGalleryImages()"
-            class="px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            {{ t('gallery.deleteSelected', { count: selectedCount }) }}
-          </button>
+          <div class="flex gap-2">
+            <!-- Delete Selected Button -->
+            <button
+              @click="collage.removeSelectedGalleryImages()"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              {{ t('gallery.deleteSelected', { count: selectedCount }) }}
+            </button>
 
-          <!-- Deselect Button -->
-          <button
-            @click="collage.deselectAllGalleryImages()"
-            class="px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
-          >
-            {{ t('gallery.deselectAll') }}
-          </button>
+            <!-- Deselect Button -->
+            <button
+              @click="collage.deselectAllGalleryImages()"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
+            >
+              {{ t('gallery.deselectAll') }}
+            </button>
+          </div>
         </div>
         <p class="text-[10px] text-muted mt-2">
           {{ t('gallery.layoutHint') }}
@@ -127,6 +158,7 @@ function toggleSelectAll() {
           draggable="true"
           @dragstart="handleDragStart($event, image.id)"
           @click="handleImageClick(image.id, $event)"
+          @dblclick="handleDoubleClick(image)"
           @keydown.enter="handleImageClick(image.id, $event as any)"
           tabindex="0"
           role="button"
@@ -135,23 +167,24 @@ function toggleSelectAll() {
             'flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-150',
             'focus:outline-none focus:ring-2 focus:ring-accent',
             collage.isGalleryImageSelected(image.id)
-              ? 'bg-primary/10 dark:bg-primary/20 ring-2 ring-primary'
+              ? 'bg-primary/15 dark:bg-primary/25 ring-2 ring-primary shadow-sm'
               : 'hover:bg-muted/10 dark:hover:bg-slate/30'
           ]"
-          :title="t('images.dragToCanvas') || 'Ziehen Sie das Bild auf das Canvas'"
+          :title="t('gallery.doubleClickHint')"
         >
-          <!-- Selection Checkbox -->
+          <!-- Selection Checkbox - Improved -->
           <div
+            @click.stop="collage.toggleGallerySelection(image.id)"
             :class="[
-              'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
+              'w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-150 cursor-pointer',
               collage.isGalleryImageSelected(image.id)
-                ? 'bg-primary border-primary'
-                : 'border-muted/50 hover:border-primary/50'
+                ? 'bg-primary border-primary shadow-md scale-110'
+                : 'border-muted/50 hover:border-primary hover:bg-primary/10'
             ]"
           >
             <svg
               v-if="collage.isGalleryImageSelected(image.id)"
-              class="w-3 h-3 text-surface-light"
+              class="w-4 h-4 text-surface-light"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -160,13 +193,27 @@ function toggleSelectAll() {
             </svg>
           </div>
 
-          <!-- Thumbnail -->
-          <img :src="image.url" :alt="image.file.name" class="w-12 h-12 object-cover rounded" />
+          <!-- Thumbnail with selection indicator -->
+          <div class="relative">
+            <img
+              :src="image.url"
+              :alt="image.file.name"
+              class="w-12 h-12 object-cover rounded"
+              :class="{ 'ring-2 ring-primary': collage.isGalleryImageSelected(image.id) }"
+            />
+            <!-- Selection number badge -->
+            <span
+              v-if="collage.isGalleryImageSelected(image.id)"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-surface-light text-[10px] font-bold rounded-full flex items-center justify-center"
+            >
+              {{ collage.selectedGalleryIds.indexOf(image.id) + 1 }}
+            </span>
+          </div>
 
           <!-- File Info -->
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium truncate">{{ image.file.name }}</p>
-            <p class="text-xs text-muted">{{ Math.round(image.file.size / 1024) }} KB</p>
+            <p class="text-xs text-muted">{{ formatFileSize(image.file.size) }}</p>
           </div>
 
           <!-- Remove Button -->
@@ -182,5 +229,89 @@ function toggleSelectAll() {
         </div>
       </div>
     </template>
+
+    <!-- Image Preview Modal -->
+    <Teleport to="body">
+      <div
+        v-if="showPreview && previewImage"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+        @click.self="closePreview"
+      >
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+          <!-- Header -->
+          <div class="flex items-center justify-between p-4 border-b border-muted/30 dark:border-slate/30">
+            <h3 class="text-lg font-semibold truncate pr-4">{{ t('gallery.preview') }}</h3>
+            <button
+              @click="closePreview"
+              class="p-1 hover:bg-muted/20 dark:hover:bg-slate/30 rounded-lg transition-colors"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Image -->
+          <div class="p-4 flex justify-center bg-muted/10 dark:bg-slate/20">
+            <img
+              :src="previewImage.url"
+              :alt="previewImage.file.name"
+              class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-lg"
+            />
+          </div>
+
+          <!-- Info -->
+          <div class="p-4 space-y-3">
+            <!-- Filename -->
+            <div>
+              <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewTitle') }}</p>
+              <p class="font-medium truncate">{{ previewImage.file.name }}</p>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="grid grid-cols-3 gap-4">
+              <!-- Format -->
+              <div class="text-center p-2 bg-muted/10 dark:bg-slate/20 rounded-lg">
+                <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewFormat') }}</p>
+                <p class="font-semibold text-primary">{{ getFileExtension(previewImage.file.name) }}</p>
+              </div>
+
+              <!-- Size -->
+              <div class="text-center p-2 bg-muted/10 dark:bg-slate/20 rounded-lg">
+                <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewSize') }}</p>
+                <p class="font-semibold">{{ formatFileSize(previewImage.file.size) }}</p>
+              </div>
+
+              <!-- Dimensions -->
+              <div class="text-center p-2 bg-muted/10 dark:bg-slate/20 rounded-lg">
+                <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewDimensions') }}</p>
+                <p class="font-semibold">{{ getImageDimensions(previewImage) }}</p>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 pt-2">
+              <button
+                @click="collage.toggleGallerySelection(previewImage.id); closePreview()"
+                :class="[
+                  'flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
+                  collage.isGalleryImageSelected(previewImage.id)
+                    ? 'bg-muted/20 hover:bg-muted/30 dark:bg-slate/30 dark:hover:bg-slate/40'
+                    : 'bg-primary hover:bg-primary-dark text-surface-light'
+                ]"
+              >
+                {{ collage.isGalleryImageSelected(previewImage.id) ? t('gallery.deselectImage') : t('gallery.selectImage') }}
+              </button>
+              <button
+                @click="collage.deselectAllGalleryImages(); collage.toggleGallerySelection(previewImage.id); collage.addSelectedGalleryToCanvas(); closePreview()"
+                class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-slate-dark transition-colors"
+              >
+                {{ t('gallery.addThisToCanvas') }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
