@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useCollageStore } from '@/stores/collage'
 import { useI18n } from 'vue-i18n'
 import type { CollageImage } from '@/types'
 
 const collage = useCollageStore()
+const { selectedGalleryIds, images } = storeToRefs(collage)
 const { t } = useI18n()
 
 // Preview Modal State
@@ -13,11 +15,11 @@ const previewImage = ref<CollageImage | null>(null)
 
 // Nur Galerie-Templates anzeigen (keine Canvas-Instanzen)
 const galleryImages = computed(() =>
-  collage.images.filter(img => img.isGalleryTemplate === true)
+  images.value.filter(img => img.isGalleryTemplate === true)
 )
 
 // Anzahl ausgewählter Galerie-Bilder
-const selectedCount = computed(() => collage.selectedGalleryIds.length)
+const selectedCount = computed(() => selectedGalleryIds.value.length)
 
 // Sind alle Bilder ausgewählt?
 const allSelected = computed(() =>
