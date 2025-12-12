@@ -230,22 +230,33 @@ export const useCollageStore = defineStore('collage', () => {
     // NUR Canvas-Instanzen layouten (keine Gallery-Templates)
     const canvasImages = images.value.filter(img => img.isGalleryTemplate !== true)
 
-    // Hilfsfunktion zum Einpassen von Bildern mit Seitenverhältnis
-    function fitImage(img: any, x: number, y: number, width: number, height: number) {
+    // Hilfsfunktion zum Einpassen von Bildern mit Seitenverhältnis (zentriert in Zelle)
+    function fitImage(img: any, cellX: number, cellY: number, cellWidth: number, cellHeight: number) {
       const aspectRatio = img.width / img.height
-      const availableWidth = width - padding * 2
-      const availableHeight = height - padding * 2
+      const availableWidth = cellWidth - padding * 2
+      const availableHeight = cellHeight - padding * 2
 
-      img.x = x + padding
-      img.y = y + padding
+      let newWidth: number
+      let newHeight: number
 
       if (availableWidth / availableHeight > aspectRatio) {
-        img.height = availableHeight
-        img.width = availableHeight * aspectRatio
+        // Zelle ist breiter als Bild - Höhe bestimmt
+        newHeight = availableHeight
+        newWidth = availableHeight * aspectRatio
       } else {
-        img.width = availableWidth
-        img.height = availableWidth / aspectRatio
+        // Zelle ist höher als Bild - Breite bestimmt
+        newWidth = availableWidth
+        newHeight = availableWidth / aspectRatio
       }
+
+      // Bild in der Zelle zentrieren
+      const offsetX = (cellWidth - newWidth) / 2
+      const offsetY = (cellHeight - newHeight) / 2
+
+      img.x = cellX + offsetX
+      img.y = cellY + offsetY
+      img.width = newWidth
+      img.height = newHeight
       img.rotation = 0
     }
 
