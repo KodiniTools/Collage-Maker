@@ -9,6 +9,7 @@ import GridControls from '@/components/GridControls.vue'
 import CanvasSettings from '@/components/CanvasSettings.vue'
 import ImageList from '@/components/ImageList.vue'
 import TextList from '@/components/TextList.vue'
+import ThumbnailBar from '@/components/ThumbnailBar.vue'
 import CollageCanvas from '@/components/CollageCanvas.vue'
 import ImageControls from '@/components/ImageControls.vue'
 import TextControls from '@/components/TextControls.vue'
@@ -82,6 +83,7 @@ onUnmounted(() => {
 
         <!-- Canvas - scrollable for large canvases up to 4000px -->
         <section class="lg:col-span-6">
+          <ThumbnailBar />
           <CollageCanvas />
         </section>
 
