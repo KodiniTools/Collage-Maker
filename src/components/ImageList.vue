@@ -91,68 +91,12 @@ function getFileExtension(filename: string): string {
     </div>
 
     <template v-else>
-      <!-- Selection Info Banner -->
-      <div
-        v-if="selectedCount > 0"
-        class="mb-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/30"
-      >
-        <p class="text-sm font-medium text-primary dark:text-primary-light mb-2">
-          {{ t('gallery.selectedInfo', { count: selectedCount }) }}
-        </p>
-        <div class="flex flex-col gap-2">
-          <!-- Add to Canvas Button - Prominent -->
-          <button
-            @click="collage.addSelectedGalleryToCanvas()"
-            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-2"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            {{ t('gallery.addSelectedToCanvas') }}
-          </button>
-
-          <div class="flex gap-2">
-            <!-- Delete Selected Button -->
-            <button
-              @click="collage.removeSelectedGalleryImages()"
-              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
-            >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              {{ t('gallery.deleteSelected', { count: selectedCount }) }}
-            </button>
-
-            <!-- Deselect Button -->
-            <button
-              @click="collage.deselectAllGalleryImages()"
-              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
-            >
-              {{ t('gallery.deselectAll') }}
-            </button>
-          </div>
-        </div>
-        <p class="text-[10px] text-muted mt-2">
-          {{ t('gallery.layoutHint') }}
-        </p>
-      </div>
-
-      <!-- Action Buttons (when nothing selected) -->
-      <div v-else class="flex flex-wrap gap-2 mb-3">
-        <button
-          @click="toggleSelectAll"
-          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
-        >
-          {{ t('gallery.selectAll') }}
-        </button>
-      </div>
-
       <!-- Hint -->
-      <p v-if="selectedCount === 0" class="text-[10px] text-muted/70 mb-2">
+      <p class="text-[10px] text-muted/70 mb-2">
         {{ t('gallery.hint') }}
       </p>
 
-      <!-- Image List -->
+      <!-- Image List (always first to prevent jumping) -->
       <div class="space-y-2 max-h-64 overflow-y-auto">
         <div
           v-for="image in galleryImages"
@@ -229,6 +173,62 @@ function getFileExtension(filename: string): string {
             </svg>
           </button>
         </div>
+      </div>
+
+      <!-- Selection Action Bar (below list to prevent jumping) -->
+      <div
+        v-if="selectedCount > 0"
+        class="mt-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/30"
+      >
+        <p class="text-sm font-medium text-primary dark:text-primary-light mb-2">
+          {{ t('gallery.selectedInfo', { count: selectedCount }) }}
+        </p>
+        <div class="flex flex-col gap-2">
+          <!-- Add to Canvas Button - Prominent -->
+          <button
+            @click="collage.addSelectedGalleryToCanvas()"
+            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-2"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {{ t('gallery.addSelectedToCanvas') }}
+          </button>
+
+          <div class="flex gap-2">
+            <!-- Delete Selected Button -->
+            <button
+              @click="collage.removeSelectedGalleryImages()"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              {{ t('gallery.deleteSelected', { count: selectedCount }) }}
+            </button>
+
+            <!-- Deselect Button -->
+            <button
+              @click="collage.deselectAllGalleryImages()"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
+            >
+              {{ t('gallery.deselectAll') }}
+            </button>
+          </div>
+        </div>
+        <p class="text-[10px] text-muted mt-2">
+          {{ t('gallery.layoutHint') }}
+        </p>
+      </div>
+
+      <!-- Select All Button (when nothing selected) -->
+      <div v-else class="mt-3 flex flex-wrap gap-2">
+        <button
+          @click="toggleSelectAll"
+          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
+        >
+          {{ t('gallery.selectAll') }}
+        </button>
       </div>
     </template>
 
