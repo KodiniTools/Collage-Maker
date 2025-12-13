@@ -696,7 +696,7 @@ export const useCollageStore = defineStore('collage', () => {
   function setBackgroundImage(imageUrl: string) {
     settings.value.backgroundImage = {
       url: imageUrl,
-      fit: settings.value.backgroundImage.fit,
+      fit: settings.value.backgroundImage?.fit ?? 'cover',
       opacity: 1,
       brightness: 100,
       contrast: 100,
@@ -707,18 +707,24 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Hintergrundbild entfernen
   function removeBackgroundImage() {
-    settings.value.backgroundImage.url = null
+    if (settings.value.backgroundImage) {
+      settings.value.backgroundImage.url = null
+    }
     isBackgroundSelected.value = false
   }
 
   // Hintergrundbild-Anpassungsmodus ändern
   function setBackgroundImageFit(fit: BackgroundImageFit) {
-    settings.value.backgroundImage.fit = fit
+    if (settings.value.backgroundImage) {
+      settings.value.backgroundImage.fit = fit
+    }
   }
 
   // Hintergrundbild-Einstellungen aktualisieren
   function updateBackgroundImage(updates: Partial<BackgroundImageSettings>) {
-    Object.assign(settings.value.backgroundImage, updates)
+    if (settings.value.backgroundImage) {
+      Object.assign(settings.value.backgroundImage, updates)
+    }
   }
 
   // Hintergrundbild auswählen/abwählen
