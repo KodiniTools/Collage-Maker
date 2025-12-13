@@ -325,6 +325,14 @@
     "exportSuccess": "Collage exported successfully",
     "exportError": "Error exporting collage"
   },
+  "autoSave": {
+    "restoreTitle": "Previous Work Found",
+    "restoreDescription": "An automatically saved collage was found. Would you like to restore it?",
+    "savedAt": "Saved at",
+    "restore": "Restore",
+    "continueWithout": "Continue Without Restoring",
+    "discard": "Delete Saved Data"
+  },
   "faq": {
     "title": "Frequently Asked Questions",
     "questions": [
