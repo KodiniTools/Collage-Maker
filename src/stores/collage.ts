@@ -339,7 +339,7 @@ export const useCollageStore = defineStore('collage', () => {
 
     const w = settings.value.width
     const h = settings.value.height
-    const padding = 10
+    const padding = 5
 
     // NUR Canvas-Instanzen layouten (keine Gallery-Templates)
     const canvasImages = images.value.filter(img => img.isGalleryTemplate !== true)
