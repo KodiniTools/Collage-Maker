@@ -14,6 +14,16 @@ const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
 const shiftPressed = ref(false)
 const initialAspectRatio = ref(1)
 
+// Smart Guides
+const SNAP_THRESHOLD = 8 // Pixel-Abstand für Einrasten
+interface GuideLine {
+  type: 'horizontal' | 'vertical'
+  position: number // x für vertikal, y für horizontal
+  start: number
+  end: number
+}
+const activeGuides = ref<GuideLine[]>([])
+
 let ctx: CanvasRenderingContext2D | null = null
 const loadedImages = new Map<string, HTMLImageElement>()
 let backgroundImageElement: HTMLImageElement | null = null
@@ -171,6 +181,152 @@ function drawGrid() {
 
   ctx.setLineDash([])
   ctx.restore()
+}
+
+// Smart Guides: Erkennt Ausrichtungen und berechnet Snap-Positionen
+function detectAlignments(
+  imgX: number,
+  imgY: number,
+  imgWidth: number,
+  imgHeight: number,
+  excludeId: string
+): { snapX: number | null; snapY: number | null; guides: GuideLine[] } {
+  const guides: GuideLine[] = []
+  let snapX: number | null = null
+  let snapY: number | null = null
+
+  const canvasWidth = collage.settings.width
+  const canvasHeight = collage.settings.height
+
+  // Kanten und Mitte des verschobenen Bildes
+  const imgLeft = imgX
+  const imgRight = imgX + imgWidth
+  const imgCenterX = imgX + imgWidth / 2
+  const imgTop = imgY
+  const imgBottom = imgY + imgHeight
+  const imgCenterY = imgY + imgHeight / 2
+
+  // Sammel alle relevanten Ausrichtungspunkte
+  const verticalPoints: { pos: number; source: string }[] = [
+    { pos: 0, source: 'canvas-left' },
+    { pos: canvasWidth, source: 'canvas-right' },
+    { pos: canvasWidth / 2, source: 'canvas-center' }
+  ]
+  const horizontalPoints: { pos: number; source: string }[] = [
+    { pos: 0, source: 'canvas-top' },
+    { pos: canvasHeight, source: 'canvas-bottom' },
+    { pos: canvasHeight / 2, source: 'canvas-center' }
+  ]
+
+  // Füge Kanten und Mitten anderer Bilder hinzu
+  const otherImages = collage.images.filter(
+    img => img.isGalleryTemplate !== true && img.id !== excludeId
+  )
+
+  otherImages.forEach(img => {
+    verticalPoints.push({ pos: img.x, source: `img-${img.id}-left` })
+    verticalPoints.push({ pos: img.x + img.width, source: `img-${img.id}-right` })
+    verticalPoints.push({ pos: img.x + img.width / 2, source: `img-${img.id}-center` })
+    horizontalPoints.push({ pos: img.y, source: `img-${img.id}-top` })
+    horizontalPoints.push({ pos: img.y + img.height, source: `img-${img.id}-bottom` })
+    horizontalPoints.push({ pos: img.y + img.height / 2, source: `img-${img.id}-center` })
+  })
+
+  // Prüfe vertikale Ausrichtungen (linke Kante, rechte Kante, Mitte)
+  const imgVerticalEdges = [
+    { edge: imgLeft, type: 'left' },
+    { edge: imgRight, type: 'right' },
+    { edge: imgCenterX, type: 'center' }
+  ]
+
+  for (const imgEdge of imgVerticalEdges) {
+    for (const point of verticalPoints) {
+      const diff = Math.abs(imgEdge.edge - point.pos)
+      if (diff < SNAP_THRESHOLD) {
+        // Berechne Snap-Position
+        if (imgEdge.type === 'left') {
+          snapX = point.pos
+        } else if (imgEdge.type === 'right') {
+          snapX = point.pos - imgWidth
+        } else if (imgEdge.type === 'center') {
+          snapX = point.pos - imgWidth / 2
+        }
+
+        // Füge Guide-Linie hinzu
+        guides.push({
+          type: 'vertical',
+          position: point.pos,
+          start: 0,
+          end: canvasHeight
+        })
+        break // Nur eine Snap-Position pro Achse
+      }
+    }
+    if (snapX !== null) break
+  }
+
+  // Prüfe horizontale Ausrichtungen (obere Kante, untere Kante, Mitte)
+  const imgHorizontalEdges = [
+    { edge: imgTop, type: 'top' },
+    { edge: imgBottom, type: 'bottom' },
+    { edge: imgCenterY, type: 'center' }
+  ]
+
+  for (const imgEdge of imgHorizontalEdges) {
+    for (const point of horizontalPoints) {
+      const diff = Math.abs(imgEdge.edge - point.pos)
+      if (diff < SNAP_THRESHOLD) {
+        // Berechne Snap-Position
+        if (imgEdge.type === 'top') {
+          snapY = point.pos
+        } else if (imgEdge.type === 'bottom') {
+          snapY = point.pos - imgHeight
+        } else if (imgEdge.type === 'center') {
+          snapY = point.pos - imgHeight / 2
+        }
+
+        // Füge Guide-Linie hinzu
+        guides.push({
+          type: 'horizontal',
+          position: point.pos,
+          start: 0,
+          end: canvasWidth
+        })
+        break // Nur eine Snap-Position pro Achse
+      }
+    }
+    if (snapY !== null) break
+  }
+
+  return { snapX, snapY, guides }
+}
+
+// Zeichnet die aktiven Guide-Linien
+function drawGuides() {
+  if (!canvas.value || !ctx || activeGuides.value.length === 0) return
+
+  const context = ctx
+  context.save()
+
+  // Guide-Linien-Stil
+  context.strokeStyle = '#f97316' // Orange
+  context.lineWidth = 1
+  context.setLineDash([4, 4])
+
+  for (const guide of activeGuides.value) {
+    context.beginPath()
+    if (guide.type === 'vertical') {
+      context.moveTo(guide.position, guide.start)
+      context.lineTo(guide.position, guide.end)
+    } else {
+      context.moveTo(guide.start, guide.position)
+      context.lineTo(guide.end, guide.position)
+    }
+    context.stroke()
+  }
+
+  context.setLineDash([])
+  context.restore()
 }
 
 async function renderCanvas() {
@@ -631,6 +787,9 @@ async function renderCanvas() {
     context.restore()
   }
 
+  // Smart Guides zeichnen (nach Bildern und Texten, während des Draggings)
+  drawGuides()
+
   // Restore scroll position after all rendering is complete (prevents jump)
   requestAnimationFrame(() => {
     if (window.scrollY !== scrollY || window.scrollX !== scrollX) {
@@ -952,9 +1111,37 @@ function handleMouseMove(e: MouseEvent) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
 
+    // Berechne Zielposition
+    let targetX = dragImageStart.value.x + dx
+    let targetY = dragImageStart.value.y + dy
+
+    // Hole das aktuell gezogene Bild für die Dimensionen
+    const selectedImg = collage.selectedImage
+    if (selectedImg) {
+      // Smart Guides: Erkennung und Snap
+      const alignment = detectAlignments(
+        targetX,
+        targetY,
+        selectedImg.width,
+        selectedImg.height,
+        selectedImg.id
+      )
+
+      // Wende Snap-Positionen an, wenn vorhanden
+      if (alignment.snapX !== null) {
+        targetX = alignment.snapX
+      }
+      if (alignment.snapY !== null) {
+        targetY = alignment.snapY
+      }
+
+      // Aktualisiere aktive Guide-Linien für die Anzeige
+      activeGuides.value = alignment.guides
+    }
+
     collage.updateImage(collage.selectedImageId, {
-      x: dragImageStart.value.x + dx,
-      y: dragImageStart.value.y + dy
+      x: targetX,
+      y: targetY
     })
   }
 }
@@ -963,6 +1150,8 @@ function handleMouseUp() {
   isDragging.value = false
   isResizing.value = false
   resizeHandle.value = null
+  // Smart Guides ausblenden wenn Drag/Resize beendet
+  activeGuides.value = []
 }
 
 // Drag-Drop Funktionalität für Bilder aus der Galerie
