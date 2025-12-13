@@ -497,6 +497,106 @@ export const useCollageStore = defineStore('collage', () => {
         }
       })
     }
+    // Panorama-Layout: Breites Bild oben, kleinere Bilder darunter in einer Reihe
+    else if (layout === 'panorama') {
+      const topHeight = h * 0.55
+      const bottomHeight = h * 0.45
+      const bottomCount = Math.max(canvasImages.length - 1, 1)
+
+      canvasImages.forEach((img, index) => {
+        if (index === 0) {
+          // Großes Panoramabild oben
+          fitImage(img, 0, 0, w, topHeight)
+        } else {
+          // Bilder unten in einer Reihe
+          const col = index - 1
+          const colWidth = w / bottomCount
+          fitImage(img, colWidth * col, topHeight, colWidth, bottomHeight)
+        }
+      })
+    }
+    // Focus-Layout: Großes zentrales Bild, kleinere drumherum
+    else if (layout === 'focus') {
+      const centerSize = Math.min(w, h) * 0.55
+      const centerX = (w - centerSize) / 2
+      const centerY = (h - centerSize) / 2
+      const cornerSize = Math.min(w, h) * 0.25
+
+      canvasImages.forEach((img, index) => {
+        if (index === 0) {
+          // Großes zentriertes Hauptbild
+          fitImage(img, centerX, centerY, centerSize, centerSize)
+        } else {
+          // Kleinere Bilder in den Ecken und an den Seiten
+          const positions = [
+            { x: 0, y: 0 }, // Oben links
+            { x: w - cornerSize, y: 0 }, // Oben rechts
+            { x: 0, y: h - cornerSize }, // Unten links
+            { x: w - cornerSize, y: h - cornerSize }, // Unten rechts
+            { x: (w - cornerSize) / 2, y: 0 }, // Oben mitte
+            { x: (w - cornerSize) / 2, y: h - cornerSize }, // Unten mitte
+            { x: 0, y: (h - cornerSize) / 2 }, // Links mitte
+            { x: w - cornerSize, y: (h - cornerSize) / 2 } // Rechts mitte
+          ]
+          const pos = positions[(index - 1) % positions.length]
+          fitImage(img, pos.x, pos.y, cornerSize, cornerSize)
+        }
+      })
+    }
+    // Triptych-Layout: Drei Spalten, mittlere ist größer
+    else if (layout === 'triptych') {
+      const sideWidth = w * 0.25
+      const centerWidth = w * 0.5
+
+      canvasImages.forEach((img, index) => {
+        if (index === 0) {
+          // Großes mittleres Bild
+          fitImage(img, sideWidth, 0, centerWidth, h)
+        } else if (index === 1) {
+          // Linkes Bild
+          fitImage(img, 0, 0, sideWidth, h)
+        } else if (index === 2) {
+          // Rechtes Bild
+          fitImage(img, sideWidth + centerWidth, 0, sideWidth, h)
+        } else {
+          // Weitere Bilder: verteile auf linke und rechte Spalte
+          const sideIndex = index - 3
+          const isLeft = sideIndex % 2 === 0
+          const rowIndex = Math.floor(sideIndex / 2)
+          const rowsPerSide = Math.ceil((canvasImages.length - 3) / 2)
+          const rowHeight = h / Math.max(rowsPerSide, 1)
+
+          if (isLeft) {
+            fitImage(img, 0, rowHeight * rowIndex, sideWidth, rowHeight)
+          } else {
+            fitImage(img, sideWidth + centerWidth, rowHeight * rowIndex, sideWidth, rowHeight)
+          }
+        }
+      })
+    }
+    // Masonry-Layout: Pinterest-ähnlich mit variablen Höhen
+    else if (layout === 'masonry') {
+      const cols = 3
+      const colWidth = w / cols
+      const colHeights = [0, 0, 0] // Track der Höhe jeder Spalte
+
+      // Vordefinierte Höhenvariationen für visuelles Interesse
+      const heightVariations = [0.35, 0.45, 0.4, 0.5, 0.35, 0.45, 0.4, 0.3, 0.45]
+
+      canvasImages.forEach((img, index) => {
+        // Finde die kürzeste Spalte
+        const minHeight = Math.min(...colHeights)
+        const col = colHeights.indexOf(minHeight)
+
+        // Berechne die Höhe für dieses Bild
+        const cellHeight = h * heightVariations[index % heightVariations.length]
+
+        fitImage(img, col * colWidth, colHeights[col], colWidth, cellHeight)
+
+        // Update Spalten-Höhe
+        colHeights[col] += cellHeight
+      })
+    }
   }
 
   function clearCollage() {
