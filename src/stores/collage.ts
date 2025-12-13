@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { CollageImage, CollageText, CollageSettings, LayoutType, BackgroundImageFit } from '@/types'
+import type { CollageImage, CollageText, CollageSettings, LayoutType, BackgroundImageFit, BackgroundImageSettings } from '@/types'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
@@ -12,13 +12,21 @@ export const useCollageStore = defineStore('collage', () => {
   const selectedTextId = ref<string | null>(null)
   const lockAspectRatio = ref(true)
   const canvasZoom = ref(1) // Zoom-Level für Canvas-Anzeige (1 = 100%)
+  const isBackgroundSelected = ref(false) // Ist das Hintergrundbild ausgewählt?
 
   const settings = ref<CollageSettings>({
     width: 700,
     height: 740,
     backgroundColor: '#ffffff',
-    backgroundImage: null,
-    backgroundImageFit: 'cover',
+    backgroundImage: {
+      url: null,
+      fit: 'cover',
+      opacity: 1,
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+      blur: 0
+    },
     layout: 'freestyle',
     gridEnabled: false,
     gridSize: 50
@@ -180,6 +188,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Einfache Auswahl (ersetzt die komplette Auswahl)
   function selectImage(id: string | null) {
+    isBackgroundSelected.value = false // Hintergrundbild-Auswahl aufheben
     if (id === null) {
       selectedImageIds.value = []
     } else {
@@ -610,8 +619,17 @@ export const useCollageStore = defineStore('collage', () => {
     texts.value = []
     selectedImageIds.value = []
     selectedTextId.value = null
+    isBackgroundSelected.value = false
     // Hintergrundbild auch zurücksetzen
-    settings.value.backgroundImage = null
+    settings.value.backgroundImage = {
+      url: null,
+      fit: 'cover',
+      opacity: 1,
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+      blur: 0
+    }
   }
 
   function updateSettings(updates: Partial<CollageSettings>) {
@@ -620,17 +638,41 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Hintergrundbild setzen (von einem Galerie-Bild)
   function setBackgroundImage(imageUrl: string) {
-    settings.value.backgroundImage = imageUrl
+    settings.value.backgroundImage = {
+      url: imageUrl,
+      fit: settings.value.backgroundImage.fit,
+      opacity: 1,
+      brightness: 100,
+      contrast: 100,
+      saturation: 100,
+      blur: 0
+    }
   }
 
   // Hintergrundbild entfernen
   function removeBackgroundImage() {
-    settings.value.backgroundImage = null
+    settings.value.backgroundImage.url = null
+    isBackgroundSelected.value = false
   }
 
   // Hintergrundbild-Anpassungsmodus ändern
   function setBackgroundImageFit(fit: BackgroundImageFit) {
-    settings.value.backgroundImageFit = fit
+    settings.value.backgroundImage.fit = fit
+  }
+
+  // Hintergrundbild-Einstellungen aktualisieren
+  function updateBackgroundImage(updates: Partial<BackgroundImageSettings>) {
+    Object.assign(settings.value.backgroundImage, updates)
+  }
+
+  // Hintergrundbild auswählen/abwählen
+  function selectBackground(selected: boolean) {
+    isBackgroundSelected.value = selected
+    if (selected) {
+      // Andere Auswahlen aufheben
+      selectedImageIds.value = []
+      selectedTextId.value = null
+    }
   }
 
   function setLockAspectRatio(value: boolean) {
@@ -923,9 +965,13 @@ export const useCollageStore = defineStore('collage', () => {
     applyLayout,
     clearCollage,
     updateSettings,
+    // Hintergrundbild
+    isBackgroundSelected,
     setBackgroundImage,
     removeBackgroundImage,
     setBackgroundImageFit,
+    updateBackgroundImage,
+    selectBackground,
     setLockAspectRatio,
     setCanvasZoom,
     resetCanvasView,

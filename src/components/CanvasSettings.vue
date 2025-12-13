@@ -15,6 +15,10 @@ function updateHeight(value: number) {
 }
 
 function updateBackgroundColor(value: string) {
+  // Bei Farbauswahl das Hintergrundbild entfernen
+  if (collage.settings.backgroundImage.url) {
+    collage.removeBackgroundImage()
+  }
   collage.updateSettings({ backgroundColor: value })
 }
 
@@ -24,6 +28,26 @@ function updateBackgroundFit(value: BackgroundImageFit) {
 
 function removeBackground() {
   collage.removeBackgroundImage()
+}
+
+function updateBackgroundOpacity(value: number) {
+  collage.updateBackgroundImage({ opacity: value })
+}
+
+function updateBackgroundBrightness(value: number) {
+  collage.updateBackgroundImage({ brightness: value })
+}
+
+function updateBackgroundContrast(value: number) {
+  collage.updateBackgroundImage({ contrast: value })
+}
+
+function updateBackgroundSaturation(value: number) {
+  collage.updateBackgroundImage({ saturation: value })
+}
+
+function updateBackgroundBlur(value: number) {
+  collage.updateBackgroundImage({ blur: value })
 }
 
 function updateZoom(value: number) {
@@ -92,23 +116,38 @@ function resetView() {
             class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
           />
         </div>
+        <p v-if="collage.settings.backgroundImage.url" class="text-xs text-muted mt-1">
+          {{ t('canvas.colorReplacesImage') }}
+        </p>
       </div>
 
       <!-- Background Image -->
-      <div v-if="collage.settings.backgroundImage" class="border-t border-muted/30 dark:border-slate/30 pt-4">
-        <label class="block text-sm font-medium mb-2">
-          {{ t('canvas.backgroundImage') }}
-        </label>
+      <div v-if="collage.settings.backgroundImage.url" class="border-t border-muted/30 dark:border-slate/30 pt-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-sm font-medium">
+            {{ t('canvas.backgroundImage') }}
+          </label>
+          <span
+            v-if="collage.isBackgroundSelected"
+            class="text-xs px-2 py-0.5 bg-primary/20 text-primary rounded-full"
+          >
+            {{ t('canvas.selected') }}
+          </span>
+        </div>
 
         <!-- Preview -->
-        <div class="relative mb-3">
+        <div
+          class="relative mb-3 cursor-pointer"
+          :class="{ 'ring-2 ring-primary ring-offset-2 rounded-lg': collage.isBackgroundSelected }"
+          @click="collage.selectBackground(true)"
+        >
           <img
-            :src="collage.settings.backgroundImage"
+            :src="collage.settings.backgroundImage.url"
             :alt="t('canvas.backgroundImage')"
             class="w-full h-24 object-cover rounded-lg border border-muted/30 dark:border-slate/30"
           />
           <button
-            @click="removeBackground"
+            @click.stop="removeBackground"
             class="absolute top-1 right-1 p-1 bg-warm hover:bg-warm-dark text-surface-light rounded-full transition-colors"
             :title="t('canvas.removeBackgroundImage')"
           >
@@ -119,20 +158,108 @@ function resetView() {
         </div>
 
         <!-- Fit Mode -->
-        <label class="block text-xs font-medium mb-1.5 text-muted">
-          {{ t('canvas.backgroundFit') }}
-        </label>
-        <select
-          :value="collage.settings.backgroundImageFit"
-          @change="updateBackgroundFit(($event.target as HTMLSelectElement).value as BackgroundImageFit)"
-          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
-        >
-          <option value="cover">{{ t('canvas.fitCover') }}</option>
-          <option value="contain">{{ t('canvas.fitContain') }}</option>
-          <option value="stretch">{{ t('canvas.fitStretch') }}</option>
-          <option value="tile">{{ t('canvas.fitTile') }}</option>
-        </select>
-        <p class="text-xs text-muted mt-1">
+        <div class="mb-3">
+          <label class="block text-xs font-medium mb-1.5 text-muted">
+            {{ t('canvas.backgroundFit') }}
+          </label>
+          <select
+            :value="collage.settings.backgroundImage.fit"
+            @change="updateBackgroundFit(($event.target as HTMLSelectElement).value as BackgroundImageFit)"
+            class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+          >
+            <option value="cover">{{ t('canvas.fitCover') }}</option>
+            <option value="contain">{{ t('canvas.fitContain') }}</option>
+            <option value="stretch">{{ t('canvas.fitStretch') }}</option>
+            <option value="tile">{{ t('canvas.fitTile') }}</option>
+          </select>
+        </div>
+
+        <!-- Editing Controls (show when background is selected) -->
+        <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-muted/10 dark:bg-slate/20 rounded-lg p-3">
+          <p class="text-xs font-medium text-primary mb-2">{{ t('canvas.editBackground') }}</p>
+
+          <!-- Opacity -->
+          <div>
+            <label class="block text-xs font-medium mb-1 text-muted">
+              {{ t('imageControls.opacity') }}: {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
+            </label>
+            <input
+              type="range"
+              :value="collage.settings.backgroundImage.opacity"
+              @input="updateBackgroundOpacity(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="1"
+              step="0.01"
+              class="w-full accent-accent"
+            />
+          </div>
+
+          <!-- Brightness -->
+          <div>
+            <label class="block text-xs font-medium mb-1 text-muted">
+              {{ t('imageControls.brightness') }}: {{ collage.settings.backgroundImage.brightness }}%
+            </label>
+            <input
+              type="range"
+              :value="collage.settings.backgroundImage.brightness"
+              @input="updateBackgroundBrightness(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="200"
+              step="1"
+              class="w-full accent-accent"
+            />
+          </div>
+
+          <!-- Contrast -->
+          <div>
+            <label class="block text-xs font-medium mb-1 text-muted">
+              {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
+            </label>
+            <input
+              type="range"
+              :value="collage.settings.backgroundImage.contrast"
+              @input="updateBackgroundContrast(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="200"
+              step="1"
+              class="w-full accent-accent"
+            />
+          </div>
+
+          <!-- Saturation -->
+          <div>
+            <label class="block text-xs font-medium mb-1 text-muted">
+              {{ t('imageControls.saturation') }}: {{ collage.settings.backgroundImage.saturation }}%
+            </label>
+            <input
+              type="range"
+              :value="collage.settings.backgroundImage.saturation"
+              @input="updateBackgroundSaturation(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="200"
+              step="1"
+              class="w-full accent-accent"
+            />
+          </div>
+
+          <!-- Blur -->
+          <div>
+            <label class="block text-xs font-medium mb-1 text-muted">
+              {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
+            </label>
+            <input
+              type="range"
+              :value="collage.settings.backgroundImage.blur"
+              @input="updateBackgroundBlur(Number(($event.target as HTMLInputElement).value))"
+              min="0"
+              max="20"
+              step="0.5"
+              class="w-full accent-accent"
+            />
+          </div>
+        </div>
+
+        <p class="text-xs text-muted mt-2">
           {{ t('canvas.backgroundFitHint') }}
         </p>
       </div>

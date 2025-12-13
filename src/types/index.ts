@@ -74,12 +74,21 @@ export type LayoutType =
 
 export type BackgroundImageFit = 'cover' | 'contain' | 'stretch' | 'tile'
 
+export interface BackgroundImageSettings {
+  url: string | null
+  fit: BackgroundImageFit
+  opacity: number
+  brightness: number
+  contrast: number
+  saturation: number
+  blur: number
+}
+
 export interface CollageSettings {
   width: number
   height: number
   backgroundColor: string
-  backgroundImage: string | null  // URL des Hintergrundbildes
-  backgroundImageFit: BackgroundImageFit  // Wie das Hintergrundbild angepasst wird
+  backgroundImage: BackgroundImageSettings
   layout: LayoutType
   gridEnabled: boolean
   gridSize: number

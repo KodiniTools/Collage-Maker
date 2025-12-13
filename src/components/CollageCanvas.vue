@@ -26,7 +26,7 @@ onMounted(() => {
   }
 })
 
-watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageIds, collage.selectedTextId], () => {
+watch(() => [collage.images, collage.texts, collage.settings, collage.selectedImageIds, collage.selectedTextId, collage.isBackgroundSelected], () => {
   nextTick(() => renderCanvas())
 }, { deep: true })
 
@@ -44,18 +44,19 @@ function getContrastColor(hexColor: string): string {
 }
 
 async function drawBackgroundImage(): Promise<void> {
-  if (!canvas.value || !ctx || !collage.settings.backgroundImage) return
+  if (!canvas.value || !ctx || !collage.settings.backgroundImage.url) return
 
   const context = ctx
-  const bgUrl = collage.settings.backgroundImage
-  const fit = collage.settings.backgroundImageFit
+  const bgSettings = collage.settings.backgroundImage
+  const bgUrl = bgSettings.url
+  const fit = bgSettings.fit
   const canvasWidth = canvas.value.width
   const canvasHeight = canvas.value.height
 
   // Lade Bild nur wenn URL sich geändert hat
   if (loadedBackgroundUrl !== bgUrl || !backgroundImageElement) {
     backgroundImageElement = new Image()
-    backgroundImageElement.src = bgUrl
+    backgroundImageElement.src = bgUrl!
     loadedBackgroundUrl = bgUrl
     await new Promise((resolve) => {
       backgroundImageElement!.onload = resolve
@@ -67,6 +68,27 @@ async function drawBackgroundImage(): Promise<void> {
   const imgHeight = img.naturalHeight
 
   context.save()
+
+  // Filter anwenden
+  const filters = []
+  if (bgSettings.brightness !== 100) {
+    filters.push(`brightness(${bgSettings.brightness}%)`)
+  }
+  if (bgSettings.contrast !== 100) {
+    filters.push(`contrast(${bgSettings.contrast}%)`)
+  }
+  if (bgSettings.saturation !== 100) {
+    filters.push(`saturate(${bgSettings.saturation}%)`)
+  }
+  if (bgSettings.blur > 0) {
+    filters.push(`blur(${bgSettings.blur}px)`)
+  }
+  if (filters.length > 0) {
+    context.filter = filters.join(' ')
+  }
+
+  // Transparenz anwenden
+  context.globalAlpha = bgSettings.opacity
 
   if (fit === 'cover') {
     // Cover: Bild füllt Canvas komplett aus (kann beschnitten werden)
@@ -96,7 +118,19 @@ async function drawBackgroundImage(): Promise<void> {
     }
   }
 
+  context.filter = 'none'
+  context.globalAlpha = 1
   context.restore()
+
+  // Auswahlrahmen zeichnen, wenn Hintergrundbild ausgewählt ist
+  if (collage.isBackgroundSelected) {
+    context.save()
+    context.strokeStyle = '#3b82f6' // Primärfarbe
+    context.lineWidth = 3
+    context.setLineDash([8, 4])
+    context.strokeRect(4, 4, canvasWidth - 8, canvasHeight - 8)
+    context.restore()
+  }
 }
 
 function drawGrid() {
@@ -768,7 +802,14 @@ function handleMouseDown(e: MouseEvent) {
       dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
     }
     collage.selectText(null) // Text explizit deselektieren beim Bildklick
+    collage.selectBackground(false) // Hintergrund deselektieren
   } else {
+    // Kein Bild/Text getroffen - prüfe ob Hintergrundbild ausgewählt werden soll
+    if (collage.settings.backgroundImage.url) {
+      collage.selectBackground(true)
+    } else {
+      collage.selectBackground(false)
+    }
     collage.selectImage(null)
     collage.selectText(null)
   }

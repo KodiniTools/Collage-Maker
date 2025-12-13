@@ -88,6 +88,7 @@ function setSelectedAsBackground() {
   if (selectedImage) {
     collage.setBackgroundImage(selectedImage.url)
     collage.deselectAllGalleryImages()
+    collage.selectBackground(true) // Hintergrundbild nach dem Setzen auswählen
   }
 }
 </script>
@@ -335,7 +336,7 @@ function setSelectedAsBackground() {
                 </button>
               </div>
               <button
-                @click="collage.setBackgroundImage(previewImage.url); closePreview()"
+                @click="collage.setBackgroundImage(previewImage.url); collage.selectBackground(true); closePreview()"
                 class="w-full px-4 py-2 text-sm font-medium rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-slate-dark transition-colors flex items-center justify-center gap-2"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

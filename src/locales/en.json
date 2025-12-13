@@ -37,14 +37,18 @@
     "backgroundImage": "Background Image",
     "removeBackgroundImage": "Remove background image",
     "backgroundFit": "Fit Mode",
-    "backgroundFitHint": "The background image automatically adjusts to the canvas size",
+    "backgroundFitHint": "The background image automatically adjusts to the canvas size. Click on the image to edit it.",
     "fitCover": "Fill (Cover)",
     "fitContain": "Fit (Contain)",
     "fitStretch": "Stretch",
     "fitTile": "Tile",
     "zoom": "Zoom",
     "resetView": "Reset View",
-    "zoomHint": "Use scroll bars to navigate when zoomed in. Zoom only affects display, not the export."
+    "zoomHint": "Use scroll bars to navigate when zoomed in. Zoom only affects display, not the export.",
+    "selected": "Selected",
+    "editBackground": "Edit background image",
+    "colorReplacesImage": "Selecting a color will replace the background image",
+    "blur": "Blur"
   },
   "images": {
     "title": "Images",
