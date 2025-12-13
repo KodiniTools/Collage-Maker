@@ -16,6 +16,8 @@ const initialAspectRatio = ref(1)
 
 let ctx: CanvasRenderingContext2D | null = null
 const loadedImages = new Map<string, HTMLImageElement>()
+let backgroundImageElement: HTMLImageElement | null = null
+let loadedBackgroundUrl: string | null = null
 
 onMounted(() => {
   if (canvas.value) {
@@ -39,6 +41,62 @@ function getContrastColor(hexColor: string): string {
 
   // Rückgabe einer kontrastierenden Farbe (dunkel für helle Hintergründe, hell für dunkle)
   return luminance > 0.5 ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'
+}
+
+async function drawBackgroundImage(): Promise<void> {
+  if (!canvas.value || !ctx || !collage.settings.backgroundImage) return
+
+  const context = ctx
+  const bgUrl = collage.settings.backgroundImage
+  const fit = collage.settings.backgroundImageFit
+  const canvasWidth = canvas.value.width
+  const canvasHeight = canvas.value.height
+
+  // Lade Bild nur wenn URL sich geändert hat
+  if (loadedBackgroundUrl !== bgUrl || !backgroundImageElement) {
+    backgroundImageElement = new Image()
+    backgroundImageElement.src = bgUrl
+    loadedBackgroundUrl = bgUrl
+    await new Promise((resolve) => {
+      backgroundImageElement!.onload = resolve
+    })
+  }
+
+  const img = backgroundImageElement
+  const imgWidth = img.naturalWidth
+  const imgHeight = img.naturalHeight
+
+  context.save()
+
+  if (fit === 'cover') {
+    // Cover: Bild füllt Canvas komplett aus (kann beschnitten werden)
+    const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight)
+    const scaledWidth = imgWidth * scale
+    const scaledHeight = imgHeight * scale
+    const x = (canvasWidth - scaledWidth) / 2
+    const y = (canvasHeight - scaledHeight) / 2
+    context.drawImage(img, x, y, scaledWidth, scaledHeight)
+  } else if (fit === 'contain') {
+    // Contain: Ganzes Bild sichtbar (kann Leerräume haben)
+    const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight)
+    const scaledWidth = imgWidth * scale
+    const scaledHeight = imgHeight * scale
+    const x = (canvasWidth - scaledWidth) / 2
+    const y = (canvasHeight - scaledHeight) / 2
+    context.drawImage(img, x, y, scaledWidth, scaledHeight)
+  } else if (fit === 'stretch') {
+    // Stretch: Bild wird auf Canvas-Größe gestreckt
+    context.drawImage(img, 0, 0, canvasWidth, canvasHeight)
+  } else if (fit === 'tile') {
+    // Tile: Bild wird gekachelt wiederholt
+    const pattern = context.createPattern(img, 'repeat')
+    if (pattern) {
+      context.fillStyle = pattern
+      context.fillRect(0, 0, canvasWidth, canvasHeight)
+    }
+  }
+
+  context.restore()
 }
 
 function drawGrid() {
@@ -89,9 +147,12 @@ async function renderCanvas() {
   canvas.value.width = collage.settings.width
   canvas.value.height = collage.settings.height
 
-  // Background
+  // Background Color
   context.fillStyle = collage.settings.backgroundColor
   context.fillRect(0, 0, canvas.value.width, canvas.value.height)
+
+  // Background Image (nach Hintergrundfarbe, vor Grid)
+  await drawBackgroundImage()
 
   // Grid zeichnen (nach Hintergrund, vor Bildern)
   drawGrid()
