@@ -838,6 +838,8 @@ async function renderCanvas() {
     context.fillStyle = text.color
     context.textAlign = text.textAlign
     context.textBaseline = 'middle'
+    // Buchstabenabstand (Letter Spacing)
+    context.letterSpacing = `${text.letterSpacing}px`
 
     // Multi-line Text-Rendering
     const lines = text.text.split('\n')

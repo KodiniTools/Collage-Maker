@@ -167,6 +167,11 @@ function updateFontSize(value: number) {
   collage.updateText(collage.selectedText.id, { fontSize: value })
 }
 
+function updateLetterSpacing(value: number) {
+  if (!collage.selectedText) return
+  collage.updateText(collage.selectedText.id, { letterSpacing: value })
+}
+
 function updateColor(value: string) {
   if (!collage.selectedText) return
   collage.updateText(collage.selectedText.id, { color: value })
@@ -309,6 +314,22 @@ if (collage.selectedText) {
           min="12"
           max="120"
           step="2"
+          class="w-full"
+        />
+      </div>
+
+      <!-- Letter Spacing -->
+      <div>
+        <label class="block text-sm font-medium mb-2">
+          {{ t('text.letterSpacing') }}: {{ collage.selectedText.letterSpacing }}px
+        </label>
+        <input
+          type="range"
+          :value="collage.selectedText.letterSpacing"
+          @input="updateLetterSpacing(Number(($event.target as HTMLInputElement).value))"
+          min="-5"
+          max="20"
+          step="1"
           class="w-full"
         />
       </div>
