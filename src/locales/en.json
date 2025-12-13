@@ -310,6 +310,8 @@
     "zoomOut": "Zoom out",
     "resetZoom": "Reset zoom",
     "showHelp": "Show keyboard shortcuts",
+    "undo": "Undo",
+    "redo": "Redo",
     "shiftHint": "+ Shift for 10px steps",
     "tips": {
       "title": "Tips",

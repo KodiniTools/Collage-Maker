@@ -310,6 +310,8 @@
     "zoomOut": "Verkleinern",
     "resetZoom": "Zoom zurücksetzen",
     "showHelp": "Tastaturkürzel anzeigen",
+    "undo": "Rückgängig",
+    "redo": "Wiederherstellen",
     "shiftHint": "+ Shift für 10px Schritte",
     "tips": {
       "title": "Tipps",

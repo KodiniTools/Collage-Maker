@@ -19,10 +19,12 @@ import TemplateLibrary from '@/components/TemplateLibrary.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
 import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
 import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
+import { useCollageStore } from '@/stores/collage'
 
 const { t } = useI18n()
 const showTemplates = ref(false)
 const showLanding = ref(true)
+const collage = useCollageStore()
 
 const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } = useKeyboardShortcuts()
 
@@ -76,6 +78,30 @@ onUnmounted(() => {
           </div>
         </div>
         <div class="flex items-center gap-3">
+          <!-- Undo/Redo Buttons -->
+          <div class="flex items-center gap-1 mr-2">
+            <button
+              @click="collage.undo"
+              :disabled="!collage.canUndo"
+              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-slate/20"
+              :title="`${t('shortcuts.undo')} (Ctrl+Z)`"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+              </svg>
+            </button>
+            <button
+              @click="collage.redo"
+              :disabled="!collage.canRedo"
+              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-slate/20"
+              :title="`${t('shortcuts.redo')} (Ctrl+Y)`"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
+              </svg>
+            </button>
+          </div>
+
           <button
             @click="showTemplates = true"
             class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors flex items-center gap-2"

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { CollageImage, CollageText, CollageSettings, LayoutType, BackgroundImageFit, BackgroundImageSettings } from '@/types'
+import { useHistoryStore } from '@/stores/history'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
@@ -31,6 +32,58 @@ export const useCollageStore = defineStore('collage', () => {
     gridEnabled: false,
     gridSize: 50
   })
+
+  // History Store für Undo/Redo
+  const historyStore = useHistoryStore()
+
+  // Speichert den aktuellen Zustand für Undo
+  function saveStateForUndo() {
+    historyStore.saveSnapshot(images.value, texts.value, settings.value)
+  }
+
+  // Undo-Funktion
+  function undo() {
+    const snapshot = historyStore.undo(images.value, texts.value, settings.value)
+    if (snapshot) {
+      restoreFromSnapshot(snapshot)
+    }
+  }
+
+  // Redo-Funktion
+  function redo() {
+    const snapshot = historyStore.redo(images.value, texts.value, settings.value)
+    if (snapshot) {
+      restoreFromSnapshot(snapshot)
+    }
+  }
+
+  // Stellt den Zustand aus einem Snapshot wieder her
+  function restoreFromSnapshot(snapshot: { images: Omit<CollageImage, 'file'>[]; texts: CollageText[]; settings: CollageSettings }) {
+    // Stelle Bilder wieder her (mit File-Referenzen von existierenden Bildern)
+    const restoredImages = snapshot.images.map(snapshotImg => {
+      // Finde das ursprüngliche Bild mit dem File-Objekt
+      const existingImg = images.value.find(img => img.url === snapshotImg.url)
+      return {
+        ...snapshotImg,
+        file: existingImg?.file || null as unknown as File
+      } as CollageImage
+    })
+
+    images.value = restoredImages
+    texts.value = [...snapshot.texts]
+
+    // Stelle Settings wieder her (deep copy)
+    settings.value = JSON.parse(JSON.stringify(snapshot.settings))
+
+    // Deselektiere alles nach Undo/Redo
+    selectedImageIds.value = []
+    selectedTextId.value = null
+    isBackgroundSelected.value = false
+  }
+
+  // Computed: Kann Undo/Redo ausgeführt werden?
+  const canUndo = computed(() => historyStore.canUndo)
+  const canRedo = computed(() => historyStore.canRedo)
 
   // Backward compatibility: Einzelauswahl (erstes ausgewähltes Bild)
   const selectedImageId = computed(() =>
@@ -987,6 +1040,12 @@ export const useCollageStore = defineStore('collage', () => {
     moveSelectedText,
     toggleGrid,
     saveAsTemplate,
-    loadFromTemplate
+    loadFromTemplate,
+    // Undo/Redo
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    saveStateForUndo
   }
 })
