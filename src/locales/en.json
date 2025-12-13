@@ -1,7 +1,39 @@
 {
   "app": {
     "title": "Image Collage Maker",
-    "subtitle": "Create your own photo collage in the browser"
+    "subtitle": "Create your own photo collage in the browser",
+    "backToHome": "Back to Home"
+  },
+  "landing": {
+    "hero": {
+      "title": "Create Stunning Photo Collages",
+      "subtitle": "Free, directly in your browser, without uploading to servers. Your images stay private on your device."
+    },
+    "cta": "Create Collage Now",
+    "features": {
+      "title": "Why Choose Our Collage Maker?",
+      "privacy": {
+        "title": "100% Privacy",
+        "description": "All images are processed exclusively locally in your browser. Nothing is uploaded to any server."
+      },
+      "batch": {
+        "title": "Batch Image Editing",
+        "description": "Edit multiple images at once. Adjust brightness, contrast, saturation and more for all images simultaneously."
+      },
+      "background": {
+        "title": "Background Editing",
+        "description": "Set any image as background. With transparency, filters and automatic adjustment to canvas size."
+      },
+      "formats": {
+        "title": "Flexible Image Formats",
+        "description": "Supports PNG, JPG and WebP. Export in various formats with adjustable quality settings."
+      }
+    },
+    "bottomCta": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Create your first collage now - free and without registration."
+    },
+    "footer": "Image Collage Maker - Free and Ad-Free"
   },
   "upload": {
     "title": "Upload Images",
