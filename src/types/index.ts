@@ -67,6 +67,10 @@ export type LayoutType =
   | 'sidebar'
   | 'mosaic'
   | 'diagonal'
+  | 'panorama'
+  | 'focus'
+  | 'triptych'
+  | 'masonry'
 
 export interface CollageSettings {
   width: number

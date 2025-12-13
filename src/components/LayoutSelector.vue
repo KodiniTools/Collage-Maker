@@ -17,7 +17,11 @@ const layouts: { value: LayoutType; labelKey: string }[] = [
   { value: 'hero', labelKey: 'layout.hero' },
   { value: 'sidebar', labelKey: 'layout.sidebar' },
   { value: 'mosaic', labelKey: 'layout.mosaic' },
-  { value: 'diagonal', labelKey: 'layout.diagonal' }
+  { value: 'diagonal', labelKey: 'layout.diagonal' },
+  { value: 'panorama', labelKey: 'layout.panorama' },
+  { value: 'focus', labelKey: 'layout.focus' },
+  { value: 'triptych', labelKey: 'layout.triptych' },
+  { value: 'masonry', labelKey: 'layout.masonry' }
 ]
 
 // Anzahl ausgewählter Galerie-Bilder

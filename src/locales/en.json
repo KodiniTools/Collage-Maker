@@ -22,6 +22,10 @@
     "sidebar": "Sidebar",
     "mosaic": "Mosaic",
     "diagonal": "Diagonal",
+    "panorama": "Panorama",
+    "focus": "Focus",
+    "triptych": "Triptych",
+    "masonry": "Masonry",
     "withSelectedImages": "{count} selected images will be added with layout",
     "noImages": "Select images from gallery or upload new ones"
   },
