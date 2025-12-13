@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
+import LandingPage from '@/components/LandingPage.vue'
 import ImageUploader from '@/components/ImageUploader.vue'
 import LayoutSelector from '@/components/LayoutSelector.vue'
 import GridControls from '@/components/GridControls.vue'
@@ -22,8 +23,17 @@ import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 
 const { t } = useI18n()
 const showTemplates = ref(false)
+const showLanding = ref(true)
 
 const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } = useKeyboardShortcuts()
+
+function startMaker() {
+  showLanding.value = false
+}
+
+function goToLanding() {
+  showLanding.value = true
+}
 
 onMounted(() => {
   setupKeyboardListeners()
@@ -35,13 +45,36 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light transition-colors">
+  <!-- Landing Page -->
+  <div v-if="showLanding" class="min-h-screen">
+    <!-- Theme/Language toggles on landing page -->
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+      <LanguageToggle />
+      <ThemeToggle />
+    </div>
+    <LandingPage @start="startMaker" />
+  </div>
+
+  <!-- Main App -->
+  <div v-else class="flex flex-col min-h-screen bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light transition-colors">
     <!-- Header -->
     <header class="border-b border-muted/30 dark:border-slate/30">
       <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
-          <p class="text-sm text-muted dark:text-muted">{{ t('app.subtitle') }}</p>
+        <div class="flex items-center gap-4">
+          <!-- Back to Landing Button -->
+          <button
+            @click="goToLanding"
+            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+            :title="t('app.backToHome')"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
+            <p class="text-sm text-muted dark:text-muted">{{ t('app.subtitle') }}</p>
+          </div>
         </div>
         <div class="flex items-center gap-3">
           <button

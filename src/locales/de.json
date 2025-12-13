@@ -1,7 +1,39 @@
 {
   "app": {
     "title": "Bilder-Collage-Macher",
-    "subtitle": "Erstelle deine eigene Foto-Collage im Browser"
+    "subtitle": "Erstelle deine eigene Foto-Collage im Browser",
+    "backToHome": "Zurück zur Startseite"
+  },
+  "landing": {
+    "hero": {
+      "title": "Erstelle beeindruckende Foto-Collagen",
+      "subtitle": "Kostenlos, direkt im Browser, ohne Upload auf Server. Deine Bilder bleiben privat auf deinem Gerät."
+    },
+    "cta": "Jetzt Collage erstellen",
+    "features": {
+      "title": "Warum unser Collage Maker?",
+      "privacy": {
+        "title": "100% Datenschutz",
+        "description": "Alle Bilder werden ausschließlich lokal in deinem Browser verarbeitet. Nichts wird auf Server hochgeladen."
+      },
+      "batch": {
+        "title": "Batch-Bildbearbeitung",
+        "description": "Bearbeite mehrere Bilder gleichzeitig. Helligkeit, Kontrast, Sättigung und mehr für alle auf einmal anpassen."
+      },
+      "background": {
+        "title": "Hintergrundbearbeitung",
+        "description": "Setze jedes Bild als Hintergrund. Mit Transparenz, Filtern und automatischer Anpassung an die Canvas-Größe."
+      },
+      "formats": {
+        "title": "Flexible Bildformate",
+        "description": "Unterstützt PNG, JPG und WebP. Exportiere in verschiedenen Formaten mit einstellbarer Qualität."
+      }
+    },
+    "bottomCta": {
+      "title": "Bereit loszulegen?",
+      "subtitle": "Erstelle jetzt deine erste Collage - kostenlos und ohne Registrierung."
+    },
+    "footer": "Bilder-Collage-Macher - Kostenlos und ohne Werbung"
   },
   "upload": {
     "title": "Bilder hochladen",
