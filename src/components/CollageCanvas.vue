@@ -716,6 +716,8 @@ function handleMouseDown(e: MouseEvent) {
     .find(img => isDeleteButtonClicked(x, y, img))
 
   if (clickedDeleteImage) {
+    // Speichere Zustand für Undo VOR dem Löschen
+    collage.saveStateForUndo()
     // Bild aus Canvas entfernen
     collage.removeImage(clickedDeleteImage.id)
     return
@@ -726,6 +728,8 @@ function handleMouseDown(e: MouseEvent) {
   if (selectedImg) {
     const handle = getResizeHandle(x, y, selectedImg)
     if (handle) {
+      // Speichere Zustand für Undo VOR dem Resize
+      collage.saveStateForUndo()
       isResizing.value = true
       resizeHandle.value = handle
       dragStartPos.value = { x, y }
@@ -773,6 +777,8 @@ function handleMouseDown(e: MouseEvent) {
     })
 
   if (clickedText) {
+    // Speichere Zustand für Undo VOR dem Verschieben
+    collage.saveStateForUndo()
     collage.selectText(clickedText.id)
     isDragging.value = true
     dragStartPos.value = { x, y }
@@ -790,6 +796,8 @@ function handleMouseDown(e: MouseEvent) {
     )
 
   if (clickedImage) {
+    // Speichere Zustand für Undo VOR dem Verschieben
+    collage.saveStateForUndo()
     // Ctrl/Cmd+Click für Mehrfachauswahl
     if (e.ctrlKey || e.metaKey) {
       collage.toggleImageSelection(clickedImage.id)

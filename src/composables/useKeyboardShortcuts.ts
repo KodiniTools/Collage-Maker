@@ -278,6 +278,31 @@ export function useKeyboardShortcuts() {
 
     // === GENERAL ===
     {
+      key: 'z',
+      ctrl: true,
+      description: 'Undo',
+      descriptionKey: 'shortcuts.undo',
+      category: 'general',
+      action: () => collage.undo()
+    },
+    {
+      key: 'y',
+      ctrl: true,
+      description: 'Redo',
+      descriptionKey: 'shortcuts.redo',
+      category: 'general',
+      action: () => collage.redo()
+    },
+    {
+      key: 'z',
+      ctrl: true,
+      shift: true,
+      description: 'Redo',
+      descriptionKey: 'shortcuts.redo',
+      category: 'general',
+      action: () => collage.redo()
+    },
+    {
       key: '?',
       shift: true,
       description: 'Show keyboard shortcuts',
