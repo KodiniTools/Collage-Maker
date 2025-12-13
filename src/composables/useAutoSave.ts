@@ -36,7 +36,12 @@ export function useAutoSave() {
 
     return new Promise((resolve, reject) => {
       const img = new Image()
-      img.crossOrigin = 'anonymous'
+
+      // WICHTIG: crossOrigin NICHT bei blob: URLs setzen!
+      // blob: URLs sind lokal und brauchen kein CORS
+      if (!blobUrl.startsWith('blob:')) {
+        img.crossOrigin = 'anonymous'
+      }
 
       img.onload = () => {
         try {
@@ -75,7 +80,10 @@ export function useAutoSave() {
         }
       }
 
-      img.onerror = () => reject(new Error('Image load failed'))
+      img.onerror = (e) => {
+        console.error('Image load error for URL:', blobUrl.substring(0, 50), e)
+        reject(new Error('Image load failed'))
+      }
       img.src = blobUrl
     })
   }
