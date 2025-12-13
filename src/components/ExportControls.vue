@@ -15,6 +15,50 @@ const isGeneratingPreview = ref(false)
 const showPreviewModal = ref(false)
 const previewDataUrl = ref<string | null>(null)
 
+async function drawBackgroundImageExport(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): Promise<void> {
+  if (!collage.settings.backgroundImage) return
+
+  const bgUrl = collage.settings.backgroundImage
+  const fit = collage.settings.backgroundImageFit
+
+  const img = new Image()
+  img.src = bgUrl
+  await new Promise((resolve) => {
+    img.onload = resolve
+  })
+
+  const imgWidth = img.naturalWidth
+  const imgHeight = img.naturalHeight
+
+  ctx.save()
+
+  if (fit === 'cover') {
+    const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight)
+    const scaledWidth = imgWidth * scale
+    const scaledHeight = imgHeight * scale
+    const x = (canvasWidth - scaledWidth) / 2
+    const y = (canvasHeight - scaledHeight) / 2
+    ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
+  } else if (fit === 'contain') {
+    const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight)
+    const scaledWidth = imgWidth * scale
+    const scaledHeight = imgHeight * scale
+    const x = (canvasWidth - scaledWidth) / 2
+    const y = (canvasHeight - scaledHeight) / 2
+    ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
+  } else if (fit === 'stretch') {
+    ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight)
+  } else if (fit === 'tile') {
+    const pattern = ctx.createPattern(img, 'repeat')
+    if (pattern) {
+      ctx.fillStyle = pattern
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+    }
+  }
+
+  ctx.restore()
+}
+
 async function exportCollage() {
   isExporting.value = true
 
@@ -29,9 +73,12 @@ async function exportCollage() {
     canvas.width = collage.settings.width
     canvas.height = collage.settings.height
 
-    // Background
+    // Background Color
     ctx.fillStyle = collage.settings.backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Background Image
+    await drawBackgroundImageExport(ctx, canvas.width, canvas.height)
 
     // Render images - NUR Canvas-Instanzen exportieren (keine Gallery-Templates)
     const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
@@ -395,9 +442,12 @@ async function generatePreview() {
     canvas.width = collage.settings.width
     canvas.height = collage.settings.height
 
-    // Background
+    // Background Color
     ctx.fillStyle = collage.settings.backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Background Image
+    await drawBackgroundImageExport(ctx, canvas.width, canvas.height)
 
     // Render images - NUR Canvas-Instanzen exportieren (keine Gallery-Templates)
     const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)

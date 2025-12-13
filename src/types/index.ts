@@ -72,10 +72,14 @@ export type LayoutType =
   | 'triptych'
   | 'masonry'
 
+export type BackgroundImageFit = 'cover' | 'contain' | 'stretch' | 'tile'
+
 export interface CollageSettings {
   width: number
   height: number
   backgroundColor: string
+  backgroundImage: string | null  // URL des Hintergrundbildes
+  backgroundImageFit: BackgroundImageFit  // Wie das Hintergrundbild angepasst wird
   layout: LayoutType
   gridEnabled: boolean
   gridSize: number

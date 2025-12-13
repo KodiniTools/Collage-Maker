@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { CollageImage, CollageText, CollageSettings, LayoutType } from '@/types'
+import type { CollageImage, CollageText, CollageSettings, LayoutType, BackgroundImageFit } from '@/types'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
@@ -17,6 +17,8 @@ export const useCollageStore = defineStore('collage', () => {
     width: 700,
     height: 740,
     backgroundColor: '#ffffff',
+    backgroundImage: null,
+    backgroundImageFit: 'cover',
     layout: 'freestyle',
     gridEnabled: false,
     gridSize: 50
@@ -608,10 +610,27 @@ export const useCollageStore = defineStore('collage', () => {
     texts.value = []
     selectedImageIds.value = []
     selectedTextId.value = null
+    // Hintergrundbild auch zurücksetzen
+    settings.value.backgroundImage = null
   }
 
   function updateSettings(updates: Partial<CollageSettings>) {
     Object.assign(settings.value, updates)
+  }
+
+  // Hintergrundbild setzen (von einem Galerie-Bild)
+  function setBackgroundImage(imageUrl: string) {
+    settings.value.backgroundImage = imageUrl
+  }
+
+  // Hintergrundbild entfernen
+  function removeBackgroundImage() {
+    settings.value.backgroundImage = null
+  }
+
+  // Hintergrundbild-Anpassungsmodus ändern
+  function setBackgroundImageFit(fit: BackgroundImageFit) {
+    settings.value.backgroundImageFit = fit
   }
 
   function setLockAspectRatio(value: boolean) {
@@ -904,6 +923,9 @@ export const useCollageStore = defineStore('collage', () => {
     applyLayout,
     clearCollage,
     updateSettings,
+    setBackgroundImage,
+    removeBackgroundImage,
+    setBackgroundImageFit,
     setLockAspectRatio,
     setCanvasZoom,
     resetCanvasView,
