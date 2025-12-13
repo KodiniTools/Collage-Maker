@@ -188,7 +188,10 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Einfache Auswahl (ersetzt die komplette Auswahl)
   function selectImage(id: string | null) {
-    isBackgroundSelected.value = false // Hintergrundbild-Auswahl aufheben
+    // Nur Hintergrundbild-Auswahl aufheben, wenn ein Bild ausgewählt wird (nicht bei null)
+    if (id !== null) {
+      isBackgroundSelected.value = false
+    }
     if (id === null) {
       selectedImageIds.value = []
     } else {
