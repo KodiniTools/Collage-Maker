@@ -56,12 +56,17 @@ async function drawBackgroundImage(): Promise<void> {
   // Lade Bild nur wenn URL sich geändert hat
   if (loadedBackgroundUrl !== bgUrl || !backgroundImageElement) {
     backgroundImageElement = new Image()
-    backgroundImageElement.src = bgUrl!
     loadedBackgroundUrl = bgUrl
-    await new Promise((resolve) => {
-      backgroundImageElement!.onload = resolve
+
+    await new Promise<void>((resolve) => {
+      backgroundImageElement!.onload = () => resolve()
+      backgroundImageElement!.onerror = () => resolve() // Bei Fehler auch fortfahren
+      backgroundImageElement!.src = bgUrl!
     })
   }
+
+  // Prüfe ob Bild korrekt geladen wurde
+  if (!backgroundImageElement || backgroundImageElement.naturalWidth === 0) return
 
   const img = backgroundImageElement
   const imgWidth = img.naturalWidth
