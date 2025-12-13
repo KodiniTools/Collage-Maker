@@ -23,21 +23,65 @@ export function useAutoSave() {
   const lastSaveTime = ref<number | null>(null)
   const saveTimeout = ref<number | null>(null)
 
-  // Konvertiert eine Blob-URL zu Base64
+  // Konvertiert eine Blob-URL zu Base64 mit Fallback über Canvas
   async function blobUrlToBase64(blobUrl: string): Promise<string> {
+    // Wenn es bereits eine Data-URL ist, direkt zurückgeben
+    if (blobUrl.startsWith('data:')) {
+      return blobUrl
+    }
+
     try {
+      // Methode 1: Fetch + FileReader
       const response = await fetch(blobUrl)
+      if (!response.ok) {
+        throw new Error(`Fetch failed: ${response.status}`)
+      }
       const blob = await response.blob()
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
-        reader.onloadend = () => resolve(reader.result as string)
-        reader.onerror = reject
+        reader.onloadend = () => {
+          if (reader.result) {
+            resolve(reader.result as string)
+          } else {
+            reject(new Error('FileReader returned empty result'))
+          }
+        }
+        reader.onerror = () => reject(reader.error)
         reader.readAsDataURL(blob)
       })
     } catch (error) {
-      console.warn('Could not convert blob URL to base64:', error)
-      return ''
+      console.warn('Fetch method failed, trying canvas fallback:', error)
+
+      // Methode 2: Canvas Fallback
+      try {
+        return await new Promise((resolve, reject) => {
+          const img = new Image()
+          img.crossOrigin = 'anonymous'
+          img.onload = () => {
+            const canvas = document.createElement('canvas')
+            canvas.width = img.naturalWidth
+            canvas.height = img.naturalHeight
+            const ctx = canvas.getContext('2d')
+            if (ctx) {
+              ctx.drawImage(img, 0, 0)
+              try {
+                const dataUrl = canvas.toDataURL('image/png')
+                resolve(dataUrl)
+              } catch (e) {
+                reject(e)
+              }
+            } else {
+              reject(new Error('Could not get canvas context'))
+            }
+          }
+          img.onerror = () => reject(new Error('Image load failed'))
+          img.src = blobUrl
+        })
+      } catch (canvasError) {
+        console.error('Both conversion methods failed:', canvasError)
+        return ''
+      }
     }
   }
 
@@ -46,32 +90,51 @@ export function useAutoSave() {
     if (isRestoring.value) return
 
     try {
+      // Nur speichern wenn es etwas zu speichern gibt
+      const hasContent = collage.images.length > 0 || collage.texts.length > 0
+
+      if (!hasContent) {
+        // Lösche alte Daten wenn nichts mehr vorhanden
+        localStorage.removeItem(STORAGE_KEY)
+        return
+      }
+
       // Konvertiere alle Bild-URLs zu Base64
-      const savedImages: SavedImage[] = await Promise.all(
-        collage.images.map(async (img) => {
+      const savedImages: SavedImage[] = []
+
+      for (const img of collage.images) {
+        try {
           const dataUrl = await blobUrlToBase64(img.url)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { file, url, ...rest } = img
-          return {
-            ...rest,
-            dataUrl
+          if (dataUrl) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { file, url, ...rest } = img
+            savedImages.push({
+              ...rest,
+              dataUrl
+            })
           }
-        })
-      )
+        } catch (e) {
+          console.warn(`Failed to convert image ${img.id}:`, e)
+        }
+      }
 
       // Hintergrundbild auch konvertieren
       let backgroundDataUrl: string | null = null
       if (collage.settings.backgroundImage.url) {
-        backgroundDataUrl = await blobUrlToBase64(collage.settings.backgroundImage.url)
+        try {
+          backgroundDataUrl = await blobUrlToBase64(collage.settings.backgroundImage.url)
+        } catch (e) {
+          console.warn('Failed to convert background image:', e)
+        }
       }
 
       const state: SavedState = {
         version: 1,
         timestamp: Date.now(),
-        images: savedImages.filter(img => img.dataUrl), // Nur Bilder mit gültiger URL
-        texts: collage.texts,
+        images: savedImages,
+        texts: JSON.parse(JSON.stringify(collage.texts)), // Deep copy
         settings: {
-          ...collage.settings,
+          ...JSON.parse(JSON.stringify(collage.settings)),
           backgroundImage: {
             ...collage.settings.backgroundImage,
             url: backgroundDataUrl
@@ -79,9 +142,13 @@ export function useAutoSave() {
         }
       }
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-      lastSaveTime.value = Date.now()
-      console.log('Auto-save: Collage gespeichert', new Date().toLocaleTimeString())
+      // Speichern nur wenn Bilder oder Texte vorhanden
+      if (state.images.length > 0 || state.texts.length > 0) {
+        const jsonString = JSON.stringify(state)
+        localStorage.setItem(STORAGE_KEY, jsonString)
+        lastSaveTime.value = Date.now()
+        console.log(`Auto-save: ${state.images.length} Bilder, ${state.texts.length} Texte gespeichert`, new Date().toLocaleTimeString())
+      }
     } catch (error) {
       console.error('Auto-save Fehler:', error)
     }
@@ -215,28 +282,65 @@ export function useAutoSave() {
     // Beobachte alle relevanten Änderungen
     watch(
       () => [
-        collage.images,
-        collage.texts,
-        collage.settings
+        collage.images.length,
+        collage.texts.length,
+        JSON.stringify(collage.settings)
       ],
       () => {
         if (!isRestoring.value) {
           scheduleSave()
         }
-      },
-      { deep: true }
+      }
     )
+
+    // Zusätzlicher Watcher für tiefe Änderungen an einzelnen Bildern/Texten
+    watch(
+      () => collage.images.map(img => `${img.id}-${img.x}-${img.y}-${img.width}-${img.height}-${img.rotation}`).join(','),
+      () => {
+        if (!isRestoring.value) {
+          scheduleSave()
+        }
+      }
+    )
+
+    // Speichern vor dem Schließen des Fensters
+    window.addEventListener('beforeunload', () => {
+      if (collage.images.length > 0 || collage.texts.length > 0) {
+        // Synchroner Speicherversuch (begrenzt, aber besser als nichts)
+        try {
+          const savedData = localStorage.getItem(STORAGE_KEY)
+          if (savedData) {
+            // Timestamp aktualisieren um zu zeigen, dass Daten aktuell sind
+            const state = JSON.parse(savedData)
+            state.timestamp = Date.now()
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+          }
+        } catch (e) {
+          console.warn('beforeunload save failed:', e)
+        }
+      }
+    })
   }
 
   // Prüft ob gespeicherte Daten vorhanden sind
   function hasSavedState(): boolean {
-    const savedData = localStorage.getItem(STORAGE_KEY)
-    if (!savedData) return false
-
     try {
+      const savedData = localStorage.getItem(STORAGE_KEY)
+      if (!savedData) {
+        console.log('Auto-save: Keine gespeicherten Daten gefunden')
+        return false
+      }
+
       const state: SavedState = JSON.parse(savedData)
-      return state.images.length > 0 || state.texts.length > 0
-    } catch {
+      const hasContent = state.images.length > 0 || state.texts.length > 0
+
+      if (hasContent) {
+        console.log(`Auto-save: Gespeicherte Daten gefunden - ${state.images.length} Bilder, ${state.texts.length} Texte`)
+      }
+
+      return hasContent
+    } catch (error) {
+      console.error('Auto-save: Fehler beim Prüfen der gespeicherten Daten:', error)
       return false
     }
   }
