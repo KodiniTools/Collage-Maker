@@ -165,7 +165,7 @@ export function useAutoSave() {
 
       // Hintergrundbild auch komprimieren (kleineres Thumbnail)
       let backgroundDataUrl: string | null = null
-      if (collage.settings.backgroundImage.url) {
+      if (collage.settings.backgroundImage?.url) {
         try {
           backgroundDataUrl = await compressAndConvert(
             collage.settings.backgroundImage.url,
@@ -183,9 +183,17 @@ export function useAutoSave() {
         texts: JSON.parse(JSON.stringify(collage.texts)),
         settings: {
           ...JSON.parse(JSON.stringify(collage.settings)),
-          backgroundImage: {
+          backgroundImage: collage.settings.backgroundImage ? {
             ...collage.settings.backgroundImage,
             url: backgroundDataUrl
+          } : {
+            url: null,
+            fit: 'cover' as const,
+            opacity: 1,
+            brightness: 100,
+            contrast: 100,
+            saturation: 100,
+            blur: 0
           }
         }
       }
@@ -245,7 +253,7 @@ export function useAutoSave() {
       }
 
       let backgroundDataUrl: string | null = null
-      if (collage.settings.backgroundImage.url) {
+      if (collage.settings.backgroundImage?.url) {
         try {
           backgroundDataUrl = await compressAndConvert(
             collage.settings.backgroundImage.url,
@@ -263,9 +271,17 @@ export function useAutoSave() {
         texts: JSON.parse(JSON.stringify(collage.texts)),
         settings: {
           ...JSON.parse(JSON.stringify(collage.settings)),
-          backgroundImage: {
+          backgroundImage: collage.settings.backgroundImage ? {
             ...collage.settings.backgroundImage,
             url: backgroundDataUrl
+          } : {
+            url: null,
+            fit: 'cover' as const,
+            opacity: 1,
+            brightness: 100,
+            contrast: 100,
+            saturation: 100,
+            blur: 0
           }
         }
       }
@@ -340,7 +356,7 @@ export function useAutoSave() {
       })
 
       // Hintergrundbild wiederherstellen
-      if (state.settings.backgroundImage.url) {
+      if (state.settings.backgroundImage?.url) {
         collage.settings.backgroundImage = {
           ...state.settings.backgroundImage
         }
@@ -402,9 +418,16 @@ export function useAutoSave() {
         }
       }
 
-      // Stelle Texte wieder her
+      // Stelle Texte wieder her (mit Defaults für neue Eigenschaften)
       state.texts.forEach(txt => {
-        collage.texts.push({ ...txt })
+        collage.texts.push({
+          ...txt,
+          // Defaults für neue Eigenschaften (falls nicht in gespeicherten Daten vorhanden)
+          strokeEnabled: txt.strokeEnabled ?? false,
+          strokeColor: txt.strokeColor ?? '#ffffff',
+          strokeWidth: txt.strokeWidth ?? 2,
+          letterSpacing: txt.letterSpacing ?? 0
+        })
       })
 
       isRestoring.value = false
