@@ -902,7 +902,11 @@ export const useCollageStore = defineStore('collage', () => {
       shadowOffsetX: 2,
       shadowOffsetY: 2,
       shadowBlur: 4,
-      shadowColor: '#000000'
+      shadowColor: '#000000',
+      // Textumrandung (Stroke) Defaults
+      strokeEnabled: false,
+      strokeColor: '#ffffff',
+      strokeWidth: 2
     }
 
     texts.value.push(newText)
