@@ -16,7 +16,6 @@ import ImageControls from '@/components/ImageControls.vue'
 import TextControls from '@/components/TextControls.vue'
 import ExportControls from '@/components/ExportControls.vue'
 import TemplateLibrary from '@/components/TemplateLibrary.vue'
-import FaqSection from '@/components/FaqSection.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
 import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
 import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
@@ -48,7 +47,7 @@ onUnmounted(() => {
   <!-- Landing Page -->
   <div v-if="showLanding" class="min-h-screen">
     <!-- Theme/Language toggles on landing page -->
-    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2 bg-surface-light/90 dark:bg-slate-dark/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-muted/20 dark:border-muted/30">
       <LanguageToggle />
       <ThemeToggle />
     </div>
@@ -145,9 +144,6 @@ onUnmounted(() => {
         </form>
       </div>
     </section>
-
-    <!-- FAQ Section -->
-    <FaqSection />
 
     <!-- Template Library Modal -->
     <TemplateLibrary v-model:isOpen="showTemplates" />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import FaqSection from '@/components/FaqSection.vue'
 
 const { t } = useI18n()
 
@@ -123,6 +124,9 @@ const features = [
           </div>
         </div>
       </section>
+
+      <!-- FAQ Section -->
+      <FaqSection />
 
       <!-- Bottom CTA -->
       <section class="container mx-auto px-4 py-16 text-center">
