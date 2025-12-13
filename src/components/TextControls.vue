@@ -213,6 +213,24 @@ function updateShadowColor(value: string) {
   collage.updateText(collage.selectedText.id, { shadowColor: value })
 }
 
+// Stroke (Textumrandung) Funktionen
+function toggleStroke() {
+  if (!collage.selectedText) return
+  collage.updateText(collage.selectedText.id, {
+    strokeEnabled: !collage.selectedText.strokeEnabled
+  })
+}
+
+function updateStrokeColor(value: string) {
+  if (!collage.selectedText) return
+  collage.updateText(collage.selectedText.id, { strokeColor: value })
+}
+
+function updateStrokeWidth(value: number) {
+  if (!collage.selectedText) return
+  collage.updateText(collage.selectedText.id, { strokeWidth: value })
+}
+
 function deleteText() {
   if (!collage.selectedText) return
   collage.removeText(collage.selectedText.id)
@@ -451,6 +469,64 @@ if (collage.selectedText) {
                 :value="collage.selectedText.shadowColor"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
                 placeholder="#000000"
+                class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stroke (Textumrandung) Controls -->
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm font-medium">{{ t('text.stroke') }}</label>
+          <button
+            @click="toggleStroke"
+            :class="[
+              'px-3 py-1 text-xs rounded-md font-medium transition-colors',
+              collage.selectedText.strokeEnabled
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 dark:bg-gray-700'
+            ]"
+          >
+            {{ collage.selectedText.strokeEnabled ? t('text.strokeOn') : t('text.strokeOff') }}
+          </button>
+        </div>
+
+        <div v-if="collage.selectedText.strokeEnabled" class="space-y-3">
+          <!-- Stroke Width -->
+          <div>
+            <label class="block text-xs text-muted mb-1">
+              {{ t('text.strokeWidth') }}: {{ collage.selectedText.strokeWidth }}px
+            </label>
+            <input
+              type="range"
+              :value="collage.selectedText.strokeWidth"
+              @input="updateStrokeWidth(Number(($event.target as HTMLInputElement).value))"
+              min="1"
+              max="10"
+              step="1"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Stroke Color -->
+          <div>
+            <label class="block text-xs text-muted mb-1">
+              {{ t('text.strokeColor') }}
+            </label>
+            <div class="flex gap-2">
+              <input
+                type="color"
+                :value="collage.selectedText.strokeColor"
+                @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
+                class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
+              />
+              <input
+                type="text"
+                :value="collage.selectedText.strokeColor"
+                @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
+                placeholder="#ffffff"
                 class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
               />
             </div>

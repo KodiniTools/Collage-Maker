@@ -216,6 +216,11 @@
     "shadowOffsetY": "Shadow Y Offset",
     "shadowBlur": "Shadow Blur",
     "shadowColor": "Shadow Color",
+    "stroke": "Text Stroke",
+    "strokeOn": "On",
+    "strokeOff": "Off",
+    "strokeWidth": "Stroke Width",
+    "strokeColor": "Stroke Color",
     "delete": "Delete Text"
   },
   "templates": {

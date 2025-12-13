@@ -844,6 +844,21 @@ async function renderCanvas() {
     const lineHeight = text.fontSize * 1.2
     const totalHeight = lines.length * lineHeight
 
+    // Stroke (Textumrandung) zeichnen, wenn aktiviert
+    // Stroke wird ZUERST gezeichnet, damit der Fill darüber liegt
+    if (text.strokeEnabled) {
+      context.strokeStyle = text.strokeColor
+      context.lineWidth = text.strokeWidth * 2 // Verdoppeln, da die Hälfte vom Fill überdeckt wird
+      context.lineJoin = 'round'
+      context.miterLimit = 2
+
+      lines.forEach((line, index) => {
+        const y = (index - (lines.length - 1) / 2) * lineHeight
+        context.strokeText(line, 0, y)
+      })
+    }
+
+    // Fill-Text zeichnen
     lines.forEach((line, index) => {
       const y = (index - (lines.length - 1) / 2) * lineHeight
       context.fillText(line, 0, y)

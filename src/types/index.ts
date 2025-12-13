@@ -54,6 +54,10 @@ export interface CollageText {
   shadowOffsetY: number
   shadowBlur: number
   shadowColor: string
+  // Textumrandung (Stroke)
+  strokeEnabled: boolean
+  strokeColor: string
+  strokeWidth: number
 }
 
 export type LayoutType =

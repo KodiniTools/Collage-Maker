@@ -216,6 +216,11 @@
     "shadowOffsetY": "Schatten Y-Versatz",
     "shadowBlur": "Schattenunschärfe",
     "shadowColor": "Schattenfarbe",
+    "stroke": "Textumrandung",
+    "strokeOn": "An",
+    "strokeOff": "Aus",
+    "strokeWidth": "Umrandungsbreite",
+    "strokeColor": "Umrandungsfarbe",
     "delete": "Text löschen"
   },
   "templates": {
