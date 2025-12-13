@@ -4,6 +4,8 @@ import type { CollageImage, CollageText, CollageSettings } from '@/types'
 
 const STORAGE_KEY = 'collage-maker-autosave'
 const SAVE_DELAY = 2000 // 2 Sekunden Verzögerung für Debounce
+const MAX_IMAGE_SIZE = 400 // Max Breite/Höhe für Thumbnails
+const JPEG_QUALITY = 0.6 // JPEG Qualität (0-1)
 
 interface SavedState {
   version: number
@@ -14,7 +16,7 @@ interface SavedState {
 }
 
 interface SavedImage extends Omit<CollageImage, 'file' | 'url'> {
-  dataUrl: string // Base64-kodiertes Bild
+  dataUrl: string // Base64-kodiertes Bild (komprimiert)
 }
 
 export function useAutoSave() {
@@ -22,67 +24,102 @@ export function useAutoSave() {
   const isRestoring = ref(false)
   const lastSaveTime = ref<number | null>(null)
   const saveTimeout = ref<number | null>(null)
+  const saveError = ref<string | null>(null)
 
-  // Konvertiert eine Blob-URL zu Base64 mit Fallback über Canvas
-  async function blobUrlToBase64(blobUrl: string): Promise<string> {
-    // Wenn es bereits eine Data-URL ist, direkt zurückgeben
+  // Komprimiert und konvertiert ein Bild zu Base64
+  async function compressAndConvert(blobUrl: string, maxSize: number = MAX_IMAGE_SIZE): Promise<string> {
+    // Wenn es bereits eine Data-URL ist
     if (blobUrl.startsWith('data:')) {
-      return blobUrl
+      // Trotzdem komprimieren
+      return await compressDataUrl(blobUrl, maxSize)
     }
 
-    try {
-      // Methode 1: Fetch + FileReader
-      const response = await fetch(blobUrl)
-      if (!response.ok) {
-        throw new Error(`Fetch failed: ${response.status}`)
-      }
-      const blob = await response.blob()
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
 
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          if (reader.result) {
-            resolve(reader.result as string)
-          } else {
-            reject(new Error('FileReader returned empty result'))
-          }
-        }
-        reader.onerror = () => reject(reader.error)
-        reader.readAsDataURL(blob)
-      })
-    } catch (error) {
-      console.warn('Fetch method failed, trying canvas fallback:', error)
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas')
 
-      // Methode 2: Canvas Fallback
-      try {
-        return await new Promise((resolve, reject) => {
-          const img = new Image()
-          img.crossOrigin = 'anonymous'
-          img.onload = () => {
-            const canvas = document.createElement('canvas')
-            canvas.width = img.naturalWidth
-            canvas.height = img.naturalHeight
-            const ctx = canvas.getContext('2d')
-            if (ctx) {
-              ctx.drawImage(img, 0, 0)
-              try {
-                const dataUrl = canvas.toDataURL('image/png')
-                resolve(dataUrl)
-              } catch (e) {
-                reject(e)
-              }
+          // Berechne neue Dimensionen unter Beibehaltung des Seitenverhältnisses
+          let width = img.naturalWidth
+          let height = img.naturalHeight
+
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = Math.round((height / width) * maxSize)
+              width = maxSize
             } else {
-              reject(new Error('Could not get canvas context'))
+              width = Math.round((width / height) * maxSize)
+              height = maxSize
             }
           }
-          img.onerror = () => reject(new Error('Image load failed'))
-          img.src = blobUrl
-        })
-      } catch (canvasError) {
-        console.error('Both conversion methods failed:', canvasError)
-        return ''
+
+          canvas.width = width
+          canvas.height = height
+
+          const ctx = canvas.getContext('2d')
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'))
+            return
+          }
+
+          ctx.drawImage(img, 0, 0, width, height)
+
+          // Als JPEG mit reduzierter Qualität speichern
+          const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+          resolve(dataUrl)
+        } catch (e) {
+          reject(e)
+        }
       }
-    }
+
+      img.onerror = () => reject(new Error('Image load failed'))
+      img.src = blobUrl
+    })
+  }
+
+  // Komprimiert eine bereits existierende Data-URL
+  async function compressDataUrl(dataUrl: string, maxSize: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas')
+
+          let width = img.naturalWidth
+          let height = img.naturalHeight
+
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = Math.round((height / width) * maxSize)
+              width = maxSize
+            } else {
+              width = Math.round((width / height) * maxSize)
+              height = maxSize
+            }
+          }
+
+          canvas.width = width
+          canvas.height = height
+
+          const ctx = canvas.getContext('2d')
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'))
+            return
+          }
+
+          ctx.drawImage(img, 0, 0, width, height)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+          resolve(compressedDataUrl)
+        } catch (e) {
+          reject(e)
+        }
+      }
+      img.onerror = () => reject(new Error('Image load failed'))
+      img.src = dataUrl
+    })
   }
 
   // Speichert den aktuellen Zustand in LocalStorage
@@ -96,17 +133,17 @@ export function useAutoSave() {
       if (!hasContent) {
         // Lösche alte Daten wenn nichts mehr vorhanden
         localStorage.removeItem(STORAGE_KEY)
+        saveError.value = null
         return
       }
 
-      // Konvertiere alle Bild-URLs zu Base64
+      // Konvertiere und komprimiere alle Bild-URLs
       const savedImages: SavedImage[] = []
 
       for (const img of collage.images) {
         try {
-          const dataUrl = await blobUrlToBase64(img.url)
+          const dataUrl = await compressAndConvert(img.url)
           if (dataUrl) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { file, url, ...rest } = img
             savedImages.push({
               ...rest,
@@ -118,11 +155,14 @@ export function useAutoSave() {
         }
       }
 
-      // Hintergrundbild auch konvertieren
+      // Hintergrundbild auch komprimieren (kleineres Thumbnail)
       let backgroundDataUrl: string | null = null
       if (collage.settings.backgroundImage.url) {
         try {
-          backgroundDataUrl = await blobUrlToBase64(collage.settings.backgroundImage.url)
+          backgroundDataUrl = await compressAndConvert(
+            collage.settings.backgroundImage.url,
+            300 // Kleineres Thumbnail für Hintergrund
+          )
         } catch (e) {
           console.warn('Failed to convert background image:', e)
         }
@@ -132,7 +172,7 @@ export function useAutoSave() {
         version: 1,
         timestamp: Date.now(),
         images: savedImages,
-        texts: JSON.parse(JSON.stringify(collage.texts)), // Deep copy
+        texts: JSON.parse(JSON.stringify(collage.texts)),
         settings: {
           ...JSON.parse(JSON.stringify(collage.settings)),
           backgroundImage: {
@@ -145,12 +185,118 @@ export function useAutoSave() {
       // Speichern nur wenn Bilder oder Texte vorhanden
       if (state.images.length > 0 || state.texts.length > 0) {
         const jsonString = JSON.stringify(state)
-        localStorage.setItem(STORAGE_KEY, jsonString)
-        lastSaveTime.value = Date.now()
-        console.log(`Auto-save: ${state.images.length} Bilder, ${state.texts.length} Texte gespeichert`, new Date().toLocaleTimeString())
+
+        // Prüfe Größe vor dem Speichern
+        const sizeInMB = (jsonString.length * 2) / (1024 * 1024)
+
+        if (sizeInMB > 4.5) {
+          // Zu groß - versuche mit noch kleineren Bildern
+          console.warn(`Auto-save: Daten zu groß (${sizeInMB.toFixed(2)}MB), versuche kleinere Thumbnails...`)
+          await saveStateWithSmallerImages(200)
+          return
+        }
+
+        try {
+          localStorage.setItem(STORAGE_KEY, jsonString)
+          lastSaveTime.value = Date.now()
+          saveError.value = null
+          console.log(`Auto-save: ${state.images.length} Bilder, ${state.texts.length} Texte gespeichert (${sizeInMB.toFixed(2)}MB)`)
+        } catch (storageError) {
+          if (storageError instanceof DOMException && storageError.name === 'QuotaExceededError') {
+            console.warn('Auto-save: Speicherplatz überschritten, versuche kleinere Thumbnails...')
+            await saveStateWithSmallerImages(200)
+          } else {
+            throw storageError
+          }
+        }
       }
     } catch (error) {
       console.error('Auto-save Fehler:', error)
+      saveError.value = 'Speicherfehler'
+    }
+  }
+
+  // Speichert mit noch kleineren Bildern wenn Quota überschritten
+  async function saveStateWithSmallerImages(maxSize: number) {
+    try {
+      const savedImages: SavedImage[] = []
+
+      for (const img of collage.images) {
+        try {
+          const dataUrl = await compressAndConvert(img.url, maxSize)
+          if (dataUrl) {
+            const { file, url, ...rest } = img
+            savedImages.push({
+              ...rest,
+              dataUrl
+            })
+          }
+        } catch (e) {
+          console.warn(`Failed to convert image ${img.id}:`, e)
+        }
+      }
+
+      let backgroundDataUrl: string | null = null
+      if (collage.settings.backgroundImage.url) {
+        try {
+          backgroundDataUrl = await compressAndConvert(
+            collage.settings.backgroundImage.url,
+            150
+          )
+        } catch (e) {
+          console.warn('Failed to convert background image:', e)
+        }
+      }
+
+      const state: SavedState = {
+        version: 1,
+        timestamp: Date.now(),
+        images: savedImages,
+        texts: JSON.parse(JSON.stringify(collage.texts)),
+        settings: {
+          ...JSON.parse(JSON.stringify(collage.settings)),
+          backgroundImage: {
+            ...collage.settings.backgroundImage,
+            url: backgroundDataUrl
+          }
+        }
+      }
+
+      if (state.images.length > 0 || state.texts.length > 0) {
+        const jsonString = JSON.stringify(state)
+        const sizeInMB = (jsonString.length * 2) / (1024 * 1024)
+
+        try {
+          localStorage.setItem(STORAGE_KEY, jsonString)
+          lastSaveTime.value = Date.now()
+          saveError.value = null
+          console.log(`Auto-save: ${state.images.length} Bilder mit kleineren Thumbnails gespeichert (${sizeInMB.toFixed(2)}MB)`)
+        } catch (storageError) {
+          if (storageError instanceof DOMException && storageError.name === 'QuotaExceededError') {
+            // Letzter Versuch: nur Metadaten ohne Bilder speichern
+            console.warn('Auto-save: Immer noch zu groß, speichere nur Metadaten...')
+            saveError.value = 'Zu viele/große Bilder für Auto-Save'
+
+            // Speichere wenigstens die Positionen und Einstellungen
+            const metaState: SavedState = {
+              version: 1,
+              timestamp: Date.now(),
+              images: savedImages.map(img => ({ ...img, dataUrl: '' })),
+              texts: state.texts,
+              settings: {
+                ...state.settings,
+                backgroundImage: { ...state.settings.backgroundImage, url: null }
+              }
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(metaState))
+          } else {
+            throw storageError
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Auto-save mit kleineren Bildern fehlgeschlagen:', error)
+      saveError.value = 'Speicherfehler'
     }
   }
 
@@ -196,52 +342,56 @@ export function useAutoSave() {
       for (const savedImg of state.images) {
         if (!savedImg.dataUrl) continue
 
-        // Erstelle Blob aus Base64
-        const response = await fetch(savedImg.dataUrl)
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
+        try {
+          // Erstelle Blob aus Base64
+          const response = await fetch(savedImg.dataUrl)
+          const blob = await response.blob()
+          const url = URL.createObjectURL(blob)
 
-        // Erstelle File-Objekt (für Kompatibilität)
-        const file = new File([blob], `restored-${savedImg.id}.png`, { type: blob.type })
+          // Erstelle File-Objekt (für Kompatibilität)
+          const file = new File([blob], `restored-${savedImg.id}.jpg`, { type: 'image/jpeg' })
 
-        // Füge Bild zum Store hinzu
-        const restoredImage: CollageImage = {
-          id: savedImg.id,
-          file,
-          url,
-          x: savedImg.x,
-          y: savedImg.y,
-          width: savedImg.width,
-          height: savedImg.height,
-          rotation: savedImg.rotation,
-          zIndex: savedImg.zIndex,
-          opacity: savedImg.opacity,
-          borderRadius: savedImg.borderRadius,
-          borderEnabled: savedImg.borderEnabled,
-          borderWidth: savedImg.borderWidth,
-          borderColor: savedImg.borderColor,
-          borderStyle: savedImg.borderStyle,
-          borderShadowEnabled: savedImg.borderShadowEnabled,
-          borderShadowOffsetX: savedImg.borderShadowOffsetX,
-          borderShadowOffsetY: savedImg.borderShadowOffsetY,
-          borderShadowBlur: savedImg.borderShadowBlur,
-          borderShadowColor: savedImg.borderShadowColor,
-          shadowEnabled: savedImg.shadowEnabled,
-          shadowOffsetX: savedImg.shadowOffsetX,
-          shadowOffsetY: savedImg.shadowOffsetY,
-          shadowBlur: savedImg.shadowBlur,
-          shadowColor: savedImg.shadowColor,
-          brightness: savedImg.brightness ?? 100,
-          contrast: savedImg.contrast ?? 100,
-          highlights: savedImg.highlights ?? 0,
-          shadows: savedImg.shadows ?? 0,
-          saturation: savedImg.saturation ?? 100,
-          warmth: savedImg.warmth ?? 0,
-          sharpness: savedImg.sharpness ?? 0,
-          isGalleryTemplate: savedImg.isGalleryTemplate
+          // Füge Bild zum Store hinzu
+          const restoredImage: CollageImage = {
+            id: savedImg.id,
+            file,
+            url,
+            x: savedImg.x,
+            y: savedImg.y,
+            width: savedImg.width,
+            height: savedImg.height,
+            rotation: savedImg.rotation,
+            zIndex: savedImg.zIndex,
+            opacity: savedImg.opacity,
+            borderRadius: savedImg.borderRadius,
+            borderEnabled: savedImg.borderEnabled,
+            borderWidth: savedImg.borderWidth,
+            borderColor: savedImg.borderColor,
+            borderStyle: savedImg.borderStyle,
+            borderShadowEnabled: savedImg.borderShadowEnabled,
+            borderShadowOffsetX: savedImg.borderShadowOffsetX,
+            borderShadowOffsetY: savedImg.borderShadowOffsetY,
+            borderShadowBlur: savedImg.borderShadowBlur,
+            borderShadowColor: savedImg.borderShadowColor,
+            shadowEnabled: savedImg.shadowEnabled,
+            shadowOffsetX: savedImg.shadowOffsetX,
+            shadowOffsetY: savedImg.shadowOffsetY,
+            shadowBlur: savedImg.shadowBlur,
+            shadowColor: savedImg.shadowColor,
+            brightness: savedImg.brightness ?? 100,
+            contrast: savedImg.contrast ?? 100,
+            highlights: savedImg.highlights ?? 0,
+            shadows: savedImg.shadows ?? 0,
+            saturation: savedImg.saturation ?? 100,
+            warmth: savedImg.warmth ?? 0,
+            sharpness: savedImg.sharpness ?? 0,
+            isGalleryTemplate: savedImg.isGalleryTemplate
+          }
+
+          collage.images.push(restoredImage)
+        } catch (imgError) {
+          console.warn(`Failed to restore image ${savedImg.id}:`, imgError)
         }
-
-        collage.images.push(restoredImage)
       }
 
       // Stelle Texte wieder her
@@ -265,6 +415,7 @@ export function useAutoSave() {
   function clearSavedState() {
     localStorage.removeItem(STORAGE_KEY)
     lastSaveTime.value = null
+    saveError.value = null
   }
 
   // Debounced Save - speichert nach einer Verzögerung
@@ -306,11 +457,9 @@ export function useAutoSave() {
     // Speichern vor dem Schließen des Fensters
     window.addEventListener('beforeunload', () => {
       if (collage.images.length > 0 || collage.texts.length > 0) {
-        // Synchroner Speicherversuch (begrenzt, aber besser als nichts)
         try {
           const savedData = localStorage.getItem(STORAGE_KEY)
           if (savedData) {
-            // Timestamp aktualisieren um zu zeigen, dass Daten aktuell sind
             const state = JSON.parse(savedData)
             state.timestamp = Date.now()
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
@@ -332,10 +481,13 @@ export function useAutoSave() {
       }
 
       const state: SavedState = JSON.parse(savedData)
-      const hasContent = state.images.length > 0 || state.texts.length > 0
+      // Prüfe ob es Bilder MIT dataUrl gibt oder Texte
+      const hasImages = state.images.some(img => img.dataUrl && img.dataUrl.length > 0)
+      const hasTexts = state.texts.length > 0
+      const hasContent = hasImages || hasTexts
 
       if (hasContent) {
-        console.log(`Auto-save: Gespeicherte Daten gefunden - ${state.images.length} Bilder, ${state.texts.length} Texte`)
+        console.log(`Auto-save: Gespeicherte Daten gefunden - ${state.images.filter(i => i.dataUrl).length} Bilder, ${state.texts.length} Texte`)
       }
 
       return hasContent
@@ -366,6 +518,7 @@ export function useAutoSave() {
     hasSavedState,
     getSaveDate,
     lastSaveTime,
-    isRestoring
+    isRestoring,
+    saveError
   }
 }
