@@ -216,8 +216,8 @@ onUnmounted(() => {
         <div class="bg-surface-light dark:bg-slate-dark rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-muted/20 dark:border-muted/30">
           <!-- Icon -->
           <div class="flex justify-center mb-4">
-            <div class="w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-16 h-16 bg-slate/10 dark:bg-slate/20 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-slate dark:text-muted-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </div>
@@ -242,13 +242,13 @@ onUnmounted(() => {
           <div class="flex flex-col gap-3">
             <button
               @click="handleRestore"
-              class="w-full px-4 py-3 bg-primary hover:bg-primary-dark text-surface-light rounded-lg font-semibold transition-colors"
+              class="w-full px-4 py-3 bg-slate hover:bg-slate-dark text-surface-light rounded-lg font-semibold transition-colors"
             >
               {{ t('autoSave.restore') }}
             </button>
             <button
               @click="handleContinueWithoutRestore"
-              class="w-full px-4 py-2 bg-muted/20 hover:bg-muted/30 dark:bg-slate/30 dark:hover:bg-slate/40 rounded-lg font-medium transition-colors"
+              class="w-full px-4 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-slate/30 dark:hover:bg-slate/50 rounded-lg font-medium transition-colors"
             >
               {{ t('autoSave.continueWithout') }}
             </button>
