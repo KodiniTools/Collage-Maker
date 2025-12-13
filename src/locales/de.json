@@ -325,6 +325,14 @@
     "exportSuccess": "Collage erfolgreich exportiert",
     "exportError": "Fehler beim Exportieren der Collage"
   },
+  "autoSave": {
+    "restoreTitle": "Vorherige Arbeit gefunden",
+    "restoreDescription": "Es wurde eine automatisch gespeicherte Collage gefunden. Möchten Sie diese wiederherstellen?",
+    "savedAt": "Gespeichert am",
+    "restore": "Wiederherstellen",
+    "continueWithout": "Ohne Wiederherstellung fortfahren",
+    "discard": "Gespeicherte Daten löschen"
+  },
   "faq": {
     "title": "Häufig gestellte Fragen",
     "questions": [
