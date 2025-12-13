@@ -206,6 +206,7 @@
     "fontFamily": "Font Family",
     "fontVariant": "Font Variant",
     "fontSize": "Font Size",
+    "letterSpacing": "Letter Spacing",
     "fontWeight": "Font Weight",
     "textAlign": "Text Alignment",
     "color": "Text Color",

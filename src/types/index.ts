@@ -58,6 +58,8 @@ export interface CollageText {
   strokeEnabled: boolean
   strokeColor: string
   strokeWidth: number
+  // Buchstabenabstand
+  letterSpacing: number
 }
 
 export type LayoutType =

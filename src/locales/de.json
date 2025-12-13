@@ -206,6 +206,7 @@
     "fontFamily": "Schriftart",
     "fontVariant": "Schriftvariante",
     "fontSize": "Schriftgröße",
+    "letterSpacing": "Buchstabenabstand",
     "fontWeight": "Schriftstärke",
     "textAlign": "Ausrichtung",
     "color": "Textfarbe",
