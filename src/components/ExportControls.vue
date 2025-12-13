@@ -402,11 +402,28 @@ async function exportCollage() {
       ctx.fillStyle = text.color
       ctx.textAlign = text.textAlign
       ctx.textBaseline = 'middle'
+      // Buchstabenabstand (Letter Spacing)
+      ctx.letterSpacing = `${text.letterSpacing ?? 0}px`
 
       // Multi-line Text-Rendering
       const lines = text.text.split('\n')
       const lineHeight = text.fontSize * 1.2
 
+      // Stroke (Textumrandung) zeichnen, wenn aktiviert
+      // Stroke wird ZUERST gezeichnet, damit der Fill darüber liegt
+      if (text.strokeEnabled) {
+        ctx.strokeStyle = text.strokeColor
+        ctx.lineWidth = text.strokeWidth * 2 // Verdoppeln, da die Hälfte vom Fill überdeckt wird
+        ctx.lineJoin = 'round'
+        ctx.miterLimit = 2
+
+        lines.forEach((line, index) => {
+          const y = (index - (lines.length - 1) / 2) * lineHeight
+          ctx.strokeText(line, 0, y)
+        })
+      }
+
+      // Fill-Text zeichnen
       lines.forEach((line, index) => {
         const y = (index - (lines.length - 1) / 2) * lineHeight
         ctx.fillText(line, 0, y)
@@ -739,10 +756,27 @@ async function generatePreview() {
       ctx.fillStyle = text.color
       ctx.textAlign = text.textAlign
       ctx.textBaseline = 'middle'
+      // Buchstabenabstand (Letter Spacing)
+      ctx.letterSpacing = `${text.letterSpacing ?? 0}px`
 
       const lines = text.text.split('\n')
       const lineHeight = text.fontSize * 1.2
 
+      // Stroke (Textumrandung) zeichnen, wenn aktiviert
+      // Stroke wird ZUERST gezeichnet, damit der Fill darüber liegt
+      if (text.strokeEnabled) {
+        ctx.strokeStyle = text.strokeColor
+        ctx.lineWidth = text.strokeWidth * 2 // Verdoppeln, da die Hälfte vom Fill überdeckt wird
+        ctx.lineJoin = 'round'
+        ctx.miterLimit = 2
+
+        lines.forEach((line, index) => {
+          const y = (index - (lines.length - 1) / 2) * lineHeight
+          ctx.strokeText(line, 0, y)
+        })
+      }
+
+      // Fill-Text zeichnen
       lines.forEach((line, index) => {
         const y = (index - (lines.length - 1) / 2) * lineHeight
         ctx.fillText(line, 0, y)
