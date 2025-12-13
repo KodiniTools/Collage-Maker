@@ -388,22 +388,20 @@ export const useCollageStore = defineStore('collage', () => {
         fitImage(img, col * cellWidth, row * cellHeight, cellWidth, cellHeight)
       })
     }
-    // Magazin-Layout: Großes Bild links, 2 kleinere rechts gestapelt
+    // Magazin-Layout: Großes Bild links, kleinere rechts gestapelt
     else if (layout === 'magazine') {
+      const rightImages = canvasImages.length - 1
+      const rightRows = Math.max(rightImages, 1)
+
       canvasImages.forEach((img, index) => {
         if (index === 0) {
-          // Großes Hauptbild links (2/3 Breite)
-          fitImage(img, 0, 0, w * 0.66, h)
-        } else if (index === 1) {
-          // Oberes kleines Bild rechts
-          fitImage(img, w * 0.66, 0, w * 0.34, h * 0.5)
-        } else if (index === 2) {
-          // Unteres kleines Bild rechts
-          fitImage(img, w * 0.66, h * 0.5, w * 0.34, h * 0.5)
+          // Großes Hauptbild links (2/3 Breite, volle Höhe)
+          fitImage(img, 0, 0, w * 0.65, h)
         } else {
-          // Weitere Bilder übereinander rechts
-          const extraY = h * 0.66 + ((index - 3) * (h * 0.17))
-          fitImage(img, w * 0.66, extraY, w * 0.34, h * 0.17)
+          // Bilder rechts gleichmäßig vertikal verteilen
+          const rightIndex = index - 1
+          const rowHeight = h / rightRows
+          fitImage(img, w * 0.65, rightIndex * rowHeight, w * 0.35, rowHeight)
         }
       })
     }
@@ -438,22 +436,29 @@ export const useCollageStore = defineStore('collage', () => {
         }
       })
     }
-    // Sidebar-Layout: Schmale Sidebar links mit kleinen Bildern, große Bilder rechts
+    // Sidebar-Layout: Schmale Sidebar links, großer Bereich rechts
     else if (layout === 'sidebar') {
       const sidebarWidth = w * 0.25
       const mainWidth = w * 0.75
+      const sidebarCount = Math.min(canvasImages.length, 3)
+      const mainCount = Math.max(canvasImages.length - 3, 0)
 
       canvasImages.forEach((img, index) => {
-        if (index <= 2) {
-          // Erste 3 Bilder in der Sidebar
-          fitImage(img, 0, (h / 3) * index, sidebarWidth, h / 3)
+        if (index < sidebarCount) {
+          // Sidebar-Bilder links (gleichmäßig verteilt)
+          const sidebarRows = sidebarCount
+          fitImage(img, 0, (h / sidebarRows) * index, sidebarWidth, h / sidebarRows)
+        } else if (mainCount === 1) {
+          // Ein großes Bild rechts
+          fitImage(img, sidebarWidth, 0, mainWidth, h)
         } else {
-          // Weitere Bilder rechts
-          const rightIndex = index - 3
-          const rows = Math.ceil((canvasImages.length - 3) / 2)
-          const col = rightIndex % 2
-          const row = Math.floor(rightIndex / 2)
-          fitImage(img, sidebarWidth + (mainWidth / 2) * col, (h / rows) * row, mainWidth / 2, h / rows)
+          // Mehrere Bilder rechts in einem Grid
+          const rightIndex = index - sidebarCount
+          const cols = mainCount <= 2 ? 1 : 2
+          const rows = Math.ceil(mainCount / cols)
+          const col = rightIndex % cols
+          const row = Math.floor(rightIndex / cols)
+          fitImage(img, sidebarWidth + (mainWidth / cols) * col, (h / rows) * row, mainWidth / cols, h / rows)
         }
       })
     }
