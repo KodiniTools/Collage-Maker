@@ -301,6 +301,93 @@ function detectAlignments(
   return { snapX, snapY, guides }
 }
 
+// Smart Guides für Resize: Erkennt Ausrichtungen für spezifische Kanten
+function detectResizeAlignments(
+  imgX: number,
+  imgY: number,
+  imgWidth: number,
+  imgHeight: number,
+  excludeId: string,
+  handle: string
+): { snapLeft: number | null; snapRight: number | null; snapTop: number | null; snapBottom: number | null; guides: GuideLine[] } {
+  const guides: GuideLine[] = []
+  let snapLeft: number | null = null
+  let snapRight: number | null = null
+  let snapTop: number | null = null
+  let snapBottom: number | null = null
+
+  const canvasWidth = collage.settings.width
+  const canvasHeight = collage.settings.height
+
+  // Kanten des Bildes
+  const imgLeft = imgX
+  const imgRight = imgX + imgWidth
+  const imgTop = imgY
+  const imgBottom = imgY + imgHeight
+
+  // Sammel alle relevanten Ausrichtungspunkte
+  const verticalPoints: number[] = [0, canvasWidth, canvasWidth / 2]
+  const horizontalPoints: number[] = [0, canvasHeight, canvasHeight / 2]
+
+  // Füge Kanten anderer Bilder hinzu
+  const otherImages = collage.images.filter(
+    img => img.isGalleryTemplate !== true && img.id !== excludeId
+  )
+
+  otherImages.forEach(img => {
+    verticalPoints.push(img.x, img.x + img.width, img.x + img.width / 2)
+    horizontalPoints.push(img.y, img.y + img.height, img.y + img.height / 2)
+  })
+
+  // Prüfe nur die relevanten Kanten basierend auf dem Handle
+  const checkLeft = handle.includes('w')
+  const checkRight = handle.includes('e')
+  const checkTop = handle.includes('n')
+  const checkBottom = handle.includes('s')
+
+  if (checkLeft) {
+    for (const point of verticalPoints) {
+      if (Math.abs(imgLeft - point) < SNAP_THRESHOLD) {
+        snapLeft = point
+        guides.push({ type: 'vertical', position: point, start: 0, end: canvasHeight })
+        break
+      }
+    }
+  }
+
+  if (checkRight) {
+    for (const point of verticalPoints) {
+      if (Math.abs(imgRight - point) < SNAP_THRESHOLD) {
+        snapRight = point
+        guides.push({ type: 'vertical', position: point, start: 0, end: canvasHeight })
+        break
+      }
+    }
+  }
+
+  if (checkTop) {
+    for (const point of horizontalPoints) {
+      if (Math.abs(imgTop - point) < SNAP_THRESHOLD) {
+        snapTop = point
+        guides.push({ type: 'horizontal', position: point, start: 0, end: canvasWidth })
+        break
+      }
+    }
+  }
+
+  if (checkBottom) {
+    for (const point of horizontalPoints) {
+      if (Math.abs(imgBottom - point) < SNAP_THRESHOLD) {
+        snapBottom = point
+        guides.push({ type: 'horizontal', position: point, start: 0, end: canvasWidth })
+        break
+      }
+    }
+  }
+
+  return { snapLeft, snapRight, snapTop, snapBottom, guides }
+}
+
 // Zeichnet die aktiven Guide-Linien
 function drawGuides() {
   if (!canvas.value || !ctx || activeGuides.value.length === 0) return
@@ -1100,12 +1187,50 @@ function handleMouseMove(e: MouseEvent) {
 
     // Mindestgröße von 20px
     if (newWidth >= 20 && newHeight >= 20) {
-      collage.updateImage(collage.selectedImageId, {
-        x: newX,
-        y: newY,
-        width: newWidth,
-        height: newHeight
-      })
+      // Smart Guides beim Resize: Erkennung und Snap
+      const resizeSnap = detectResizeAlignments(
+        newX,
+        newY,
+        newWidth,
+        newHeight,
+        collage.selectedImageId,
+        resizeHandle.value
+      )
+
+      // Wende Snap-Positionen an
+      if (resizeSnap.snapLeft !== null) {
+        // Linke Kante snappt - Position und Breite anpassen
+        const oldRight = newX + newWidth
+        newX = resizeSnap.snapLeft
+        newWidth = oldRight - newX
+      }
+      if (resizeSnap.snapRight !== null) {
+        // Rechte Kante snappt - nur Breite anpassen
+        newWidth = resizeSnap.snapRight - newX
+      }
+      if (resizeSnap.snapTop !== null) {
+        // Obere Kante snappt - Position und Höhe anpassen
+        const oldBottom = newY + newHeight
+        newY = resizeSnap.snapTop
+        newHeight = oldBottom - newY
+      }
+      if (resizeSnap.snapBottom !== null) {
+        // Untere Kante snappt - nur Höhe anpassen
+        newHeight = resizeSnap.snapBottom - newY
+      }
+
+      // Aktualisiere aktive Guide-Linien für die Anzeige
+      activeGuides.value = resizeSnap.guides
+
+      // Nochmal Mindestgröße prüfen nach Snap
+      if (newWidth >= 20 && newHeight >= 20) {
+        collage.updateImage(collage.selectedImageId, {
+          x: newX,
+          y: newY,
+          width: newWidth,
+          height: newHeight
+        })
+      }
     }
   } else if (isDragging.value && collage.selectedImageId) {
     const dx = x - dragStartPos.value.x
