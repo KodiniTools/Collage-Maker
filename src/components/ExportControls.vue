@@ -16,10 +16,11 @@ const showPreviewModal = ref(false)
 const previewDataUrl = ref<string | null>(null)
 
 async function drawBackgroundImageExport(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): Promise<void> {
-  if (!collage.settings.backgroundImage) return
+  const bgSettings = collage.settings.backgroundImage
+  if (!bgSettings.url) return
 
-  const bgUrl = collage.settings.backgroundImage
-  const fit = collage.settings.backgroundImageFit
+  const bgUrl = bgSettings.url
+  const fit = bgSettings.fit
 
   const img = new Image()
   img.src = bgUrl
@@ -31,6 +32,27 @@ async function drawBackgroundImageExport(ctx: CanvasRenderingContext2D, canvasWi
   const imgHeight = img.naturalHeight
 
   ctx.save()
+
+  // Filter anwenden
+  const filters = []
+  if (bgSettings.brightness !== 100) {
+    filters.push(`brightness(${bgSettings.brightness}%)`)
+  }
+  if (bgSettings.contrast !== 100) {
+    filters.push(`contrast(${bgSettings.contrast}%)`)
+  }
+  if (bgSettings.saturation !== 100) {
+    filters.push(`saturate(${bgSettings.saturation}%)`)
+  }
+  if (bgSettings.blur > 0) {
+    filters.push(`blur(${bgSettings.blur}px)`)
+  }
+  if (filters.length > 0) {
+    ctx.filter = filters.join(' ')
+  }
+
+  // Transparenz anwenden
+  ctx.globalAlpha = bgSettings.opacity
 
   if (fit === 'cover') {
     const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight)
@@ -56,6 +78,8 @@ async function drawBackgroundImageExport(ctx: CanvasRenderingContext2D, canvasWi
     }
   }
 
+  ctx.filter = 'none'
+  ctx.globalAlpha = 1
   ctx.restore()
 }
 

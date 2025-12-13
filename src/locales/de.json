@@ -37,14 +37,18 @@
     "backgroundImage": "Hintergrundbild",
     "removeBackgroundImage": "Hintergrundbild entfernen",
     "backgroundFit": "Anpassungsmodus",
-    "backgroundFitHint": "Das Hintergrundbild passt sich automatisch an die Canvas-Größe an",
+    "backgroundFitHint": "Das Hintergrundbild passt sich automatisch an die Canvas-Größe an. Klicken Sie auf das Bild, um es zu bearbeiten.",
     "fitCover": "Ausfüllen (Cover)",
     "fitContain": "Einpassen (Contain)",
     "fitStretch": "Strecken",
     "fitTile": "Kacheln",
     "zoom": "Zoom",
     "resetView": "Ansicht zurücksetzen",
-    "zoomHint": "Nutzen Sie die Scrollbalken zur Navigation bei Vergrößerung. Zoom betrifft nur die Anzeige, nicht den Export."
+    "zoomHint": "Nutzen Sie die Scrollbalken zur Navigation bei Vergrößerung. Zoom betrifft nur die Anzeige, nicht den Export.",
+    "selected": "Ausgewählt",
+    "editBackground": "Hintergrundbild bearbeiten",
+    "colorReplacesImage": "Bei Farbauswahl wird das Hintergrundbild ersetzt",
+    "blur": "Unschärfe"
   },
   "images": {
     "title": "Bilder",
