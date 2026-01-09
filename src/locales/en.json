@@ -4,29 +4,83 @@
     "subtitle": "Create your own photo collage in the browser",
     "backToHome": "Back to Home"
   },
+  "nav": {
+    "home": "Home",
+    "editor": "Editor",
+    "faq": "FAQ"
+  },
   "landing": {
     "hero": {
       "title": "Create Stunning Photo Collages",
       "subtitle": "Free, directly in your browser, without uploading to servers. Your images stay private on your device."
     },
     "cta": "Create Collage Now",
-    "features": {
-      "title": "Why Choose Our Collage Maker?",
+    "heroFeatures": {
+      "layouts": {
+        "title": "14 Professional Layouts",
+        "description": "From classic grids to creative mosaics. Choose from 14 different layouts like Grid, Magazine, Spotlight, Masonry and more."
+      },
+      "editing": {
+        "title": "Comprehensive Image Editing",
+        "description": "Brightness, contrast, saturation, shadows, borders and more. Edit single images or multiple at once with batch processing."
+      },
       "privacy": {
         "title": "100% Privacy",
-        "description": "All images are processed exclusively locally in your browser. Nothing is uploaded to any server."
+        "description": "All images are processed exclusively locally in your browser. Nothing is uploaded to servers. Fully GDPR compliant."
+      }
+    },
+    "allFeatures": {
+      "title": "All Features at a Glance",
+      "subtitle": "A complete tool for professional photo collages - directly in your browser",
+      "items": {
+        "layouts": {
+          "title": "14 Layouts",
+          "description": "Grid, Magazine, Spotlight, Masonry, Diagonal, Panorama and more"
+        },
+        "editing": {
+          "title": "Image Editing",
+          "description": "Brightness, contrast, saturation, sharpness, warmth and opacity"
+        },
+        "text": {
+          "title": "Text Elements",
+          "description": "20+ fonts, shadows, stroke and letter spacing"
+        },
+        "background": {
+          "title": "Backgrounds",
+          "description": "Colors, images, filters and various fit modes"
+        },
+        "filters": {
+          "title": "Filters & Effects",
+          "description": "Borders, shadows, rounded corners and image filters"
+        },
+        "export": {
+          "title": "Flexible Exports",
+          "description": "PNG, JPEG or WebP with adjustable quality"
+        },
+        "templates": {
+          "title": "Templates",
+          "description": "Save and load your own templates for recurring projects"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Local processing, no server uploads, GDPR compliant"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Create the perfect photo collage in just three steps",
+      "step1": {
+        "title": "Upload Images",
+        "description": "Drag and drop your images or select them from your folder"
       },
-      "batch": {
-        "title": "Batch Image Editing",
-        "description": "Edit multiple images at once. Adjust brightness, contrast, saturation and more for all images simultaneously."
+      "step2": {
+        "title": "Choose Layout & Customize",
+        "description": "Select a layout, edit images, add text"
       },
-      "background": {
-        "title": "Background Editing",
-        "description": "Set any image as background. With transparency, filters and automatic adjustment to canvas size."
-      },
-      "formats": {
-        "title": "Flexible Image Formats",
-        "description": "Supports PNG, JPG and WebP. Export in various formats with adjustable quality settings."
+      "step3": {
+        "title": "Export & Share",
+        "description": "Download your finished collage as PNG, JPEG or WebP"
       }
     },
     "bottomCta": {
@@ -34,6 +88,101 @@
       "subtitle": "Create your first collage now - free and without registration."
     },
     "footer": "Image Collage Maker - Free and Ad-Free"
+  },
+  "editor": {
+    "donate": "Donate with PayPal"
+  },
+  "faqPage": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most important questions about the Image Collage Maker",
+    "categories": {
+      "general": "General",
+      "privacy": "Privacy & Security",
+      "features": "Features",
+      "export": "Export & Saving",
+      "technical": "Technical"
+    },
+    "cta": {
+      "title": "Still Have Questions?",
+      "subtitle": "Just try the Collage Maker - it's free and without registration."
+    },
+    "questions": [
+      {
+        "question": "Is the application really free?",
+        "answer": "Yes, the Image Collage Maker is 100% free. There are no hidden costs, no premium features and no ads. All features are available to you without restrictions.",
+        "category": "general"
+      },
+      {
+        "question": "Do I need to register or sign up?",
+        "answer": "No, you can use the Collage Maker immediately without registration. No personal data or email addresses are required.",
+        "category": "general"
+      },
+      {
+        "question": "Are my images uploaded to a server?",
+        "answer": "No, all images are processed exclusively in your browser. Nothing is uploaded to a server. Your data remains completely private and local on your device. The Collage Maker is therefore fully GDPR compliant.",
+        "category": "privacy"
+      },
+      {
+        "question": "Is my privacy protected?",
+        "answer": "Absolutely. Since all processing takes place locally in your browser, we have no access to your images. No cookies are used for tracking and no data is shared with third parties.",
+        "category": "privacy"
+      },
+      {
+        "question": "Which image formats are supported?",
+        "answer": "The application supports PNG, JPG/JPEG and WebP formats. The maximum file size per image is 50MB. Large images are automatically compressed to ensure smooth editing.",
+        "category": "features"
+      },
+      {
+        "question": "What layouts are available?",
+        "answer": "There are 14 different layouts available: Freestyle, Grid 2×2, Grid 3×3, Grid 2×3, Magazine, Spotlight, Hero, Sidebar, Mosaic, Diagonal, Panorama, Focus, Triptych and Masonry. Each layout is optimized for different use cases.",
+        "category": "features"
+      },
+      {
+        "question": "Can I add text to my collage?",
+        "answer": "Yes! You can add as many text elements as you want. Over 20 different fonts are available, including system fonts and designer fonts. You can adjust font size, color, alignment, letter spacing, shadow and even a text stroke.",
+        "category": "features"
+      },
+      {
+        "question": "What image editing options are available?",
+        "answer": "You can adjust brightness, contrast, saturation, highlights, shadows, warmth and sharpness. There are also settings for opacity, borders (with various styles and shadows), rounded corners and image shadows. The batch function allows editing multiple images simultaneously.",
+        "category": "features"
+      },
+      {
+        "question": "In which formats can I export my collage?",
+        "answer": "You can download your finished collage as PNG (lossless, with transparency), JPEG (compressed) or WebP (modern, efficient). For JPEG and WebP, you can also adjust the quality from 10% to 100%.",
+        "category": "export"
+      },
+      {
+        "question": "Can I save my collage and continue editing it later?",
+        "answer": "Yes! There are two options: 1) Auto-save continuously backs up your work in the browser. When you open the page later, you can continue where you left off. 2) You can save your collage as a template and load it at any time.",
+        "category": "export"
+      },
+      {
+        "question": "What is the maximum canvas size?",
+        "answer": "The canvas can be up to 4000×4000 pixels. There are also predefined sizes for Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312) and YouTube Thumbnail (1280×720).",
+        "category": "export"
+      },
+      {
+        "question": "Does the application work offline?",
+        "answer": "After the initial page load, the application works offline since all processing happens in the browser. You only need an internet connection for the initial page visit.",
+        "category": "technical"
+      },
+      {
+        "question": "Which browsers are supported?",
+        "answer": "The Collage Maker works in all modern browsers: Google Chrome, Mozilla Firefox, Microsoft Edge, Apple Safari and Opera. For the best experience, we recommend the latest version of your browser.",
+        "category": "technical"
+      },
+      {
+        "question": "Are there keyboard shortcuts?",
+        "answer": "Yes! Press Shift+? to display all available keyboard shortcuts. These include Ctrl+Z (Undo), Ctrl+Y (Redo), Ctrl+A (Select all), Ctrl+D (Duplicate), Ctrl+T (Add text) and many more.",
+        "category": "technical"
+      },
+      {
+        "question": "Is the application open source?",
+        "answer": "Yes, the Image Collage Maker is open source under the MIT license. You can view the source code, contribute to development or host the tool yourself.",
+        "category": "technical"
+      }
+    ]
   },
   "upload": {
     "title": "Upload Images",
