@@ -4,29 +4,83 @@
     "subtitle": "Erstelle deine eigene Foto-Collage im Browser",
     "backToHome": "Zurück zur Startseite"
   },
+  "nav": {
+    "home": "Startseite",
+    "editor": "Editor",
+    "faq": "FAQ"
+  },
   "landing": {
     "hero": {
       "title": "Erstelle beeindruckende Foto-Collagen",
       "subtitle": "Kostenlos, direkt im Browser, ohne Upload auf Server. Deine Bilder bleiben privat auf deinem Gerät."
     },
     "cta": "Jetzt Collage erstellen",
-    "features": {
-      "title": "Warum unser Collage Maker?",
+    "heroFeatures": {
+      "layouts": {
+        "title": "14 professionelle Layouts",
+        "description": "Von klassischen Rastern bis zu kreativen Mosaiken. Wähle aus 14 verschiedenen Layouts wie Grid, Magazine, Spotlight, Masonry und mehr."
+      },
+      "editing": {
+        "title": "Umfangreiche Bildbearbeitung",
+        "description": "Helligkeit, Kontrast, Sättigung, Schatten, Rahmen und mehr. Bearbeite einzelne Bilder oder mehrere gleichzeitig mit der Batch-Funktion."
+      },
       "privacy": {
         "title": "100% Datenschutz",
-        "description": "Alle Bilder werden ausschließlich lokal in deinem Browser verarbeitet. Nichts wird auf Server hochgeladen."
+        "description": "Alle Bilder werden ausschließlich lokal in deinem Browser verarbeitet. Nichts wird auf Server hochgeladen. Vollständig DSGVO-konform."
+      }
+    },
+    "allFeatures": {
+      "title": "Alle Funktionen im Überblick",
+      "subtitle": "Ein vollständiges Werkzeug für professionelle Foto-Collagen - direkt im Browser",
+      "items": {
+        "layouts": {
+          "title": "14 Layouts",
+          "description": "Grid, Magazine, Spotlight, Masonry, Diagonal, Panorama und mehr"
+        },
+        "editing": {
+          "title": "Bildbearbeitung",
+          "description": "Helligkeit, Kontrast, Sättigung, Schärfe, Wärme und Transparenz"
+        },
+        "text": {
+          "title": "Text-Elemente",
+          "description": "20+ Schriftarten, Schatten, Kontur und Buchstabenabstand"
+        },
+        "background": {
+          "title": "Hintergründe",
+          "description": "Farben, Bilder, Filter und verschiedene Anpassungsmodi"
+        },
+        "filters": {
+          "title": "Filter & Effekte",
+          "description": "Rahmen, Schatten, abgerundete Ecken und Bildfilter"
+        },
+        "export": {
+          "title": "Flexible Exports",
+          "description": "PNG, JPEG oder WebP mit einstellbarer Qualität"
+        },
+        "templates": {
+          "title": "Vorlagen",
+          "description": "Speichere und lade eigene Vorlagen für wiederkehrende Projekte"
+        },
+        "privacy": {
+          "title": "Privatsphäre",
+          "description": "Lokale Verarbeitung, keine Server-Uploads, DSGVO-konform"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "So einfach funktioniert's",
+      "subtitle": "In nur drei Schritten zur perfekten Foto-Collage",
+      "step1": {
+        "title": "Bilder hochladen",
+        "description": "Ziehe deine Bilder per Drag & Drop oder wähle sie aus deinem Ordner"
       },
-      "batch": {
-        "title": "Batch-Bildbearbeitung",
-        "description": "Bearbeite mehrere Bilder gleichzeitig. Helligkeit, Kontrast, Sättigung und mehr für alle auf einmal anpassen."
+      "step2": {
+        "title": "Layout wählen & anpassen",
+        "description": "Wähle ein Layout, bearbeite Bilder, füge Texte hinzu"
       },
-      "background": {
-        "title": "Hintergrundbearbeitung",
-        "description": "Setze jedes Bild als Hintergrund. Mit Transparenz, Filtern und automatischer Anpassung an die Canvas-Größe."
-      },
-      "formats": {
-        "title": "Flexible Bildformate",
-        "description": "Unterstützt PNG, JPG und WebP. Exportiere in verschiedenen Formaten mit einstellbarer Qualität."
+      "step3": {
+        "title": "Exportieren & teilen",
+        "description": "Lade deine fertige Collage als PNG, JPEG oder WebP herunter"
       }
     },
     "bottomCta": {
@@ -34,6 +88,101 @@
       "subtitle": "Erstelle jetzt deine erste Collage - kostenlos und ohne Registrierung."
     },
     "footer": "Bilder-Collage-Macher - Kostenlos und ohne Werbung"
+  },
+  "editor": {
+    "donate": "Spenden mit PayPal"
+  },
+  "faqPage": {
+    "title": "Häufig gestellte Fragen",
+    "subtitle": "Hier findest du Antworten auf die wichtigsten Fragen zum Bilder-Collage-Macher",
+    "categories": {
+      "general": "Allgemein",
+      "privacy": "Datenschutz & Sicherheit",
+      "features": "Funktionen",
+      "export": "Export & Speichern",
+      "technical": "Technisches"
+    },
+    "cta": {
+      "title": "Noch Fragen?",
+      "subtitle": "Probiere den Collage-Maker einfach aus - es ist kostenlos und ohne Registrierung."
+    },
+    "questions": [
+      {
+        "question": "Ist die Anwendung wirklich kostenlos?",
+        "answer": "Ja, der Bilder-Collage-Macher ist zu 100% kostenlos. Es gibt keine versteckten Kosten, keine Premium-Funktionen und keine Werbung. Alle Funktionen stehen dir ohne Einschränkungen zur Verfügung.",
+        "category": "general"
+      },
+      {
+        "question": "Muss ich mich registrieren oder anmelden?",
+        "answer": "Nein, du kannst den Collage-Maker sofort und ohne Registrierung nutzen. Es werden keine persönlichen Daten oder E-Mail-Adressen benötigt.",
+        "category": "general"
+      },
+      {
+        "question": "Werden meine Bilder auf einen Server hochgeladen?",
+        "answer": "Nein, alle Bilder werden ausschließlich in deinem Browser verarbeitet. Nichts wird auf einen Server hochgeladen. Deine Daten bleiben vollständig privat und lokal auf deinem Gerät. Der Collage-Maker ist damit vollständig DSGVO-konform.",
+        "category": "privacy"
+      },
+      {
+        "question": "Ist meine Privatsphäre geschützt?",
+        "answer": "Absolut. Da alle Verarbeitung lokal in deinem Browser stattfindet, haben wir keinen Zugriff auf deine Bilder. Es werden keine Cookies für Tracking verwendet und keine Daten an Dritte weitergegeben.",
+        "category": "privacy"
+      },
+      {
+        "question": "Welche Bildformate werden unterstützt?",
+        "answer": "Die Anwendung unterstützt PNG, JPG/JPEG und WebP Formate. Die maximale Dateigröße pro Bild beträgt 50MB. Große Bilder werden automatisch komprimiert, um eine flüssige Bearbeitung zu gewährleisten.",
+        "category": "features"
+      },
+      {
+        "question": "Welche Layouts gibt es?",
+        "answer": "Es stehen 14 verschiedene Layouts zur Verfügung: Freestyle, Grid 2×2, Grid 3×3, Grid 2×3, Magazine, Spotlight, Hero, Sidebar, Mosaic, Diagonal, Panorama, Focus, Triptych und Masonry. Jedes Layout ist für verschiedene Anwendungsfälle optimiert.",
+        "category": "features"
+      },
+      {
+        "question": "Kann ich Texte zu meiner Collage hinzufügen?",
+        "answer": "Ja! Du kannst beliebig viele Textelemente hinzufügen. Es stehen über 20 verschiedene Schriftarten zur Verfügung, darunter System-Schriftarten und Designer-Fonts. Du kannst Schriftgröße, Farbe, Ausrichtung, Buchstabenabstand, Schatten und sogar eine Textkontur einstellen.",
+        "category": "features"
+      },
+      {
+        "question": "Welche Bildbearbeitungsmöglichkeiten gibt es?",
+        "answer": "Du kannst Helligkeit, Kontrast, Sättigung, Lichter, Schatten, Wärme und Schärfe anpassen. Zusätzlich gibt es Einstellungen für Transparenz, Rahmen (mit verschiedenen Stilen und Schatten), abgerundete Ecken und Bildschatten. Die Batch-Funktion ermöglicht die gleichzeitige Bearbeitung mehrerer Bilder.",
+        "category": "features"
+      },
+      {
+        "question": "In welchen Formaten kann ich meine Collage exportieren?",
+        "answer": "Du kannst deine fertige Collage als PNG (verlustfrei, mit Transparenz), JPEG (komprimiert) oder WebP (modern, effizient) herunterladen. Bei JPEG und WebP kannst du zusätzlich die Qualität von 10% bis 100% einstellen.",
+        "category": "export"
+      },
+      {
+        "question": "Kann ich meine Collage speichern und später weiterbearbeiten?",
+        "answer": "Ja! Es gibt zwei Möglichkeiten: 1) Die automatische Speicherung sichert deine Arbeit laufend im Browser. Wenn du die Seite später wieder öffnest, kannst du dort weitermachen. 2) Du kannst deine Collage als Vorlage speichern und jederzeit wieder laden.",
+        "category": "export"
+      },
+      {
+        "question": "Was ist die maximale Canvas-Größe?",
+        "answer": "Die Leinwand kann bis zu 4000×4000 Pixel groß sein. Es gibt auch vordefinierte Größen für Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312) und YouTube Thumbnail (1280×720).",
+        "category": "export"
+      },
+      {
+        "question": "Funktioniert die Anwendung offline?",
+        "answer": "Nach dem ersten Laden der Seite funktioniert die Anwendung offline, da alle Verarbeitungen im Browser stattfinden. Du benötigst nur eine Internetverbindung für den initialen Seitenaufruf.",
+        "category": "technical"
+      },
+      {
+        "question": "Welche Browser werden unterstützt?",
+        "answer": "Der Collage-Maker funktioniert in allen modernen Browsern: Google Chrome, Mozilla Firefox, Microsoft Edge, Apple Safari und Opera. Für die beste Erfahrung empfehlen wir die neueste Version deines Browsers.",
+        "category": "technical"
+      },
+      {
+        "question": "Gibt es Tastaturkürzel?",
+        "answer": "Ja! Drücke Shift+? um alle verfügbaren Tastaturkürzel anzuzeigen. Dazu gehören Strg+Z (Rückgängig), Strg+Y (Wiederherstellen), Strg+A (Alle auswählen), Strg+D (Duplizieren), Strg+T (Text hinzufügen) und viele mehr.",
+        "category": "technical"
+      },
+      {
+        "question": "Ist die Anwendung Open Source?",
+        "answer": "Ja, der Bilder-Collage-Macher ist Open Source unter der MIT-Lizenz. Du kannst den Quellcode einsehen, zur Entwicklung beitragen oder das Tool selbst hosten.",
+        "category": "technical"
+      }
+    ]
   },
   "upload": {
     "title": "Bilder hochladen",
