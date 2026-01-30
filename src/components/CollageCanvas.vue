@@ -14,6 +14,13 @@ const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
 const shiftPressed = ref(false)
 const initialAspectRatio = ref(1)
 
+// Pan functionality for zoomed canvas
+const isPanning = ref(false)
+const panOffset = ref({ x: 0, y: 0 })
+const panStart = ref({ x: 0, y: 0 })
+const panStartOffset = ref({ x: 0, y: 0 })
+const spacePressed = ref(false)
+
 // Auto-fit zoom calculation
 const containerSize = ref({ width: 0, height: 0 })
 
@@ -50,6 +57,50 @@ function updateContainerSize() {
 
 let resizeObserver: ResizeObserver | null = null
 
+// Reset pan when zoom changes to 1 or less
+watch(() => collage.canvasZoom, (newZoom) => {
+  if (newZoom <= 1) {
+    panOffset.value = { x: 0, y: 0 }
+  }
+})
+
+// Keyboard event handlers for panning
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.code === 'Space' && !spacePressed.value) {
+    spacePressed.value = true
+    e.preventDefault()
+  }
+
+  // Arrow key panning when zoomed in
+  if (collage.canvasZoom > 1) {
+    const panStep = e.shiftKey ? 50 : 10
+    switch (e.code) {
+      case 'ArrowLeft':
+        panOffset.value.x += panStep
+        e.preventDefault()
+        break
+      case 'ArrowRight':
+        panOffset.value.x -= panStep
+        e.preventDefault()
+        break
+      case 'ArrowUp':
+        panOffset.value.y += panStep
+        e.preventDefault()
+        break
+      case 'ArrowDown':
+        panOffset.value.y -= panStep
+        e.preventDefault()
+        break
+    }
+  }
+}
+
+function handleKeyUp(e: KeyboardEvent) {
+  if (e.code === 'Space') {
+    spacePressed.value = false
+  }
+}
+
 onMounted(() => {
   updateContainerSize()
 
@@ -60,12 +111,18 @@ onMounted(() => {
     })
     resizeObserver.observe(container.value)
   }
+
+  // Add keyboard listeners for panning
+  window.addEventListener('keydown', handleKeyDown)
+  window.addEventListener('keyup', handleKeyUp)
 })
 
 onUnmounted(() => {
   if (resizeObserver) {
     resizeObserver.disconnect()
   }
+  window.removeEventListener('keydown', handleKeyDown)
+  window.removeEventListener('keyup', handleKeyUp)
 })
 
 // Smart Guides
@@ -1020,6 +1077,17 @@ function isDeleteButtonClicked(x: number, y: number, img: any): boolean {
 function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
+  // Pan with middle mouse button or Space + left click
+  if (e.button === 1 || (e.button === 0 && spacePressed.value)) {
+    if (collage.canvasZoom > 1) {
+      isPanning.value = true
+      panStart.value = { x: e.clientX, y: e.clientY }
+      panStartOffset.value = { ...panOffset.value }
+      e.preventDefault()
+      return
+    }
+  }
+
   const rect = canvas.value.getBoundingClientRect()
   // Berücksichtige Auto-Fit-Zoom beim Berechnen der Koordinaten
   const zoom = autoFitScale.value
@@ -1147,6 +1215,17 @@ function handleMouseDown(e: MouseEvent) {
 
 function handleMouseMove(e: MouseEvent) {
   if (!canvas.value) return
+
+  // Handle panning
+  if (isPanning.value) {
+    const dx = e.clientX - panStart.value.x
+    const dy = e.clientY - panStart.value.y
+    panOffset.value = {
+      x: panStartOffset.value.x + dx,
+      y: panStartOffset.value.y + dy
+    }
+    return
+  }
 
   if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
 
@@ -1345,6 +1424,7 @@ function handleMouseMove(e: MouseEvent) {
 function handleMouseUp() {
   isDragging.value = false
   isResizing.value = false
+  isPanning.value = false
   resizeHandle.value = null
   // Smart Guides ausblenden wenn Drag/Resize beendet
   activeGuides.value = []
@@ -1402,8 +1482,20 @@ watch(() => collage.images, (newImages, oldImages) => {
     >
       {{ Math.round(collage.canvasZoom * 100) }}%
     </div>
-    <!-- Canvas Wrapper - centered with auto-fit scaling -->
-    <div class="flex items-center justify-center">
+    <!-- Pan hint when zoomed -->
+    <div
+      v-if="collage.canvasZoom > 1"
+      class="absolute top-2 left-2 z-10 bg-slate-dark/80 text-surface-light text-xs px-2 py-1 rounded pointer-events-none"
+    >
+      Space + Drag / Arrows to pan
+    </div>
+    <!-- Canvas Wrapper - centered with auto-fit scaling and pan offset -->
+    <div
+      class="flex items-center justify-center transition-transform"
+      :style="{
+        transform: `translate(${panOffset.x}px, ${panOffset.y}px)`
+      }"
+    >
       <canvas
         ref="canvas"
         tabindex="-1"
@@ -1413,7 +1505,8 @@ watch(() => collage.images, (newImages, oldImages) => {
         @mouseleave="handleMouseUp"
         @dragover="handleDragOver"
         @drop="handleDrop"
-        class="shadow-lg outline-none cursor-move transition-transform duration-200"
+        class="shadow-lg outline-none transition-transform duration-200"
+        :class="spacePressed && collage.canvasZoom > 1 ? 'cursor-grab' : 'cursor-move'"
         :style="{
           transform: `scale(${autoFitScale})`,
           transformOrigin: 'center center'

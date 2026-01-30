@@ -405,8 +405,8 @@ function deselectAll() {
           type="range"
           :value="displayImage.rotation"
           @input="updateRotation(Number(($event.target as HTMLInputElement).value))"
-          min="0"
-          max="360"
+          min="-180"
+          max="180"
           class="w-full"
         />
       </div>
