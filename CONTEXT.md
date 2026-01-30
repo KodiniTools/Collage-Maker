@@ -50,11 +50,11 @@ Collage-Maker/
 │
 ├── src/                              # Hauptquellcode
 │   ├── components/                   # 19 Vue-Komponenten
-│   │   ├── CanvasSettings.vue       # Leinwand-Dimensionen & Hintergrund
-│   │   ├── CollageCanvas.vue        # Haupt-Canvas-Rendering
+│   │   ├── CanvasSettings.vue       # Leinwand-Dimensionen & Hintergrund (Zoom 400%)
+│   │   ├── CollageCanvas.vue        # Haupt-Canvas-Rendering (Auto-Fit, Pan)
 │   │   ├── ExportControls.vue       # PNG/JPEG/WEBP Export
 │   │   ├── GridControls.vue         # Raster-Sichtbarkeit & Größe
-│   │   ├── ImageControls.vue        # Bildbearbeitung (Filter, Effekte)
+│   │   ├── ImageControls.vue        # Bildbearbeitung (Filter, Effekte, Ebenen)
 │   │   ├── ImageList.vue            # Galerie-Thumbnail-Liste
 │   │   ├── ImageUploader.vue        # Drag & Drop Upload
 │   │   ├── KeyboardShortcutsModal.vue # Tastenkürzel-Dialog
@@ -82,7 +82,7 @@ Collage-Maker/
 │   │   └── toast.ts                 # Toast-Benachrichtigungen
 │   │
 │   ├── pages/                        # Seiten-Komponenten (Router Views)
-│   │   ├── EditorPage.vue           # Haupt-Editor
+│   │   ├── EditorPage.vue           # Haupt-Editor (Collapsible Sidebars)
 │   │   ├── LandingPage.vue          # Startseite
 │   │   └── FaqPage.vue              # FAQ-Seite
 │   │
@@ -372,7 +372,24 @@ interface HistorySnapshot {
 - Rotation, Skalierung, Positionierung per Drag & Drop
 - Deckkraft, Rahmen, Schatten-Effekte
 - 7 Bildfilter (Helligkeit, Kontrast, Sättigung, etc.)
-- Z-Index/Ebenen-Verwaltung
+- Z-Index/Ebenen-Verwaltung mit stufenweisem Wechsel
+- Rotations-Slider zentriert bei 0° (Bereich: -180° bis +180°)
+
+### Canvas & Ansicht
+- **Collapsible Sidebars:** Links- und rechte Sidebar können eingeklappt werden für maximalen Canvas-Platz
+- **Auto-Fit Scaling:** Canvas passt sich automatisch dem Container an und bleibt immer vollständig sichtbar
+- **Zoom:** 25% bis 400% (statt vorher 200%)
+- **Pan-Funktionalität:** Bei Zoom > 100% kann der Canvas verschoben werden:
+  - Pfeiltasten (10px, mit Shift 50px)
+  - Space + Maus ziehen
+  - Mittlere Maustaste
+- **Kein Scrolling:** Canvas-Container hat overflow:hidden
+
+### Ebenen-Steuerung
+- **Nach vorne:** Bild ganz in den Vordergrund
+- **Nach hinten:** Bild ganz in den Hintergrund
+- **Eine Ebene vor:** Bild tauscht mit dem nächsten Bild darüber
+- **Eine Ebene zurück:** Bild tauscht mit dem nächsten Bild darunter
 
 ### Tastenkürzel
 - 30+ Shortcuts in 5 Kategorien
