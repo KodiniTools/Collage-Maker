@@ -30,9 +30,14 @@ const collage = useCollageStore()
 
 // Collapsible Sidebar State
 const leftSidebarCollapsed = ref(false)
+const rightSidebarCollapsed = ref(false)
 
 function toggleLeftSidebar() {
   leftSidebarCollapsed.value = !leftSidebarCollapsed.value
+}
+
+function toggleRightSidebar() {
+  rightSidebarCollapsed.value = !rightSidebarCollapsed.value
 }
 
 const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } = useKeyboardShortcuts()
@@ -244,12 +249,89 @@ onUnmounted(() => {
           <CollageCanvas />
         </section>
 
-        <!-- Right Sidebar - Controls -->
-        <aside class="w-72 xl:w-80 flex-shrink-0 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2 hidden lg:block">
-          <CanvasSettings />
-          <ImageControls />
-          <TextControls />
-          <ExportControls />
+        <!-- Right Sidebar - Collapsible Controls -->
+        <aside
+          class="transition-all duration-300 ease-in-out flex-shrink-0 hidden lg:block"
+          :class="rightSidebarCollapsed ? 'w-14' : 'w-72 xl:w-80'"
+        >
+          <!-- Sidebar Header with Toggle -->
+          <div class="flex items-center mb-4" :class="rightSidebarCollapsed ? 'justify-center' : 'justify-between'">
+            <h2
+              v-if="!rightSidebarCollapsed"
+              class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide"
+            >
+              {{ t('editor.settings') }}
+            </h2>
+            <button
+              @click="toggleRightSidebar"
+              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+              :title="rightSidebarCollapsed ? t('editor.expandSidebar') : t('editor.collapseSidebar')"
+            >
+              <svg
+                class="w-5 h-5 transition-transform duration-300"
+                :class="rightSidebarCollapsed ? '' : 'rotate-180'"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Collapsed State: Icon Bar -->
+          <div
+            v-if="rightSidebarCollapsed"
+            class="flex flex-col items-center gap-2"
+          >
+            <button
+              @click="toggleRightSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('canvas.size')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            </button>
+            <button
+              @click="toggleRightSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('imageControls.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </button>
+            <button
+              @click="toggleRightSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('text.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+              </svg>
+            </button>
+            <button
+              @click="toggleRightSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('export.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Expanded State: Full Content -->
+          <div
+            v-else
+            class="space-y-6 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-2"
+          >
+            <CanvasSettings />
+            <ImageControls />
+            <TextControls />
+            <ExportControls />
+          </div>
         </aside>
       </div>
     </main>
