@@ -295,6 +295,8 @@
     "layer": "Layer",
     "toFront": "Bring to Front",
     "toBack": "Send to Back",
+    "forward": "Forward",
+    "backward": "Backward",
     "resetChanges": "Reset Changes",
     "delete": "Delete Image",
     "deleteMultiple": "Delete {count} Images",

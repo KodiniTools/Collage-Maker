@@ -190,6 +190,50 @@ function sendToBack() {
   }
 }
 
+function bringForward() {
+  if (selectedImages.value.length > 0) {
+    // Sortiere alle Bilder nach zIndex
+    const sortedImages = [...collage.images].sort((a, b) => a.zIndex - b.zIndex)
+
+    selectedImages.value.forEach(selectedImg => {
+      const currentIndex = sortedImages.findIndex(img => img.id === selectedImg.id)
+      // Finde das nächste Bild darüber (das nicht ausgewählt ist)
+      const nextAbove = sortedImages.slice(currentIndex + 1).find(img =>
+        !selectedImages.value.some(sel => sel.id === img.id)
+      )
+
+      if (nextAbove) {
+        // Tausche zIndex mit dem nächsten Bild darüber
+        const tempZ = selectedImg.zIndex
+        collage.updateImage(selectedImg.id, { zIndex: nextAbove.zIndex })
+        collage.updateImage(nextAbove.id, { zIndex: tempZ })
+      }
+    })
+  }
+}
+
+function sendBackward() {
+  if (selectedImages.value.length > 0) {
+    // Sortiere alle Bilder nach zIndex (umgekehrt für rückwärts)
+    const sortedImages = [...collage.images].sort((a, b) => b.zIndex - a.zIndex)
+
+    selectedImages.value.forEach(selectedImg => {
+      const currentIndex = sortedImages.findIndex(img => img.id === selectedImg.id)
+      // Finde das nächste Bild darunter (das nicht ausgewählt ist)
+      const nextBelow = sortedImages.slice(currentIndex + 1).find(img =>
+        !selectedImages.value.some(sel => sel.id === img.id)
+      )
+
+      if (nextBelow) {
+        // Tausche zIndex mit dem nächsten Bild darunter
+        const tempZ = selectedImg.zIndex
+        collage.updateImage(selectedImg.id, { zIndex: nextBelow.zIndex })
+        collage.updateImage(nextBelow.id, { zIndex: tempZ })
+      }
+    })
+  }
+}
+
 // Bildbearbeitungs-Filter Funktionen
 function updateBrightness(value: number) {
   applyToSelected({ brightness: value })
@@ -802,18 +846,34 @@ function deselectAll() {
       <!-- Z-Index Controls -->
       <div>
         <label class="block text-sm font-medium mb-2">{{ t('imageControls.layer') }}</label>
-        <div class="flex gap-2">
+        <div class="grid grid-cols-2 gap-2">
           <button
             @click="bringToFront"
-            class="flex-1 px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
+            class="px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
+            :title="t('imageControls.toFront')"
           >
             {{ t('imageControls.toFront') }}
           </button>
           <button
             @click="sendToBack"
-            class="flex-1 px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
+            class="px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
+            :title="t('imageControls.toBack')"
           >
             {{ t('imageControls.toBack') }}
+          </button>
+          <button
+            @click="bringForward"
+            class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-slate/50 dark:hover:bg-slate/70 rounded-md text-sm"
+            :title="t('imageControls.forward')"
+          >
+            {{ t('imageControls.forward') }}
+          </button>
+          <button
+            @click="sendBackward"
+            class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-slate/50 dark:hover:bg-slate/70 rounded-md text-sm"
+            :title="t('imageControls.backward')"
+          >
+            {{ t('imageControls.backward') }}
           </button>
         </div>
       </div>
