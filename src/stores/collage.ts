@@ -736,8 +736,8 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function setCanvasZoom(value: number) {
-    // Begrenzen zwischen 25% und 200%
-    canvasZoom.value = Math.max(0.25, Math.min(2, value))
+    // Begrenzen zwischen 25% und 400%
+    canvasZoom.value = Math.max(0.25, Math.min(4, value))
   }
 
   function resetCanvasView() {

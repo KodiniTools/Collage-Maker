@@ -282,7 +282,7 @@ function resetView() {
           :value="collage.canvasZoom"
           @input="updateZoom(Number(($event.target as HTMLInputElement).value))"
           min="0.25"
-          max="2"
+          max="4"
           step="0.05"
           class="w-full"
         />
