@@ -1021,8 +1021,8 @@ function handleMouseDown(e: MouseEvent) {
   if (!canvas.value) return
 
   const rect = canvas.value.getBoundingClientRect()
-  // Berücksichtige Zoom beim Berechnen der Koordinaten
-  const zoom = collage.canvasZoom
+  // Berücksichtige Auto-Fit-Zoom beim Berechnen der Koordinaten
+  const zoom = autoFitScale.value
   const x = (e.clientX - rect.left) / zoom
   const y = (e.clientY - rect.top) / zoom
 
@@ -1151,8 +1151,8 @@ function handleMouseMove(e: MouseEvent) {
   if ((!collage.selectedImageId && !collage.selectedTextId) || (!isDragging.value && !isResizing.value)) return
 
   const rect = canvas.value.getBoundingClientRect()
-  // Berücksichtige Zoom beim Berechnen der Koordinaten
-  const zoom = collage.canvasZoom
+  // Berücksichtige Auto-Fit-Zoom beim Berechnen der Koordinaten
+  const zoom = autoFitScale.value
   const x = (e.clientX - rect.left) / zoom
   const y = (e.clientY - rect.top) / zoom
 
@@ -1366,9 +1366,9 @@ function handleDrop(e: DragEvent) {
   const imageId = e.dataTransfer.getData('imageId')
   if (!imageId) return
 
-  // Berechne die Drop-Position relativ zum Canvas (mit Zoom)
+  // Berechne die Drop-Position relativ zum Canvas (mit Auto-Fit-Zoom)
   const rect = canvas.value.getBoundingClientRect()
-  const zoom = collage.canvasZoom
+  const zoom = autoFitScale.value
   const x = (e.clientX - rect.left) / zoom
   const y = (e.clientY - rect.top) / zoom
 
