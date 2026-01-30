@@ -976,39 +976,37 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageIds.value = []
     selectedTextId.value = null
 
-    // Default-Werte für Settings
-    const defaultSettings: CollageSettings = {
-      width: 700,
-      height: 740,
-      backgroundColor: '#ffffff',
-      backgroundImage: {
-        url: null,
-        fit: 'cover',
-        opacity: 1,
-        brightness: 100,
-        contrast: 100,
-        saturation: 100,
-        blur: 0
-      },
-      layout: 'freestyle',
-      gridEnabled: false,
-      gridSize: 50
-    }
+    // Lade Template-Daten
+    if (template.collageState && template.collageState.settings) {
+      const ts = template.collageState.settings
 
-    // Lade Template-Daten mit Default-Fallbacks
-    if (template.collageState) {
-      const templateSettings = template.collageState.settings || {}
-      settings.value = {
-        ...defaultSettings,
-        ...templateSettings,
-        // Stelle sicher, dass backgroundImage immer vollständig ist
-        backgroundImage: {
-          ...defaultSettings.backgroundImage,
-          ...(templateSettings.backgroundImage || {})
-        }
+      // Aktualisiere Settings einzeln, um Reaktivität zu erhalten
+      settings.value.width = ts.width ?? 700
+      settings.value.height = ts.height ?? 740
+      settings.value.backgroundColor = ts.backgroundColor ?? '#ffffff'
+      settings.value.layout = ts.layout ?? 'freestyle'
+      settings.value.gridEnabled = ts.gridEnabled ?? false
+      settings.value.gridSize = ts.gridSize ?? 50
+
+      // BackgroundImage mit Defaults
+      if (ts.backgroundImage) {
+        settings.value.backgroundImage.url = ts.backgroundImage.url ?? null
+        settings.value.backgroundImage.fit = ts.backgroundImage.fit ?? 'cover'
+        settings.value.backgroundImage.opacity = ts.backgroundImage.opacity ?? 1
+        settings.value.backgroundImage.brightness = ts.backgroundImage.brightness ?? 100
+        settings.value.backgroundImage.contrast = ts.backgroundImage.contrast ?? 100
+        settings.value.backgroundImage.saturation = ts.backgroundImage.saturation ?? 100
+        settings.value.backgroundImage.blur = ts.backgroundImage.blur ?? 0
+      } else {
+        // Reset backgroundImage zu Defaults
+        settings.value.backgroundImage.url = null
+        settings.value.backgroundImage.fit = 'cover'
+        settings.value.backgroundImage.opacity = 1
+        settings.value.backgroundImage.brightness = 100
+        settings.value.backgroundImage.contrast = 100
+        settings.value.backgroundImage.saturation = 100
+        settings.value.backgroundImage.blur = 0
       }
-      // Bilder und Texte nicht laden (nur Settings), da Bild-URLs nicht mehr gültig sind
-      // Benutzer muss neue Bilder hochladen
     }
   }
 
