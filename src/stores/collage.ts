@@ -976,9 +976,37 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageIds.value = []
     selectedTextId.value = null
 
-    // Lade Template-Daten
+    // Default-Werte für Settings
+    const defaultSettings: CollageSettings = {
+      width: 700,
+      height: 740,
+      backgroundColor: '#ffffff',
+      backgroundImage: {
+        url: null,
+        fit: 'cover',
+        opacity: 1,
+        brightness: 100,
+        contrast: 100,
+        saturation: 100,
+        blur: 0
+      },
+      layout: 'freestyle',
+      gridEnabled: false,
+      gridSize: 50
+    }
+
+    // Lade Template-Daten mit Default-Fallbacks
     if (template.collageState) {
-      settings.value = { ...template.collageState.settings }
+      const templateSettings = template.collageState.settings || {}
+      settings.value = {
+        ...defaultSettings,
+        ...templateSettings,
+        // Stelle sicher, dass backgroundImage immer vollständig ist
+        backgroundImage: {
+          ...defaultSettings.backgroundImage,
+          ...(templateSettings.backgroundImage || {})
+        }
+      }
       // Bilder und Texte nicht laden (nur Settings), da Bild-URLs nicht mehr gültig sind
       // Benutzer muss neue Bilder hochladen
     }

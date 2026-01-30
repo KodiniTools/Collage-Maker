@@ -12,10 +12,19 @@
           "width": 1200,
           "height": 800,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -32,10 +41,19 @@
           "width": 800,
           "height": 1200,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -52,10 +70,19 @@
           "width": 1000,
           "height": 1000,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -72,10 +99,19 @@
           "width": 1080,
           "height": 1080,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -92,10 +128,19 @@
           "width": 1080,
           "height": 1920,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -112,10 +157,19 @@
           "width": 820,
           "height": 312,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -132,10 +186,19 @@
           "width": 1280,
           "height": 720,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "freestyle",
           "gridEnabled": false,
           "gridSize": 20
         },
-        "layout": "freestyle",
         "images": [],
         "texts": []
       }
@@ -152,10 +215,19 @@
           "width": 1200,
           "height": 1200,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "grid-2x2",
           "gridEnabled": true,
           "gridSize": 20
         },
-        "layout": "grid-2x2",
         "images": [],
         "texts": []
       }
@@ -172,10 +244,19 @@
           "width": 1200,
           "height": 1200,
           "backgroundColor": "#ffffff",
+          "backgroundImage": {
+            "url": null,
+            "fit": "cover",
+            "opacity": 1,
+            "brightness": 100,
+            "contrast": 100,
+            "saturation": 100,
+            "blur": 0
+          },
+          "layout": "grid-3x3",
           "gridEnabled": true,
           "gridSize": 20
         },
-        "layout": "grid-3x3",
         "images": [],
         "texts": []
       }
