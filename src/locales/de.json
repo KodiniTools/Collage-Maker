@@ -295,6 +295,8 @@
     "layer": "Ebene",
     "toFront": "Nach vorne",
     "toBack": "Nach hinten",
+    "forward": "Eine Ebene vor",
+    "backward": "Eine Ebene zurück",
     "resetChanges": "Änderungen zurücksetzen",
     "delete": "Bild löschen",
     "deleteMultiple": "{count} Bilder löschen",
