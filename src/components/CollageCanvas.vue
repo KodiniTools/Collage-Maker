@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick, computed, onUnmounted } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 
 const collage = useCollageStore()
@@ -13,6 +13,60 @@ const dragImageStart = ref({ x: 0, y: 0 })
 const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
 const shiftPressed = ref(false)
 const initialAspectRatio = ref(1)
+
+// Auto-fit zoom calculation
+const containerSize = ref({ width: 0, height: 0 })
+
+// Calculate auto-fit scale to keep canvas fully visible
+const autoFitScale = computed(() => {
+  if (containerSize.value.width === 0 || containerSize.value.height === 0) {
+    return 1
+  }
+
+  const padding = 32 // 16px padding on each side
+  const availableWidth = containerSize.value.width - padding
+  const availableHeight = containerSize.value.height - padding
+
+  const canvasWidth = collage.settings.width
+  const canvasHeight = collage.settings.height
+
+  const scaleX = availableWidth / canvasWidth
+  const scaleY = availableHeight / canvasHeight
+
+  // Use the smaller scale to ensure canvas fits completely
+  // Apply user zoom on top of auto-fit
+  return Math.min(scaleX, scaleY, 1) * collage.canvasZoom
+})
+
+// Update container size on mount and resize
+function updateContainerSize() {
+  if (container.value) {
+    containerSize.value = {
+      width: container.value.clientWidth,
+      height: container.value.clientHeight
+    }
+  }
+}
+
+let resizeObserver: ResizeObserver | null = null
+
+onMounted(() => {
+  updateContainerSize()
+
+  // Watch for container resize
+  if (container.value) {
+    resizeObserver = new ResizeObserver(() => {
+      updateContainerSize()
+    })
+    resizeObserver.observe(container.value)
+  }
+})
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
+})
 
 // Smart Guides
 const SNAP_THRESHOLD = 8 // Pixel-Abstand für Einrasten
@@ -1348,7 +1402,7 @@ watch(() => collage.images, (newImages, oldImages) => {
     >
       {{ Math.round(collage.canvasZoom * 100) }}%
     </div>
-    <!-- Canvas Wrapper - centered without scroll -->
+    <!-- Canvas Wrapper - centered with auto-fit scaling -->
     <div class="flex items-center justify-center">
       <canvas
         ref="canvas"
@@ -1359,9 +1413,9 @@ watch(() => collage.images, (newImages, oldImages) => {
         @mouseleave="handleMouseUp"
         @dragover="handleDragOver"
         @drop="handleDrop"
-        class="shadow-lg outline-none cursor-move"
+        class="shadow-lg outline-none cursor-move transition-transform duration-200"
         :style="{
-          transform: `scale(${collage.canvasZoom})`,
+          transform: `scale(${autoFitScale})`,
           transformOrigin: 'center center'
         }"
         style="image-rendering: high-quality;"
