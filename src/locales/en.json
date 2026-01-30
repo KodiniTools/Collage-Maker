@@ -90,7 +90,11 @@
     "footer": "Image Collage Maker - Free and Ad-Free"
   },
   "editor": {
-    "donate": "Donate with PayPal"
+    "donate": "Donate with PayPal",
+    "tools": "Tools",
+    "settings": "Settings",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar"
   },
   "faqPage": {
     "title": "Frequently Asked Questions",

@@ -28,6 +28,13 @@ const showRestoreDialog = ref(false)
 const restoreSaveDate = ref<Date | null>(null)
 const collage = useCollageStore()
 
+// Collapsible Sidebar State
+const leftSidebarCollapsed = ref(false)
+
+function toggleLeftSidebar() {
+  leftSidebarCollapsed.value = !leftSidebarCollapsed.value
+}
+
 const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } = useKeyboardShortcuts()
 const autoSave = useAutoSave()
 
@@ -135,24 +142,110 @@ onUnmounted(() => {
 
     <!-- Main Content -->
     <main class="flex-1 container mx-auto px-4 py-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Sidebar - scrollable -->
-        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2">
-          <ImageUploader />
-          <LayoutSelector />
-          <GridControls />
-          <ImageList />
-          <TextList />
+      <div class="flex gap-4 lg:gap-6">
+        <!-- Left Sidebar - Collapsible -->
+        <aside
+          class="transition-all duration-300 ease-in-out flex-shrink-0"
+          :class="leftSidebarCollapsed ? 'w-14' : 'w-72 xl:w-80'"
+        >
+          <!-- Sidebar Header with Toggle -->
+          <div class="flex items-center justify-between mb-4">
+            <h2
+              v-if="!leftSidebarCollapsed"
+              class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide"
+            >
+              {{ t('editor.tools') }}
+            </h2>
+            <button
+              @click="toggleLeftSidebar"
+              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+              :title="leftSidebarCollapsed ? t('editor.expandSidebar') : t('editor.collapseSidebar')"
+            >
+              <svg
+                class="w-5 h-5 transition-transform duration-300"
+                :class="leftSidebarCollapsed ? 'rotate-180' : ''"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Collapsed State: Icon Bar -->
+          <div
+            v-if="leftSidebarCollapsed"
+            class="flex flex-col items-center gap-2"
+          >
+            <button
+              @click="toggleLeftSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('upload.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <button
+              @click="toggleLeftSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('layout.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+              </svg>
+            </button>
+            <button
+              @click="toggleLeftSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('grid.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button
+              @click="toggleLeftSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('images.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </button>
+            <button
+              @click="toggleLeftSidebar"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              :title="t('text.title')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Expanded State: Full Content -->
+          <div
+            v-else
+            class="space-y-6 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-2"
+          >
+            <ImageUploader />
+            <LayoutSelector />
+            <GridControls />
+            <ImageList />
+            <TextList />
+          </div>
         </aside>
 
-        <!-- Canvas - scrollable for large canvases up to 4000px -->
-        <section class="lg:col-span-6">
+        <!-- Canvas - Expands to fill available space -->
+        <section class="flex-1 min-w-0">
           <ThumbnailBar />
           <CollageCanvas />
         </section>
 
-        <!-- Controls - scrollable sidebar -->
-        <aside class="lg:col-span-3 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2">
+        <!-- Right Sidebar - Controls -->
+        <aside class="w-72 xl:w-80 flex-shrink-0 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2 hidden lg:block">
           <CanvasSettings />
           <ImageControls />
           <TextControls />
