@@ -1333,7 +1333,14 @@ watch(() => collage.images, (newImages, oldImages) => {
 </script>
 
 <template>
-  <div ref="container" class="w-full bg-muted/10 dark:bg-slate/30 rounded-lg p-4 overflow-auto relative" style="max-height: 80vh;">
+  <div
+    ref="container"
+    class="w-full bg-muted/10 dark:bg-slate/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
+    :style="{
+      height: 'calc(100vh - 12rem)',
+      overflow: 'hidden'
+    }"
+  >
     <!-- Zoom Info-Badge -->
     <div
       v-if="collage.canvasZoom !== 1"
@@ -1341,14 +1348,8 @@ watch(() => collage.images, (newImages, oldImages) => {
     >
       {{ Math.round(collage.canvasZoom * 100) }}%
     </div>
-    <!-- Scrollable Content Wrapper - dimensions match zoomed canvas size -->
-    <div
-      class="flex items-center justify-center"
-      :style="{
-        minWidth: (collage.settings.width * collage.canvasZoom) + 'px',
-        minHeight: Math.max(400, collage.settings.height * collage.canvasZoom) + 'px'
-      }"
-    >
+    <!-- Canvas Wrapper - centered without scroll -->
+    <div class="flex items-center justify-center">
       <canvas
         ref="canvas"
         tabindex="-1"

@@ -90,7 +90,11 @@
     "footer": "Bilder-Collage-Macher - Kostenlos und ohne Werbung"
   },
   "editor": {
-    "donate": "Spenden mit PayPal"
+    "donate": "Spenden mit PayPal",
+    "tools": "Werkzeuge",
+    "settings": "Einstellungen",
+    "expandSidebar": "Seitenleiste ausklappen",
+    "collapseSidebar": "Seitenleiste einklappen"
   },
   "faqPage": {
     "title": "Häufig gestellte Fragen",
