@@ -8,7 +8,7 @@ const collage = useCollageStore()
 const toast = useToastStore()
 const { t } = useI18n()
 
-const exportFormat = ref<'png' | 'jpeg' | 'webp'>('png')
+const exportFormat = ref<'png' | 'png-transparent' | 'jpeg' | 'webp'>('png')
 const exportQuality = ref(0.95)
 const isExporting = ref(false)
 const isGeneratingPreview = ref(false)
@@ -97,12 +97,15 @@ async function exportCollage() {
     canvas.width = collage.settings.width
     canvas.height = collage.settings.height
 
-    // Background Color
-    ctx.fillStyle = collage.settings.backgroundColor
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // Background nur zeichnen wenn NICHT transparent
+    if (exportFormat.value !== 'png-transparent') {
+      // Background Color
+      ctx.fillStyle = collage.settings.backgroundColor
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Background Image
-    await drawBackgroundImageExport(ctx, canvas.width, canvas.height)
+      // Background Image
+      await drawBackgroundImageExport(ctx, canvas.width, canvas.height)
+    }
 
     // Render images - NUR Canvas-Instanzen exportieren (keine Gallery-Templates)
     const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
@@ -440,9 +443,12 @@ async function exportCollage() {
 
     // Download
     const mimeType =
-      exportFormat.value === 'png' ? 'image/png' :
+      exportFormat.value === 'png' || exportFormat.value === 'png-transparent' ? 'image/png' :
       exportFormat.value === 'webp' ? 'image/webp' :
       'image/jpeg'
+
+    // Dateiendung bestimmen (png-transparent -> png)
+    const fileExtension = exportFormat.value === 'png-transparent' ? 'png' : exportFormat.value
 
     await new Promise<void>((resolve, reject) => {
       canvas.toBlob((blob) => {
@@ -453,7 +459,7 @@ async function exportCollage() {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `collage-${Date.now()}.${exportFormat.value}`
+        a.download = `collage-${Date.now()}.${fileExtension}`
         a.click()
         URL.revokeObjectURL(url)
         resolve()
@@ -483,12 +489,15 @@ async function generatePreview() {
     canvas.width = collage.settings.width
     canvas.height = collage.settings.height
 
-    // Background Color
-    ctx.fillStyle = collage.settings.backgroundColor
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // Background nur zeichnen wenn NICHT transparent
+    if (exportFormat.value !== 'png-transparent') {
+      // Background Color
+      ctx.fillStyle = collage.settings.backgroundColor
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Background Image
-    await drawBackgroundImageExport(ctx, canvas.width, canvas.height)
+      // Background Image
+      await drawBackgroundImageExport(ctx, canvas.width, canvas.height)
+    }
 
     // Render images - NUR Canvas-Instanzen exportieren (keine Gallery-Templates)
     const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
@@ -792,7 +801,7 @@ async function generatePreview() {
 
     // Generate data URL for preview
     const mimeType =
-      exportFormat.value === 'png' ? 'image/png' :
+      exportFormat.value === 'png' || exportFormat.value === 'png-transparent' ? 'image/png' :
       exportFormat.value === 'webp' ? 'image/webp' :
       'image/jpeg'
 
@@ -824,6 +833,7 @@ function closePreview() {
         aria-label="Export format"
       >
         <option value="png">PNG</option>
+        <option value="png-transparent">{{ t('export.pngTransparent') }}</option>
         <option value="jpeg">JPEG</option>
         <option value="webp">WebP</option>
       </select>

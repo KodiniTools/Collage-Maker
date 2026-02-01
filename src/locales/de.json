@@ -279,7 +279,8 @@
     "previewTitle": "Vorschau der Collage",
     "previewAlt": "Vorschau der fertigen Collage",
     "close": "Schließen",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "pngTransparent": "PNG (Transparent)"
   },
   "controls": {
     "clear": "Alles löschen",
