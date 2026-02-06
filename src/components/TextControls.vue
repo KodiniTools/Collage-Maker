@@ -113,6 +113,7 @@ function isItalicVariant(variant: string): boolean {
 // Apply font to text
 async function applyFont(family: string, variant: string) {
   if (!collage.selectedText) return
+  collage.saveStateForUndo()
 
   const weight = variantToWeight(variant)
   const fontStyle: 'normal' | 'italic' = isItalicVariant(variant) ? 'italic' : 'normal'
@@ -159,26 +160,31 @@ function variantToWeight(variant: string): number {
 
 function updateTextContent(value: string) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { text: value })
 }
 
 function updateFontSize(value: number) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { fontSize: value })
 }
 
 function updateLetterSpacing(value: number) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { letterSpacing: value })
 }
 
 function updateColor(value: string) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { color: value })
 }
 
 function toggleFontWeight() {
   if (!collage.selectedText) return
+  collage.saveStateForUndo()
   const currentWeight = typeof collage.selectedText.fontWeight === 'number'
     ? collage.selectedText.fontWeight
     : (collage.selectedText.fontWeight === 'bold' ? 700 : 400)
@@ -188,11 +194,13 @@ function toggleFontWeight() {
 
 function updateTextAlign(value: 'left' | 'center' | 'right') {
   if (!collage.selectedText) return
+  collage.saveStateForUndo()
   collage.updateText(collage.selectedText.id, { textAlign: value })
 }
 
 function toggleShadow() {
   if (!collage.selectedText) return
+  collage.saveStateForUndo()
   collage.updateText(collage.selectedText.id, {
     shadowEnabled: !collage.selectedText.shadowEnabled
   })
@@ -200,27 +208,32 @@ function toggleShadow() {
 
 function updateShadowOffsetX(value: number) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { shadowOffsetX: value })
 }
 
 function updateShadowOffsetY(value: number) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { shadowOffsetY: value })
 }
 
 function updateShadowBlur(value: number) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { shadowBlur: value })
 }
 
 function updateShadowColor(value: string) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { shadowColor: value })
 }
 
 // Stroke (Textumrandung) Funktionen
 function toggleStroke() {
   if (!collage.selectedText) return
+  collage.saveStateForUndo()
   collage.updateText(collage.selectedText.id, {
     strokeEnabled: !collage.selectedText.strokeEnabled
   })
@@ -228,16 +241,19 @@ function toggleStroke() {
 
 function updateStrokeColor(value: string) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { strokeColor: value })
 }
 
 function updateStrokeWidth(value: number) {
   if (!collage.selectedText) return
+  collage.saveStateForUndoDebounced()
   collage.updateText(collage.selectedText.id, { strokeWidth: value })
 }
 
 function deleteText() {
   if (!collage.selectedText) return
+  // Undo wird in removeText gespeichert
   collage.removeText(collage.selectedText.id)
 }
 

@@ -1101,9 +1101,7 @@ function handleMouseDown(e: MouseEvent) {
     .find(img => isDeleteButtonClicked(x, y, img))
 
   if (clickedDeleteImage) {
-    // Speichere Zustand für Undo VOR dem Löschen
-    collage.saveStateForUndo()
-    // Bild aus Canvas entfernen
+    // Bild aus Canvas entfernen (Undo wird in removeImage gespeichert)
     collage.removeImage(clickedDeleteImage.id)
     return
   }

@@ -34,8 +34,18 @@ function applyToSelected(updates: Record<string, any>) {
   }
 }
 
+// Undo-Tracking: Debounced für Slider, direkt für diskrete Aktionen
+function saveUndoDebounced() {
+  collage.saveStateForUndoDebounced()
+}
+
+function saveUndoImmediate() {
+  collage.saveStateForUndo()
+}
+
 function updateWidth(value: number) {
   if (collage.selectedImageId && selectedImage.value) {
+    saveUndoDebounced()
     const updates: any = { width: value }
     if (collage.lockAspectRatio) {
       updates.height = value / aspectRatio.value
@@ -46,6 +56,7 @@ function updateWidth(value: number) {
 
 function updateHeight(value: number) {
   if (collage.selectedImageId && selectedImage.value) {
+    saveUndoDebounced()
     const updates: any = { height: value }
     if (collage.lockAspectRatio) {
       updates.width = value * aspectRatio.value
@@ -56,12 +67,14 @@ function updateHeight(value: number) {
 
 function updatePositionX(value: number) {
   if (collage.selectedImageId) {
+    saveUndoDebounced()
     collage.updateImage(collage.selectedImageId, { x: value })
   }
 }
 
 function updatePositionY(value: number) {
   if (collage.selectedImageId) {
+    saveUndoDebounced()
     collage.updateImage(collage.selectedImageId, { y: value })
   }
 }
@@ -75,18 +88,22 @@ function toggleAspectRatio() {
 }
 
 function updateRotation(value: number) {
+  saveUndoDebounced()
   applyToSelected({ rotation: value })
 }
 
 function updateOpacity(value: number) {
+  saveUndoDebounced()
   applyToSelected({ opacity: value })
 }
 
 function updateBorderRadius(value: number) {
+  saveUndoDebounced()
   applyToSelected({ borderRadius: value })
 }
 
 function toggleBorder() {
+  saveUndoImmediate()
   // Bei Mehrfachauswahl: Einheitlich aktivieren oder deaktivieren
   if (isMultiSelection.value) {
     const anyEnabled = selectedImages.value.some(img => img.borderEnabled)
@@ -97,18 +114,22 @@ function toggleBorder() {
 }
 
 function updateBorderWidth(value: number) {
+  saveUndoDebounced()
   applyToSelected({ borderWidth: value })
 }
 
 function updateBorderColor(value: string) {
+  saveUndoDebounced()
   applyToSelected({ borderColor: value })
 }
 
 function updateBorderStyle(value: 'solid' | 'dashed' | 'dotted' | 'double') {
+  saveUndoImmediate()
   applyToSelected({ borderStyle: value })
 }
 
 function toggleBorderShadow() {
+  saveUndoImmediate()
   if (isMultiSelection.value) {
     const anyEnabled = selectedImages.value.some(img => img.borderShadowEnabled)
     applyToSelected({ borderShadowEnabled: !anyEnabled })
@@ -118,22 +139,27 @@ function toggleBorderShadow() {
 }
 
 function updateBorderShadowOffsetX(value: number) {
+  saveUndoDebounced()
   applyToSelected({ borderShadowOffsetX: value })
 }
 
 function updateBorderShadowOffsetY(value: number) {
+  saveUndoDebounced()
   applyToSelected({ borderShadowOffsetY: value })
 }
 
 function updateBorderShadowBlur(value: number) {
+  saveUndoDebounced()
   applyToSelected({ borderShadowBlur: value })
 }
 
 function updateBorderShadowColor(value: string) {
+  saveUndoDebounced()
   applyToSelected({ borderShadowColor: value })
 }
 
 function toggleShadow() {
+  saveUndoImmediate()
   if (isMultiSelection.value) {
     const anyEnabled = selectedImages.value.some(img => img.shadowEnabled)
     applyToSelected({ shadowEnabled: !anyEnabled })
@@ -143,22 +169,27 @@ function toggleShadow() {
 }
 
 function updateShadowOffsetX(value: number) {
+  saveUndoDebounced()
   applyToSelected({ shadowOffsetX: value })
 }
 
 function updateShadowOffsetY(value: number) {
+  saveUndoDebounced()
   applyToSelected({ shadowOffsetY: value })
 }
 
 function updateShadowBlur(value: number) {
+  saveUndoDebounced()
   applyToSelected({ shadowBlur: value })
 }
 
 function updateShadowColor(value: string) {
+  saveUndoDebounced()
   applyToSelected({ shadowColor: value })
 }
 
 function deleteImage() {
+  // Undo wird in removeSelectedImages/removeImage gespeichert
   if (isMultiSelection.value) {
     collage.removeSelectedImages()
   } else if (collage.selectedImageId) {
@@ -168,6 +199,7 @@ function deleteImage() {
 
 function bringToFront() {
   if (selectedImages.value.length > 0) {
+    saveUndoImmediate()
     const maxZ = Math.max(...collage.images.map(img => img.zIndex), 0)
     // Bei Mehrfachauswahl: Alle nach vorne, aber relative Reihenfolge beibehalten
     selectedImages.value
@@ -180,6 +212,7 @@ function bringToFront() {
 
 function sendToBack() {
   if (selectedImages.value.length > 0) {
+    saveUndoImmediate()
     const minZ = Math.min(...collage.images.map(img => img.zIndex), 0)
     // Bei Mehrfachauswahl: Alle nach hinten, aber relative Reihenfolge beibehalten
     selectedImages.value
@@ -192,6 +225,7 @@ function sendToBack() {
 
 function bringForward() {
   if (selectedImages.value.length > 0) {
+    saveUndoImmediate()
     // Sortiere alle Bilder nach zIndex
     const sortedImages = [...collage.images].sort((a, b) => a.zIndex - b.zIndex)
 
@@ -214,6 +248,7 @@ function bringForward() {
 
 function sendBackward() {
   if (selectedImages.value.length > 0) {
+    saveUndoImmediate()
     // Sortiere alle Bilder nach zIndex (umgekehrt für rückwärts)
     const sortedImages = [...collage.images].sort((a, b) => b.zIndex - a.zIndex)
 
@@ -236,34 +271,42 @@ function sendBackward() {
 
 // Bildbearbeitungs-Filter Funktionen
 function updateBrightness(value: number) {
+  saveUndoDebounced()
   applyToSelected({ brightness: value })
 }
 
 function updateContrast(value: number) {
+  saveUndoDebounced()
   applyToSelected({ contrast: value })
 }
 
 function updateHighlights(value: number) {
+  saveUndoDebounced()
   applyToSelected({ highlights: value })
 }
 
 function updateShadows(value: number) {
+  saveUndoDebounced()
   applyToSelected({ shadows: value })
 }
 
 function updateSaturation(value: number) {
+  saveUndoDebounced()
   applyToSelected({ saturation: value })
 }
 
 function updateWarmth(value: number) {
+  saveUndoDebounced()
   applyToSelected({ warmth: value })
 }
 
 function updateSharpness(value: number) {
+  saveUndoDebounced()
   applyToSelected({ sharpness: value })
 }
 
 function resetImageChanges() {
+  saveUndoImmediate()
   // Setze alle Bearbeitungen auf Standardwerte zurück
   // Position und Größe bleiben erhalten (gehören zum Layout)
   const defaultValues = {

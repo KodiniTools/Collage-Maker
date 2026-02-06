@@ -7,46 +7,56 @@ const collage = useCollageStore()
 const { t } = useI18n()
 
 function updateWidth(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateSettings({ width: value })
 }
 
 function updateHeight(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateSettings({ height: value })
 }
 
 function updateBackgroundColor(value: string) {
-  // Bei Farbauswahl das Hintergrundbild entfernen
+  collage.saveStateForUndoDebounced()
+  // Bei Farbauswahl das Hintergrundbild entfernen (skipUndo da oben bereits gespeichert)
   if (collage.settings.backgroundImage.url) {
-    collage.removeBackgroundImage()
+    collage.removeBackgroundImage(true)
   }
   collage.updateSettings({ backgroundColor: value })
 }
 
 function updateBackgroundFit(value: BackgroundImageFit) {
+  collage.saveStateForUndo()
   collage.setBackgroundImageFit(value)
 }
 
 function removeBackground() {
+  // Undo wird in removeBackgroundImage gespeichert
   collage.removeBackgroundImage()
 }
 
 function updateBackgroundOpacity(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateBackgroundImage({ opacity: value })
 }
 
 function updateBackgroundBrightness(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateBackgroundImage({ brightness: value })
 }
 
 function updateBackgroundContrast(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateBackgroundImage({ contrast: value })
 }
 
 function updateBackgroundSaturation(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateBackgroundImage({ saturation: value })
 }
 
 function updateBackgroundBlur(value: number) {
+  collage.saveStateForUndoDebounced()
   collage.updateBackgroundImage({ blur: value })
 }
 
