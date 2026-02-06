@@ -10,6 +10,8 @@ const isResizing = ref(false)
 const resizeHandle = ref<string | null>(null)
 const dragStartPos = ref({ x: 0, y: 0 })
 const dragImageStart = ref({ x: 0, y: 0 })
+// Startpositionen aller ausgewählten Bilder für Mehfach-Drag
+const dragStartPositions = ref<Map<string, { x: number; y: number }>>(new Map())
 const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0 })
 const shiftPressed = ref(false)
 const initialAspectRatio = ref(1)
@@ -1184,18 +1186,35 @@ function handleMouseDown(e: MouseEvent) {
     // Ctrl/Cmd+Click für Mehrfachauswahl
     if (e.ctrlKey || e.metaKey) {
       collage.toggleImageSelection(clickedImage.id)
-      // Bei Mehrfachauswahl: Dragging nur starten, wenn das Bild bereits ausgewählt war
+      // Bei Mehrfachauswahl: Dragging nur starten, wenn das Bild ausgewählt ist
       if (collage.isImageSelected(clickedImage.id)) {
         isDragging.value = true
         dragStartPos.value = { x, y }
         dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
+        // Startpositionen aller ausgewählten Bilder speichern
+        dragStartPositions.value = new Map()
+        collage.selectedImages.forEach(img => {
+          dragStartPositions.value.set(img.id, { x: img.x, y: img.y })
+        })
       }
+    } else if (collage.isImageSelected(clickedImage.id)) {
+      // Klick auf ein bereits ausgewähltes Bild: Auswahl beibehalten, Drag starten
+      isDragging.value = true
+      dragStartPos.value = { x, y }
+      dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
+      // Startpositionen aller ausgewählten Bilder speichern
+      dragStartPositions.value = new Map()
+      collage.selectedImages.forEach(img => {
+        dragStartPositions.value.set(img.id, { x: img.x, y: img.y })
+      })
     } else {
-      // Normaler Klick: Ersetzt die Auswahl
+      // Normaler Klick auf ein nicht-ausgewähltes Bild: Ersetzt die Auswahl
       collage.selectImage(clickedImage.id)
       isDragging.value = true
       dragStartPos.value = { x, y }
       dragImageStart.value = { x: clickedImage.x, y: clickedImage.y }
+      dragStartPositions.value = new Map()
+      dragStartPositions.value.set(clickedImage.id, { x: clickedImage.x, y: clickedImage.y })
     }
     collage.selectText(null) // Text explizit deselektieren beim Bildklick
     collage.selectBackground(false) // Hintergrund deselektieren
@@ -1384,14 +1403,15 @@ function handleMouseMove(e: MouseEvent) {
     const dx = x - dragStartPos.value.x
     const dy = y - dragStartPos.value.y
 
-    // Berechne Zielposition
+    // Berechne Zielposition für das primäre Bild
     let targetX = dragImageStart.value.x + dx
     let targetY = dragImageStart.value.y + dy
 
-    // Hole das aktuell gezogene Bild für die Dimensionen
+    // Smart Guides für das primäre Bild
+    let snapDx = dx
+    let snapDy = dy
     const selectedImg = collage.selectedImage
     if (selectedImg) {
-      // Smart Guides: Erkennung und Snap
       const alignment = detectAlignments(
         targetX,
         targetY,
@@ -1400,22 +1420,32 @@ function handleMouseMove(e: MouseEvent) {
         selectedImg.id
       )
 
-      // Wende Snap-Positionen an, wenn vorhanden
       if (alignment.snapX !== null) {
         targetX = alignment.snapX
+        snapDx = targetX - dragImageStart.value.x
       }
       if (alignment.snapY !== null) {
         targetY = alignment.snapY
+        snapDy = targetY - dragImageStart.value.y
       }
 
-      // Aktualisiere aktive Guide-Linien für die Anzeige
       activeGuides.value = alignment.guides
     }
 
-    collage.updateImage(collage.selectedImageId, {
-      x: targetX,
-      y: targetY
-    })
+    // Alle ausgewählten Bilder gemeinsam verschieben
+    if (dragStartPositions.value.size > 1) {
+      dragStartPositions.value.forEach((startPos, imgId) => {
+        collage.updateImage(imgId, {
+          x: startPos.x + snapDx,
+          y: startPos.y + snapDy
+        })
+      })
+    } else {
+      collage.updateImage(collage.selectedImageId, {
+        x: targetX,
+        y: targetY
+      })
+    }
   }
 }
 
