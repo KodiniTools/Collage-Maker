@@ -41,6 +41,20 @@ export const useCollageStore = defineStore('collage', () => {
     historyStore.saveSnapshot(images.value, texts.value, settings.value)
   }
 
+  // Debounced-Version: Speichert nur einmal pro Interaktionsphase (z.B. Slider-Drag).
+  // Verhindert, dass bei kontinuierlichen Änderungen (Slider) für jeden
+  // Zwischenwert ein Snapshot erstellt wird.
+  let lastDebouncedSaveTime = 0
+  const DEBOUNCE_INTERVAL = 800 // ms - Snapshots werden nur alle 800ms erlaubt
+
+  function saveStateForUndoDebounced() {
+    const now = Date.now()
+    if (now - lastDebouncedSaveTime > DEBOUNCE_INTERVAL) {
+      saveStateForUndo()
+      lastDebouncedSaveTime = now
+    }
+  }
+
   // Undo-Funktion
   function undo() {
     const snapshot = historyStore.undo(images.value, texts.value, settings.value)
@@ -104,6 +118,7 @@ export const useCollageStore = defineStore('collage', () => {
   )
 
   function addImages(files: File[]) {
+    saveStateForUndo()
     files.forEach(file => {
       const templateId = crypto.randomUUID()
       const instanceId = crypto.randomUUID()
@@ -198,11 +213,12 @@ export const useCollageStore = defineStore('collage', () => {
     })
 
     if (settings.value.layout !== 'freestyle') {
-      applyLayout(settings.value.layout)
+      applyLayout(settings.value.layout, true)
     }
   }
 
-  function removeImage(id: string) {
+  function removeImage(id: string, skipUndo = false) {
+    if (!skipUndo) saveStateForUndo()
     const index = images.value.findIndex(img => img.id === id)
     if (index !== -1) {
       const imageToRemove = images.value[index]
@@ -228,8 +244,9 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Alle ausgewählten Bilder entfernen
   function removeSelectedImages() {
+    saveStateForUndo()
     const idsToRemove = [...selectedImageIds.value]
-    idsToRemove.forEach(id => removeImage(id))
+    idsToRemove.forEach(id => removeImage(id, true))
   }
 
   function updateImage(id: string, updates: Partial<CollageImage>) {
@@ -317,6 +334,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Ausgewählte Galerie-Bilder zum Canvas hinzufügen
   function addSelectedGalleryToCanvas() {
+    saveStateForUndo()
     const selectedGalleryImages = images.value.filter(
       img => img.isGalleryTemplate === true && selectedGalleryIds.value.includes(img.id)
     )
@@ -377,12 +395,13 @@ export const useCollageStore = defineStore('collage', () => {
 
     // Layout anwenden wenn nicht Freestyle
     if (settings.value.layout !== 'freestyle') {
-      applyLayout(settings.value.layout)
+      applyLayout(settings.value.layout, true)
     }
   }
 
   // Ausgewählte Galerie-Bilder entfernen (Template + alle Canvas-Instanzen)
   function removeSelectedGalleryImages() {
+    saveStateForUndo()
     const idsToRemove = [...selectedGalleryIds.value]
 
     idsToRemove.forEach(galleryId => {
@@ -390,7 +409,7 @@ export const useCollageStore = defineStore('collage', () => {
       if (galleryImage) {
         // Finde alle Canvas-Instanzen mit der gleichen URL
         const relatedImages = images.value.filter(img => img.url === galleryImage.url)
-        relatedImages.forEach(img => removeImage(img.id))
+        relatedImages.forEach(img => removeImage(img.id, true))
       }
     })
 
@@ -399,7 +418,8 @@ export const useCollageStore = defineStore('collage', () => {
 
   // ========== Layout Funktionen ==========
 
-  function applyLayout(layout: LayoutType) {
+  function applyLayout(layout: LayoutType, skipUndo = false) {
+    if (!skipUndo) saveStateForUndo()
     settings.value.layout = layout
 
     if (layout === 'freestyle') return
@@ -667,6 +687,7 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function clearCollage() {
+    saveStateForUndo()
     // Sammle nur unique URLs (Templates und Instanzen teilen URLs)
     const uniqueUrls = new Set(images.value.map(img => img.url))
     uniqueUrls.forEach(url => URL.revokeObjectURL(url))
@@ -694,6 +715,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Hintergrundbild setzen (von einem Galerie-Bild)
   function setBackgroundImage(imageUrl: string) {
+    saveStateForUndo()
     settings.value.backgroundImage = {
       url: imageUrl,
       fit: settings.value.backgroundImage.fit,
@@ -706,7 +728,8 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   // Hintergrundbild entfernen
-  function removeBackgroundImage() {
+  function removeBackgroundImage(skipUndo = false) {
+    if (!skipUndo) saveStateForUndo()
     settings.value.backgroundImage.url = null
     isBackgroundSelected.value = false
   }
@@ -745,6 +768,7 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function duplicateImageToPosition(sourceId: string, x: number, y: number) {
+    saveStateForUndo()
     const sourceImage = images.value.find(img => img.id === sourceId)
     if (!sourceImage) return
 
@@ -796,6 +820,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Ausgewählte Bilder duplizieren (für Ctrl+D)
   function duplicateSelectedImages() {
+    saveStateForUndo()
     const imagesToDuplicate = [...selectedImages.value]
     const newIds: string[] = []
 
@@ -825,6 +850,7 @@ export const useCollageStore = defineStore('collage', () => {
   // Ausgewählte Bilder nach vorne bringen
   function bringSelectedToFront() {
     if (selectedImageIds.value.length === 0) return
+    saveStateForUndo()
 
     const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
     selectedImageIds.value.forEach((id, index) => {
@@ -835,6 +861,7 @@ export const useCollageStore = defineStore('collage', () => {
   // Ausgewählte Bilder nach hinten senden
   function sendSelectedToBack() {
     if (selectedImageIds.value.length === 0) return
+    saveStateForUndo()
 
     const minZ = Math.min(...images.value.map(img => img.zIndex), 0)
     selectedImageIds.value.forEach((id, index) => {
@@ -844,6 +871,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Ausgewählte Bilder um Grad drehen
   function rotateSelectedImages(degrees: number) {
+    saveStateForUndo()
     selectedImageIds.value.forEach(id => {
       const img = images.value.find(i => i.id === id)
       if (img) {
@@ -854,6 +882,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Ausgewählte Bilder verschieben
   function moveSelectedImages(dx: number, dy: number) {
+    saveStateForUndoDebounced()
     selectedImageIds.value.forEach(id => {
       const img = images.value.find(i => i.id === id)
       if (img) {
@@ -864,6 +893,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Ausgewählten Text verschieben
   function moveSelectedText(dx: number, dy: number) {
+    saveStateForUndoDebounced()
     if (selectedTextId.value) {
       const txt = texts.value.find(t => t.id === selectedTextId.value)
       if (txt) {
@@ -879,6 +909,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Text-Funktionen
   function addText(text: string = 'Neuer Text') {
+    saveStateForUndo()
     const maxZ = Math.max(
       ...images.value.map(img => img.zIndex),
       ...texts.value.map(txt => txt.zIndex),
@@ -917,6 +948,7 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function removeText(id: string) {
+    saveStateForUndo()
     const index = texts.value.findIndex(txt => txt.id === id)
     if (index !== -1) {
       texts.value.splice(index, 1)
@@ -1078,6 +1110,7 @@ export const useCollageStore = defineStore('collage', () => {
     redo,
     canUndo,
     canRedo,
-    saveStateForUndo
+    saveStateForUndo,
+    saveStateForUndoDebounced
   }
 })
