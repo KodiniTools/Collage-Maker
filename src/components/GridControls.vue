@@ -32,7 +32,7 @@ function updateGridSize(value: number) {
             'px-4 py-2 text-sm rounded-lg font-medium transition-colors',
             collage.settings.gridEnabled
               ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-              : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
+              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted'
           ]"
         >
           {{ collage.settings.gridEnabled ? t('grid.on') : t('grid.off') }}

@@ -926,7 +926,7 @@ function closePreview() {
             <h3 class="text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
             <button
               @click="closePreview"
-              class="p-2 rounded-lg hover:bg-muted/10 dark:hover:bg-slate/10 transition-colors"
+              class="p-2 rounded-lg hover:bg-muted/10 dark:hover:bg-navy/10 transition-colors"
               aria-label="Close preview"
             >
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -947,14 +947,14 @@ function closePreview() {
           </div>
 
           <!-- Footer -->
-          <div class="flex items-center justify-between px-4 py-3 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-slate/5">
+          <div class="flex items-center justify-between px-4 py-3 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
             <p class="text-sm text-muted dark:text-slate/70">
               {{ collage.settings.width }} x {{ collage.settings.height }} px
             </p>
             <div class="flex gap-2">
               <button
                 @click="closePreview"
-                class="px-4 py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-slate/10 font-medium rounded-lg transition-colors"
+                class="px-4 py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors"
               >
                 {{ t('export.close') }}
               </button>

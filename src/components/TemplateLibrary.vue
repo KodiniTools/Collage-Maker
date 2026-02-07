@@ -101,7 +101,7 @@ function closeModal() {
             <h2 class="text-2xl font-bold">{{ t('templates.library') }}</h2>
             <button
               @click="closeModal"
-              class="p-2 hover:bg-muted/20 dark:hover:bg-slate/30 rounded-lg transition-colors"
+              class="p-2 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -118,7 +118,7 @@ function closeModal() {
                   'px-4 py-2 rounded-lg font-medium transition-colors',
                   activeTab === 'all'
                     ? 'bg-accent text-slate-dark'
-                    : 'bg-muted/10 dark:bg-slate/30 hover:bg-muted/20 dark:hover:bg-slate/50'
+                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
                 ]"
               >
                 {{ t('templates.all') }}
@@ -129,7 +129,7 @@ function closeModal() {
                   'px-4 py-2 rounded-lg font-medium transition-colors',
                   activeTab === 'predefined'
                     ? 'bg-accent text-slate-dark'
-                    : 'bg-muted/10 dark:bg-slate/30 hover:bg-muted/20 dark:hover:bg-slate/50'
+                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
                 ]"
               >
                 {{ t('templates.predefined') }}
@@ -140,7 +140,7 @@ function closeModal() {
                   'px-4 py-2 rounded-lg font-medium transition-colors',
                   activeTab === 'user'
                     ? 'bg-accent text-slate-dark'
-                    : 'bg-muted/10 dark:bg-slate/30 hover:bg-muted/20 dark:hover:bg-slate/50'
+                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
                 ]"
               >
                 {{ t('templates.custom') }} ({{ templatesStore.userTemplates.length }})
@@ -218,7 +218,7 @@ function closeModal() {
               <div class="flex gap-3 mt-6">
                 <button
                   @click="showSaveDialog = false"
-                  class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate rounded-lg hover:bg-muted/10 dark:hover:bg-slate/30 transition-colors"
+                  class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate rounded-lg hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors"
                 >
                   {{ t('common.cancel') }}
                 </button>

@@ -77,7 +77,7 @@ function openFileDialog() {
       <div class="flex flex-col items-center gap-2">
         <div :class="[
           'p-3 rounded-full transition-colors',
-          isDragging ? 'bg-accent text-slate-dark' : 'bg-muted/20 dark:bg-slate/30 text-muted dark:text-muted-light'
+          isDragging ? 'bg-accent text-slate-dark' : 'bg-muted/20 dark:bg-navy/30 text-muted dark:text-muted-light'
         ]">
           <!-- Loading spinner -->
           <svg v-if="isProcessing" class="h-8 w-8 animate-spin" fill="none" viewBox="0 0 24 24">

@@ -185,7 +185,7 @@ function resetView() {
         </div>
 
         <!-- Editing Controls (show when background is selected) -->
-        <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-muted/10 dark:bg-slate/20 rounded-lg p-3">
+        <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-muted/10 dark:bg-navy/20 rounded-lg p-3">
           <p class="text-xs font-medium text-primary mb-2">{{ t('canvas.editBackground') }}</p>
 
           <!-- Opacity -->
@@ -282,7 +282,7 @@ function resetView() {
           </label>
           <button
             @click="resetView"
-            class="text-xs px-2 py-1 bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded transition-colors"
+            class="text-xs px-2 py-1 bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded transition-colors"
           >
             {{ t('canvas.resetView') }}
           </button>

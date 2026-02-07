@@ -83,7 +83,7 @@ onUnmounted(() => {
           <!-- Back to Landing Button -->
           <RouterLink
             to="/"
-            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
             :title="t('app.backToHome')"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +101,7 @@ onUnmounted(() => {
             <button
               @click="collage.undo"
               :disabled="!collage.canUndo"
-              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-slate/20"
+              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-navy/20"
               :title="`${t('shortcuts.undo')} (Ctrl+Z)`"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -111,7 +111,7 @@ onUnmounted(() => {
             <button
               @click="collage.redo"
               :disabled="!collage.canRedo"
-              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-slate/20"
+              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-navy/20"
               :title="`${t('shortcuts.redo')} (Ctrl+Y)`"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -131,7 +131,7 @@ onUnmounted(() => {
           </button>
           <button
             @click="showShortcutsModal = true"
-            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
             :title="t('shortcuts.title')"
             :aria-label="t('shortcuts.title')"
           >
@@ -163,7 +163,7 @@ onUnmounted(() => {
             </h2>
             <button
               @click="toggleLeftSidebar"
-              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
               :title="leftSidebarCollapsed ? t('editor.expandSidebar') : t('editor.collapseSidebar')"
             >
               <svg
@@ -185,7 +185,7 @@ onUnmounted(() => {
           >
             <button
               @click="toggleLeftSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('upload.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +194,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleLeftSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('layout.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +203,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleLeftSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('grid.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,7 +212,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleLeftSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('images.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,7 +221,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleLeftSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('text.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,7 +264,7 @@ onUnmounted(() => {
             </h2>
             <button
               @click="toggleRightSidebar"
-              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-slate/20 transition-colors"
+              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
               :title="rightSidebarCollapsed ? t('editor.expandSidebar') : t('editor.collapseSidebar')"
             >
               <svg
@@ -286,7 +286,7 @@ onUnmounted(() => {
           >
             <button
               @click="toggleRightSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('canvas.size')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,7 +295,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleRightSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('imageControls.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,7 +304,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleRightSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('text.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,7 +313,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="toggleRightSidebar"
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-slate/20 hover:bg-muted/40 dark:hover:bg-slate/40 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
               :title="t('export.title')"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,10 +367,10 @@ onUnmounted(() => {
         v-if="showRestoreDialog"
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
       >
-        <div class="bg-surface-light dark:bg-slate-dark rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-muted/20 dark:border-muted/30">
+        <div class="bg-surface-light dark:bg-navy rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-muted/20 dark:border-muted/30">
           <!-- Icon -->
           <div class="flex justify-center mb-4">
-            <div class="w-16 h-16 bg-slate/10 dark:bg-slate/20 rounded-full flex items-center justify-center">
+            <div class="w-16 h-16 bg-slate/10 dark:bg-navy/20 rounded-full flex items-center justify-center">
               <svg class="w-8 h-8 text-slate dark:text-muted-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
@@ -402,7 +402,7 @@ onUnmounted(() => {
             </button>
             <button
               @click="handleContinueWithoutRestore"
-              class="w-full px-4 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-slate/30 dark:hover:bg-slate/50 rounded-lg font-medium transition-colors"
+              class="w-full px-4 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/30 dark:hover:bg-navy/50 rounded-lg font-medium transition-colors"
             >
               {{ t('autoSave.continueWithout') }}
             </button>

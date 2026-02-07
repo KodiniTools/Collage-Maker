@@ -59,7 +59,7 @@ function selectLayout(layout: LayoutType) {
     <!-- Info wenn keine Bilder zum Layouten -->
     <div
       v-else-if="canvasImageCount === 0"
-      class="mb-3 p-2 bg-muted/10 dark:bg-slate/20 rounded-lg text-xs text-muted"
+      class="mb-3 p-2 bg-muted/10 dark:bg-navy/20 rounded-lg text-xs text-muted"
     >
       {{ t('layout.noImages') }}
     </div>

@@ -125,7 +125,7 @@ function setSelectedAsBackground() {
             'focus:outline-none focus:ring-2 focus:ring-accent',
             collage.isGalleryImageSelected(image.id)
               ? 'bg-primary/15 dark:bg-primary/25 ring-2 ring-primary shadow-sm'
-              : 'hover:bg-muted/10 dark:hover:bg-slate/30'
+              : 'hover:bg-muted/10 dark:hover:bg-navy/30'
           ]"
           :title="t('gallery.doubleClickHint')"
         >
@@ -233,7 +233,7 @@ function setSelectedAsBackground() {
             <!-- Deselect Button -->
             <button
               @click="collage.deselectAllGalleryImages()"
-              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-navy/20 transition-colors"
             >
               {{ t('gallery.deselectAll') }}
             </button>
@@ -248,7 +248,7 @@ function setSelectedAsBackground() {
       <div v-else class="mt-3 flex flex-wrap gap-2">
         <button
           @click="toggleSelectAll"
-          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-slate/20 transition-colors"
+          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-navy/20 transition-colors"
         >
           {{ t('gallery.selectAll') }}
         </button>
@@ -268,7 +268,7 @@ function setSelectedAsBackground() {
             <h3 class="text-lg font-semibold truncate pr-4">{{ t('gallery.preview') }}</h3>
             <button
               @click="closePreview"
-              class="p-1 hover:bg-muted/20 dark:hover:bg-slate/30 rounded-lg transition-colors"
+              class="p-1 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -277,7 +277,7 @@ function setSelectedAsBackground() {
           </div>
 
           <!-- Image -->
-          <div class="p-4 flex justify-center bg-muted/10 dark:bg-slate/20">
+          <div class="p-4 flex justify-center bg-muted/10 dark:bg-navy/20">
             <img
               :src="previewImage.url"
               :alt="previewImage.file.name"
@@ -296,19 +296,19 @@ function setSelectedAsBackground() {
             <!-- Details Grid -->
             <div class="grid grid-cols-3 gap-4">
               <!-- Format -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-slate/20 rounded-lg">
+              <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
                 <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewFormat') }}</p>
                 <p class="font-semibold text-primary">{{ getFileExtension(previewImage.file.name) }}</p>
               </div>
 
               <!-- Size -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-slate/20 rounded-lg">
+              <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
                 <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewSize') }}</p>
                 <p class="font-semibold">{{ formatFileSize(previewImage.file.size) }}</p>
               </div>
 
               <!-- Dimensions -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-slate/20 rounded-lg">
+              <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
                 <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewDimensions') }}</p>
                 <p class="font-semibold">{{ getImageDimensions(previewImage) }}</p>
               </div>
@@ -322,7 +322,7 @@ function setSelectedAsBackground() {
                   :class="[
                     'flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
                     collage.isGalleryImageSelected(previewImage.id)
-                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-slate/30 dark:hover:bg-slate/40'
+                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-navy/30 dark:hover:bg-navy/40'
                       : 'bg-primary hover:bg-primary-dark text-surface-light'
                   ]"
                 >
