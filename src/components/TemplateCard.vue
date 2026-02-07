@@ -38,7 +38,7 @@ const displayDescription = computed(() => {
     <!-- Thumbnail -->
     <div
       @click="emit('load', template)"
-      class="relative aspect-video bg-muted/10 dark:bg-slate/30 overflow-hidden"
+      class="relative aspect-video bg-muted/10 dark:bg-navy/30 overflow-hidden"
     >
       <img
         v-if="template.thumbnail"

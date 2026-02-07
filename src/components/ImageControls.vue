@@ -382,14 +382,14 @@ function deselectAll() {
       <div class="flex gap-2 mb-4">
         <button
           @click="selectAllImages"
-          class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded-md transition-colors"
+          class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded-md transition-colors"
         >
           {{ t('imageControls.selectAll') }}
         </button>
         <button
           v-if="selectedCount > 0"
           @click="deselectAll"
-          class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 rounded-md transition-colors"
+          class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded-md transition-colors"
         >
           {{ t('imageControls.deselectAll') }}
         </button>
@@ -404,7 +404,7 @@ function deselectAll() {
               'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
               collage.lockAspectRatio
                 ? 'bg-accent/20 text-slate-dark dark:text-accent'
-                : 'bg-muted/10 dark:bg-slate/30 text-slate dark:text-muted'
+                : 'bg-muted/10 dark:bg-navy/30 text-slate dark:text-muted'
             ]"
             :title="t('imageControls.lockAspectRatio')"
           >
@@ -651,7 +651,7 @@ function deselectAll() {
               'px-3 py-1 text-xs rounded transition-colors',
               displayImage.borderEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-                : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
+                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted'
             ]"
           >
             {{ displayImage.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled') }}
@@ -810,7 +810,7 @@ function deselectAll() {
               'px-3 py-1 text-xs rounded transition-colors',
               displayImage.shadowEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-                : 'bg-muted/20 dark:bg-slate/50 hover:bg-muted/30 dark:hover:bg-slate/70 text-slate dark:text-muted'
+                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted'
             ]"
           >
             {{ displayImage.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled') }}
@@ -906,14 +906,14 @@ function deselectAll() {
           </button>
           <button
             @click="bringForward"
-            class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-slate/50 dark:hover:bg-slate/70 rounded-md text-sm"
+            class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md text-sm"
             :title="t('imageControls.forward')"
           >
             {{ t('imageControls.forward') }}
           </button>
           <button
             @click="sendBackward"
-            class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-slate/50 dark:hover:bg-slate/70 rounded-md text-sm"
+            class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md text-sm"
             :title="t('imageControls.backward')"
           >
             {{ t('imageControls.backward') }}

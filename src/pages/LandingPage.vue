@@ -100,7 +100,7 @@ const allFeatures = [
             >
               {{ t('nav.faq') }}
             </RouterLink>
-            <div class="flex items-center gap-2 bg-surface-light/90 dark:bg-slate-dark/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-muted/20 dark:border-muted/30">
+            <div class="flex items-center gap-2 bg-surface-light/90 dark:bg-navy backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-muted/20 dark:border-muted/30">
               <LanguageToggle />
               <ThemeToggle />
             </div>
@@ -136,7 +136,7 @@ const allFeatures = [
           <div
             v-for="feature in heroFeatures"
             :key="feature.key"
-            class="group relative bg-white dark:bg-slate-dark/50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
+            class="group relative bg-white dark:bg-navy rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
           >
             <!-- Icon -->
             <div :class="['w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center mb-5 shadow-lg', feature.gradient]">
@@ -181,7 +181,7 @@ const allFeatures = [
           <div
             v-for="feature in allFeatures"
             :key="feature.key"
-            class="group relative bg-white dark:bg-slate-dark/50 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
+            class="group relative bg-white dark:bg-navy rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
           >
             <!-- Icon -->
             <div :class="['w-12 h-12 rounded-lg bg-gradient-to-br flex items-center justify-center mb-4 shadow-md', feature.gradient]">
@@ -299,21 +299,6 @@ const allFeatures = [
           </RouterLink>
         </div>
       </section>
-
-      <!-- Footer -->
-      <footer class="container mx-auto px-4 py-8 border-t border-muted/20 dark:border-slate/30">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p class="text-muted dark:text-muted-light text-sm">{{ t('landing.footer') }}</p>
-          <div class="flex items-center gap-6">
-            <RouterLink to="/faq" class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light text-sm transition-colors">
-              {{ t('nav.faq') }}
-            </RouterLink>
-            <RouterLink to="/editor" class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light text-sm transition-colors">
-              {{ t('nav.editor') }}
-            </RouterLink>
-          </div>
-        </div>
-      </footer>
     </div>
   </div>
 </template>

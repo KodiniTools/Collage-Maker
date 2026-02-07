@@ -67,7 +67,7 @@ function toggleQuestion(index: number) {
             >
               {{ t('nav.editor') }}
             </RouterLink>
-            <div class="flex items-center gap-2 bg-surface-light/90 dark:bg-slate-dark/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-muted/20 dark:border-muted/30">
+            <div class="flex items-center gap-2 bg-surface-light/90 dark:bg-navy backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-muted/20 dark:border-muted/30">
               <LanguageToggle />
               <ThemeToggle />
             </div>
@@ -122,11 +122,11 @@ function toggleQuestion(index: number) {
               <div
                 v-for="item in items"
                 :key="item.index"
-                class="border border-muted/30 dark:border-slate/50 rounded-xl overflow-hidden bg-white dark:bg-slate-dark/30 backdrop-blur-sm"
+                class="border border-muted/30 dark:border-slate/50 rounded-xl overflow-hidden bg-white dark:bg-navy backdrop-blur-sm"
               >
                 <button
                   @click="toggleQuestion(item.index)"
-                  class="w-full px-6 py-5 text-left hover:bg-muted/10 dark:hover:bg-slate/30 transition-colors flex items-center justify-between gap-4"
+                  class="w-full px-6 py-5 text-left hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors flex items-center justify-between gap-4"
                 >
                   <span class="font-semibold text-lg text-slate-dark dark:text-white">{{ item.question }}</span>
                   <svg
@@ -149,7 +149,7 @@ function toggleQuestion(index: number) {
                   leave-to-class="max-h-0 opacity-0"
                 >
                   <div v-show="openIndex === item.index" class="overflow-hidden">
-                    <div class="px-6 py-5 bg-muted/5 dark:bg-slate/20 text-slate-dark dark:text-gray-100 leading-relaxed border-t border-muted/20 dark:border-slate/30">
+                    <div class="px-6 py-5 bg-muted/5 dark:bg-navy/20 text-slate-dark dark:text-gray-100 leading-relaxed border-t border-muted/20 dark:border-slate/30">
                       {{ item.answer }}
                     </div>
                   </div>
@@ -180,21 +180,6 @@ function toggleQuestion(index: number) {
           </RouterLink>
         </div>
       </section>
-
-      <!-- Footer -->
-      <footer class="container mx-auto px-4 py-8 border-t border-muted/20 dark:border-slate/30">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p class="text-muted dark:text-muted-light text-sm">{{ t('landing.footer') }}</p>
-          <div class="flex items-center gap-6">
-            <RouterLink to="/" class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light text-sm transition-colors">
-              {{ t('nav.home') }}
-            </RouterLink>
-            <RouterLink to="/editor" class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light text-sm transition-colors">
-              {{ t('nav.editor') }}
-            </RouterLink>
-          </div>
-        </div>
-      </footer>
     </div>
   </div>
 </template>

@@ -38,7 +38,7 @@ const { t } = useI18n()
           'focus:outline-none focus:ring-2 focus:ring-accent',
           collage.selectedTextId === text.id
             ? 'bg-accent/10 dark:bg-accent/5 border-accent'
-            : 'bg-muted/5 dark:bg-slate/20 border-muted/30 dark:border-slate/30 hover:bg-muted/10 dark:hover:bg-slate/30'
+            : 'bg-muted/5 dark:bg-navy/20 border-muted/30 dark:border-slate/30 hover:bg-muted/10 dark:hover:bg-navy/30'
         ]"
       >
         <div class="flex items-start justify-between gap-2">

@@ -88,7 +88,7 @@ const features = [
           <div
             v-for="feature in features"
             :key="feature.key"
-            class="group relative bg-white dark:bg-slate-dark/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
+            class="group relative bg-white dark:bg-navy rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
           >
             <!-- Icon -->
             <div :class="['w-14 h-14 rounded-xl bg-gradient-to-br flex items-center justify-center mb-4 shadow-lg', feature.gradient]">

@@ -360,7 +360,7 @@ if (collage.selectedText) {
               ? collage.selectedText.fontWeight >= 700
               : collage.selectedText.fontWeight === 'bold')
               ? 'bg-accent text-slate-dark'
-              : 'bg-muted/20 dark:bg-slate/50'
+              : 'bg-muted/20 dark:bg-navy/50'
           ]"
         >
           <strong>B</strong>
@@ -372,7 +372,7 @@ if (collage.selectedText) {
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'left'
               ? 'bg-accent text-slate-dark'
-              : 'bg-muted/20 dark:bg-slate/50'
+              : 'bg-muted/20 dark:bg-navy/50'
           ]"
         >
           ←
@@ -384,7 +384,7 @@ if (collage.selectedText) {
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'center'
               ? 'bg-accent text-slate-dark'
-              : 'bg-muted/20 dark:bg-slate/50'
+              : 'bg-muted/20 dark:bg-navy/50'
           ]"
         >
           ↔
@@ -396,7 +396,7 @@ if (collage.selectedText) {
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'right'
               ? 'bg-accent text-slate-dark'
-              : 'bg-muted/20 dark:bg-slate/50'
+              : 'bg-muted/20 dark:bg-navy/50'
           ]"
         >
           →

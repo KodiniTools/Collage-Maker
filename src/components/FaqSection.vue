@@ -29,7 +29,7 @@ function toggleQuestion(index: number) {
         >
           <button
             @click="toggleQuestion(index)"
-            class="w-full px-6 py-4 text-left bg-surface-light dark:bg-slate/30 hover:bg-muted/10 dark:hover:bg-slate/40 transition-colors flex items-center justify-between gap-4"
+            class="w-full px-6 py-4 text-left bg-surface-light dark:bg-navy/30 hover:bg-muted/10 dark:hover:bg-navy/40 transition-colors flex items-center justify-between gap-4"
           >
             <span class="font-semibold text-lg text-slate-dark dark:text-white">{{ item.question }}</span>
             <svg
@@ -52,7 +52,7 @@ function toggleQuestion(index: number) {
             leave-to-class="max-h-0 opacity-0"
           >
             <div v-show="openIndex === index" class="overflow-hidden">
-              <div class="px-6 py-4 bg-muted/10 dark:bg-slate/50 text-slate-dark dark:text-gray-100">
+              <div class="px-6 py-4 bg-muted/10 dark:bg-navy/50 text-slate-dark dark:text-gray-100">
                 {{ item.answer }}
               </div>
             </div>

@@ -1497,7 +1497,7 @@ watch(() => collage.images, (newImages, oldImages) => {
 <template>
   <div
     ref="container"
-    class="w-full bg-muted/10 dark:bg-slate/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
+    class="w-full bg-muted/10 dark:bg-navy/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
     :style="{
       height: 'calc(100vh - 12rem)',
       overflow: 'hidden'

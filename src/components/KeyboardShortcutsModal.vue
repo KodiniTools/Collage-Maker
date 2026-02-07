@@ -37,7 +37,7 @@ const categoryIcons = {
     >
       <div class="relative w-full max-w-3xl max-h-[85vh] bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden flex flex-col">
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-slate/5">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
           <div class="flex items-center gap-3">
             <svg class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
@@ -46,7 +46,7 @@ const categoryIcons = {
           </div>
           <button
             @click="close"
-            class="p-2 rounded-lg hover:bg-muted/10 dark:hover:bg-slate/10 transition-colors"
+            class="p-2 rounded-lg hover:bg-muted/10 dark:hover:bg-navy/10 transition-colors"
             :aria-label="t('common.cancel')"
           >
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -71,7 +71,7 @@ const categoryIcons = {
                   class="flex items-center justify-between py-1.5"
                 >
                   <span class="text-sm text-slate-dark dark:text-slate/90">{{ t(shortcut.descriptionKey) }}</span>
-                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-slate/20 rounded border border-muted/30 dark:border-slate/30">
+                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30">
                     {{ formatShortcut(shortcut) }}
                   </kbd>
                 </div>
@@ -91,7 +91,7 @@ const categoryIcons = {
                   class="flex items-center justify-between py-1.5"
                 >
                   <span class="text-sm text-slate-dark dark:text-slate/90">{{ t(shortcut.descriptionKey) }}</span>
-                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-slate/20 rounded border border-muted/30 dark:border-slate/30">
+                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30">
                     {{ formatShortcut(shortcut) }}
                   </kbd>
                 </div>
@@ -111,7 +111,7 @@ const categoryIcons = {
                   class="flex items-center justify-between py-1.5"
                 >
                   <span class="text-sm text-slate-dark dark:text-slate/90">{{ t(shortcut.descriptionKey) }}</span>
-                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-slate/20 rounded border border-muted/30 dark:border-slate/30">
+                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30">
                     {{ formatShortcut(shortcut) }}
                   </kbd>
                 </div>
@@ -134,7 +134,7 @@ const categoryIcons = {
                   class="flex items-center justify-between py-1.5"
                 >
                   <span class="text-sm text-slate-dark dark:text-slate/90">{{ t(shortcut.descriptionKey) }}</span>
-                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-slate/20 rounded border border-muted/30 dark:border-slate/30">
+                  <kbd class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30">
                     {{ formatShortcut(shortcut) }}
                   </kbd>
                 </div>
@@ -153,7 +153,7 @@ const categoryIcons = {
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-slate/5">
+        <div class="px-6 py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
           <div class="flex items-center justify-between">
             <span class="text-xs text-muted dark:text-slate/60">
               {{ t('shortcuts.pressToOpen') }}
