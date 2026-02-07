@@ -38,26 +38,38 @@ html.dark body {
   }
 }
 
-/* Global SSI partials (nav/footer outside #app) - text contrast for both modes */
+/* Global SSI partials (nav/footer outside #app) */
+/* Remove any own background so page bg shows through */
+body > :not(#app):not(script),
+body > :not(#app):not(script) * {
+  background-color: transparent !important;
+}
+
 /* Light mode: dark text on light gradient background */
-body > :not(#app):not(script) {
-  color: #003971;
+body > :not(#app):not(script),
+body > :not(#app):not(script) * {
+  color: #003971 !important;
 }
-body > :not(#app):not(script) a {
-  color: #014f99;
+body > :not(#app):not(script) a,
+body > :not(#app):not(script) a * {
+  color: #014f99 !important;
 }
-body > :not(#app):not(script) a:hover {
-  color: #c9984d;
+body > :not(#app):not(script) a:hover,
+body > :not(#app):not(script) a:hover * {
+  color: #c9984d !important;
 }
 
 /* Dark mode: light text on dark background */
-html.dark body > :not(#app):not(script) {
-  color: #f9f2d5;
+html.dark body > :not(#app):not(script),
+html.dark body > :not(#app):not(script) * {
+  color: #f9f2d5 !important;
 }
-html.dark body > :not(#app):not(script) a {
-  color: #f8e1a9;
+html.dark body > :not(#app):not(script) a,
+html.dark body > :not(#app):not(script) a * {
+  color: #f8e1a9 !important;
 }
-html.dark body > :not(#app):not(script) a:hover {
-  color: #c9984d;
+html.dark body > :not(#app):not(script) a:hover,
+html.dark body > :not(#app):not(script) a:hover * {
+  color: #c9984d !important;
 }
 
