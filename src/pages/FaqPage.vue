@@ -41,7 +41,7 @@ function toggleQuestion(index: number) {
     <!-- Content -->
     <div class="relative z-10">
       <!-- Navigation -->
-      <header class="container mx-auto px-4 pt-6">
+      <header class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md container mx-auto px-4 pt-6">
         <nav class="flex items-center justify-between">
           <!-- Logo -->
           <RouterLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">

@@ -77,7 +77,7 @@ onUnmounted(() => {
 <template>
   <div class="flex flex-col min-h-screen bg-page-gradient text-slate-dark dark:text-muted-light transition-colors">
     <!-- Header -->
-    <header class="border-b border-muted/30 dark:border-slate/30">
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md border-b border-muted/30 dark:border-slate/30">
       <div class="container mx-auto px-4 py-4 flex items-center justify-between">
         <div class="flex items-center gap-4">
           <!-- Back to Landing Button -->
