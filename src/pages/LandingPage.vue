@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
-import ThemeToggle from '@/components/ThemeToggle.vue'
-import LanguageToggle from '@/components/LanguageToggle.vue'
 
 const { t } = useI18n()
 
@@ -100,10 +98,6 @@ const allFeatures = [
             >
               {{ t('nav.faq') }}
             </RouterLink>
-            <div class="flex items-center gap-2 bg-surface-light/90 dark:bg-navy backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-muted/20 dark:border-muted/30">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
           </div>
         </nav>
       </header>
