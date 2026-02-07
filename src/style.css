@@ -22,3 +22,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@layer utilities {
+  .bg-page-gradient {
+    background: linear-gradient(180deg, #FFFFFF 0%, #F5F4D6 100%);
+    background-attachment: fixed;
+  }
+  .dark .bg-page-gradient {
+    background: #0C0C10;
+  }
+}
+

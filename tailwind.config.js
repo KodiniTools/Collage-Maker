@@ -10,9 +10,9 @@ export default {
       colors: {
         // custom color scheme
         accent: {
-          DEFAULT: '#F2E28E',
-          light: '#F7EDB8',
-          dark: '#D9C96E',
+          DEFAULT: '#c9984d',
+          light: '#f8e1a9',
+          dark: '#a67d35',
         },
         warm: {
           DEFAULT: '#A28680',
@@ -20,9 +20,9 @@ export default {
           dark: '#8A706B',
         },
         slate: {
-          DEFAULT: '#5E5F69',
-          light: '#7A7B84',
-          dark: '#494A52',
+          DEFAULT: '#014f99',
+          light: '#3373b3',
+          dark: '#003971',
         },
         muted: {
           DEFAULT: '#AEAFB7',
@@ -34,6 +34,10 @@ export default {
           DEFAULT: '#F5F5F7',
           dark: '#0C0C10',
           darker: '#050507',
+        },
+        cream: {
+          DEFAULT: '#F5F4D6',
+          light: '#f9f2d5',
         },
       },
     },
