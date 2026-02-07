@@ -31,7 +31,7 @@ function toggleQuestion(index: number) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-surface-light dark:bg-surface-dark">
+  <div class="min-h-screen bg-page-gradient">
     <!-- Animated Background -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent/10 rounded-full blur-3xl"></div>
@@ -163,10 +163,10 @@ function toggleQuestion(index: number) {
       <!-- CTA Section -->
       <section class="container mx-auto px-4 py-16">
         <div class="max-w-2xl mx-auto bg-gradient-to-br from-slate-dark to-slate dark:from-slate dark:to-slate-light/10 rounded-3xl p-8 md:p-12 shadow-2xl text-center">
-          <h3 class="text-2xl md:text-3xl font-bold text-surface-light mb-4">
+          <h3 class="text-2xl md:text-3xl font-bold text-cream mb-4">
             {{ t('faqPage.cta.title') }}
           </h3>
-          <p class="text-muted-light mb-8">
+          <p class="text-cream/70 mb-8">
             {{ t('faqPage.cta.subtitle') }}
           </p>
           <RouterLink

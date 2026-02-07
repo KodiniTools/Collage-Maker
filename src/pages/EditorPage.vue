@@ -75,7 +75,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light transition-colors">
+  <div class="flex flex-col min-h-screen bg-page-gradient text-slate-dark dark:text-muted-light transition-colors">
     <!-- Header -->
     <header class="border-b border-muted/30 dark:border-slate/30">
       <div class="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -396,7 +396,7 @@ onUnmounted(() => {
           <div class="flex flex-col gap-3">
             <button
               @click="handleRestore"
-              class="w-full px-4 py-3 bg-slate hover:bg-slate-dark text-surface-light rounded-lg font-semibold transition-colors"
+              class="w-full px-4 py-3 bg-slate hover:bg-slate-dark text-cream rounded-lg font-semibold transition-colors"
             >
               {{ t('autoSave.restore') }}
             </button>
