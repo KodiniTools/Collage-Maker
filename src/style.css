@@ -32,3 +32,14 @@ body {
   }
 }
 
+/* Global SSI partials (nav/footer outside #app) - dark mode text contrast */
+html.dark body > :not(#app):not(script) {
+  color: #f9f2d5;
+}
+html.dark body > :not(#app):not(script) a {
+  color: #f8e1a9;
+}
+html.dark body > :not(#app):not(script) a:hover {
+  color: #c9984d;
+}
+

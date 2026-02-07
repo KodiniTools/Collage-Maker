@@ -17,9 +17,9 @@ function switchLocale(newLocale: Locale) {
     <button
       @click="switchLocale('de')"
       :class="[
-        'px-3 py-1 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent',
+        'px-3 py-1 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent text-slate-dark dark:text-surface-light',
         settings.locale === 'de'
-          ? 'bg-surface-light dark:bg-surface-dark shadow'
+          ? 'bg-surface-light dark:bg-navy shadow'
           : 'hover:bg-muted/30 dark:hover:bg-navy/70'
       ]"
       :aria-pressed="settings.locale === 'de'"
@@ -30,9 +30,9 @@ function switchLocale(newLocale: Locale) {
     <button
       @click="switchLocale('en')"
       :class="[
-        'px-3 py-1 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent',
+        'px-3 py-1 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent text-slate-dark dark:text-surface-light',
         settings.locale === 'en'
-          ? 'bg-surface-light dark:bg-surface-dark shadow'
+          ? 'bg-surface-light dark:bg-navy shadow'
           : 'hover:bg-muted/30 dark:hover:bg-navy/70'
       ]"
       :aria-pressed="settings.locale === 'en'"
