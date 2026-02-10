@@ -3,6 +3,63 @@ import { ref, watch } from 'vue'
 import type { Theme, Locale } from '@/types'
 import { i18n } from '@/i18n'
 
+// SSI nav translations — mirrors the navTranslations in nav.html so the
+// Vue app can translate the SSI navigation when locale changes from any source.
+const ssiNavTranslations: Record<string, Record<string, string>> = {
+  de: {
+    'nav.aria':           'Hauptnavigation',
+    'nav.audiotools':     'Audiotools',
+    'nav.mp3converter':   'MP3 Konverter',
+    'nav.audioequalizer': 'Interactive Audio Equalizer',
+    'nav.modernplayer':   'Moderner Musikplayer',
+    'nav.ultimateplayer': 'Ultimativer Musikplayer',
+    'nav.playlistgen':    'Audio Playlist Generator',
+    'nav.playlistconv':   'Audio Playlist Konverter',
+    'nav.alarmtool':      'Modernes Alarmtool',
+    'nav.normalizer':     'Audio Normalizer',
+    'nav.visualizer':     'Audio Visualizer',
+    'nav.eq19':           '19 Band Equalizer',
+    'nav.audioconv':      'Audio Konverter',
+    'nav.imagetools':     'Bildtools',
+    'nav.imageconv':      'Bildkonverter',
+    'nav.batchedit':      'Bildserie bearbeiten',
+    'nav.collage':        'Fotocollage',
+    'nav.tools':          'Tools',
+    'nav.colorextractor': 'Kodini Farbextraktor',
+    'nav.videoconv':      'Videokonverter',
+    'nav.contact':        'Kontakt',
+    'nav.themeAria':      'Theme wechseln',
+    'nav.themeTitle':     'Hell/Dunkel umschalten',
+    'nav.langAria':       'Sprache wählen'
+  },
+  en: {
+    'nav.aria':           'Main Navigation',
+    'nav.audiotools':     'Audio Tools',
+    'nav.mp3converter':   'MP3 Converter',
+    'nav.audioequalizer': 'Interactive Audio Equalizer',
+    'nav.modernplayer':   'Modern Music Player',
+    'nav.ultimateplayer': 'Ultimate Music Player',
+    'nav.playlistgen':    'Audio Playlist Generator',
+    'nav.playlistconv':   'Audio Playlist Converter',
+    'nav.alarmtool':      'Modern Alarm Tool',
+    'nav.normalizer':     'Audio Normalizer',
+    'nav.visualizer':     'Audio Visualizer',
+    'nav.eq19':           '19 Band Equalizer',
+    'nav.audioconv':      'Audio Converter',
+    'nav.imagetools':     'Image Tools',
+    'nav.imageconv':      'Image Converter',
+    'nav.batchedit':      'Batch Image Editor',
+    'nav.collage':        'Photo Collage',
+    'nav.tools':          'Tools',
+    'nav.colorextractor': 'Kodini Color Extractor',
+    'nav.videoconv':      'Video Converter',
+    'nav.contact':        'Contact',
+    'nav.themeAria':      'Toggle theme',
+    'nav.themeTitle':     'Switch Light/Dark',
+    'nav.langAria':       'Select language'
+  }
+}
+
 export const useSettingsStore = defineStore('settings', () => {
   const theme = ref<Theme>((localStorage.getItem('theme') as Theme) || 'light')
   const locale = ref<Locale>((localStorage.getItem('locale') as Locale) || 'de')
@@ -19,12 +76,13 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }, { immediate: true })
 
-  // Locale watcher - sync localStorage, html lang, vue-i18n, and SSI nav buttons
+  // Locale watcher - sync localStorage, html lang, vue-i18n, SSI nav buttons & text
   watch(locale, (newLocale) => {
     localStorage.setItem('locale', newLocale)
     document.documentElement.setAttribute('lang', newLocale)
     i18n.global.locale.value = newLocale
     syncNavLangButtons(newLocale)
+    translateSsiNav(newLocale)
   })
 
   // Listen for theme-changed event from global SSI nav
@@ -36,21 +94,35 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  // Intercept SSI nav language button clicks (capture phase)
-  // to update Vue i18n reactively. The nav's own handler still runs
-  // afterwards (target/bubble phase) and calls translateNav() to
-  // translate the navigation text itself.
-  function onNavLangClick(e: Event) {
-    const target = (e.target as HTMLElement)?.closest('.global-nav-lang-btn') as HTMLElement | null
-    if (!target) return
+  // Listen for language-changed event from global SSI nav
+  function onLanguageChanged(e: Event) {
+    const customEvent = e as CustomEvent<{ lang: string }>
+    const newLang = customEvent.detail?.lang as Locale
+    if (newLang && newLang !== locale.value) {
+      locale.value = newLang
+    }
+  }
 
-    const targetLang = target.getAttribute('data-lang') as Locale | null
-    if (!targetLang || targetLang === locale.value) return
+  // Translate all SSI nav DOM elements using data-nav-i18n attributes
+  function translateSsiNav(lang: string) {
+    const t = ssiNavTranslations[lang] || ssiNavTranslations['de']
+    const nav = document.querySelector('.global-nav')
+    if (!nav) return
 
-    // Update locale reactively — watcher syncs localStorage, i18n, etc.
-    // Do NOT stopPropagation: the SSI nav's handler must also run
-    // so it can call translateNav() to translate the nav text.
-    locale.value = targetLang
+    nav.querySelectorAll('[data-nav-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-nav-i18n')
+      if (key && t[key]) el.textContent = t[key]
+    })
+
+    nav.querySelectorAll('[data-nav-i18n-aria]').forEach((el) => {
+      const key = el.getAttribute('data-nav-i18n-aria')
+      if (key && t[key]) el.setAttribute('aria-label', t[key])
+    })
+
+    nav.querySelectorAll('[data-nav-i18n-title]').forEach((el) => {
+      const key = el.getAttribute('data-nav-i18n-title')
+      if (key && t[key]) el.setAttribute('title', t[key])
+    })
   }
 
   // Keep SSI nav buttons' active class in sync
@@ -66,13 +138,12 @@ export const useSettingsStore = defineStore('settings', () => {
 
   function startListening() {
     window.addEventListener('theme-changed', onGlobalThemeChanged)
-    // Capture phase so we run before the SSI nav's bubble-phase handler
-    document.addEventListener('click', onNavLangClick, true)
+    window.addEventListener('language-changed', onLanguageChanged)
   }
 
   function stopListening() {
     window.removeEventListener('theme-changed', onGlobalThemeChanged)
-    document.removeEventListener('click', onNavLangClick, true)
+    window.removeEventListener('language-changed', onLanguageChanged)
   }
 
   // Auto-start listening
