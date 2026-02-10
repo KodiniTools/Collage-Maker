@@ -39,10 +39,21 @@ html.dark body {
 }
 
 /* Global SSI partials (nav/footer outside #app) */
-/* Remove any own background so page bg shows through */
-body > :not(#app):not(script),
-body > :not(#app):not(script) * {
+/* Remove any own background so page bg shows through — except cookie banner */
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]),
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) *:not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) {
   background-color: transparent !important;
+}
+
+/* Cookie Banner: always in foreground, above nav (z-index:100) and dropdowns (z-index:200) */
+.cookie-banner,
+.cookie-consent,
+[class*="cookie-banner"],
+[class*="cookie-consent"],
+[id*="cookie-banner"],
+[id*="cookie-consent"] {
+  z-index: 10000 !important;
+  position: fixed !important;
 }
 
 /* Light mode: dark text on light gradient background */
