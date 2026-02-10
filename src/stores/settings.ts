@@ -37,7 +37,9 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   // Intercept SSI nav language button clicks (capture phase)
-  // to prevent the SSI nav's default reload and handle reactively
+  // to update Vue i18n reactively. The nav's own handler still runs
+  // afterwards (target/bubble phase) and calls translateNav() to
+  // translate the navigation text itself.
   function onNavLangClick(e: Event) {
     const target = (e.target as HTMLElement)?.closest('.global-nav-lang-btn') as HTMLElement | null
     if (!target) return
@@ -45,11 +47,9 @@ export const useSettingsStore = defineStore('settings', () => {
     const targetLang = target.getAttribute('data-lang') as Locale | null
     if (!targetLang || targetLang === locale.value) return
 
-    // Stop the SSI nav's handler from running (which would reload)
-    e.stopPropagation()
-    e.preventDefault()
-
-    // Update locale reactively — watcher handles the rest
+    // Update locale reactively — watcher syncs localStorage, i18n, etc.
+    // Do NOT stopPropagation: the SSI nav's handler must also run
+    // so it can call translateNav() to translate the nav text.
     locale.value = targetLang
   }
 
