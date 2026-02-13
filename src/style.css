@@ -39,10 +39,28 @@ html.dark body {
 }
 
 /* Global SSI partials (nav/footer outside #app) */
-/* Remove any own background so page bg shows through — except cookie banner */
+/* Remove any own background so page bg shows through — except cookie banner and dropdowns */
 body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]),
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) *:not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) {
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) *:not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([class*="drop"]):not([class*="sub-menu"]):not([class*="submenu"]):not([class*="popup"]):not([class*="popover"]):not([class*="megamenu"]) {
   background-color: transparent !important;
+}
+
+/* Restore solid background for dropdown/submenu elements in SSI navigation */
+body > :not(#app):not(script) [class*="drop"],
+body > :not(#app):not(script) [class*="sub-menu"],
+body > :not(#app):not(script) [class*="submenu"],
+body > :not(#app):not(script) [class*="popup"],
+body > :not(#app):not(script) [class*="popover"],
+body > :not(#app):not(script) [class*="megamenu"] {
+  background-color: #ffffff !important;
+}
+html.dark body > :not(#app):not(script) [class*="drop"],
+html.dark body > :not(#app):not(script) [class*="sub-menu"],
+html.dark body > :not(#app):not(script) [class*="submenu"],
+html.dark body > :not(#app):not(script) [class*="popup"],
+html.dark body > :not(#app):not(script) [class*="popover"],
+html.dark body > :not(#app):not(script) [class*="megamenu"] {
+  background-color: #091428 !important;
 }
 
 /* Cookie Banner: always in foreground, above nav (z-index:100) and dropdowns (z-index:200) */
