@@ -74,31 +74,31 @@ html.dark body > :not(#app):not(script) [class*="megamenu"] {
   position: fixed !important;
 }
 
-/* Light mode: dark text on light gradient background */
-body > :not(#app):not(script),
-body > :not(#app):not(script) * {
+/* Light mode: dark text on light gradient background — exclude cookie banner */
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]),
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) *:not([class*="cookie"]):not([id*="cookie"]) {
   color: #003971 !important;
 }
-body > :not(#app):not(script) a,
-body > :not(#app):not(script) a * {
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]),
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]) * {
   color: #014f99 !important;
 }
-body > :not(#app):not(script) a:hover,
-body > :not(#app):not(script) a:hover * {
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]),
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]) * {
   color: #c9984d !important;
 }
 
-/* Dark mode: light text on dark background */
-html.dark body > :not(#app):not(script),
-html.dark body > :not(#app):not(script) * {
+/* Dark mode: light text on dark background — exclude cookie banner */
+html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]),
+html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) *:not([class*="cookie"]):not([id*="cookie"]) {
   color: #f9f2d5 !important;
 }
-html.dark body > :not(#app):not(script) a,
-html.dark body > :not(#app):not(script) a * {
+html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]),
+html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]) * {
   color: #f8e1a9 !important;
 }
-html.dark body > :not(#app):not(script) a:hover,
-html.dark body > :not(#app):not(script) a:hover * {
+html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]),
+html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]) * {
   color: #c9984d !important;
 }
 
