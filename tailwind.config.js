@@ -25,9 +25,9 @@ export default {
           dark: '#003971',
         },
         muted: {
-          DEFAULT: '#7A8DA0',
+          DEFAULT: '#596D80',
           light: '#f8e1a9',
-          dark: '#5E7189',
+          dark: '#465A6C',
         },
         surface: {
           light: '#f9f2d5',
