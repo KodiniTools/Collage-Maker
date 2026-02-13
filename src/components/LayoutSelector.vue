@@ -64,7 +64,7 @@ function selectLayout(layout: LayoutType) {
       {{ t('layout.noImages') }}
     </div>
 
-    <div class="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1" role="group" aria-label="Layout options">
+    <div class="grid grid-cols-2 gap-1.5 sm:gap-2 max-h-[400px] overflow-y-auto pr-1" role="group" aria-label="Layout options">
       <button
         v-for="layout in layouts"
         :key="layout.value"

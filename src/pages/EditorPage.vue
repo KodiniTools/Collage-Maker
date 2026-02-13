@@ -29,6 +29,7 @@ const collage = useCollageStore()
 // Collapsible Sidebar State
 const leftSidebarCollapsed = ref(false)
 const rightSidebarCollapsed = ref(false)
+const mobileRightPanel = ref(false)
 
 function toggleLeftSidebar() {
   leftSidebarCollapsed.value = !leftSidebarCollapsed.value
@@ -60,6 +61,11 @@ onMounted(() => {
   setupKeyboardListeners()
   autoSave.setupAutoSave()
 
+  // Auto-collapse left sidebar on smaller screens
+  if (window.innerWidth < 1024) {
+    leftSidebarCollapsed.value = true
+  }
+
   // Prüfe ob gespeicherte Daten vorhanden sind
   if (autoSave.hasSavedState()) {
     restoreSaveDate.value = autoSave.getSaveDate()
@@ -76,8 +82,8 @@ onUnmounted(() => {
   <div class="flex flex-col min-h-screen bg-page-gradient text-slate-dark dark:text-muted-light transition-colors">
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md border-b border-muted/30 dark:border-slate/30">
-      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-4">
+      <div class="container mx-auto px-2 py-2 sm:px-4 sm:py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2 sm:gap-4">
           <!-- Back to Landing Button -->
           <RouterLink
             to="/"
@@ -89,13 +95,13 @@ onUnmounted(() => {
             </svg>
           </RouterLink>
           <div>
-            <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
-            <p class="text-sm text-muted dark:text-muted">{{ t('app.subtitle') }}</p>
+            <h1 class="text-lg sm:text-2xl font-bold">{{ t('app.title') }}</h1>
+            <p class="text-xs sm:text-sm text-muted dark:text-muted hidden sm:block">{{ t('app.subtitle') }}</p>
           </div>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1 sm:gap-3">
           <!-- Undo/Redo Buttons -->
-          <div class="flex items-center gap-1 mr-2">
+          <div class="flex items-center gap-1 mr-1 sm:mr-2">
             <button
               @click="collage.undo"
               :disabled="!collage.canUndo"
@@ -142,8 +148,8 @@ onUnmounted(() => {
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 container mx-auto px-4 py-6">
-      <div class="flex gap-4 lg:gap-6">
+    <main class="flex-1 container mx-auto px-2 py-3 sm:px-4 sm:py-6">
+      <div class="flex gap-2 sm:gap-4 lg:gap-6">
         <!-- Left Sidebar - Collapsible -->
         <aside
           class="transition-all duration-300 ease-in-out flex-shrink-0"
@@ -245,13 +251,52 @@ onUnmounted(() => {
           <CollageCanvas />
         </section>
 
+        <!-- Mobile Settings FAB -->
+        <button
+          @click="mobileRightPanel = !mobileRightPanel"
+          class="lg:hidden fixed bottom-4 right-4 z-40 w-12 h-12 rounded-full bg-accent hover:bg-accent-dark text-slate-dark shadow-lg flex items-center justify-center transition-colors"
+          :title="t('editor.settings')"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+
+        <!-- Mobile backdrop for right panel -->
+        <div
+          v-if="mobileRightPanel"
+          class="lg:hidden fixed inset-0 bg-black/50 z-40"
+          @click="mobileRightPanel = false"
+        />
+
         <!-- Right Sidebar - Collapsible Controls -->
         <aside
-          class="transition-all duration-300 ease-in-out flex-shrink-0 hidden lg:block"
-          :class="rightSidebarCollapsed ? 'w-14' : 'w-72 xl:w-80'"
+          class="transition-all duration-300 ease-in-out flex-shrink-0"
+          :class="[
+            mobileRightPanel
+              ? 'fixed right-0 top-0 bottom-0 z-50 w-80 max-w-[calc(100vw-3rem)] bg-surface-light dark:bg-surface-dark shadow-2xl overflow-y-auto p-4 lg:p-0 lg:static lg:z-auto lg:max-w-none lg:bg-transparent lg:dark:bg-transparent lg:shadow-none lg:overflow-visible'
+              : 'hidden lg:block',
+            rightSidebarCollapsed ? 'lg:w-14' : 'lg:w-72 xl:w-80',
+          ]"
         >
-          <!-- Sidebar Header with Toggle -->
-          <div class="flex items-center mb-4" :class="rightSidebarCollapsed ? 'justify-center' : 'justify-between'">
+          <!-- Mobile close button -->
+          <div v-if="mobileRightPanel" class="lg:hidden flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide">
+              {{ t('editor.settings') }}
+            </h2>
+            <button
+              @click="mobileRightPanel = false"
+              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Sidebar Header with Toggle (desktop) -->
+          <div class="hidden lg:flex items-center mb-4" :class="rightSidebarCollapsed ? 'justify-center' : 'justify-between'">
             <h2
               v-if="!rightSidebarCollapsed"
               class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide"
@@ -275,10 +320,10 @@ onUnmounted(() => {
             </button>
           </div>
 
-          <!-- Collapsed State: Icon Bar -->
+          <!-- Collapsed State: Icon Bar (desktop only) -->
           <div
             v-if="rightSidebarCollapsed"
-            class="flex flex-col items-center gap-2"
+            class="hidden lg:flex flex-col items-center gap-2"
           >
             <button
               @click="toggleRightSidebar"
@@ -320,7 +365,7 @@ onUnmounted(() => {
 
           <!-- Expanded State: Full Content -->
           <div
-            v-else
+            v-if="!rightSidebarCollapsed || mobileRightPanel"
             class="space-y-6 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-2"
           >
             <CanvasSettings />
@@ -337,7 +382,7 @@ onUnmounted(() => {
       <div class="container mx-auto px-4 text-center">
         <form action="https://www.paypal.com/donate" method="post" target="_top" class="inline-block">
           <input type="hidden" name="hosted_button_id" value="8RGLGQ2BFMHU6" />
-          <button type="submit" class="px-8 py-3 bg-warm hover:bg-warm-dark text-surface-light font-semibold rounded-lg shadow-lg transition-colors duration-150 flex items-center gap-2 mx-auto">
+          <button type="submit" class="px-4 py-2 sm:px-8 sm:py-3 bg-warm hover:bg-warm-dark text-surface-light font-semibold rounded-lg shadow-lg transition-colors duration-150 flex items-center gap-2 mx-auto text-sm sm:text-base">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.028.15a.805.805 0 0 1-.794.68H8.032c-.3 0-.54-.266-.475-.558l1.918-12.157-.002-.01.162-1.026a.805.805 0 0 1 .794-.68h2.535c3.238 0 5.774-1.314 6.514-5.12.132-.68.168-1.32.112-1.918a4.695 4.695 0 0 0-.544-1.736C20.183 3.505 21.538 5.978 20.067 8.478z"/>
               <path d="M18.814 1.444c-.3-.354-.664-.64-1.08-.854C16.714.09 15.483 0 13.953 0H7.95a.804.804 0 0 0-.794.68L4.97 16.806c-.07.448.26.85.715.85h5.214l1.31-8.307-.04.257a.805.805 0 0 1 .794-.68h1.656c3.238 0 5.774-1.314 6.514-5.12.13-.68.168-1.32.112-1.918-.056-.448-.172-.863-.344-1.236a4.647 4.647 0 0 0-.087-.208z"/>

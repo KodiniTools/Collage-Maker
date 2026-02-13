@@ -922,8 +922,8 @@ function closePreview() {
       >
         <div class="relative max-w-[90vw] max-h-[90vh] bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden">
           <!-- Header -->
-          <div class="flex items-center justify-between px-4 py-3 border-b border-muted/20 dark:border-slate/20">
-            <h3 class="text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
+          <div class="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 border-b border-muted/20 dark:border-slate/20">
+            <h3 class="text-base sm:text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
             <button
               @click="closePreview"
               class="p-2 rounded-lg hover:bg-muted/10 dark:hover:bg-navy/10 transition-colors"
@@ -936,7 +936,7 @@ function closePreview() {
           </div>
 
           <!-- Preview Image Container -->
-          <div class="p-4 overflow-auto max-h-[calc(90vh-120px)]">
+          <div class="p-2 sm:p-4 overflow-auto max-h-[calc(90vh-120px)]">
             <img
               v-if="previewDataUrl"
               :src="previewDataUrl"
@@ -947,20 +947,20 @@ function closePreview() {
           </div>
 
           <!-- Footer -->
-          <div class="flex items-center justify-between px-4 py-3 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
-            <p class="text-sm text-muted dark:text-slate/70">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
+            <p class="text-xs sm:text-sm text-muted dark:text-slate/70">
               {{ collage.settings.width }} x {{ collage.settings.height }} px
             </p>
-            <div class="flex gap-2">
+            <div class="flex gap-2 w-full sm:w-auto">
               <button
                 @click="closePreview"
-                class="px-4 py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors"
+                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors text-sm"
               >
                 {{ t('export.close') }}
               </button>
               <button
                 @click="closePreview(); exportCollage()"
-                class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors"
+                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors text-sm"
               >
                 {{ t('export.download') }}
               </button>

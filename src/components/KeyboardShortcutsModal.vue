@@ -37,12 +37,12 @@ const categoryIcons = {
     >
       <div class="relative w-full max-w-3xl max-h-[85vh] bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden flex flex-col">
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
-          <div class="flex items-center gap-3">
-            <svg class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <div class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
             </svg>
-            <h2 class="text-xl font-semibold">{{ t('shortcuts.title') }}</h2>
+            <h2 class="text-lg sm:text-xl font-semibold">{{ t('shortcuts.title') }}</h2>
           </div>
           <button
             @click="close"
@@ -56,8 +56,8 @@ const categoryIcons = {
         </div>
 
         <!-- Content -->
-        <div class="flex-1 overflow-y-auto p-6">
-          <div class="grid gap-6 md:grid-cols-2">
+        <div class="flex-1 overflow-y-auto p-3 sm:p-6">
+          <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
             <!-- Selection Category -->
             <div class="space-y-3">
               <div class="flex items-center gap-2 text-sm font-semibold text-accent uppercase tracking-wide">
@@ -153,7 +153,7 @@ const categoryIcons = {
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
+        <div class="px-3 py-3 sm:px-6 sm:py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
           <div class="flex items-center justify-between">
             <span class="text-xs text-muted dark:text-slate/60">
               {{ t('shortcuts.pressToOpen') }}

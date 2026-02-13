@@ -5,7 +5,7 @@ const toast = useToastStore()
 </script>
 
 <template>
-  <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm" role="alert" aria-live="polite">
+  <div class="fixed bottom-2 right-2 sm:bottom-4 sm:right-4 z-50 flex flex-col gap-2 max-w-[calc(100vw-1rem)] sm:max-w-sm" role="alert" aria-live="polite">
     <TransitionGroup
       enter-active-class="transition-[opacity,transform] duration-200 ease-out"
       leave-active-class="transition-[opacity,transform] duration-150 ease-in"
@@ -18,7 +18,7 @@ const toast = useToastStore()
         v-for="t in toast.toasts"
         :key="t.id"
         :class="[
-          'px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 cursor-pointer',
+          'px-3 py-2 sm:px-4 sm:py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 cursor-pointer text-sm sm:text-base',
           t.type === 'success' && 'bg-green-600 text-white',
           t.type === 'error' && 'bg-red-600 text-white',
           t.type === 'info' && 'bg-slate text-white'
