@@ -41,7 +41,7 @@ html.dark body {
 /* Global SSI partials (nav/footer outside #app) */
 /* Remove any own background so page bg shows through — except cookie banner and dropdowns */
 body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]),
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) *:not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([class*="drop"]):not([class*="sub-menu"]):not([class*="submenu"]):not([class*="popup"]):not([class*="popover"]):not([class*="megamenu"]) {
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) *:not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([class*="drop"]):not([class*="sub-menu"]):not([class*="submenu"]):not([class*="popup"]):not([class*="popover"]):not([class*="megamenu"]):not([class*="toggler"]):not([class*="hamburger"]):not([class*="burger"]):not([class*="menu-toggle"]):not([class*="nav-toggle"]):not([class*="menu-btn"]) {
   background-color: transparent !important;
 }
 
@@ -61,6 +61,27 @@ html.dark body > :not(#app):not(script) [class*="popup"],
 html.dark body > :not(#app):not(script) [class*="popover"],
 html.dark body > :not(#app):not(script) [class*="megamenu"] {
   background-color: #091428 !important;
+}
+
+/* Restore hamburger/toggle menu bar visibility — bars use background-color for lines */
+/* Use currentColor so bars automatically match the theme text color */
+body > :not(#app):not(script) [class*="toggler"] span,
+body > :not(#app):not(script) [class*="hamburger"] span,
+body > :not(#app):not(script) [class*="hamburger"] [class*="inner"],
+body > :not(#app):not(script) [class*="navbar-toggle"] span,
+body > :not(#app):not(script) [class*="menu-toggle"] span,
+body > :not(#app):not(script) [class*="nav-toggle"] span,
+body > :not(#app):not(script) [class*="menu-btn"] span,
+body > :not(#app):not(script) [class*="burger"] span {
+  background-color: currentColor !important;
+}
+/* Bootstrap toggler-icon (uses background-image SVG): force contrast via filter */
+body > :not(#app):not(script) [class*="toggler-icon"] {
+  background-color: transparent !important;
+  filter: brightness(0) saturate(100%) !important;
+}
+html.dark body > :not(#app):not(script) [class*="toggler-icon"] {
+  filter: brightness(0) saturate(100%) invert(1) !important;
 }
 
 /* Cookie Banner: always in foreground, above nav (z-index:100) and dropdowns (z-index:200) */
