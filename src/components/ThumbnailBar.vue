@@ -32,7 +32,7 @@ function handleRemove(id: string, event: MouseEvent) {
 <template>
   <div
     v-if="canvasImages.length > 0"
-    class="bg-surface-light dark:bg-surface-dark border-b border-muted/30 dark:border-slate/30 py-2 px-3"
+    class="bg-surface-light dark:bg-surface-dark border-b border-muted/30 dark:border-slate/30 py-1 px-2 sm:py-2 sm:px-3"
   >
     <div class="flex items-center gap-2 overflow-x-auto scrollbar-thin">
       <!-- Label -->
@@ -57,7 +57,7 @@ function handleRemove(id: string, event: MouseEvent) {
           <img
             :src="img.url"
             :alt="t('thumbnailBar.imageAlt', { index: index + 1 })"
-            class="h-12 w-12 object-cover rounded"
+            class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded"
             :style="{
               transform: `rotate(${img.rotation}deg)`,
               opacity: img.opacity
@@ -121,7 +121,13 @@ function handleRemove(id: string, event: MouseEvent) {
 
 <style scoped>
 .scrollbar-thin::-webkit-scrollbar {
-  height: 4px;
+  height: 6px;
+}
+
+@media (pointer: fine) {
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 4px;
+  }
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {

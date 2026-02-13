@@ -262,10 +262,10 @@ function setSelectedAsBackground() {
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
         @click.self="closePreview"
       >
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
           <!-- Header -->
-          <div class="flex items-center justify-between p-4 border-b border-muted/30 dark:border-slate/30">
-            <h3 class="text-lg font-semibold truncate pr-4">{{ t('gallery.preview') }}</h3>
+          <div class="flex items-center justify-between p-3 sm:p-4 border-b border-muted/30 dark:border-slate/30">
+            <h3 class="text-base sm:text-lg font-semibold truncate pr-4">{{ t('gallery.preview') }}</h3>
             <button
               @click="closePreview"
               class="p-1 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
@@ -277,7 +277,7 @@ function setSelectedAsBackground() {
           </div>
 
           <!-- Image -->
-          <div class="p-4 flex justify-center bg-muted/10 dark:bg-navy/20">
+          <div class="p-2 sm:p-4 flex justify-center bg-muted/10 dark:bg-navy/20">
             <img
               :src="previewImage.url"
               :alt="previewImage.file.name"
@@ -286,7 +286,7 @@ function setSelectedAsBackground() {
           </div>
 
           <!-- Info -->
-          <div class="p-4 space-y-3">
+          <div class="p-3 sm:p-4 space-y-3">
             <!-- Filename -->
             <div>
               <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewTitle') }}</p>
@@ -294,7 +294,7 @@ function setSelectedAsBackground() {
             </div>
 
             <!-- Details Grid -->
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-3 gap-2 sm:gap-4">
               <!-- Format -->
               <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
                 <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('gallery.previewFormat') }}</p>

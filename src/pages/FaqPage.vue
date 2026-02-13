@@ -52,16 +52,16 @@ function toggleQuestion(index: number) {
           </RouterLink>
 
           <!-- Nav Links + Controls -->
-          <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2 sm:gap-6">
             <RouterLink
               to="/"
-              class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
             >
               {{ t('nav.home') }}
             </RouterLink>
             <RouterLink
               to="/editor"
-              class="px-4 py-2 bg-accent hover:bg-accent-light text-slate-dark font-medium rounded-lg transition-colors"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-light text-slate-dark font-medium rounded-lg transition-colors"
             >
               {{ t('nav.editor') }}
             </RouterLink>
@@ -70,17 +70,17 @@ function toggleQuestion(index: number) {
       </header>
 
       <!-- Hero Section -->
-      <section class="container mx-auto px-4 pt-16 pb-12 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-slate-dark dark:text-surface-light mb-4">
+      <section class="container mx-auto px-4 pt-8 sm:pt-16 pb-8 sm:pb-12 text-center">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-dark dark:text-surface-light mb-4">
           {{ t('faqPage.title') }}
         </h1>
-        <p class="text-lg text-muted dark:text-muted-light max-w-2xl mx-auto">
+        <p class="text-base sm:text-lg text-muted dark:text-muted-light max-w-2xl mx-auto">
           {{ t('faqPage.subtitle') }}
         </p>
       </section>
 
       <!-- FAQ Content -->
-      <section class="container mx-auto px-4 pb-20">
+      <section class="container mx-auto px-4 pb-10 sm:pb-20">
         <div class="max-w-4xl mx-auto">
           <!-- Category Sections -->
           <div v-for="(items, category) in categories" :key="category" class="mb-12">
@@ -120,9 +120,9 @@ function toggleQuestion(index: number) {
               >
                 <button
                   @click="toggleQuestion(item.index)"
-                  class="w-full px-6 py-5 text-left hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors flex items-center justify-between gap-4"
+                  class="w-full px-4 py-3 sm:px-6 sm:py-5 text-left hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors flex items-center justify-between gap-3 sm:gap-4"
                 >
-                  <span class="font-semibold text-lg text-slate-dark dark:text-white">{{ item.question }}</span>
+                  <span class="font-semibold text-base sm:text-lg text-slate-dark dark:text-white">{{ item.question }}</span>
                   <svg
                     class="w-5 h-5 flex-shrink-0 transition-transform text-slate dark:text-muted-light"
                     :class="{ 'rotate-180': openIndex === item.index }"
@@ -143,7 +143,7 @@ function toggleQuestion(index: number) {
                   leave-to-class="max-h-0 opacity-0"
                 >
                   <div v-show="openIndex === item.index" class="overflow-hidden">
-                    <div class="px-6 py-5 bg-muted/5 dark:bg-navy/20 text-slate-dark dark:text-gray-100 leading-relaxed border-t border-muted/20 dark:border-slate/30">
+                    <div class="px-4 py-3 sm:px-6 sm:py-5 bg-muted/5 dark:bg-navy/20 text-slate-dark dark:text-gray-100 leading-relaxed border-t border-muted/20 dark:border-slate/30 text-sm sm:text-base">
                       {{ item.answer }}
                     </div>
                   </div>
@@ -155,17 +155,17 @@ function toggleQuestion(index: number) {
       </section>
 
       <!-- CTA Section -->
-      <section class="container mx-auto px-4 py-16">
-        <div class="max-w-2xl mx-auto bg-gradient-to-br from-slate-dark to-slate dark:from-slate dark:to-slate-light/10 rounded-3xl p-8 md:p-12 shadow-2xl text-center">
-          <h3 class="text-2xl md:text-3xl font-bold text-cream mb-4">
+      <section class="container mx-auto px-4 py-10 sm:py-16">
+        <div class="max-w-2xl mx-auto bg-gradient-to-br from-slate-dark to-slate dark:from-slate dark:to-slate-light/10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl text-center">
+          <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-cream mb-4">
             {{ t('faqPage.cta.title') }}
           </h3>
-          <p class="text-cream/70 mb-8">
+          <p class="text-cream/70 mb-6 sm:mb-8">
             {{ t('faqPage.cta.subtitle') }}
           </p>
           <RouterLink
             to="/editor"
-            class="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-light text-slate-dark font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-light text-slate-dark font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

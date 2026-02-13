@@ -97,8 +97,8 @@ function closeModal() {
         <!-- Modal Content -->
         <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
           <!-- Header -->
-          <div class="flex items-center justify-between p-6 border-b border-muted/30 dark:border-slate/30">
-            <h2 class="text-2xl font-bold">{{ t('templates.library') }}</h2>
+          <div class="flex items-center justify-between p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30">
+            <h2 class="text-xl sm:text-2xl font-bold">{{ t('templates.library') }}</h2>
             <button
               @click="closeModal"
               class="p-2 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
@@ -110,12 +110,12 @@ function closeModal() {
           </div>
 
           <!-- Tabs + Save Button -->
-          <div class="flex items-center justify-between p-6 border-b border-muted/30 dark:border-slate/30">
-            <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30">
+            <div class="flex gap-1 sm:gap-2 flex-wrap">
               <button
                 @click="activeTab = 'all'"
                 :class="[
-                  'px-4 py-2 rounded-lg font-medium transition-colors',
+                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'all'
                     ? 'bg-accent text-slate-dark'
                     : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
@@ -126,7 +126,7 @@ function closeModal() {
               <button
                 @click="activeTab = 'predefined'"
                 :class="[
-                  'px-4 py-2 rounded-lg font-medium transition-colors',
+                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'predefined'
                     ? 'bg-accent text-slate-dark'
                     : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
@@ -137,7 +137,7 @@ function closeModal() {
               <button
                 @click="activeTab = 'user'"
                 :class="[
-                  'px-4 py-2 rounded-lg font-medium transition-colors',
+                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'user'
                     ? 'bg-accent text-slate-dark'
                     : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
@@ -149,15 +149,15 @@ function closeModal() {
 
             <button
               @click="openSaveDialog"
-              class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors text-sm sm:text-base w-full sm:w-auto"
             >
               {{ t('templates.saveAsCurrent') }}
             </button>
           </div>
 
           <!-- Templates Grid -->
-          <div class="flex-1 overflow-y-auto p-6">
-            <div v-if="filteredTemplates.length === 0" class="text-center py-12 text-muted">
+          <div class="flex-1 overflow-y-auto p-3 sm:p-6">
+            <div v-if="filteredTemplates.length === 0" class="text-center py-8 sm:py-12 text-muted">
               {{ t('templates.noTemplates') }}
             </div>
 
@@ -186,8 +186,8 @@ function closeModal() {
             class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
             @click.self="showSaveDialog = false"
           >
-            <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-md p-6">
-              <h3 class="text-xl font-bold mb-4">{{ t('templates.saveAsCurrent') }}</h3>
+            <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6">
+              <h3 class="text-lg sm:text-xl font-bold mb-4">{{ t('templates.saveAsCurrent') }}</h3>
 
               <div class="space-y-4">
                 <div>
