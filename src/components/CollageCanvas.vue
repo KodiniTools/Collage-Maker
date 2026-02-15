@@ -68,13 +68,16 @@ watch(() => collage.canvasZoom, (newZoom) => {
 
 // Keyboard event handlers for panning
 function handleKeyDown(e: KeyboardEvent) {
-  if (e.code === 'Space' && !spacePressed.value) {
+  const target = e.target as HTMLElement
+  const isTextInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+
+  if (e.code === 'Space' && !spacePressed.value && !isTextInput) {
     spacePressed.value = true
     e.preventDefault()
   }
 
   // Arrow key panning when zoomed in
-  if (collage.canvasZoom > 1) {
+  if (collage.canvasZoom > 1 && !isTextInput) {
     const panStep = e.shiftKey ? 50 : 10
     switch (e.code) {
       case 'ArrowLeft':
