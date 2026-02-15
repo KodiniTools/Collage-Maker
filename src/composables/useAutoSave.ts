@@ -150,6 +150,9 @@ export function useAutoSave() {
 
       for (const img of collage.images) {
         try {
+          // Skip images with missing or revoked URLs
+          if (!img.url) continue
+
           const dataUrl = await compressAndConvert(img.url)
           if (dataUrl) {
             const { file, url, ...rest } = img

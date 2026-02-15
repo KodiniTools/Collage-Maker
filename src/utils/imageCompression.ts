@@ -7,9 +7,11 @@ const MAX_DIMENSION = 2000 // Maximum width or height in pixels
 const QUALITY = 0.85 // JPEG/WebP quality (0-1)
 
 export async function compressImage(file: File): Promise<File> {
-  // Skip compression for small files (under 2MB)
+  // For small files (under 2MB), create an in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED.
+  // Blob URLs from disk-referenced File objects can break if the file changes on disk.
   if (file.size < 2 * 1024 * 1024) {
-    return file
+    const buffer = await file.arrayBuffer()
+    return new File([buffer], file.name, { type: file.type, lastModified: file.lastModified })
   }
 
   return new Promise((resolve, reject) => {
@@ -24,7 +26,10 @@ export async function compressImage(file: File): Promise<File> {
       if (width <= MAX_DIMENSION && height <= MAX_DIMENSION) {
         // Image is small enough, but still compress if file is large
         if (file.size < 5 * 1024 * 1024) {
-          resolve(file)
+          // Create in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED
+          file.arrayBuffer().then(buffer => {
+            resolve(new File([buffer], file.name, { type: file.type, lastModified: file.lastModified }))
+          }).catch(() => resolve(file))
           return
         }
       }
@@ -78,7 +83,10 @@ export async function compressImage(file: File): Promise<File> {
           if (compressedFile.size < file.size) {
             resolve(compressedFile)
           } else {
-            resolve(file)
+            // Create in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED
+            file.arrayBuffer().then(buffer => {
+              resolve(new File([buffer], file.name, { type: file.type, lastModified: file.lastModified }))
+            }).catch(() => resolve(file))
           }
         },
         mimeType,

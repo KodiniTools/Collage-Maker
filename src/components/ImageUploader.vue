@@ -43,6 +43,10 @@ async function processFiles(files: File[]) {
       toast.error(t('toast.uploadError'))
     } finally {
       isProcessing.value = false
+      // Reset file input so the same file can be re-uploaded after deletion
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
     }
   }
 }
