@@ -558,17 +558,42 @@ async function renderCanvas() {
   // Nur Canvas-Instanzen rendern (keine Gallery-Templates)
   const canvasImages = collage.images.filter(img => img.isGalleryTemplate !== true)
 
+  // Clean up loadedImages for removed images
+  const currentImageIds = new Set(canvasImages.map(img => img.id))
+  for (const [id] of loadedImages) {
+    if (!currentImageIds.has(id)) {
+      loadedImages.delete(id)
+    }
+  }
+
   // Bilder laden und zeichnen
   for (const img of [...canvasImages].sort((a, b) => a.zIndex - b.zIndex)) {
     let htmlImg = loadedImages.get(img.id)
+
+    // Check if cached image has a different URL (e.g., after restore) or is broken
+    if (htmlImg && (htmlImg.src !== img.url || (!htmlImg.complete || htmlImg.naturalWidth === 0))) {
+      loadedImages.delete(img.id)
+      htmlImg = undefined
+    }
 
     if (!htmlImg) {
       htmlImg = new Image()
       htmlImg.src = img.url
       loadedImages.set(img.id, htmlImg)
-      await new Promise((resolve) => {
-        htmlImg!.onload = resolve
+      const loaded = await new Promise<boolean>((resolve) => {
+        htmlImg!.onload = () => resolve(true)
+        htmlImg!.onerror = () => resolve(false)
       })
+      if (!loaded) {
+        loadedImages.delete(img.id)
+        continue // Skip broken images
+      }
+    }
+
+    // Double-check: skip if image is in broken state
+    if (!htmlImg.complete || htmlImg.naturalWidth === 0) {
+      loadedImages.delete(img.id)
+      continue
     }
 
     context.save()

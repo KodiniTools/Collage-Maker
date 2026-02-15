@@ -24,9 +24,11 @@ async function drawBackgroundImageExport(ctx: CanvasRenderingContext2D, canvasWi
 
   const img = new Image()
   img.src = bgUrl
-  await new Promise((resolve) => {
-    img.onload = resolve
+  const bgLoaded = await new Promise<boolean>((resolve) => {
+    img.onload = () => resolve(true)
+    img.onerror = () => resolve(false)
   })
+  if (!bgLoaded) return
 
   const imgWidth = img.naturalWidth
   const imgHeight = img.naturalHeight
@@ -113,9 +115,11 @@ async function exportCollage() {
       const htmlImg = new Image()
       htmlImg.src = img.url
 
-      await new Promise((resolve) => {
-        htmlImg.onload = resolve
+      const imgLoaded = await new Promise<boolean>((resolve) => {
+        htmlImg.onload = () => resolve(true)
+        htmlImg.onerror = () => resolve(false)
       })
+      if (!imgLoaded) continue
 
       ctx.save()
       ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
@@ -505,9 +509,11 @@ async function generatePreview() {
       const htmlImg = new Image()
       htmlImg.src = img.url
 
-      await new Promise((resolve) => {
-        htmlImg.onload = resolve
+      const imgLoaded = await new Promise<boolean>((resolve) => {
+        htmlImg.onload = () => resolve(true)
+        htmlImg.onerror = () => resolve(false)
       })
+      if (!imgLoaded) continue
 
       ctx.save()
       ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
