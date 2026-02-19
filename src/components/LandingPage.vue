@@ -8,28 +8,7 @@ const emit = defineEmits<{
   (e: 'start'): void
 }>()
 
-const features = [
-  {
-    key: 'privacy',
-    icon: 'shield',
-    gradient: 'from-emerald-500 to-teal-600'
-  },
-  {
-    key: 'batch',
-    icon: 'images',
-    gradient: 'from-blue-500 to-indigo-600'
-  },
-  {
-    key: 'background',
-    icon: 'layers',
-    gradient: 'from-purple-500 to-pink-600'
-  },
-  {
-    key: 'formats',
-    icon: 'file-image',
-    gradient: 'from-orange-500 to-red-600'
-  }
-]
+const features = ['privacy', 'batch', 'background', 'formats']
 </script>
 
 <template>
@@ -87,36 +66,14 @@ const features = [
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div
             v-for="feature in features"
-            :key="feature.key"
-            class="group relative bg-white dark:bg-navy rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
+            :key="feature"
+            class="group relative bg-white dark:bg-navy rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm text-center"
           >
-            <!-- Icon -->
-            <div :class="['w-14 h-14 rounded-xl bg-gradient-to-br flex items-center justify-center mb-4 shadow-lg', feature.gradient]">
-              <!-- Shield Icon - Privacy -->
-              <svg v-if="feature.icon === 'shield'" class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              <!-- Images Icon - Batch -->
-              <svg v-if="feature.icon === 'images'" class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <!-- Layers Icon - Background -->
-              <svg v-if="feature.icon === 'layers'" class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-              <!-- File Image Icon - Formats -->
-              <svg v-if="feature.icon === 'file-image'" class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17l2-2 2 2m2-2l-4-4-4 4" />
-              </svg>
-            </div>
-
-            <!-- Content -->
             <h3 class="text-lg font-semibold text-slate-dark dark:text-surface-light mb-2">
-              {{ t(`landing.features.${feature.key}.title`) }}
+              {{ t(`landing.features.${feature}.title`) }}
             </h3>
             <p class="text-muted dark:text-muted-light text-sm leading-relaxed">
-              {{ t(`landing.features.${feature.key}.description`) }}
+              {{ t(`landing.features.${feature}.description`) }}
             </p>
 
             <!-- Hover Effect -->

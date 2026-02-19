@@ -4,66 +4,9 @@ import { RouterLink } from 'vue-router'
 
 const { t } = useI18n()
 
-const heroFeatures = [
-  {
-    key: 'layouts',
-    icon: 'grid',
-    gradient: 'from-violet-500 to-purple-600'
-  },
-  {
-    key: 'editing',
-    icon: 'sliders',
-    gradient: 'from-blue-500 to-cyan-600'
-  },
-  {
-    key: 'privacy',
-    icon: 'shield',
-    gradient: 'from-emerald-500 to-teal-600'
-  }
-]
+const heroFeatures = ['layouts', 'editing', 'privacy']
 
-const allFeatures = [
-  {
-    key: 'layouts',
-    icon: 'grid',
-    gradient: 'from-violet-500 to-purple-600'
-  },
-  {
-    key: 'editing',
-    icon: 'sliders',
-    gradient: 'from-blue-500 to-cyan-600'
-  },
-  {
-    key: 'text',
-    icon: 'type',
-    gradient: 'from-pink-500 to-rose-600'
-  },
-  {
-    key: 'background',
-    icon: 'layers',
-    gradient: 'from-orange-500 to-amber-600'
-  },
-  {
-    key: 'filters',
-    icon: 'sparkles',
-    gradient: 'from-indigo-500 to-blue-600'
-  },
-  {
-    key: 'export',
-    icon: 'download',
-    gradient: 'from-teal-500 to-green-600'
-  },
-  {
-    key: 'templates',
-    icon: 'template',
-    gradient: 'from-fuchsia-500 to-pink-600'
-  },
-  {
-    key: 'privacy',
-    icon: 'shield',
-    gradient: 'from-emerald-500 to-teal-600'
-  }
-]
+const allFeatures = ['layouts', 'editing', 'text', 'background', 'filters', 'export', 'templates', 'privacy']
 </script>
 
 <template>
@@ -129,31 +72,14 @@ const allFeatures = [
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
           <div
             v-for="feature in heroFeatures"
-            :key="feature.key"
-            class="group relative bg-white dark:bg-navy rounded-2xl p-5 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
+            :key="feature"
+            class="group relative bg-white dark:bg-navy rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm text-center"
           >
-            <!-- Icon -->
-            <div :class="['w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center mb-5 shadow-lg', feature.gradient]">
-              <!-- Grid Icon - Layouts -->
-              <svg v-if="feature.icon === 'grid'" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-              </svg>
-              <!-- Sliders Icon - Editing -->
-              <svg v-if="feature.icon === 'sliders'" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-              <!-- Shield Icon - Privacy -->
-              <svg v-if="feature.icon === 'shield'" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-
-            <!-- Content -->
-            <h3 class="text-xl font-bold text-slate-dark dark:text-surface-light mb-3">
-              {{ t(`landing.heroFeatures.${feature.key}.title`) }}
+            <h3 class="text-xl font-bold text-slate-dark dark:text-surface-light mb-2">
+              {{ t(`landing.heroFeatures.${feature}.title`) }}
             </h3>
             <p class="text-muted dark:text-muted-light leading-relaxed">
-              {{ t(`landing.heroFeatures.${feature.key}.description`) }}
+              {{ t(`landing.heroFeatures.${feature}.description`) }}
             </p>
 
             <!-- Hover Effect -->
@@ -174,51 +100,14 @@ const allFeatures = [
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">
           <div
             v-for="feature in allFeatures"
-            :key="feature.key"
-            class="group relative bg-white dark:bg-navy rounded-xl p-4 sm:p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm"
+            :key="feature"
+            class="group relative bg-white dark:bg-navy rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30 backdrop-blur-sm text-center"
           >
-            <!-- Icon -->
-            <div :class="['w-12 h-12 rounded-lg bg-gradient-to-br flex items-center justify-center mb-4 shadow-md', feature.gradient]">
-              <!-- Grid Icon -->
-              <svg v-if="feature.icon === 'grid'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-              </svg>
-              <!-- Sliders Icon -->
-              <svg v-if="feature.icon === 'sliders'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-              <!-- Type Icon -->
-              <svg v-if="feature.icon === 'type'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <!-- Layers Icon -->
-              <svg v-if="feature.icon === 'layers'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-              <!-- Sparkles Icon -->
-              <svg v-if="feature.icon === 'sparkles'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
-              <!-- Download Icon -->
-              <svg v-if="feature.icon === 'download'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              <!-- Template Icon -->
-              <svg v-if="feature.icon === 'template'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-              </svg>
-              <!-- Shield Icon -->
-              <svg v-if="feature.icon === 'shield'" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-
-            <!-- Content -->
             <h3 class="text-lg font-semibold text-slate-dark dark:text-surface-light mb-2">
-              {{ t(`landing.allFeatures.items.${feature.key}.title`) }}
+              {{ t(`landing.allFeatures.items.${feature}.title`) }}
             </h3>
             <p class="text-sm text-muted dark:text-muted-light leading-relaxed">
-              {{ t(`landing.allFeatures.items.${feature.key}.description`) }}
+              {{ t(`landing.allFeatures.items.${feature}.description`) }}
             </p>
 
             <!-- Hover Effect -->
