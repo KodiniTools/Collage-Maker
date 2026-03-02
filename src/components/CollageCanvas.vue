@@ -863,14 +863,14 @@ async function renderCanvas() {
     }
 
     // Löschbutton zeichnen (oben rechts, immer sichtbar für alle Bilder)
-    const deleteButtonSize = 24
+    const deleteButtonSize = 14
     const deleteButtonX = img.width / 2 - deleteButtonSize / 2
     const deleteButtonY = -img.height / 2 - deleteButtonSize / 2
 
     // Roter Kreis für Löschbutton
     context.fillStyle = '#ef4444'
     context.strokeStyle = '#ffffff'
-    context.lineWidth = 2
+    context.lineWidth = 1.5
     context.beginPath()
     context.arc(deleteButtonX, deleteButtonY, deleteButtonSize / 2, 0, Math.PI * 2)
     context.fill()
@@ -878,7 +878,7 @@ async function renderCanvas() {
 
     // Weißes X im Löschbutton
     context.strokeStyle = '#ffffff'
-    context.lineWidth = 2
+    context.lineWidth = 1.5
     context.lineCap = 'round'
     const xSize = deleteButtonSize * 0.4
     context.beginPath()
@@ -895,12 +895,12 @@ async function renderCanvas() {
     if (isSelected) {
       // Primär ausgewähltes Bild: Blau, sekundäre: Cyan
       context.strokeStyle = isPrimarySelected ? '#3b82f6' : '#06b6d4'
-      context.lineWidth = isPrimarySelected ? 3 : 2
+      context.lineWidth = isPrimarySelected ? 2 : 1.5
       context.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
 
       // Resize-Handles nur für das primär ausgewählte Bild zeichnen
       if (isPrimarySelected) {
-        const handleSize = 16
+        const handleSize = 8
         const handles = [
           { x: -img.width / 2, y: -img.height / 2, cursor: 'nw' }, // top-left
           { x: 0, y: -img.height / 2, cursor: 'n' }, // top-center
@@ -915,7 +915,7 @@ async function renderCanvas() {
         // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
         context.fillStyle = '#ffffff'
         context.strokeStyle = '#3b82f6'
-        context.lineWidth = 2
+        context.lineWidth = 1.5
         handles.forEach(handle => {
           context.fillRect(
             handle.x - handleSize / 2,
@@ -934,9 +934,9 @@ async function renderCanvas() {
 
       // Auswahl-Indikator für Mehrfachauswahl (kleine Markierung oben links)
       if (collage.selectedImageIds.length > 1) {
-        const checkSize = 18
-        const checkX = -img.width / 2 + 8
-        const checkY = -img.height / 2 + 8
+        const checkSize = 12
+        const checkX = -img.width / 2 + 6
+        const checkY = -img.height / 2 + 6
 
         // Grüner Kreis mit Häkchen
         context.fillStyle = '#22c55e'
@@ -946,13 +946,13 @@ async function renderCanvas() {
 
         // Weißes Häkchen
         context.strokeStyle = '#ffffff'
-        context.lineWidth = 2
+        context.lineWidth = 1.5
         context.lineCap = 'round'
         context.lineJoin = 'round'
         context.beginPath()
-        context.moveTo(checkX - 4, checkY)
-        context.lineTo(checkX - 1, checkY + 3)
-        context.lineTo(checkX + 5, checkY - 4)
+        context.moveTo(checkX - 3, checkY)
+        context.lineTo(checkX - 0.5, checkY + 2)
+        context.lineTo(checkX + 3.5, checkY - 3)
         context.stroke()
       }
     }
@@ -1044,8 +1044,8 @@ async function renderCanvas() {
 }
 
 function getResizeHandle(x: number, y: number, img: any): string | null {
-  const handleSize = 16
-  const hitRadius = handleSize // Größerer Hit-Bereich
+  const handleSize = 8
+  const hitRadius = handleSize * 1.5 // Größerer Hit-Bereich
   const centerX = img.x + img.width / 2
   const centerY = img.y + img.height / 2
 
@@ -1081,7 +1081,7 @@ function getResizeHandle(x: number, y: number, img: any): string | null {
 }
 
 function isDeleteButtonClicked(x: number, y: number, img: any): boolean {
-  const deleteButtonSize = 24
+  const deleteButtonSize = 14
   const centerX = img.x + img.width / 2
   const centerY = img.y + img.height / 2
 
