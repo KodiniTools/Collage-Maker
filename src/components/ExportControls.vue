@@ -942,7 +942,7 @@ function closePreview() {
           </div>
 
           <!-- Preview Image Container -->
-          <div class="p-2 sm:p-4 overflow-auto max-h-[calc(90vh-120px)]">
+          <div class="p-2 sm:p-4 overflow-auto max-h-[calc(90vh-120px)]" style="background-image: repeating-conic-gradient(#e5e7eb 0% 25%, #f9fafb 0% 50%); background-size: 20px 20px;">
             <img
               v-if="previewDataUrl"
               :src="previewDataUrl"
