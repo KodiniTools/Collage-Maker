@@ -495,6 +495,12 @@
     "continueWithout": "Ohne Wiederherstellung fortfahren",
     "discard": "Gespeicherte Daten löschen"
   },
+  "handoff": {
+    "title": "{count} Bilder empfangen",
+    "from": "von {tool}",
+    "accept": "Übernehmen",
+    "dismiss": "Verwerfen"
+  },
   "faq": {
     "title": "Häufig gestellte Fragen",
     "questions": [
