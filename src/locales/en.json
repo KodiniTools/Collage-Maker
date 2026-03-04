@@ -495,6 +495,12 @@
     "continueWithout": "Continue Without Restoring",
     "discard": "Delete Saved Data"
   },
+  "handoff": {
+    "title": "{count} images received",
+    "from": "from {tool}",
+    "accept": "Accept",
+    "dismiss": "Dismiss"
+  },
   "faq": {
     "title": "Frequently Asked Questions",
     "questions": [

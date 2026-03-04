@@ -33,4 +33,16 @@ const router = createRouter({
   }
 })
 
+// Handoff Guard: redirect to editor when handoff data is detected
+router.beforeEach((to, _from, next) => {
+  if (to.name !== 'editor') {
+    const hasHandoffParam = to.query.handoff === 'kodinitools'
+    const hasHandoffData = !!localStorage.getItem('kodinitools-handoff')
+    if (hasHandoffParam || hasHandoffData) {
+      return next({ name: 'editor', query: { ...to.query, handoff: 'kodinitools' } })
+    }
+  }
+  next()
+})
+
 export default router

@@ -17,6 +17,8 @@ import TemplateLibrary from '@/components/TemplateLibrary.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
 import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
 import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
+import HandoffReceiver from '@/components/HandoffReceiver.vue'
+import { handoffImageToFile, type HandoffImage } from '@/lib/core/handoff'
 import { useCollageStore } from '@/stores/collage'
 import { useAutoSave } from '@/composables/useAutoSave'
 
@@ -55,6 +57,17 @@ function handleDiscardRestore() {
 
 function handleContinueWithoutRestore() {
   showRestoreDialog.value = false
+}
+
+async function handleHandoffAccept(images: HandoffImage[]) {
+  const files: File[] = []
+  for (const img of images) {
+    const file = await handoffImageToFile(img)
+    files.push(file)
+  }
+  if (files.length) {
+    collage.addImages(files)
+  }
 }
 
 onMounted(() => {
@@ -146,6 +159,9 @@ onUnmounted(() => {
         </div>
       </div>
     </header>
+
+    <!-- Handoff Banner -->
+    <HandoffReceiver @accept="handleHandoffAccept" />
 
     <!-- Main Content -->
     <main class="flex-1 container mx-auto px-2 py-3 sm:px-4 sm:py-6">
