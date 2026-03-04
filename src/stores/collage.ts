@@ -28,7 +28,7 @@ export const useCollageStore = defineStore('collage', () => {
       saturation: 100,
       blur: 0
     },
-    layout: 'freestyle',
+    layout: 'grid-3x3',
     gridEnabled: false,
     gridSize: 50
   })
@@ -119,6 +119,9 @@ export const useCollageStore = defineStore('collage', () => {
 
   function addImages(files: File[]) {
     saveStateForUndo()
+    let loadedCount = 0
+    const totalFiles = files.length
+
     files.forEach(file => {
       const templateId = crypto.randomUUID()
       const instanceId = crypto.randomUUID()
@@ -157,6 +160,12 @@ export const useCollageStore = defineStore('collage', () => {
             instanceData.width = width
             instanceData.height = height
           }
+        }
+
+        // Layout nach dem Laden aller Bilder erneut anwenden (korrekte Seitenverhältnisse)
+        loadedCount++
+        if (loadedCount === totalFiles && settings.value.layout !== 'freestyle') {
+          applyLayout(settings.value.layout, true)
         }
       }
       img.src = url
@@ -212,6 +221,7 @@ export const useCollageStore = defineStore('collage', () => {
       })
     })
 
+    // Layout sofort anwenden (mit Standard-Dimensionen, wird nach img.onload nochmal korrigiert)
     if (settings.value.layout !== 'freestyle') {
       applyLayout(settings.value.layout, true)
     }
