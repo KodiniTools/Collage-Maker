@@ -410,10 +410,14 @@ onUnmounted(() => {
     </section>
 
     <!-- Template Library Modal -->
-    <TemplateLibrary v-model:isOpen="showTemplates" />
+    <Teleport to="body">
+      <TemplateLibrary v-model:isOpen="showTemplates" />
+    </Teleport>
 
     <!-- Keyboard Shortcuts Modal -->
-    <KeyboardShortcutsModal v-model="showShortcutsModal" />
+    <Teleport to="body">
+      <KeyboardShortcutsModal v-model="showShortcutsModal" />
+    </Teleport>
 
     <!-- Toast Notifications -->
     <ToastContainer />
