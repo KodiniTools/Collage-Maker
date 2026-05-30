@@ -190,8 +190,9 @@
   },
   "upload": {
     "title": "Upload Images",
-    "dragDrop": "Drag images here or click",
+    "dragDrop": "Drag images or folders here",
     "button": "Select Images",
+    "buttonFolder": "Select Folder",
     "formats": "PNG, JPG, WebP (max. 50MB per image)",
     "processing": "Optimizing images..."
   },
