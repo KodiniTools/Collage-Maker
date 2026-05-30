@@ -9,4 +9,5 @@ useSettingsStore()
 
 <template>
   <RouterView />
+  <div id="modal-portal"></div>
 </template>

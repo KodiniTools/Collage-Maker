@@ -29,7 +29,7 @@ const categoryIcons = {
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport to="#modal-portal">
     <div
       v-if="modelValue"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
