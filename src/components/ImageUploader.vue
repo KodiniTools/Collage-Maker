@@ -43,7 +43,7 @@ function collectEntryFiles(entry: FileSystemEntry, files: File[]): Promise<void>
       ;(entry as FileSystemFileEntry).file(f => {
         files.push(f)
         resolve()
-      }, resolve)
+      }, () => resolve())
     })
   }
   if (entry.isDirectory) {
@@ -54,7 +54,7 @@ function collectEntryFiles(entry: FileSystemEntry, files: File[]): Promise<void>
           if (entries.length === 0) { resolve(); return }
           await Promise.all(entries.map(e => collectEntryFiles(e, files)))
           readAll()
-        }, resolve)
+        }, () => resolve())
       }
       readAll()
     })
