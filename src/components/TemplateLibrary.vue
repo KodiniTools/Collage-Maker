@@ -82,7 +82,7 @@ function closeModal() {
 
 <template>
   <!-- Modal Overlay -->
-  <Teleport to="body">
+  <Teleport to="#modal-portal">
     <Transition
       enter-active-class="transition-opacity duration-200"
       leave-active-class="transition-opacity duration-200"

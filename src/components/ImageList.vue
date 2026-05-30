@@ -256,7 +256,7 @@ function setSelectedAsBackground() {
     </template>
 
     <!-- Image Preview Modal -->
-    <Teleport to="body">
+    <Teleport to="#modal-portal">
       <div
         v-if="showPreview && previewImage"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"

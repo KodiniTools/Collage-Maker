@@ -920,7 +920,7 @@ function closePreview() {
     </button>
 
     <!-- Preview Modal -->
-    <Teleport to="body">
+    <Teleport to="#modal-portal">
       <div
         v-if="showPreviewModal"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"

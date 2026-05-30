@@ -410,20 +410,16 @@ onUnmounted(() => {
     </section>
 
     <!-- Template Library Modal -->
-    <Teleport to="body">
-      <TemplateLibrary v-model:isOpen="showTemplates" />
-    </Teleport>
+    <TemplateLibrary v-model:isOpen="showTemplates" />
 
     <!-- Keyboard Shortcuts Modal -->
-    <Teleport to="body">
-      <KeyboardShortcutsModal v-model="showShortcutsModal" />
-    </Teleport>
+    <KeyboardShortcutsModal v-model="showShortcutsModal" />
 
     <!-- Toast Notifications -->
     <ToastContainer />
 
     <!-- Auto-Save Restore Dialog -->
-    <Teleport to="body">
+    <Teleport to="#modal-portal">
       <div
         v-if="showRestoreDialog"
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
