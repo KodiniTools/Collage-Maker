@@ -6,22 +6,27 @@ export interface PdfOptions {
   quality?: number
 }
 
-export async function exportToPdf({ canvas, filename, quality = 0.95 }: PdfOptions): Promise<void> {
+// Pixel → mm bei 96 DPI (Standard-Bildschirmauflösung)
+const PX_TO_MM = 25.4 / 96
+
+export async function exportToPdf({ canvas, filename, quality: _quality = 0.95 }: PdfOptions): Promise<void> {
   const widthPx = canvas.width
   const heightPx = canvas.height
+  const widthMm = widthPx * PX_TO_MM
+  const heightMm = heightPx * PX_TO_MM
 
-  // jsPDF in Pixel-Einheiten, Seitenformat = Canvas-Größe
   const orientation = widthPx >= heightPx ? 'landscape' : 'portrait'
+
+  // mm-Einheiten vermeiden px_scaling-Artefakte
   const pdf = new jsPDF({
     orientation,
-    unit: 'px',
-    format: [widthPx, heightPx],
-    hotfixes: ['px_scaling'],
+    unit: 'mm',
+    format: [widthMm, heightMm],
   })
 
-  // Canvas als hochqualitatives JPEG einbetten
-  const imgData = canvas.toDataURL('image/jpeg', quality)
-  pdf.addImage(imgData, 'JPEG', 0, 0, widthPx, heightPx, undefined, 'FAST')
+  // PNG für verlustfreie Qualität; SLOW = höchste jsPDF-Bildqualität
+  const imgData = canvas.toDataURL('image/png')
+  pdf.addImage(imgData, 'PNG', 0, 0, widthMm, heightMm, undefined, 'SLOW')
 
   pdf.save(filename ?? `collage-${Date.now()}.pdf`)
 }
