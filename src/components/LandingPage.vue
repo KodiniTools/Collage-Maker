@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import FaqSection from '@/components/FaqSection.vue'
+  import { useI18n } from 'vue-i18n'
+  import FaqSection from '@/components/FaqSection.vue'
 
-const { t } = useI18n()
+  const { t } = useI18n()
 
-const emit = defineEmits<{
-  (e: 'start'): void
-}>()
+  const emit = defineEmits<{
+    (e: 'start'): void
+  }>()
 
-const features = ['privacy', 'batch', 'background', 'formats']
+  const features = ['privacy', 'batch', 'background', 'formats']
 </script>
 
 <template>
   <div class="min-h-screen bg-surface-light dark:bg-surface-dark overflow-hidden">
     <!-- Animated Background -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-blob"></div>
-      <div class="absolute top-1/2 -left-40 w-96 h-96 bg-warm/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-      <div class="absolute -bottom-40 right-1/3 w-72 h-72 bg-accent-light/30 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+      <div
+        class="absolute -top-40 -right-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-blob"
+      ></div>
+      <div
+        class="absolute top-1/2 -left-40 w-96 h-96 bg-warm/20 rounded-full blur-3xl animate-blob animation-delay-2000"
+      ></div>
+      <div
+        class="absolute -bottom-40 right-1/3 w-72 h-72 bg-accent-light/30 rounded-full blur-3xl animate-blob animation-delay-4000"
+      ></div>
     </div>
 
     <!-- Content -->
@@ -26,17 +32,33 @@ const features = ['privacy', 'batch', 'background', 'formats']
       <header class="container mx-auto px-4 pt-12 pb-8">
         <nav class="flex items-center justify-between mb-16">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-dark rounded-xl flex items-center justify-center shadow-lg">
-              <svg class="w-6 h-6 text-slate-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-accent to-accent-dark rounded-xl flex items-center justify-center shadow-lg"
+            >
+              <svg
+                class="w-6 h-6 text-slate-dark"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
             </div>
-            <span class="text-xl font-bold text-slate-dark dark:text-surface-light">{{ t('app.title') }}</span>
+            <span class="text-xl font-bold text-slate-dark dark:text-surface-light">{{
+              t('app.title')
+            }}</span>
           </div>
         </nav>
 
         <div class="text-center max-w-4xl mx-auto">
-          <h1 class="text-4xl md:text-6xl font-bold text-slate-dark dark:text-surface-light mb-6 leading-tight">
+          <h1
+            class="text-4xl md:text-6xl font-bold text-slate-dark dark:text-surface-light mb-6 leading-tight"
+          >
             {{ t('landing.hero.title') }}
           </h1>
           <p class="text-lg md:text-xl text-muted dark:text-muted-light mb-10 max-w-2xl mx-auto">
@@ -45,21 +67,35 @@ const features = ['privacy', 'batch', 'background', 'formats']
 
           <!-- CTA Button -->
           <button
-            @click="emit('start')"
             class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-accent to-accent-dark hover:from-accent-light hover:to-accent text-slate-dark font-semibold text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+            @click="emit('start')"
           >
             <span>{{ t('landing.cta') }}</span>
-            <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            <svg
+              class="w-5 h-5 transition-transform group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
             </svg>
-            <div class="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div
+              class="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"
+            ></div>
           </button>
         </div>
       </header>
 
       <!-- Features Section -->
       <section class="container mx-auto px-4 py-16">
-        <h2 class="text-2xl md:text-3xl font-bold text-center text-slate-dark dark:text-surface-light mb-12">
+        <h2
+          class="text-2xl md:text-3xl font-bold text-center text-slate-dark dark:text-surface-light mb-12"
+        >
           {{ t('landing.features.title') }}
         </h2>
 
@@ -77,7 +113,9 @@ const features = ['privacy', 'batch', 'background', 'formats']
             </p>
 
             <!-- Hover Effect -->
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div
+              class="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+            ></div>
           </div>
         </div>
       </section>
@@ -87,7 +125,9 @@ const features = ['privacy', 'batch', 'background', 'formats']
 
       <!-- Bottom CTA -->
       <section class="container mx-auto px-4 py-16 text-center">
-        <div class="max-w-2xl mx-auto bg-gradient-to-br from-slate-dark to-slate dark:from-slate dark:to-slate-light/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+        <div
+          class="max-w-2xl mx-auto bg-gradient-to-br from-slate-dark to-slate dark:from-slate dark:to-slate-light/10 rounded-3xl p-8 md:p-12 shadow-2xl"
+        >
           <h3 class="text-2xl md:text-3xl font-bold text-surface-light mb-4">
             {{ t('landing.bottomCta.title') }}
           </h3>
@@ -95,11 +135,16 @@ const features = ['privacy', 'batch', 'background', 'formats']
             {{ t('landing.bottomCta.subtitle') }}
           </p>
           <button
-            @click="emit('start')"
             class="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-light text-slate-dark font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            @click="emit('start')"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
             </svg>
             {{ t('landing.cta') }}
           </button>
@@ -107,7 +152,9 @@ const features = ['privacy', 'batch', 'background', 'formats']
       </section>
 
       <!-- Footer -->
-      <footer class="container mx-auto px-4 py-8 text-center text-muted dark:text-muted-light text-sm">
+      <footer
+        class="container mx-auto px-4 py-8 text-center text-muted dark:text-muted-light text-sm"
+      >
         <p>{{ t('landing.footer') }}</p>
       </footer>
     </div>
@@ -115,30 +162,31 @@ const features = ['privacy', 'batch', 'background', 'formats']
 </template>
 
 <style scoped>
-@keyframes blob {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
+  @keyframes blob {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(20px, -30px) scale(1.1);
+    }
+    50% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    75% {
+      transform: translate(30px, 10px) scale(1.05);
+    }
   }
-  25% {
-    transform: translate(20px, -30px) scale(1.1);
-  }
-  50% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  75% {
-    transform: translate(30px, 10px) scale(1.05);
-  }
-}
 
-.animate-blob {
-  animation: blob 15s ease-in-out infinite;
-}
+  .animate-blob {
+    animation: blob 15s ease-in-out infinite;
+  }
 
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
 
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
 </style>

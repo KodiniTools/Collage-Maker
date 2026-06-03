@@ -26,7 +26,7 @@ export function useKeyboardShortcuts() {
       description: 'Select all images',
       descriptionKey: 'shortcuts.selectAll',
       category: 'selection',
-      action: () => collage.selectAllCanvasImages()
+      action: () => collage.selectAllCanvasImages(),
     },
     {
       key: 'Escape',
@@ -36,7 +36,7 @@ export function useKeyboardShortcuts() {
       action: () => {
         collage.deselectAllImages()
         collage.selectText(null)
-      }
+      },
     },
     {
       key: 'Delete',
@@ -49,7 +49,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.removeText(collage.selectedTextId)
         }
-      }
+      },
     },
     {
       key: 'Backspace',
@@ -62,7 +62,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.removeText(collage.selectedTextId)
         }
-      }
+      },
     },
 
     // === EDITING ===
@@ -76,7 +76,7 @@ export function useKeyboardShortcuts() {
         if (collage.selectedImageIds.length > 0) {
           collage.duplicateSelectedImages()
         }
-      }
+      },
     },
     {
       key: 'r',
@@ -87,7 +87,7 @@ export function useKeyboardShortcuts() {
         if (collage.selectedImageIds.length > 0) {
           collage.rotateSelectedImages(90)
         }
-      }
+      },
     },
     {
       key: 'r',
@@ -99,21 +99,21 @@ export function useKeyboardShortcuts() {
         if (collage.selectedImageIds.length > 0) {
           collage.rotateSelectedImages(-90)
         }
-      }
+      },
     },
     {
       key: ']',
       description: 'Bring to front',
       descriptionKey: 'shortcuts.bringToFront',
       category: 'editing',
-      action: () => collage.bringSelectedToFront()
+      action: () => collage.bringSelectedToFront(),
     },
     {
       key: '[',
       description: 'Send to back',
       descriptionKey: 'shortcuts.sendToBack',
       category: 'editing',
-      action: () => collage.sendSelectedToBack()
+      action: () => collage.sendSelectedToBack(),
     },
     {
       key: 't',
@@ -121,7 +121,7 @@ export function useKeyboardShortcuts() {
       description: 'Add new text',
       descriptionKey: 'shortcuts.addText',
       category: 'editing',
-      action: () => collage.addText()
+      action: () => collage.addText(),
     },
 
     // === NAVIGATION (Arrow Keys) ===
@@ -136,7 +136,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(0, -1)
         }
-      }
+      },
     },
     {
       key: 'ArrowDown',
@@ -149,7 +149,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(0, 1)
         }
-      }
+      },
     },
     {
       key: 'ArrowLeft',
@@ -162,7 +162,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(-1, 0)
         }
-      }
+      },
     },
     {
       key: 'ArrowRight',
@@ -175,7 +175,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(1, 0)
         }
-      }
+      },
     },
     {
       key: 'ArrowUp',
@@ -189,7 +189,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(0, -10)
         }
-      }
+      },
     },
     {
       key: 'ArrowDown',
@@ -203,7 +203,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(0, 10)
         }
-      }
+      },
     },
     {
       key: 'ArrowLeft',
@@ -217,7 +217,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(-10, 0)
         }
-      }
+      },
     },
     {
       key: 'ArrowRight',
@@ -231,7 +231,7 @@ export function useKeyboardShortcuts() {
         } else if (collage.selectedTextId) {
           collage.moveSelectedText(10, 0)
         }
-      }
+      },
     },
 
     // === CANVAS ===
@@ -241,7 +241,7 @@ export function useKeyboardShortcuts() {
       description: 'Toggle grid',
       descriptionKey: 'shortcuts.toggleGrid',
       category: 'canvas',
-      action: () => collage.toggleGrid()
+      action: () => collage.toggleGrid(),
     },
     {
       key: '+',
@@ -249,7 +249,7 @@ export function useKeyboardShortcuts() {
       description: 'Zoom in',
       descriptionKey: 'shortcuts.zoomIn',
       category: 'canvas',
-      action: () => collage.setCanvasZoom(collage.canvasZoom + 0.1)
+      action: () => collage.setCanvasZoom(collage.canvasZoom + 0.1),
     },
     {
       key: '=',
@@ -257,7 +257,7 @@ export function useKeyboardShortcuts() {
       description: 'Zoom in',
       descriptionKey: 'shortcuts.zoomIn',
       category: 'canvas',
-      action: () => collage.setCanvasZoom(collage.canvasZoom + 0.1)
+      action: () => collage.setCanvasZoom(collage.canvasZoom + 0.1),
     },
     {
       key: '-',
@@ -265,7 +265,7 @@ export function useKeyboardShortcuts() {
       description: 'Zoom out',
       descriptionKey: 'shortcuts.zoomOut',
       category: 'canvas',
-      action: () => collage.setCanvasZoom(collage.canvasZoom - 0.1)
+      action: () => collage.setCanvasZoom(collage.canvasZoom - 0.1),
     },
     {
       key: '0',
@@ -273,7 +273,7 @@ export function useKeyboardShortcuts() {
       description: 'Reset zoom',
       descriptionKey: 'shortcuts.resetZoom',
       category: 'canvas',
-      action: () => collage.resetCanvasView()
+      action: () => collage.resetCanvasView(),
     },
 
     // === GENERAL ===
@@ -283,7 +283,7 @@ export function useKeyboardShortcuts() {
       description: 'Undo',
       descriptionKey: 'shortcuts.undo',
       category: 'general',
-      action: () => collage.undo()
+      action: () => collage.undo(),
     },
     {
       key: 'y',
@@ -291,7 +291,7 @@ export function useKeyboardShortcuts() {
       description: 'Redo',
       descriptionKey: 'shortcuts.redo',
       category: 'general',
-      action: () => collage.redo()
+      action: () => collage.redo(),
     },
     {
       key: 'z',
@@ -300,7 +300,7 @@ export function useKeyboardShortcuts() {
       description: 'Redo',
       descriptionKey: 'shortcuts.redo',
       category: 'general',
-      action: () => collage.redo()
+      action: () => collage.redo(),
     },
     {
       key: '?',
@@ -310,8 +310,8 @@ export function useKeyboardShortcuts() {
       category: 'general',
       action: () => {
         showShortcutsModal.value = true
-      }
-    }
+      },
+    },
   ]
 
   function handleKeyDown(e: KeyboardEvent) {
@@ -322,9 +322,8 @@ export function useKeyboardShortcuts() {
     }
 
     // Finde passendes Shortcut
-    const matchingShortcut = shortcuts.find(shortcut => {
-      const keyMatch = e.key.toLowerCase() === shortcut.key.toLowerCase() ||
-                       e.key === shortcut.key
+    const matchingShortcut = shortcuts.find((shortcut) => {
+      const keyMatch = e.key.toLowerCase() === shortcut.key.toLowerCase() || e.key === shortcut.key
       const ctrlMatch = !!shortcut.ctrl === (e.ctrlKey || e.metaKey)
       const shiftMatch = !!shortcut.shift === e.shiftKey
       const altMatch = !!shortcut.alt === e.altKey
@@ -353,12 +352,12 @@ export function useKeyboardShortcuts() {
       editing: [] as KeyboardShortcut[],
       navigation: [] as KeyboardShortcut[],
       canvas: [] as KeyboardShortcut[],
-      general: [] as KeyboardShortcut[]
+      general: [] as KeyboardShortcut[],
     }
 
     // Filtere Duplikate (z.B. Delete und Backspace)
     const seen = new Set<string>()
-    shortcuts.forEach(shortcut => {
+    shortcuts.forEach((shortcut) => {
       const key = shortcut.descriptionKey
       if (!seen.has(key)) {
         seen.add(key)
@@ -379,15 +378,32 @@ export function useKeyboardShortcuts() {
     // Formatiere Tastennamen
     let keyName = shortcut.key
     switch (shortcut.key) {
-      case 'ArrowUp': keyName = '↑'; break
-      case 'ArrowDown': keyName = '↓'; break
-      case 'ArrowLeft': keyName = '←'; break
-      case 'ArrowRight': keyName = '→'; break
-      case 'Delete': keyName = 'Del'; break
-      case 'Backspace': keyName = '⌫'; break
-      case 'Escape': keyName = 'Esc'; break
-      case ' ': keyName = 'Space'; break
-      default: keyName = shortcut.key.toUpperCase()
+      case 'ArrowUp':
+        keyName = '↑'
+        break
+      case 'ArrowDown':
+        keyName = '↓'
+        break
+      case 'ArrowLeft':
+        keyName = '←'
+        break
+      case 'ArrowRight':
+        keyName = '→'
+        break
+      case 'Delete':
+        keyName = 'Del'
+        break
+      case 'Backspace':
+        keyName = '⌫'
+        break
+      case 'Escape':
+        keyName = 'Esc'
+        break
+      case ' ':
+        keyName = 'Space'
+        break
+      default:
+        keyName = shortcut.key.toUpperCase()
     }
 
     parts.push(keyName)
@@ -411,6 +427,6 @@ export function useKeyboardShortcuts() {
     getShortcutsByCategory,
     formatShortcut,
     setupKeyboardListeners,
-    cleanupKeyboardListeners
+    cleanupKeyboardListeners,
   }
 }

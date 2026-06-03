@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { useCollageStore } from '@/stores/collage'
-import { useI18n } from 'vue-i18n'
+  import { useCollageStore } from '@/stores/collage'
+  import { useI18n } from 'vue-i18n'
 
-const collage = useCollageStore()
-const { t } = useI18n()
+  const collage = useCollageStore()
+  const { t } = useI18n()
 
-function toggleGrid() {
-  collage.updateSettings({
-    gridEnabled: !collage.settings.gridEnabled
-  })
-}
+  function toggleGrid() {
+    collage.updateSettings({
+      gridEnabled: !collage.settings.gridEnabled,
+    })
+  }
 
-function updateGridSize(value: number) {
-  collage.updateSettings({
-    gridSize: value
-  })
-}
+  function updateGridSize(value: number) {
+    collage.updateSettings({
+      gridSize: value,
+    })
+  }
 </script>
 
 <template>
@@ -27,13 +27,13 @@ function updateGridSize(value: number) {
       <div class="flex items-center justify-between">
         <label class="text-sm font-medium">{{ t('grid.enabled') }}</label>
         <button
-          @click="toggleGrid"
           :class="[
             'px-4 py-2 text-sm rounded-lg font-medium transition-colors',
             collage.settings.gridEnabled
               ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted'
+              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
           ]"
+          @click="toggleGrid"
         >
           {{ collage.settings.gridEnabled ? t('grid.on') : t('grid.off') }}
         </button>
@@ -47,11 +47,11 @@ function updateGridSize(value: number) {
         <input
           type="range"
           :value="collage.settings.gridSize"
-          @input="updateGridSize(Number(($event.target as HTMLInputElement).value))"
           min="10"
           max="200"
           step="5"
           class="w-full accent-accent"
+          @input="updateGridSize(Number(($event.target as HTMLInputElement).value))"
         />
         <div class="flex justify-between text-xs text-muted mt-1">
           <span>10px</span>

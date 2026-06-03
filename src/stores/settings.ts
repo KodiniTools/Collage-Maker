@@ -6,59 +6,59 @@ import { i18n } from '@/i18n'
 // SSI nav translations — keys must match the data-i18n attributes in nav.html
 const ssiNavTranslations: Record<string, Record<string, string>> = {
   de: {
-    'nav.audioTools':      'Audiotools',
-    'nav.mp3Converter':    'MP3 Konverter',
-    'nav.audioEqualizer':  'Interaktiver Audio Equalizer',
-    'nav.modernPlayer':    'Moderner Musikplayer',
-    'nav.ultimatePlayer':  'Ultimativer Musikplayer',
+    'nav.audioTools': 'Audiotools',
+    'nav.mp3Converter': 'MP3 Konverter',
+    'nav.audioEqualizer': 'Interaktiver Audio Equalizer',
+    'nav.modernPlayer': 'Moderner Musikplayer',
+    'nav.ultimatePlayer': 'Ultimativer Musikplayer',
     'nav.playlistGenerator': 'Audioplaylist Generator',
     'nav.playlistConverter': 'Playlist zu WebM Konverter',
-    'nav.alarmTool':       'Alarmtool',
+    'nav.alarmTool': 'Alarmtool',
     'nav.audioNormalizer': 'Audio Normalizer',
-    'nav.visualizer':      'Visualizer',
-    'nav.equalizer19':     '19-Band Equalizer',
-    'nav.audioConverter':  'Audio Konverter',
-    'nav.imageTools':      'Bildtools',
-    'nav.imageConverter':  'Bildkonverter',
+    'nav.visualizer': 'Visualizer',
+    'nav.equalizer19': '19-Band Equalizer',
+    'nav.audioConverter': 'Audio Konverter',
+    'nav.imageTools': 'Bildtools',
+    'nav.imageConverter': 'Bildkonverter',
     'nav.batchImageEditor': 'Bildserie bearbeiten',
-    'nav.photoCollage':    'Fotocollage',
-    'nav.tools':           'Tools',
-    'nav.colorExtractor':  'Kodini Farbextraktor',
-    'nav.videoConverter':  'Videokonverter',
-    'nav.contact':         'Kontakt',
-    'aria.toggleTheme':    'Theme wechseln',
+    'nav.photoCollage': 'Fotocollage',
+    'nav.tools': 'Tools',
+    'nav.colorExtractor': 'Kodini Farbextraktor',
+    'nav.videoConverter': 'Videokonverter',
+    'nav.contact': 'Kontakt',
+    'aria.toggleTheme': 'Theme wechseln',
     'aria.selectLanguage': 'Sprache wählen',
-    'aria.menuOpen':       'Menü öffnen',
-    'aria.menuClose':      'Menü schliessen',
-    'aria.mainNav':        'Hauptnavigation'
+    'aria.menuOpen': 'Menü öffnen',
+    'aria.menuClose': 'Menü schliessen',
+    'aria.mainNav': 'Hauptnavigation',
   },
   en: {
-    'nav.audioTools':      'Audio Tools',
-    'nav.mp3Converter':    'MP3 Converter',
-    'nav.audioEqualizer':  'Interactive Audio Equalizer',
-    'nav.modernPlayer':    'Modern Music Player',
-    'nav.ultimatePlayer':  'Ultimate Music Player',
+    'nav.audioTools': 'Audio Tools',
+    'nav.mp3Converter': 'MP3 Converter',
+    'nav.audioEqualizer': 'Interactive Audio Equalizer',
+    'nav.modernPlayer': 'Modern Music Player',
+    'nav.ultimatePlayer': 'Ultimate Music Player',
     'nav.playlistGenerator': 'Audio Playlist Generator',
     'nav.playlistConverter': 'Playlist to WebM Converter',
-    'nav.alarmTool':       'Alarm Tool',
+    'nav.alarmTool': 'Alarm Tool',
     'nav.audioNormalizer': 'Audio Normalizer',
-    'nav.visualizer':      'Visualizer',
-    'nav.equalizer19':     '19-Band Equalizer',
-    'nav.audioConverter':  'Audio Converter',
-    'nav.imageTools':      'Image Tools',
-    'nav.imageConverter':  'Image Converter',
+    'nav.visualizer': 'Visualizer',
+    'nav.equalizer19': '19-Band Equalizer',
+    'nav.audioConverter': 'Audio Converter',
+    'nav.imageTools': 'Image Tools',
+    'nav.imageConverter': 'Image Converter',
     'nav.batchImageEditor': 'Batch Image Editor',
-    'nav.photoCollage':    'Photo Collage',
-    'nav.tools':           'Tools',
-    'nav.colorExtractor':  'Kodini Color Extractor',
-    'nav.videoConverter':  'Video Converter',
-    'nav.contact':         'Contact',
-    'aria.toggleTheme':    'Toggle theme',
+    'nav.photoCollage': 'Photo Collage',
+    'nav.tools': 'Tools',
+    'nav.colorExtractor': 'Kodini Color Extractor',
+    'nav.videoConverter': 'Video Converter',
+    'nav.contact': 'Contact',
+    'aria.toggleTheme': 'Toggle theme',
     'aria.selectLanguage': 'Select language',
-    'aria.menuOpen':       'Open menu',
-    'aria.menuClose':      'Close menu',
-    'aria.mainNav':        'Main navigation'
-  }
+    'aria.menuOpen': 'Open menu',
+    'aria.menuClose': 'Close menu',
+    'aria.mainNav': 'Main navigation',
+  },
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -70,23 +70,27 @@ export const useSettingsStore = defineStore('settings', () => {
   let ignoreMutation = false
 
   // Theme watcher - sync both class="dark" (Tailwind) and data-theme (global nav CSS)
-  watch(theme, (newTheme) => {
-    localStorage.setItem('theme', newTheme)
-    // Suppress MutationObserver while we set the attribute ourselves
-    ignoreMutation = true
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-      document.documentElement.setAttribute('data-theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.setAttribute('data-theme', 'light')
-    }
-    ignoreMutation = false
-    // Sync SSI nav theme icons (moon/sun emoji)
-    document.querySelectorAll('.global-nav-theme-icon').forEach((icon) => {
-      icon.textContent = newTheme === 'light' ? '\uD83C\uDF19' : '\u2600\uFE0F'
-    })
-  }, { immediate: true })
+  watch(
+    theme,
+    (newTheme) => {
+      localStorage.setItem('theme', newTheme)
+      // Suppress MutationObserver while we set the attribute ourselves
+      ignoreMutation = true
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark')
+        document.documentElement.setAttribute('data-theme', 'dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
+      ignoreMutation = false
+      // Sync SSI nav theme icons (moon/sun emoji)
+      document.querySelectorAll('.global-nav-theme-icon').forEach((icon) => {
+        icon.textContent = newTheme === 'light' ? '\uD83C\uDF19' : '\u2600\uFE0F'
+      })
+    },
+    { immediate: true }
+  )
 
   // Locale watcher - sync localStorage, html lang, vue-i18n, SSI nav buttons & text
   watch(locale, (newLocale) => {
@@ -151,7 +155,10 @@ export const useSettingsStore = defineStore('settings', () => {
         }
       }
     })
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
   }
 
   function startListening() {
@@ -184,6 +191,6 @@ export const useSettingsStore = defineStore('settings', () => {
     toggleTheme,
     setLocale,
     startListening,
-    stopListening
+    stopListening,
   }
 })

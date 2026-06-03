@@ -27,7 +27,10 @@ export function useAutoSave() {
   const saveError = ref<string | null>(null)
 
   // Komprimiert und konvertiert ein Bild zu Base64
-  async function compressAndConvert(blobUrl: string, maxSize: number = MAX_IMAGE_SIZE): Promise<string> {
+  async function compressAndConvert(
+    blobUrl: string,
+    maxSize: number = MAX_IMAGE_SIZE
+  ): Promise<string> {
     // Wenn es bereits eine Data-URL ist
     if (blobUrl.startsWith('data:')) {
       // Trotzdem komprimieren
@@ -158,7 +161,7 @@ export function useAutoSave() {
             const { file, url, ...rest } = img
             savedImages.push({
               ...rest,
-              dataUrl
+              dataUrl,
             })
           }
         } catch (e) {
@@ -188,9 +191,9 @@ export function useAutoSave() {
           ...JSON.parse(JSON.stringify(collage.settings)),
           backgroundImage: {
             ...collage.settings.backgroundImage,
-            url: backgroundDataUrl
-          }
-        }
+            url: backgroundDataUrl,
+          },
+        },
       }
 
       // Speichern nur wenn Bilder oder Texte vorhanden
@@ -202,7 +205,9 @@ export function useAutoSave() {
 
         if (sizeInMB > 4.5) {
           // Zu groß - versuche mit noch kleineren Bildern
-          console.warn(`Auto-save: Daten zu groß (${sizeInMB.toFixed(2)}MB), versuche kleinere Thumbnails...`)
+          console.warn(
+            `Auto-save: Daten zu groß (${sizeInMB.toFixed(2)}MB), versuche kleinere Thumbnails...`
+          )
           await saveStateWithSmallerImages(200)
           return
         }
@@ -211,7 +216,9 @@ export function useAutoSave() {
           localStorage.setItem(STORAGE_KEY, jsonString)
           lastSaveTime.value = Date.now()
           saveError.value = null
-          console.log(`Auto-save: ${state.images.length} Bilder, ${state.texts.length} Texte gespeichert (${sizeInMB.toFixed(2)}MB)`)
+          console.log(
+            `Auto-save: ${state.images.length} Bilder, ${state.texts.length} Texte gespeichert (${sizeInMB.toFixed(2)}MB)`
+          )
         } catch (storageError) {
           if (storageError instanceof DOMException && storageError.name === 'QuotaExceededError') {
             console.warn('Auto-save: Speicherplatz überschritten, versuche kleinere Thumbnails...')
@@ -239,7 +246,7 @@ export function useAutoSave() {
             const { file, url, ...rest } = img
             savedImages.push({
               ...rest,
-              dataUrl
+              dataUrl,
             })
           }
         } catch (e) {
@@ -250,10 +257,7 @@ export function useAutoSave() {
       let backgroundDataUrl: string | null = null
       if (collage.settings.backgroundImage.url) {
         try {
-          backgroundDataUrl = await compressAndConvert(
-            collage.settings.backgroundImage.url,
-            150
-          )
+          backgroundDataUrl = await compressAndConvert(collage.settings.backgroundImage.url, 150)
         } catch (e) {
           console.warn('Failed to convert background image:', e)
         }
@@ -268,9 +272,9 @@ export function useAutoSave() {
           ...JSON.parse(JSON.stringify(collage.settings)),
           backgroundImage: {
             ...collage.settings.backgroundImage,
-            url: backgroundDataUrl
-          }
-        }
+            url: backgroundDataUrl,
+          },
+        },
       }
 
       if (state.images.length > 0 || state.texts.length > 0) {
@@ -281,7 +285,9 @@ export function useAutoSave() {
           localStorage.setItem(STORAGE_KEY, jsonString)
           lastSaveTime.value = Date.now()
           saveError.value = null
-          console.log(`Auto-save: ${state.images.length} Bilder mit kleineren Thumbnails gespeichert (${sizeInMB.toFixed(2)}MB)`)
+          console.log(
+            `Auto-save: ${state.images.length} Bilder mit kleineren Thumbnails gespeichert (${sizeInMB.toFixed(2)}MB)`
+          )
         } catch (storageError) {
           if (storageError instanceof DOMException && storageError.name === 'QuotaExceededError') {
             // Letzter Versuch: nur Metadaten ohne Bilder speichern
@@ -292,12 +298,12 @@ export function useAutoSave() {
             const metaState: SavedState = {
               version: 1,
               timestamp: Date.now(),
-              images: savedImages.map(img => ({ ...img, dataUrl: '' })),
+              images: savedImages.map((img) => ({ ...img, dataUrl: '' })),
               texts: state.texts,
               settings: {
                 ...state.settings,
-                backgroundImage: { ...state.settings.backgroundImage, url: null }
-              }
+                backgroundImage: { ...state.settings.backgroundImage, url: null },
+              },
             }
             localStorage.setItem(STORAGE_KEY, JSON.stringify(metaState))
           } else {
@@ -339,13 +345,13 @@ export function useAutoSave() {
         backgroundColor: state.settings.backgroundColor,
         layout: state.settings.layout,
         gridEnabled: state.settings.gridEnabled,
-        gridSize: state.settings.gridSize
+        gridSize: state.settings.gridSize,
       })
 
       // Hintergrundbild wiederherstellen
       if (state.settings.backgroundImage.url) {
         collage.settings.backgroundImage = {
-          ...state.settings.backgroundImage
+          ...state.settings.backgroundImage,
         }
       }
 
@@ -396,7 +402,7 @@ export function useAutoSave() {
             saturation: savedImg.saturation ?? 100,
             warmth: savedImg.warmth ?? 0,
             sharpness: savedImg.sharpness ?? 0,
-            isGalleryTemplate: savedImg.isGalleryTemplate
+            isGalleryTemplate: savedImg.isGalleryTemplate,
           }
 
           collage.images.push(restoredImage)
@@ -406,13 +412,16 @@ export function useAutoSave() {
       }
 
       // Stelle Texte wieder her
-      state.texts.forEach(txt => {
+      state.texts.forEach((txt) => {
         collage.texts.push({ ...txt })
       })
 
       isRestoring.value = false
       lastSaveTime.value = state.timestamp
-      console.log('Auto-save: Collage wiederhergestellt', new Date(state.timestamp).toLocaleTimeString())
+      console.log(
+        'Auto-save: Collage wiederhergestellt',
+        new Date(state.timestamp).toLocaleTimeString()
+      )
 
       return true
     } catch (error) {
@@ -443,11 +452,7 @@ export function useAutoSave() {
   function setupAutoSave() {
     // Beobachte alle relevanten Änderungen
     watch(
-      () => [
-        collage.images.length,
-        collage.texts.length,
-        JSON.stringify(collage.settings)
-      ],
+      () => [collage.images.length, collage.texts.length, JSON.stringify(collage.settings)],
       () => {
         if (!isRestoring.value) {
           scheduleSave()
@@ -457,7 +462,10 @@ export function useAutoSave() {
 
     // Zusätzlicher Watcher für tiefe Änderungen an einzelnen Bildern/Texten
     watch(
-      () => collage.images.map(img => `${img.id}-${img.x}-${img.y}-${img.width}-${img.height}-${img.rotation}`).join(','),
+      () =>
+        collage.images
+          .map((img) => `${img.id}-${img.x}-${img.y}-${img.width}-${img.height}-${img.rotation}`)
+          .join(','),
       () => {
         if (!isRestoring.value) {
           scheduleSave()
@@ -493,12 +501,14 @@ export function useAutoSave() {
 
       const state: SavedState = JSON.parse(savedData)
       // Prüfe ob es Bilder MIT dataUrl gibt oder Texte
-      const hasImages = state.images.some(img => img.dataUrl && img.dataUrl.length > 0)
+      const hasImages = state.images.some((img) => img.dataUrl && img.dataUrl.length > 0)
       const hasTexts = state.texts.length > 0
       const hasContent = hasImages || hasTexts
 
       if (hasContent) {
-        console.log(`Auto-save: Gespeicherte Daten gefunden - ${state.images.filter(i => i.dataUrl).length} Bilder, ${state.texts.length} Texte`)
+        console.log(
+          `Auto-save: Gespeicherte Daten gefunden - ${state.images.filter((i) => i.dataUrl).length} Bilder, ${state.texts.length} Texte`
+        )
       }
 
       return hasContent
@@ -530,6 +540,6 @@ export function useAutoSave() {
     getSaveDate,
     lastSaveTime,
     isRestoring,
-    saveError
+    saveError,
   }
 }

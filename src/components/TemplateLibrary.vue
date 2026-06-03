@@ -1,83 +1,87 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useTemplatesStore } from '@/stores/templates'
-import { useCollageStore } from '@/stores/collage'
-import TemplateCard from './TemplateCard.vue'
-import type { Template } from '@/stores/templates'
+  import { ref, computed, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { useTemplatesStore } from '@/stores/templates'
+  import { useCollageStore } from '@/stores/collage'
+  import TemplateCard from './TemplateCard.vue'
+  import type { Template } from '@/stores/templates'
 
-const { t } = useI18n()
-const templatesStore = useTemplatesStore()
-const collageStore = useCollageStore()
+  const { t } = useI18n()
+  const templatesStore = useTemplatesStore()
+  const collageStore = useCollageStore()
 
-const isOpen = defineModel<boolean>('isOpen', { required: true })
-const activeTab = ref<'all' | 'predefined' | 'user'>('all')
-const templateName = ref('')
-const templateDescription = ref('')
-const showSaveDialog = ref(false)
+  const isOpen = defineModel<boolean>('isOpen', { required: true })
+  const activeTab = ref<'all' | 'predefined' | 'user'>('all')
+  const templateName = ref('')
+  const templateDescription = ref('')
+  const showSaveDialog = ref(false)
 
-// Lade Templates beim ersten Öffnen
-let templatesLoaded = false
-watch(isOpen, (newValue) => {
-  if (newValue && !templatesLoaded) {
-    templatesStore.loadPredefinedTemplates()
-    templatesStore.loadUserTemplates()
-    templatesLoaded = true
-  }
-}, { immediate: true })
-
-const filteredTemplates = computed(() => {
-  const all = templatesStore.getAllTemplates()
-  if (activeTab.value === 'predefined') {
-    return all.filter(t => t.category === 'predefined')
-  }
-  if (activeTab.value === 'user') {
-    return all.filter(t => t.category === 'user')
-  }
-  return all
-})
-
-function loadTemplate(template: Template) {
-  if (confirm(t('templates.confirmLoad'))) {
-    collageStore.loadFromTemplate(template)
-    isOpen.value = false
-  }
-}
-
-function deleteTemplate(id: string) {
-  if (confirm(t('templates.confirmDelete'))) {
-    templatesStore.deleteUserTemplate(id)
-  }
-}
-
-function openSaveDialog() {
-  showSaveDialog.value = true
-  templateName.value = `Template ${new Date().toLocaleDateString()}`
-  templateDescription.value = ''
-}
-
-async function saveCurrentAsTemplate() {
-  if (!templateName.value.trim()) {
-    alert(t('templates.nameRequired'))
-    return
-  }
-
-  const template = await collageStore.saveAsTemplate(
-    templateName.value.trim(),
-    templateDescription.value.trim()
+  // Lade Templates beim ersten Öffnen
+  let templatesLoaded = false
+  watch(
+    isOpen,
+    (newValue) => {
+      if (newValue && !templatesLoaded) {
+        templatesStore.loadPredefinedTemplates()
+        templatesStore.loadUserTemplates()
+        templatesLoaded = true
+      }
+    },
+    { immediate: true }
   )
 
-  templatesStore.addUserTemplate(template)
-  showSaveDialog.value = false
-  templateName.value = ''
-  templateDescription.value = ''
-  activeTab.value = 'user'
-}
+  const filteredTemplates = computed(() => {
+    const all = templatesStore.getAllTemplates()
+    if (activeTab.value === 'predefined') {
+      return all.filter((t) => t.category === 'predefined')
+    }
+    if (activeTab.value === 'user') {
+      return all.filter((t) => t.category === 'user')
+    }
+    return all
+  })
 
-function closeModal() {
-  isOpen.value = false
-  showSaveDialog.value = false
-}
+  function loadTemplate(template: Template) {
+    if (confirm(t('templates.confirmLoad'))) {
+      collageStore.loadFromTemplate(template)
+      isOpen.value = false
+    }
+  }
+
+  function deleteTemplate(id: string) {
+    if (confirm(t('templates.confirmDelete'))) {
+      templatesStore.deleteUserTemplate(id)
+    }
+  }
+
+  function openSaveDialog() {
+    showSaveDialog.value = true
+    templateName.value = `Template ${new Date().toLocaleDateString()}`
+    templateDescription.value = ''
+  }
+
+  async function saveCurrentAsTemplate() {
+    if (!templateName.value.trim()) {
+      alert(t('templates.nameRequired'))
+      return
+    }
+
+    const template = await collageStore.saveAsTemplate(
+      templateName.value.trim(),
+      templateDescription.value.trim()
+    )
+
+    templatesStore.addUserTemplate(template)
+    showSaveDialog.value = false
+    templateName.value = ''
+    templateDescription.value = ''
+    activeTab.value = 'user'
+  }
+
+  function closeModal() {
+    isOpen.value = false
+    showSaveDialog.value = false
+  }
 </script>
 
 <template>
@@ -95,61 +99,72 @@ function closeModal() {
         @click.self="closeModal"
       >
         <!-- Modal Content -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
+        <div
+          class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col"
+        >
           <!-- Header -->
-          <div class="flex items-center justify-between p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30">
+          <div
+            class="flex items-center justify-between p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30"
+          >
             <h2 class="text-xl sm:text-2xl font-bold">{{ t('templates.library') }}</h2>
             <button
-              @click="closeModal"
               class="p-2 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
+              @click="closeModal"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
 
           <!-- Tabs + Save Button -->
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30">
+          <div
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30"
+          >
             <div class="flex gap-1 sm:gap-2 flex-wrap">
               <button
-                @click="activeTab = 'all'"
                 :class="[
                   'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'all'
                     ? 'bg-accent text-slate-dark'
-                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
+                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
                 ]"
+                @click="activeTab = 'all'"
               >
                 {{ t('templates.all') }}
               </button>
               <button
-                @click="activeTab = 'predefined'"
                 :class="[
                   'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'predefined'
                     ? 'bg-accent text-slate-dark'
-                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
+                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
                 ]"
+                @click="activeTab = 'predefined'"
               >
                 {{ t('templates.predefined') }}
               </button>
               <button
-                @click="activeTab = 'user'"
                 :class="[
                   'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'user'
                     ? 'bg-accent text-slate-dark'
-                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50'
+                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
                 ]"
+                @click="activeTab = 'user'"
               >
                 {{ t('templates.custom') }} ({{ templatesStore.userTemplates.length }})
               </button>
             </div>
 
             <button
-              @click="openSaveDialog"
               class="px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors text-sm sm:text-base w-full sm:w-auto"
+              @click="openSaveDialog"
             >
               {{ t('templates.saveAsCurrent') }}
             </button>
@@ -186,7 +201,9 @@ function closeModal() {
             class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
             @click.self="showSaveDialog = false"
           >
-            <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6">
+            <div
+              class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
+            >
               <h3 class="text-lg sm:text-xl font-bold mb-4">{{ t('templates.saveAsCurrent') }}</h3>
 
               <div class="space-y-4">
@@ -217,14 +234,14 @@ function closeModal() {
 
               <div class="flex gap-3 mt-6">
                 <button
-                  @click="showSaveDialog = false"
                   class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate rounded-lg hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors"
+                  @click="showSaveDialog = false"
                 >
                   {{ t('common.cancel') }}
                 </button>
                 <button
-                  @click="saveCurrentAsTemplate"
                   class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors"
+                  @click="saveCurrentAsTemplate"
                 >
                   {{ t('common.save') }}
                 </button>

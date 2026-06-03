@@ -1,356 +1,362 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useCollageStore } from '@/stores/collage'
-import { useI18n } from 'vue-i18n'
+  import { computed, ref, watch } from 'vue'
+  import { useCollageStore } from '@/stores/collage'
+  import { useI18n } from 'vue-i18n'
 
-const collage = useCollageStore()
-const { t } = useI18n()
+  const collage = useCollageStore()
+  const { t } = useI18n()
 
-// Einzelauswahl (Backward-kompatibel)
-const selectedImage = computed(() => collage.selectedImage)
-// Mehrfachauswahl
-const selectedImages = computed(() => collage.selectedImages)
-const selectedCount = computed(() => collage.selectedImageIds.length)
-const isMultiSelection = computed(() => selectedCount.value > 1)
+  // Einzelauswahl (Backward-kompatibel)
+  const selectedImage = computed(() => collage.selectedImage)
+  // Mehrfachauswahl
+  const selectedImages = computed(() => collage.selectedImages)
+  const selectedCount = computed(() => collage.selectedImageIds.length)
+  const isMultiSelection = computed(() => selectedCount.value > 1)
 
-const aspectRatio = ref(1)
+  const aspectRatio = ref(1)
 
-// Berechne Seitenverhältnis wenn Bild ausgewählt wird
-watch(selectedImage, (img) => {
-  if (img) {
-    aspectRatio.value = img.width / img.height
-  }
-}, { immediate: true })
-
-// Referenzbild für Slider-Werte (erstes ausgewähltes Bild)
-const displayImage = computed(() => selectedImages.value[0] || null)
-
-// Hilfsfunktion: Updates auf alle ausgewählten Bilder anwenden
-function applyToSelected(updates: Record<string, any>) {
-  if (isMultiSelection.value) {
-    collage.updateSelectedImages(updates)
-  } else if (collage.selectedImageId) {
-    collage.updateImage(collage.selectedImageId, updates)
-  }
-}
-
-// Undo-Tracking: Debounced für Slider, direkt für diskrete Aktionen
-function saveUndoDebounced() {
-  collage.saveStateForUndoDebounced()
-}
-
-function saveUndoImmediate() {
-  collage.saveStateForUndo()
-}
-
-function updateWidth(value: number) {
-  if (collage.selectedImageId && selectedImage.value) {
-    saveUndoDebounced()
-    const updates: any = { width: value }
-    if (collage.lockAspectRatio) {
-      updates.height = value / aspectRatio.value
-    }
-    collage.updateImage(collage.selectedImageId, updates)
-  }
-}
-
-function updateHeight(value: number) {
-  if (collage.selectedImageId && selectedImage.value) {
-    saveUndoDebounced()
-    const updates: any = { height: value }
-    if (collage.lockAspectRatio) {
-      updates.width = value * aspectRatio.value
-    }
-    collage.updateImage(collage.selectedImageId, updates)
-  }
-}
-
-function updatePositionX(value: number) {
-  if (collage.selectedImageId) {
-    saveUndoDebounced()
-    collage.updateImage(collage.selectedImageId, { x: value })
-  }
-}
-
-function updatePositionY(value: number) {
-  if (collage.selectedImageId) {
-    saveUndoDebounced()
-    collage.updateImage(collage.selectedImageId, { y: value })
-  }
-}
-
-function toggleAspectRatio() {
-  collage.setLockAspectRatio(!collage.lockAspectRatio)
-  if (collage.lockAspectRatio && selectedImage.value) {
-    // Aktualisiere Seitenverhältnis beim Aktivieren
-    aspectRatio.value = selectedImage.value.width / selectedImage.value.height
-  }
-}
-
-function updateRotation(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ rotation: value })
-}
-
-function updateOpacity(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ opacity: value })
-}
-
-function updateBorderRadius(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ borderRadius: value })
-}
-
-function toggleBorder() {
-  saveUndoImmediate()
-  // Bei Mehrfachauswahl: Einheitlich aktivieren oder deaktivieren
-  if (isMultiSelection.value) {
-    const anyEnabled = selectedImages.value.some(img => img.borderEnabled)
-    applyToSelected({ borderEnabled: !anyEnabled })
-  } else if (selectedImage.value) {
-    applyToSelected({ borderEnabled: !selectedImage.value.borderEnabled })
-  }
-}
-
-function updateBorderWidth(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ borderWidth: value })
-}
-
-function updateBorderColor(value: string) {
-  saveUndoDebounced()
-  applyToSelected({ borderColor: value })
-}
-
-function updateBorderStyle(value: 'solid' | 'dashed' | 'dotted' | 'double') {
-  saveUndoImmediate()
-  applyToSelected({ borderStyle: value })
-}
-
-function toggleBorderShadow() {
-  saveUndoImmediate()
-  if (isMultiSelection.value) {
-    const anyEnabled = selectedImages.value.some(img => img.borderShadowEnabled)
-    applyToSelected({ borderShadowEnabled: !anyEnabled })
-  } else if (selectedImage.value) {
-    applyToSelected({ borderShadowEnabled: !selectedImage.value.borderShadowEnabled })
-  }
-}
-
-function updateBorderShadowOffsetX(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ borderShadowOffsetX: value })
-}
-
-function updateBorderShadowOffsetY(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ borderShadowOffsetY: value })
-}
-
-function updateBorderShadowBlur(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ borderShadowBlur: value })
-}
-
-function updateBorderShadowColor(value: string) {
-  saveUndoDebounced()
-  applyToSelected({ borderShadowColor: value })
-}
-
-function toggleShadow() {
-  saveUndoImmediate()
-  if (isMultiSelection.value) {
-    const anyEnabled = selectedImages.value.some(img => img.shadowEnabled)
-    applyToSelected({ shadowEnabled: !anyEnabled })
-  } else if (selectedImage.value) {
-    applyToSelected({ shadowEnabled: !selectedImage.value.shadowEnabled })
-  }
-}
-
-function updateShadowOffsetX(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ shadowOffsetX: value })
-}
-
-function updateShadowOffsetY(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ shadowOffsetY: value })
-}
-
-function updateShadowBlur(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ shadowBlur: value })
-}
-
-function updateShadowColor(value: string) {
-  saveUndoDebounced()
-  applyToSelected({ shadowColor: value })
-}
-
-function deleteImage() {
-  // Undo wird in removeSelectedImages/removeImage gespeichert
-  if (isMultiSelection.value) {
-    collage.removeSelectedImages()
-  } else if (collage.selectedImageId) {
-    collage.removeImage(collage.selectedImageId)
-  }
-}
-
-function bringToFront() {
-  if (selectedImages.value.length > 0) {
-    saveUndoImmediate()
-    const maxZ = Math.max(...collage.images.map(img => img.zIndex), 0)
-    // Bei Mehrfachauswahl: Alle nach vorne, aber relative Reihenfolge beibehalten
-    selectedImages.value
-      .sort((a, b) => a.zIndex - b.zIndex)
-      .forEach((img, index) => {
-        collage.updateImage(img.id, { zIndex: maxZ + 1 + index })
-      })
-  }
-}
-
-function sendToBack() {
-  if (selectedImages.value.length > 0) {
-    saveUndoImmediate()
-    const minZ = Math.min(...collage.images.map(img => img.zIndex), 0)
-    // Bei Mehrfachauswahl: Alle nach hinten, aber relative Reihenfolge beibehalten
-    selectedImages.value
-      .sort((a, b) => b.zIndex - a.zIndex)
-      .forEach((img, index) => {
-        collage.updateImage(img.id, { zIndex: minZ - 1 - index })
-      })
-  }
-}
-
-function bringForward() {
-  if (selectedImages.value.length > 0) {
-    saveUndoImmediate()
-    // Sortiere alle Bilder nach zIndex
-    const sortedImages = [...collage.images].sort((a, b) => a.zIndex - b.zIndex)
-
-    selectedImages.value.forEach(selectedImg => {
-      const currentIndex = sortedImages.findIndex(img => img.id === selectedImg.id)
-      // Finde das nächste Bild darüber (das nicht ausgewählt ist)
-      const nextAbove = sortedImages.slice(currentIndex + 1).find(img =>
-        !selectedImages.value.some(sel => sel.id === img.id)
-      )
-
-      if (nextAbove) {
-        // Tausche zIndex mit dem nächsten Bild darüber
-        const tempZ = selectedImg.zIndex
-        collage.updateImage(selectedImg.id, { zIndex: nextAbove.zIndex })
-        collage.updateImage(nextAbove.id, { zIndex: tempZ })
+  // Berechne Seitenverhältnis wenn Bild ausgewählt wird
+  watch(
+    selectedImage,
+    (img) => {
+      if (img) {
+        aspectRatio.value = img.width / img.height
       }
-    })
+    },
+    { immediate: true }
+  )
+
+  // Referenzbild für Slider-Werte (erstes ausgewähltes Bild)
+  const displayImage = computed(() => selectedImages.value[0] || null)
+
+  // Hilfsfunktion: Updates auf alle ausgewählten Bilder anwenden
+  function applyToSelected(updates: Record<string, any>) {
+    if (isMultiSelection.value) {
+      collage.updateSelectedImages(updates)
+    } else if (collage.selectedImageId) {
+      collage.updateImage(collage.selectedImageId, updates)
+    }
   }
-}
 
-function sendBackward() {
-  if (selectedImages.value.length > 0) {
-    saveUndoImmediate()
-    // Sortiere alle Bilder nach zIndex (umgekehrt für rückwärts)
-    const sortedImages = [...collage.images].sort((a, b) => b.zIndex - a.zIndex)
+  // Undo-Tracking: Debounced für Slider, direkt für diskrete Aktionen
+  function saveUndoDebounced() {
+    collage.saveStateForUndoDebounced()
+  }
 
-    selectedImages.value.forEach(selectedImg => {
-      const currentIndex = sortedImages.findIndex(img => img.id === selectedImg.id)
-      // Finde das nächste Bild darunter (das nicht ausgewählt ist)
-      const nextBelow = sortedImages.slice(currentIndex + 1).find(img =>
-        !selectedImages.value.some(sel => sel.id === img.id)
-      )
+  function saveUndoImmediate() {
+    collage.saveStateForUndo()
+  }
 
-      if (nextBelow) {
-        // Tausche zIndex mit dem nächsten Bild darunter
-        const tempZ = selectedImg.zIndex
-        collage.updateImage(selectedImg.id, { zIndex: nextBelow.zIndex })
-        collage.updateImage(nextBelow.id, { zIndex: tempZ })
+  function updateWidth(value: number) {
+    if (collage.selectedImageId && selectedImage.value) {
+      saveUndoDebounced()
+      const updates: any = { width: value }
+      if (collage.lockAspectRatio) {
+        updates.height = value / aspectRatio.value
       }
-    })
+      collage.updateImage(collage.selectedImageId, updates)
+    }
   }
-}
 
-// Bildbearbeitungs-Filter Funktionen
-function updateBrightness(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ brightness: value })
-}
-
-function updateContrast(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ contrast: value })
-}
-
-function updateHighlights(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ highlights: value })
-}
-
-function updateShadows(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ shadows: value })
-}
-
-function updateSaturation(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ saturation: value })
-}
-
-function updateWarmth(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ warmth: value })
-}
-
-function updateSharpness(value: number) {
-  saveUndoDebounced()
-  applyToSelected({ sharpness: value })
-}
-
-function resetImageChanges() {
-  saveUndoImmediate()
-  // Setze alle Bearbeitungen auf Standardwerte zurück
-  // Position und Größe bleiben erhalten (gehören zum Layout)
-  const defaultValues = {
-    rotation: 0,
-    opacity: 1,
-    borderRadius: 0,
-    borderEnabled: false,
-    borderWidth: 4,
-    borderColor: '#000000',
-    borderStyle: 'solid' as const,
-    borderShadowEnabled: false,
-    borderShadowOffsetX: 3,
-    borderShadowOffsetY: 3,
-    borderShadowBlur: 6,
-    borderShadowColor: '#000000',
-    shadowEnabled: false,
-    shadowOffsetX: 5,
-    shadowOffsetY: 5,
-    shadowBlur: 10,
-    shadowColor: '#000000',
-    brightness: 100,
-    contrast: 100,
-    highlights: 0,
-    shadows: 0,
-    saturation: 100,
-    warmth: 0,
-    sharpness: 0
+  function updateHeight(value: number) {
+    if (collage.selectedImageId && selectedImage.value) {
+      saveUndoDebounced()
+      const updates: any = { height: value }
+      if (collage.lockAspectRatio) {
+        updates.width = value * aspectRatio.value
+      }
+      collage.updateImage(collage.selectedImageId, updates)
+    }
   }
-  applyToSelected(defaultValues)
-}
 
-// Alle Canvas-Bilder auswählen
-function selectAllImages() {
-  collage.selectAllCanvasImages()
-}
+  function updatePositionX(value: number) {
+    if (collage.selectedImageId) {
+      saveUndoDebounced()
+      collage.updateImage(collage.selectedImageId, { x: value })
+    }
+  }
 
-// Auswahl aufheben
-function deselectAll() {
-  collage.deselectAllImages()
-}
+  function updatePositionY(value: number) {
+    if (collage.selectedImageId) {
+      saveUndoDebounced()
+      collage.updateImage(collage.selectedImageId, { y: value })
+    }
+  }
+
+  function toggleAspectRatio() {
+    collage.setLockAspectRatio(!collage.lockAspectRatio)
+    if (collage.lockAspectRatio && selectedImage.value) {
+      // Aktualisiere Seitenverhältnis beim Aktivieren
+      aspectRatio.value = selectedImage.value.width / selectedImage.value.height
+    }
+  }
+
+  function updateRotation(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ rotation: value })
+  }
+
+  function updateOpacity(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ opacity: value })
+  }
+
+  function updateBorderRadius(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ borderRadius: value })
+  }
+
+  function toggleBorder() {
+    saveUndoImmediate()
+    // Bei Mehrfachauswahl: Einheitlich aktivieren oder deaktivieren
+    if (isMultiSelection.value) {
+      const anyEnabled = selectedImages.value.some((img) => img.borderEnabled)
+      applyToSelected({ borderEnabled: !anyEnabled })
+    } else if (selectedImage.value) {
+      applyToSelected({ borderEnabled: !selectedImage.value.borderEnabled })
+    }
+  }
+
+  function updateBorderWidth(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ borderWidth: value })
+  }
+
+  function updateBorderColor(value: string) {
+    saveUndoDebounced()
+    applyToSelected({ borderColor: value })
+  }
+
+  function updateBorderStyle(value: 'solid' | 'dashed' | 'dotted' | 'double') {
+    saveUndoImmediate()
+    applyToSelected({ borderStyle: value })
+  }
+
+  function toggleBorderShadow() {
+    saveUndoImmediate()
+    if (isMultiSelection.value) {
+      const anyEnabled = selectedImages.value.some((img) => img.borderShadowEnabled)
+      applyToSelected({ borderShadowEnabled: !anyEnabled })
+    } else if (selectedImage.value) {
+      applyToSelected({ borderShadowEnabled: !selectedImage.value.borderShadowEnabled })
+    }
+  }
+
+  function updateBorderShadowOffsetX(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ borderShadowOffsetX: value })
+  }
+
+  function updateBorderShadowOffsetY(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ borderShadowOffsetY: value })
+  }
+
+  function updateBorderShadowBlur(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ borderShadowBlur: value })
+  }
+
+  function updateBorderShadowColor(value: string) {
+    saveUndoDebounced()
+    applyToSelected({ borderShadowColor: value })
+  }
+
+  function toggleShadow() {
+    saveUndoImmediate()
+    if (isMultiSelection.value) {
+      const anyEnabled = selectedImages.value.some((img) => img.shadowEnabled)
+      applyToSelected({ shadowEnabled: !anyEnabled })
+    } else if (selectedImage.value) {
+      applyToSelected({ shadowEnabled: !selectedImage.value.shadowEnabled })
+    }
+  }
+
+  function updateShadowOffsetX(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ shadowOffsetX: value })
+  }
+
+  function updateShadowOffsetY(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ shadowOffsetY: value })
+  }
+
+  function updateShadowBlur(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ shadowBlur: value })
+  }
+
+  function updateShadowColor(value: string) {
+    saveUndoDebounced()
+    applyToSelected({ shadowColor: value })
+  }
+
+  function deleteImage() {
+    // Undo wird in removeSelectedImages/removeImage gespeichert
+    if (isMultiSelection.value) {
+      collage.removeSelectedImages()
+    } else if (collage.selectedImageId) {
+      collage.removeImage(collage.selectedImageId)
+    }
+  }
+
+  function bringToFront() {
+    if (selectedImages.value.length > 0) {
+      saveUndoImmediate()
+      const maxZ = Math.max(...collage.images.map((img) => img.zIndex), 0)
+      // Bei Mehrfachauswahl: Alle nach vorne, aber relative Reihenfolge beibehalten
+      selectedImages.value
+        .sort((a, b) => a.zIndex - b.zIndex)
+        .forEach((img, index) => {
+          collage.updateImage(img.id, { zIndex: maxZ + 1 + index })
+        })
+    }
+  }
+
+  function sendToBack() {
+    if (selectedImages.value.length > 0) {
+      saveUndoImmediate()
+      const minZ = Math.min(...collage.images.map((img) => img.zIndex), 0)
+      // Bei Mehrfachauswahl: Alle nach hinten, aber relative Reihenfolge beibehalten
+      selectedImages.value
+        .sort((a, b) => b.zIndex - a.zIndex)
+        .forEach((img, index) => {
+          collage.updateImage(img.id, { zIndex: minZ - 1 - index })
+        })
+    }
+  }
+
+  function bringForward() {
+    if (selectedImages.value.length > 0) {
+      saveUndoImmediate()
+      // Sortiere alle Bilder nach zIndex
+      const sortedImages = [...collage.images].sort((a, b) => a.zIndex - b.zIndex)
+
+      selectedImages.value.forEach((selectedImg) => {
+        const currentIndex = sortedImages.findIndex((img) => img.id === selectedImg.id)
+        // Finde das nächste Bild darüber (das nicht ausgewählt ist)
+        const nextAbove = sortedImages
+          .slice(currentIndex + 1)
+          .find((img) => !selectedImages.value.some((sel) => sel.id === img.id))
+
+        if (nextAbove) {
+          // Tausche zIndex mit dem nächsten Bild darüber
+          const tempZ = selectedImg.zIndex
+          collage.updateImage(selectedImg.id, { zIndex: nextAbove.zIndex })
+          collage.updateImage(nextAbove.id, { zIndex: tempZ })
+        }
+      })
+    }
+  }
+
+  function sendBackward() {
+    if (selectedImages.value.length > 0) {
+      saveUndoImmediate()
+      // Sortiere alle Bilder nach zIndex (umgekehrt für rückwärts)
+      const sortedImages = [...collage.images].sort((a, b) => b.zIndex - a.zIndex)
+
+      selectedImages.value.forEach((selectedImg) => {
+        const currentIndex = sortedImages.findIndex((img) => img.id === selectedImg.id)
+        // Finde das nächste Bild darunter (das nicht ausgewählt ist)
+        const nextBelow = sortedImages
+          .slice(currentIndex + 1)
+          .find((img) => !selectedImages.value.some((sel) => sel.id === img.id))
+
+        if (nextBelow) {
+          // Tausche zIndex mit dem nächsten Bild darunter
+          const tempZ = selectedImg.zIndex
+          collage.updateImage(selectedImg.id, { zIndex: nextBelow.zIndex })
+          collage.updateImage(nextBelow.id, { zIndex: tempZ })
+        }
+      })
+    }
+  }
+
+  // Bildbearbeitungs-Filter Funktionen
+  function updateBrightness(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ brightness: value })
+  }
+
+  function updateContrast(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ contrast: value })
+  }
+
+  function updateHighlights(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ highlights: value })
+  }
+
+  function updateShadows(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ shadows: value })
+  }
+
+  function updateSaturation(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ saturation: value })
+  }
+
+  function updateWarmth(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ warmth: value })
+  }
+
+  function updateSharpness(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ sharpness: value })
+  }
+
+  function resetImageChanges() {
+    saveUndoImmediate()
+    // Setze alle Bearbeitungen auf Standardwerte zurück
+    // Position und Größe bleiben erhalten (gehören zum Layout)
+    const defaultValues = {
+      rotation: 0,
+      opacity: 1,
+      borderRadius: 0,
+      borderEnabled: false,
+      borderWidth: 4,
+      borderColor: '#000000',
+      borderStyle: 'solid' as const,
+      borderShadowEnabled: false,
+      borderShadowOffsetX: 3,
+      borderShadowOffsetY: 3,
+      borderShadowBlur: 6,
+      borderShadowColor: '#000000',
+      shadowEnabled: false,
+      shadowOffsetX: 5,
+      shadowOffsetY: 5,
+      shadowBlur: 10,
+      shadowColor: '#000000',
+      brightness: 100,
+      contrast: 100,
+      highlights: 0,
+      shadows: 0,
+      saturation: 100,
+      warmth: 0,
+      sharpness: 0,
+    }
+    applyToSelected(defaultValues)
+  }
+
+  // Alle Canvas-Bilder auswählen
+  function selectAllImages() {
+    collage.selectAllCanvasImages()
+  }
+
+  // Auswahl aufheben
+  function deselectAll() {
+    collage.deselectAllImages()
+  }
 </script>
 
 <template>
-  <div class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4">
+  <div
+    class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
+  >
     <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
 
     <!-- Mehrfachauswahl-Anzeige -->
@@ -359,16 +365,26 @@ function deselectAll() {
       <div v-if="isMultiSelection" class="bg-accent/20 border border-accent/50 rounded-lg p-3 mb-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-accent-dark dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="w-5 h-5 text-accent-dark dark:text-accent"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span class="font-medium text-sm">
               {{ t('imageControls.multiSelection', { count: selectedCount }) }}
             </span>
           </div>
           <button
-            @click="deselectAll"
             class="text-xs text-muted hover:text-slate-dark dark:hover:text-muted underline"
+            @click="deselectAll"
           >
             {{ t('imageControls.deselectAll') }}
           </button>
@@ -381,15 +397,15 @@ function deselectAll() {
       <!-- Auswahl-Buttons -->
       <div class="flex gap-2 mb-4">
         <button
-          @click="selectAllImages"
           class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded-md transition-colors"
+          @click="selectAllImages"
         >
           {{ t('imageControls.selectAll') }}
         </button>
         <button
           v-if="selectedCount > 0"
-          @click="deselectAll"
           class="flex-1 px-3 py-2 text-xs bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded-md transition-colors"
+          @click="deselectAll"
         >
           {{ t('imageControls.deselectAll') }}
         </button>
@@ -399,14 +415,14 @@ function deselectAll() {
         <div class="flex items-center justify-between mb-2">
           <label class="text-sm font-medium">{{ t('imageControls.size') }}</label>
           <button
-            @click="toggleAspectRatio"
             :class="[
               'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
               collage.lockAspectRatio
                 ? 'bg-accent/20 text-slate-dark dark:text-accent'
-                : 'bg-muted/10 dark:bg-navy/30 text-slate dark:text-muted'
+                : 'bg-muted/10 dark:bg-navy/30 text-slate dark:text-muted',
             ]"
             :title="t('imageControls.lockAspectRatio')"
+            @click="toggleAspectRatio"
           >
             <svg
               v-if="collage.lockAspectRatio"
@@ -415,18 +431,24 @@ function deselectAll() {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
             </svg>
-            <svg
-              v-else
-              class="w-3 h-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            <svg v-else class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
+              />
             </svg>
-            <span>{{ collage.lockAspectRatio ? t('imageControls.locked') : t('imageControls.unlocked') }}</span>
+            <span>{{
+              collage.lockAspectRatio ? t('imageControls.locked') : t('imageControls.unlocked')
+            }}</span>
           </button>
         </div>
         <div class="space-y-2">
@@ -435,10 +457,10 @@ function deselectAll() {
             <input
               type="number"
               :value="Math.round(selectedImage.width)"
-              @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
               min="10"
               max="2000"
               class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+              @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
           <div>
@@ -446,10 +468,10 @@ function deselectAll() {
             <input
               type="number"
               :value="Math.round(selectedImage.height)"
-              @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
               min="10"
               max="2000"
               class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+              @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
         </div>
@@ -467,8 +489,8 @@ function deselectAll() {
             <input
               type="number"
               :value="Math.round(selectedImage.x)"
-              @input="updatePositionX(Number(($event.target as HTMLInputElement).value))"
               class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+              @input="updatePositionX(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
           <div>
@@ -476,8 +498,8 @@ function deselectAll() {
             <input
               type="number"
               :value="Math.round(selectedImage.y)"
-              @input="updatePositionY(Number(($event.target as HTMLInputElement).value))"
               class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+              @input="updatePositionY(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
         </div>
@@ -491,10 +513,10 @@ function deselectAll() {
         <input
           type="range"
           :value="displayImage.rotation"
-          @input="updateRotation(Number(($event.target as HTMLInputElement).value))"
           min="-180"
           max="180"
           class="w-full"
+          @input="updateRotation(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 
@@ -506,11 +528,11 @@ function deselectAll() {
         <input
           type="range"
           :value="displayImage.opacity"
-          @input="updateOpacity(Number(($event.target as HTMLInputElement).value))"
           min="0"
           max="1"
           step="0.01"
           class="w-full"
+          @input="updateOpacity(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 
@@ -522,10 +544,10 @@ function deselectAll() {
         <input
           type="range"
           :value="displayImage.borderRadius"
-          @input="updateBorderRadius(Number(($event.target as HTMLInputElement).value))"
           min="0"
           max="100"
           class="w-full"
+          @input="updateBorderRadius(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 
@@ -542,10 +564,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.brightness ?? 100"
-              @input="updateBrightness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
               class="w-full"
+              @input="updateBrightness(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -557,10 +579,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.contrast ?? 100"
-              @input="updateContrast(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
               class="w-full"
+              @input="updateContrast(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -572,10 +594,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.highlights ?? 0"
-              @input="updateHighlights(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
               class="w-full"
+              @input="updateHighlights(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -587,10 +609,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.shadows ?? 0"
-              @input="updateShadows(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
               class="w-full"
+              @input="updateShadows(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -602,10 +624,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.saturation ?? 100"
-              @input="updateSaturation(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
               class="w-full"
+              @input="updateSaturation(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -617,10 +639,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.warmth ?? 0"
-              @input="updateWarmth(Number(($event.target as HTMLInputElement).value))"
               min="-100"
               max="100"
               class="w-full"
+              @input="updateWarmth(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -632,10 +654,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.sharpness ?? 0"
-              @input="updateSharpness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="100"
               class="w-full"
+              @input="updateSharpness(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
         </div>
@@ -646,15 +668,19 @@ function deselectAll() {
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('imageControls.border') }}</label>
           <button
-            @click="toggleBorder"
             :class="[
               'px-3 py-1 text-xs rounded transition-colors',
               displayImage.borderEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted'
+                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
             ]"
+            @click="toggleBorder"
           >
-            {{ displayImage.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled') }}
+            {{
+              displayImage.borderEnabled
+                ? t('imageControls.borderEnabled')
+                : t('imageControls.borderDisabled')
+            }}
           </button>
         </div>
 
@@ -667,10 +693,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.borderWidth"
-              @input="updateBorderWidth(Number(($event.target as HTMLInputElement).value))"
               min="1"
               max="20"
               class="w-full"
+              @input="updateBorderWidth(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -681,8 +707,8 @@ function deselectAll() {
             </label>
             <select
               :value="displayImage.borderStyle"
-              @change="updateBorderStyle(($event.target as HTMLSelectElement).value as any)"
               class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+              @change="updateBorderStyle(($event.target as HTMLSelectElement).value as any)"
             >
               <option value="solid">{{ t('imageControls.borderStyleSolid') }}</option>
               <option value="dashed">{{ t('imageControls.borderStyleDashed') }}</option>
@@ -700,14 +726,14 @@ function deselectAll() {
               <input
                 type="color"
                 :value="displayImage.borderColor"
-                @input="updateBorderColor(($event.target as HTMLInputElement).value)"
                 class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
+                @input="updateBorderColor(($event.target as HTMLInputElement).value)"
               />
               <input
                 type="text"
                 :value="displayImage.borderColor"
-                @input="updateBorderColor(($event.target as HTMLInputElement).value)"
                 class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+                @input="updateBorderColor(($event.target as HTMLInputElement).value)"
               />
             </div>
           </div>
@@ -717,15 +743,19 @@ function deselectAll() {
             <div class="flex items-center justify-between mb-2">
               <label class="text-xs text-muted">{{ t('imageControls.borderShadow') }}</label>
               <button
-                @click="toggleBorderShadow"
                 :class="[
                   'px-2 py-1 text-xs rounded transition-colors',
                   displayImage.borderShadowEnabled
                     ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300',
                 ]"
+                @click="toggleBorderShadow"
               >
-                {{ displayImage.borderShadowEnabled ? t('imageControls.borderShadowEnabled') : t('imageControls.borderShadowDisabled') }}
+                {{
+                  displayImage.borderShadowEnabled
+                    ? t('imageControls.borderShadowEnabled')
+                    : t('imageControls.borderShadowDisabled')
+                }}
               </button>
             </div>
 
@@ -733,30 +763,36 @@ function deselectAll() {
               <!-- Border Shadow Offset X -->
               <div>
                 <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowOffsetX') }}: {{ displayImage.borderShadowOffsetX }}px
+                  {{ t('imageControls.borderShadowOffsetX') }}:
+                  {{ displayImage.borderShadowOffsetX }}px
                 </label>
                 <input
                   type="range"
                   :value="displayImage.borderShadowOffsetX"
-                  @input="updateBorderShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
                   min="-20"
                   max="20"
                   class="w-full"
+                  @input="
+                    updateBorderShadowOffsetX(Number(($event.target as HTMLInputElement).value))
+                  "
                 />
               </div>
 
               <!-- Border Shadow Offset Y -->
               <div>
                 <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowOffsetY') }}: {{ displayImage.borderShadowOffsetY }}px
+                  {{ t('imageControls.borderShadowOffsetY') }}:
+                  {{ displayImage.borderShadowOffsetY }}px
                 </label>
                 <input
                   type="range"
                   :value="displayImage.borderShadowOffsetY"
-                  @input="updateBorderShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
                   min="-20"
                   max="20"
                   class="w-full"
+                  @input="
+                    updateBorderShadowOffsetY(Number(($event.target as HTMLInputElement).value))
+                  "
                 />
               </div>
 
@@ -768,10 +804,10 @@ function deselectAll() {
                 <input
                   type="range"
                   :value="displayImage.borderShadowBlur"
-                  @input="updateBorderShadowBlur(Number(($event.target as HTMLInputElement).value))"
                   min="0"
                   max="30"
                   class="w-full"
+                  @input="updateBorderShadowBlur(Number(($event.target as HTMLInputElement).value))"
                 />
               </div>
 
@@ -784,14 +820,14 @@ function deselectAll() {
                   <input
                     type="color"
                     :value="displayImage.borderShadowColor"
-                    @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
                     class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
+                    @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
                   />
                   <input
                     type="text"
                     :value="displayImage.borderShadowColor"
-                    @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
                     class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
+                    @input="updateBorderShadowColor(($event.target as HTMLInputElement).value)"
                   />
                 </div>
               </div>
@@ -805,15 +841,19 @@ function deselectAll() {
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('imageControls.shadow') }}</label>
           <button
-            @click="toggleShadow"
             :class="[
               'px-3 py-1 text-xs rounded transition-colors',
               displayImage.shadowEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted'
+                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
             ]"
+            @click="toggleShadow"
           >
-            {{ displayImage.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled') }}
+            {{
+              displayImage.shadowEnabled
+                ? t('imageControls.shadowEnabled')
+                : t('imageControls.shadowEnabled')
+            }}
           </button>
         </div>
 
@@ -826,10 +866,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.shadowOffsetX"
-              @input="updateShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
               min="-50"
               max="50"
               class="w-full"
+              @input="updateShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -841,10 +881,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.shadowOffsetY"
-              @input="updateShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
               min="-50"
               max="50"
               class="w-full"
+              @input="updateShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -856,10 +896,10 @@ function deselectAll() {
             <input
               type="range"
               :value="displayImage.shadowBlur"
-              @input="updateShadowBlur(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="50"
               class="w-full"
+              @input="updateShadowBlur(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -872,14 +912,14 @@ function deselectAll() {
               <input
                 type="color"
                 :value="displayImage.shadowColor"
-                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
                 class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
+                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
               />
               <input
                 type="text"
                 :value="displayImage.shadowColor"
-                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
                 class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
               />
             </div>
           </div>
@@ -891,30 +931,30 @@ function deselectAll() {
         <label class="block text-sm font-medium mb-2">{{ t('imageControls.layer') }}</label>
         <div class="grid grid-cols-2 gap-2">
           <button
-            @click="bringToFront"
             class="px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
             :title="t('imageControls.toFront')"
+            @click="bringToFront"
           >
             {{ t('imageControls.toFront') }}
           </button>
           <button
-            @click="sendToBack"
             class="px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
             :title="t('imageControls.toBack')"
+            @click="sendToBack"
           >
             {{ t('imageControls.toBack') }}
           </button>
           <button
-            @click="bringForward"
             class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md text-sm"
             :title="t('imageControls.forward')"
+            @click="bringForward"
           >
             {{ t('imageControls.forward') }}
           </button>
           <button
-            @click="sendBackward"
             class="px-3 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md text-sm"
             :title="t('imageControls.backward')"
+            @click="sendBackward"
           >
             {{ t('imageControls.backward') }}
           </button>
@@ -923,18 +963,22 @@ function deselectAll() {
 
       <!-- Reset Changes Button -->
       <button
-        @click="resetImageChanges"
         class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
+        @click="resetImageChanges"
       >
         {{ t('imageControls.resetChanges') }}
       </button>
 
       <!-- Delete Button -->
       <button
-        @click="deleteImage"
         class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
+        @click="deleteImage"
       >
-        {{ isMultiSelection ? t('imageControls.deleteMultiple', { count: selectedCount }) : t('imageControls.delete') }}
+        {{
+          isMultiSelection
+            ? t('imageControls.deleteMultiple', { count: selectedCount })
+            : t('imageControls.delete')
+        }}
       </button>
     </div>
 

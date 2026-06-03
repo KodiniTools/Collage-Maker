@@ -27,9 +27,14 @@ export async function compressImage(file: File): Promise<File> {
         // Image is small enough, but still compress if file is large
         if (file.size < 5 * 1024 * 1024) {
           // Create in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED
-          file.arrayBuffer().then(buffer => {
-            resolve(new File([buffer], file.name, { type: file.type, lastModified: file.lastModified }))
-          }).catch(() => resolve(file))
+          file
+            .arrayBuffer()
+            .then((buffer) => {
+              resolve(
+                new File([buffer], file.name, { type: file.type, lastModified: file.lastModified })
+              )
+            })
+            .catch(() => resolve(file))
           return
         }
       }
@@ -76,7 +81,7 @@ export async function compressImage(file: File): Promise<File> {
           // Create new file with same name
           const compressedFile = new File([blob], file.name, {
             type: mimeType,
-            lastModified: Date.now()
+            lastModified: Date.now(),
           })
 
           // Only use compressed version if it's actually smaller
@@ -84,9 +89,17 @@ export async function compressImage(file: File): Promise<File> {
             resolve(compressedFile)
           } else {
             // Create in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED
-            file.arrayBuffer().then(buffer => {
-              resolve(new File([buffer], file.name, { type: file.type, lastModified: file.lastModified }))
-            }).catch(() => resolve(file))
+            file
+              .arrayBuffer()
+              .then((buffer) => {
+                resolve(
+                  new File([buffer], file.name, {
+                    type: file.type,
+                    lastModified: file.lastModified,
+                  })
+                )
+              })
+              .catch(() => resolve(file))
           }
         },
         mimeType,
@@ -104,8 +117,6 @@ export async function compressImage(file: File): Promise<File> {
 }
 
 export async function compressImages(files: File[]): Promise<File[]> {
-  const compressed = await Promise.all(
-    files.map(file => compressImage(file).catch(() => file))
-  )
+  const compressed = await Promise.all(files.map((file) => compressImage(file).catch(() => file)))
   return compressed
 }

@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { CollageImage, CollageText, CollageSettings, LayoutType, BackgroundImageFit, BackgroundImageSettings } from '@/types'
+import type {
+  CollageImage,
+  CollageText,
+  CollageSettings,
+  LayoutType,
+  BackgroundImageFit,
+  BackgroundImageSettings,
+} from '@/types'
 import { useHistoryStore } from '@/stores/history'
 
 export const useCollageStore = defineStore('collage', () => {
@@ -26,11 +33,11 @@ export const useCollageStore = defineStore('collage', () => {
       brightness: 100,
       contrast: 100,
       saturation: 100,
-      blur: 0
+      blur: 0,
     },
     layout: 'grid-3x3',
     gridEnabled: false,
-    gridSize: 50
+    gridSize: 50,
   })
 
   // History Store für Undo/Redo
@@ -72,14 +79,18 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   // Stellt den Zustand aus einem Snapshot wieder her
-  function restoreFromSnapshot(snapshot: { images: Omit<CollageImage, 'file'>[]; texts: CollageText[]; settings: CollageSettings }) {
+  function restoreFromSnapshot(snapshot: {
+    images: Omit<CollageImage, 'file'>[]
+    texts: CollageText[]
+    settings: CollageSettings
+  }) {
     // Stelle Bilder wieder her (mit File-Referenzen von existierenden Bildern)
-    const restoredImages = snapshot.images.map(snapshotImg => {
+    const restoredImages = snapshot.images.map((snapshotImg) => {
       // Finde das ursprüngliche Bild mit dem File-Objekt
-      const existingImg = images.value.find(img => img.url === snapshotImg.url)
+      const existingImg = images.value.find((img) => img.url === snapshotImg.url)
       return {
         ...snapshotImg,
-        file: existingImg?.file || null as unknown as File
+        file: existingImg?.file || (null as unknown as File),
       } as CollageImage
     })
 
@@ -104,25 +115,21 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageIds.value.length > 0 ? selectedImageIds.value[0] : null
   )
 
-  const selectedImage = computed(() =>
-    images.value.find(img => img.id === selectedImageId.value)
-  )
+  const selectedImage = computed(() => images.value.find((img) => img.id === selectedImageId.value))
 
   // Alle ausgewählten Bilder (für Batch-Bearbeitung)
   const selectedImages = computed(() =>
-    images.value.filter(img => selectedImageIds.value.includes(img.id))
+    images.value.filter((img) => selectedImageIds.value.includes(img.id))
   )
 
-  const selectedText = computed(() =>
-    texts.value.find(txt => txt.id === selectedTextId.value)
-  )
+  const selectedText = computed(() => texts.value.find((txt) => txt.id === selectedTextId.value))
 
   function addImages(files: File[]) {
     saveStateForUndo()
     let loadedCount = 0
     const totalFiles = files.length
 
-    files.forEach(file => {
+    files.forEach((file) => {
       const templateId = crypto.randomUUID()
       const instanceId = crypto.randomUUID()
       const url = URL.createObjectURL(file)
@@ -131,8 +138,8 @@ export const useCollageStore = defineStore('collage', () => {
       const img = new Image()
       img.onload = () => {
         // Aktualisiere beide: Template UND Instanz
-        const templateData = images.value.find(i => i.id === templateId)
-        const instanceData = images.value.find(i => i.id === instanceId)
+        const templateData = images.value.find((i) => i.id === templateId)
+        const instanceData = images.value.find((i) => i.id === instanceId)
 
         if (templateData || instanceData) {
           // Berechne Dimensionen unter Beibehaltung des Seitenverhältnisses
@@ -201,7 +208,7 @@ export const useCollageStore = defineStore('collage', () => {
         shadows: 0,
         saturation: 100,
         warmth: 0,
-        sharpness: 0
+        sharpness: 0,
       }
 
       // Füge Galerie-Template hinzu (für wiederholte Verwendung)
@@ -209,7 +216,7 @@ export const useCollageStore = defineStore('collage', () => {
         ...baseImageData,
         id: templateId,
         zIndex: images.value.length,
-        isGalleryTemplate: true
+        isGalleryTemplate: true,
       })
 
       // Füge Canvas-Instanz hinzu (für direktes Layout)
@@ -217,7 +224,7 @@ export const useCollageStore = defineStore('collage', () => {
         ...baseImageData,
         id: instanceId,
         zIndex: images.value.length,
-        isGalleryTemplate: false
+        isGalleryTemplate: false,
       })
     })
 
@@ -229,13 +236,13 @@ export const useCollageStore = defineStore('collage', () => {
 
   function removeImage(id: string, skipUndo = false) {
     if (!skipUndo) saveStateForUndo()
-    const index = images.value.findIndex(img => img.id === id)
+    const index = images.value.findIndex((img) => img.id === id)
     if (index !== -1) {
       const imageToRemove = images.value[index]
 
       // Prüfe ob andere Bilder diese URL noch verwenden (Template + Instanzen teilen URLs)
       const otherImagesWithSameUrl = images.value.filter(
-        img => img.id !== id && img.url === imageToRemove.url
+        (img) => img.id !== id && img.url === imageToRemove.url
       )
 
       // Nur URL revoken, wenn KEIN anderes Bild diese URL mehr verwendet
@@ -256,11 +263,11 @@ export const useCollageStore = defineStore('collage', () => {
   function removeSelectedImages() {
     saveStateForUndo()
     const idsToRemove = [...selectedImageIds.value]
-    idsToRemove.forEach(id => removeImage(id, true))
+    idsToRemove.forEach((id) => removeImage(id, true))
   }
 
   function updateImage(id: string, updates: Partial<CollageImage>) {
-    const image = images.value.find(img => img.id === id)
+    const image = images.value.find((img) => img.id === id)
     if (image) {
       Object.assign(image, updates)
     }
@@ -293,8 +300,8 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Alle Canvas-Bilder auswählen
   function selectAllCanvasImages() {
-    const canvasImages = images.value.filter(img => img.isGalleryTemplate !== true)
-    selectedImageIds.value = canvasImages.map(img => img.id)
+    const canvasImages = images.value.filter((img) => img.isGalleryTemplate !== true)
+    selectedImageIds.value = canvasImages.map((img) => img.id)
   }
 
   // Alle Bilder abwählen
@@ -309,7 +316,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Updates auf alle ausgewählten Bilder anwenden (für Batch-Bearbeitung)
   function updateSelectedImages(updates: Partial<CollageImage>) {
-    selectedImageIds.value.forEach(id => {
+    selectedImageIds.value.forEach((id) => {
       updateImage(id, updates)
     })
   }
@@ -328,8 +335,8 @@ export const useCollageStore = defineStore('collage', () => {
 
   // Alle Galerie-Bilder auswählen
   function selectAllGalleryImages() {
-    const galleryImages = images.value.filter(img => img.isGalleryTemplate === true)
-    selectedGalleryIds.value = galleryImages.map(img => img.id)
+    const galleryImages = images.value.filter((img) => img.isGalleryTemplate === true)
+    selectedGalleryIds.value = galleryImages.map((img) => img.id)
   }
 
   // Alle Galerie-Bilder abwählen
@@ -346,7 +353,7 @@ export const useCollageStore = defineStore('collage', () => {
   function addSelectedGalleryToCanvas() {
     saveStateForUndo()
     const selectedGalleryImages = images.value.filter(
-      img => img.isGalleryTemplate === true && selectedGalleryIds.value.includes(img.id)
+      (img) => img.isGalleryTemplate === true && selectedGalleryIds.value.includes(img.id)
     )
 
     if (selectedGalleryImages.length === 0) return
@@ -355,15 +362,15 @@ export const useCollageStore = defineStore('collage', () => {
 
     selectedGalleryImages.forEach((sourceImage, index) => {
       const newId = crypto.randomUUID()
-      const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+      const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
 
       // Erstelle Canvas-Instanz mit Versatz für jedes Bild
       images.value.push({
         id: newId,
         file: sourceImage.file,
         url: sourceImage.url,
-        x: 50 + (index * 20),
-        y: 50 + (index * 20),
+        x: 50 + index * 20,
+        y: 50 + index * 20,
         width: sourceImage.width,
         height: sourceImage.height,
         rotation: 0,
@@ -391,7 +398,7 @@ export const useCollageStore = defineStore('collage', () => {
         saturation: 100,
         warmth: 0,
         sharpness: 0,
-        isGalleryTemplate: false
+        isGalleryTemplate: false,
       })
 
       newIds.push(newId)
@@ -414,12 +421,12 @@ export const useCollageStore = defineStore('collage', () => {
     saveStateForUndo()
     const idsToRemove = [...selectedGalleryIds.value]
 
-    idsToRemove.forEach(galleryId => {
-      const galleryImage = images.value.find(img => img.id === galleryId)
+    idsToRemove.forEach((galleryId) => {
+      const galleryImage = images.value.find((img) => img.id === galleryId)
       if (galleryImage) {
         // Finde alle Canvas-Instanzen mit der gleichen URL
-        const relatedImages = images.value.filter(img => img.url === galleryImage.url)
-        relatedImages.forEach(img => removeImage(img.id, true))
+        const relatedImages = images.value.filter((img) => img.url === galleryImage.url)
+        relatedImages.forEach((img) => removeImage(img.id, true))
       }
     })
 
@@ -439,10 +446,16 @@ export const useCollageStore = defineStore('collage', () => {
     const padding = 5
 
     // NUR Canvas-Instanzen layouten (keine Gallery-Templates)
-    const canvasImages = images.value.filter(img => img.isGalleryTemplate !== true)
+    const canvasImages = images.value.filter((img) => img.isGalleryTemplate !== true)
 
     // Hilfsfunktion zum Einpassen von Bildern mit Seitenverhältnis (zentriert in Zelle)
-    function fitImage(img: any, cellX: number, cellY: number, cellWidth: number, cellHeight: number) {
+    function fitImage(
+      img: any,
+      cellX: number,
+      cellY: number,
+      cellWidth: number,
+      cellHeight: number
+    ) {
       const aspectRatio = img.width / img.height
       const availableWidth = cellWidth - padding * 2
       const availableHeight = cellHeight - padding * 2
@@ -555,7 +568,13 @@ export const useCollageStore = defineStore('collage', () => {
           const rows = Math.ceil(mainCount / cols)
           const col = rightIndex % cols
           const row = Math.floor(rightIndex / cols)
-          fitImage(img, sidebarWidth + (mainWidth / cols) * col, (h / rows) * row, mainWidth / cols, h / rows)
+          fitImage(
+            img,
+            sidebarWidth + (mainWidth / cols) * col,
+            (h / rows) * row,
+            mainWidth / cols,
+            h / rows
+          )
         }
       })
     }
@@ -568,7 +587,7 @@ export const useCollageStore = defineStore('collage', () => {
         { x: 0.5, y: 0.33, w: 0.5, h: 0.34 },
         { x: 0, y: 0.5, w: 0.33, h: 0.5 },
         { x: 0.33, y: 0.5, w: 0.34, h: 0.5 },
-        { x: 0.67, y: 0.67, w: 0.33, h: 0.33 }
+        { x: 0.67, y: 0.67, w: 0.33, h: 0.33 },
       ]
 
       canvasImages.forEach((img, index) => {
@@ -633,7 +652,7 @@ export const useCollageStore = defineStore('collage', () => {
             { x: (w - cornerSize) / 2, y: 0 }, // Oben mitte
             { x: (w - cornerSize) / 2, y: h - cornerSize }, // Unten mitte
             { x: 0, y: (h - cornerSize) / 2 }, // Links mitte
-            { x: w - cornerSize, y: (h - cornerSize) / 2 } // Rechts mitte
+            { x: w - cornerSize, y: (h - cornerSize) / 2 }, // Rechts mitte
           ]
           const pos = positions[(index - 1) % positions.length]
           fitImage(img, pos.x, pos.y, cornerSize, cornerSize)
@@ -699,8 +718,8 @@ export const useCollageStore = defineStore('collage', () => {
   function clearCollage() {
     saveStateForUndo()
     // Sammle nur unique URLs (Templates und Instanzen teilen URLs)
-    const uniqueUrls = new Set(images.value.map(img => img.url))
-    uniqueUrls.forEach(url => URL.revokeObjectURL(url))
+    const uniqueUrls = new Set(images.value.map((img) => img.url))
+    uniqueUrls.forEach((url) => URL.revokeObjectURL(url))
 
     images.value = []
     texts.value = []
@@ -715,7 +734,7 @@ export const useCollageStore = defineStore('collage', () => {
       brightness: 100,
       contrast: 100,
       saturation: 100,
-      blur: 0
+      blur: 0,
     }
   }
 
@@ -733,7 +752,7 @@ export const useCollageStore = defineStore('collage', () => {
       brightness: 100,
       contrast: 100,
       saturation: 100,
-      blur: 0
+      blur: 0,
     }
   }
 
@@ -779,11 +798,11 @@ export const useCollageStore = defineStore('collage', () => {
 
   function duplicateImageToPosition(sourceId: string, x: number, y: number) {
     saveStateForUndo()
-    const sourceImage = images.value.find(img => img.id === sourceId)
+    const sourceImage = images.value.find((img) => img.id === sourceId)
     if (!sourceImage) return
 
     const newId = crypto.randomUUID()
-    const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+    const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
 
     // Erstelle eine Canvas-Instanz (kein Template) an der neuen Position
     images.value.push({
@@ -821,7 +840,7 @@ export const useCollageStore = defineStore('collage', () => {
       warmth: 0,
       sharpness: 0,
       // Als Canvas-Instanz markieren (kein Galerie-Template)
-      isGalleryTemplate: false
+      isGalleryTemplate: false,
     })
 
     // Selektiere das neue Bild (ersetzt vorherige Auswahl)
@@ -834,9 +853,9 @@ export const useCollageStore = defineStore('collage', () => {
     const imagesToDuplicate = [...selectedImages.value]
     const newIds: string[] = []
 
-    imagesToDuplicate.forEach(sourceImage => {
+    imagesToDuplicate.forEach((sourceImage) => {
       const newId = crypto.randomUUID()
-      const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+      const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
 
       // Erstelle Kopie mit Versatz
       images.value.push({
@@ -845,7 +864,7 @@ export const useCollageStore = defineStore('collage', () => {
         x: sourceImage.x + 20,
         y: sourceImage.y + 20,
         zIndex: maxZ + 1,
-        isGalleryTemplate: false
+        isGalleryTemplate: false,
       })
 
       newIds.push(newId)
@@ -862,7 +881,7 @@ export const useCollageStore = defineStore('collage', () => {
     if (selectedImageIds.value.length === 0) return
     saveStateForUndo()
 
-    const maxZ = Math.max(...images.value.map(img => img.zIndex), 0)
+    const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
     selectedImageIds.value.forEach((id, index) => {
       updateImage(id, { zIndex: maxZ + 1 + index })
     })
@@ -873,7 +892,7 @@ export const useCollageStore = defineStore('collage', () => {
     if (selectedImageIds.value.length === 0) return
     saveStateForUndo()
 
-    const minZ = Math.min(...images.value.map(img => img.zIndex), 0)
+    const minZ = Math.min(...images.value.map((img) => img.zIndex), 0)
     selectedImageIds.value.forEach((id, index) => {
       updateImage(id, { zIndex: minZ - 1 - index })
     })
@@ -882,8 +901,8 @@ export const useCollageStore = defineStore('collage', () => {
   // Ausgewählte Bilder um Grad drehen
   function rotateSelectedImages(degrees: number) {
     saveStateForUndo()
-    selectedImageIds.value.forEach(id => {
-      const img = images.value.find(i => i.id === id)
+    selectedImageIds.value.forEach((id) => {
+      const img = images.value.find((i) => i.id === id)
       if (img) {
         updateImage(id, { rotation: (img.rotation + degrees) % 360 })
       }
@@ -893,8 +912,8 @@ export const useCollageStore = defineStore('collage', () => {
   // Ausgewählte Bilder verschieben
   function moveSelectedImages(dx: number, dy: number) {
     saveStateForUndoDebounced()
-    selectedImageIds.value.forEach(id => {
-      const img = images.value.find(i => i.id === id)
+    selectedImageIds.value.forEach((id) => {
+      const img = images.value.find((i) => i.id === id)
       if (img) {
         updateImage(id, { x: img.x + dx, y: img.y + dy })
       }
@@ -905,7 +924,7 @@ export const useCollageStore = defineStore('collage', () => {
   function moveSelectedText(dx: number, dy: number) {
     saveStateForUndoDebounced()
     if (selectedTextId.value) {
-      const txt = texts.value.find(t => t.id === selectedTextId.value)
+      const txt = texts.value.find((t) => t.id === selectedTextId.value)
       if (txt) {
         updateText(selectedTextId.value, { x: txt.x + dx, y: txt.y + dy })
       }
@@ -921,8 +940,8 @@ export const useCollageStore = defineStore('collage', () => {
   function addText(text: string = 'Neuer Text') {
     saveStateForUndo()
     const maxZ = Math.max(
-      ...images.value.map(img => img.zIndex),
-      ...texts.value.map(txt => txt.zIndex),
+      ...images.value.map((img) => img.zIndex),
+      ...texts.value.map((txt) => txt.zIndex),
       0
     )
 
@@ -949,7 +968,7 @@ export const useCollageStore = defineStore('collage', () => {
       strokeColor: '#ffffff',
       strokeWidth: 2,
       // Buchstabenabstand Default
-      letterSpacing: 0
+      letterSpacing: 0,
     }
 
     texts.value.push(newText)
@@ -959,7 +978,7 @@ export const useCollageStore = defineStore('collage', () => {
 
   function removeText(id: string) {
     saveStateForUndo()
-    const index = texts.value.findIndex(txt => txt.id === id)
+    const index = texts.value.findIndex((txt) => txt.id === id)
     if (index !== -1) {
       texts.value.splice(index, 1)
     }
@@ -969,7 +988,7 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function updateText(id: string, updates: Partial<CollageText>) {
-    const text = texts.value.find(txt => txt.id === id)
+    const text = texts.value.find((txt) => txt.id === id)
     if (text) {
       Object.assign(text, updates)
     }
@@ -1005,9 +1024,9 @@ export const useCollageStore = defineStore('collage', () => {
       collageState: {
         settings: { ...settings.value },
         layout: settings.value.layout,
-        images: images.value.map(img => ({ ...img })),
-        texts: texts.value.map(txt => ({ ...txt }))
-      }
+        images: images.value.map((img) => ({ ...img })),
+        texts: texts.value.map((txt) => ({ ...txt })),
+      },
     }
   }
 
@@ -1121,6 +1140,6 @@ export const useCollageStore = defineStore('collage', () => {
     canUndo,
     canRedo,
     saveStateForUndo,
-    saveStateForUndoDebounced
+    saveStateForUndoDebounced,
   }
 })
