@@ -10,6 +10,7 @@ import type {
 } from '@/types'
 import { computeLayout } from '@/lib/layouts'
 import { useHistoryStore } from '@/stores/history'
+import { UNDO_DEBOUNCE_MS } from '@/config/constants'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
@@ -53,11 +54,9 @@ export const useCollageStore = defineStore('collage', () => {
   // Verhindert, dass bei kontinuierlichen Änderungen (Slider) für jeden
   // Zwischenwert ein Snapshot erstellt wird.
   let lastDebouncedSaveTime = 0
-  const DEBOUNCE_INTERVAL = 800 // ms - Snapshots werden nur alle 800ms erlaubt
-
   function saveStateForUndoDebounced() {
     const now = Date.now()
-    if (now - lastDebouncedSaveTime > DEBOUNCE_INTERVAL) {
+    if (now - lastDebouncedSaveTime > UNDO_DEBOUNCE_MS) {
       saveStateForUndo()
       lastDebouncedSaveTime = now
     }

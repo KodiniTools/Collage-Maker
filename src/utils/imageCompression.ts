@@ -1,10 +1,4 @@
-/**
- * Compresses an image file by resizing it to a maximum dimension
- * while maintaining aspect ratio and quality.
- */
-
-const MAX_DIMENSION = 2000 // Maximum width or height in pixels
-const QUALITY = 0.85 // JPEG/WebP quality (0-1)
+import { COMPRESS_MAX_DIMENSION_PX, COMPRESS_JPEG_QUALITY } from '@/config/constants'
 
 export async function compressImage(file: File): Promise<File> {
   // For small files (under 2MB), create an in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED.
@@ -23,7 +17,7 @@ export async function compressImage(file: File): Promise<File> {
 
       // Check if resizing is needed
       const { width, height } = img
-      if (width <= MAX_DIMENSION && height <= MAX_DIMENSION) {
+      if (width <= COMPRESS_MAX_DIMENSION_PX && height <= COMPRESS_MAX_DIMENSION_PX) {
         // Image is small enough, but still compress if file is large
         if (file.size < 5 * 1024 * 1024) {
           // Create in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED
@@ -43,12 +37,12 @@ export async function compressImage(file: File): Promise<File> {
       let newWidth = width
       let newHeight = height
 
-      if (width > height && width > MAX_DIMENSION) {
-        newWidth = MAX_DIMENSION
-        newHeight = Math.round((height / width) * MAX_DIMENSION)
-      } else if (height > MAX_DIMENSION) {
-        newHeight = MAX_DIMENSION
-        newWidth = Math.round((width / height) * MAX_DIMENSION)
+      if (width > height && width > COMPRESS_MAX_DIMENSION_PX) {
+        newWidth = COMPRESS_MAX_DIMENSION_PX
+        newHeight = Math.round((height / width) * COMPRESS_MAX_DIMENSION_PX)
+      } else if (height > COMPRESS_MAX_DIMENSION_PX) {
+        newHeight = COMPRESS_MAX_DIMENSION_PX
+        newWidth = Math.round((width / height) * COMPRESS_MAX_DIMENSION_PX)
       }
 
       // Create canvas and draw resized image
@@ -69,7 +63,7 @@ export async function compressImage(file: File): Promise<File> {
 
       // Convert to blob
       const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg'
-      const quality = file.type === 'image/png' ? undefined : QUALITY
+      const quality = file.type === 'image/png' ? undefined : COMPRESS_JPEG_QUALITY
 
       canvas.toBlob(
         (blob) => {

@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
+import { SNAP_THRESHOLD } from '@/config/constants'
 
 export interface GuideLine {
   type: 'horizontal' | 'vertical'
@@ -8,7 +9,7 @@ export interface GuideLine {
   end: number
 }
 
-export const SNAP_THRESHOLD = 8 // Pixel-Abstand für Einrasten
+export { SNAP_THRESHOLD }
 
 export function useAlignmentGuides() {
   const collage = useCollageStore()
