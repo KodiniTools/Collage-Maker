@@ -1,11 +1,13 @@
 import { watch, ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import type { CollageImage, CollageText, CollageSettings } from '@/types'
+import {
+  AUTOSAVE_DEBOUNCE_MS,
+  AUTOSAVE_MAX_IMAGE_PX,
+  AUTOSAVE_JPEG_QUALITY,
+} from '@/config/constants'
 
 const STORAGE_KEY = 'collage-maker-autosave'
-const SAVE_DELAY = 2000 // 2 Sekunden Verzögerung für Debounce
-const MAX_IMAGE_SIZE = 400 // Max Breite/Höhe für Thumbnails
-const JPEG_QUALITY = 0.6 // JPEG Qualität (0-1)
 
 interface SavedState {
   version: number
@@ -29,7 +31,7 @@ export function useAutoSave() {
   // Komprimiert und konvertiert ein Bild zu Base64
   async function compressAndConvert(
     blobUrl: string,
-    maxSize: number = MAX_IMAGE_SIZE
+    maxSize: number = AUTOSAVE_MAX_IMAGE_PX
   ): Promise<string> {
     // Wenn es bereits eine Data-URL ist
     if (blobUrl.startsWith('data:')) {
@@ -76,7 +78,7 @@ export function useAutoSave() {
           ctx.drawImage(img, 0, 0, width, height)
 
           // Als JPEG mit reduzierter Qualität speichern
-          const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+          const dataUrl = canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY)
           resolve(dataUrl)
         } catch (e) {
           reject(e)
@@ -122,7 +124,7 @@ export function useAutoSave() {
           }
 
           ctx.drawImage(img, 0, 0, width, height)
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY)
           resolve(compressedDataUrl)
         } catch (e) {
           reject(e)
@@ -445,7 +447,7 @@ export function useAutoSave() {
     }
     saveTimeout.value = window.setTimeout(() => {
       saveState()
-    }, SAVE_DELAY)
+    }, AUTOSAVE_DEBOUNCE_MS)
   }
 
   // Watcher für automatisches Speichern

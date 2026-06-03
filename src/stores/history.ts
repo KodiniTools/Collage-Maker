@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { CollageImage, CollageText, CollageSettings } from '@/types'
+import { MAX_HISTORY_SIZE } from '@/config/constants'
 
 // Snapshot des Collage-Zustands (ohne File-Objekte, da diese nicht serialisierbar sind)
 interface HistorySnapshot {
@@ -9,8 +10,6 @@ interface HistorySnapshot {
   settings: CollageSettings
   timestamp: number
 }
-
-const MAX_HISTORY_SIZE = 50 // Maximale Anzahl von Snapshots
 
 export const useHistoryStore = defineStore('history', () => {
   // History-Stacks
