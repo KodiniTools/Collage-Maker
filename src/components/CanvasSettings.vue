@@ -1,76 +1,78 @@
 <script setup lang="ts">
-import { useCollageStore } from '@/stores/collage'
-import { useI18n } from 'vue-i18n'
-import type { BackgroundImageFit } from '@/types'
+  import { useCollageStore } from '@/stores/collage'
+  import { useI18n } from 'vue-i18n'
+  import type { BackgroundImageFit } from '@/types'
 
-const collage = useCollageStore()
-const { t } = useI18n()
+  const collage = useCollageStore()
+  const { t } = useI18n()
 
-function updateWidth(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateSettings({ width: value })
-}
-
-function updateHeight(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateSettings({ height: value })
-}
-
-function updateBackgroundColor(value: string) {
-  collage.saveStateForUndoDebounced()
-  // Bei Farbauswahl das Hintergrundbild entfernen (skipUndo da oben bereits gespeichert)
-  if (collage.settings.backgroundImage.url) {
-    collage.removeBackgroundImage(true)
+  function updateWidth(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateSettings({ width: value })
   }
-  collage.updateSettings({ backgroundColor: value })
-}
 
-function updateBackgroundFit(value: BackgroundImageFit) {
-  collage.saveStateForUndo()
-  collage.setBackgroundImageFit(value)
-}
+  function updateHeight(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateSettings({ height: value })
+  }
 
-function removeBackground() {
-  // Undo wird in removeBackgroundImage gespeichert
-  collage.removeBackgroundImage()
-}
+  function updateBackgroundColor(value: string) {
+    collage.saveStateForUndoDebounced()
+    // Bei Farbauswahl das Hintergrundbild entfernen (skipUndo da oben bereits gespeichert)
+    if (collage.settings.backgroundImage.url) {
+      collage.removeBackgroundImage(true)
+    }
+    collage.updateSettings({ backgroundColor: value })
+  }
 
-function updateBackgroundOpacity(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateBackgroundImage({ opacity: value })
-}
+  function updateBackgroundFit(value: BackgroundImageFit) {
+    collage.saveStateForUndo()
+    collage.setBackgroundImageFit(value)
+  }
 
-function updateBackgroundBrightness(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateBackgroundImage({ brightness: value })
-}
+  function removeBackground() {
+    // Undo wird in removeBackgroundImage gespeichert
+    collage.removeBackgroundImage()
+  }
 
-function updateBackgroundContrast(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateBackgroundImage({ contrast: value })
-}
+  function updateBackgroundOpacity(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateBackgroundImage({ opacity: value })
+  }
 
-function updateBackgroundSaturation(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateBackgroundImage({ saturation: value })
-}
+  function updateBackgroundBrightness(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateBackgroundImage({ brightness: value })
+  }
 
-function updateBackgroundBlur(value: number) {
-  collage.saveStateForUndoDebounced()
-  collage.updateBackgroundImage({ blur: value })
-}
+  function updateBackgroundContrast(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateBackgroundImage({ contrast: value })
+  }
 
-function updateZoom(value: number) {
-  collage.setCanvasZoom(value)
-}
+  function updateBackgroundSaturation(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateBackgroundImage({ saturation: value })
+  }
 
-function resetView() {
-  collage.resetCanvasView()
-}
+  function updateBackgroundBlur(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateBackgroundImage({ blur: value })
+  }
+
+  function updateZoom(value: number) {
+    collage.setCanvasZoom(value)
+  }
+
+  function resetView() {
+    collage.resetCanvasView()
+  }
 </script>
 
 <template>
-  <div class="w-full bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4">
+  <div
+    class="w-full bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
+  >
     <h2 class="text-lg font-semibold mb-4">{{ t('canvas.size') }}</h2>
 
     <div class="space-y-4">
@@ -82,11 +84,11 @@ function resetView() {
         <input
           type="number"
           :value="collage.settings.width"
-          @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
           min="400"
           max="4000"
           step="10"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+          @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 
@@ -98,11 +100,11 @@ function resetView() {
         <input
           type="number"
           :value="collage.settings.height"
-          @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
           min="400"
           max="4000"
           step="10"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+          @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 
@@ -115,15 +117,15 @@ function resetView() {
           <input
             type="color"
             :value="collage.settings.backgroundColor"
-            @input="updateBackgroundColor(($event.target as HTMLInputElement).value)"
             class="w-16 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
+            @input="updateBackgroundColor(($event.target as HTMLInputElement).value)"
           />
           <input
             type="text"
             :value="collage.settings.backgroundColor"
-            @input="updateBackgroundColor(($event.target as HTMLInputElement).value)"
             placeholder="#ffffff"
             class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
+            @input="updateBackgroundColor(($event.target as HTMLInputElement).value)"
           />
         </div>
         <p v-if="collage.settings.backgroundImage.url" class="text-xs text-muted mt-1">
@@ -132,7 +134,10 @@ function resetView() {
       </div>
 
       <!-- Background Image -->
-      <div v-if="collage.settings.backgroundImage.url" class="border-t border-muted/30 dark:border-slate/30 pt-4">
+      <div
+        v-if="collage.settings.backgroundImage.url"
+        class="border-t border-muted/30 dark:border-slate/30 pt-4"
+      >
         <div class="flex items-center justify-between mb-2">
           <label class="block text-sm font-medium">
             {{ t('canvas.backgroundImage') }}
@@ -157,12 +162,17 @@ function resetView() {
             class="w-full h-24 object-cover rounded-lg border border-muted/30 dark:border-slate/30"
           />
           <button
-            @click.stop="removeBackground"
             class="absolute top-1 right-1 p-1 bg-warm hover:bg-warm-dark text-surface-light rounded-full transition-colors"
             :title="t('canvas.removeBackgroundImage')"
+            @click.stop="removeBackground"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -174,8 +184,10 @@ function resetView() {
           </label>
           <select
             :value="collage.settings.backgroundImage.fit"
-            @change="updateBackgroundFit(($event.target as HTMLSelectElement).value as BackgroundImageFit)"
             class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+            @change="
+              updateBackgroundFit(($event.target as HTMLSelectElement).value as BackgroundImageFit)
+            "
           >
             <option value="cover">{{ t('canvas.fitCover') }}</option>
             <option value="contain">{{ t('canvas.fitContain') }}</option>
@@ -185,38 +197,43 @@ function resetView() {
         </div>
 
         <!-- Editing Controls (show when background is selected) -->
-        <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-muted/10 dark:bg-navy/20 rounded-lg p-3">
+        <div
+          v-if="collage.isBackgroundSelected"
+          class="space-y-3 bg-muted/10 dark:bg-navy/20 rounded-lg p-3"
+        >
           <p class="text-xs font-medium text-primary mb-2">{{ t('canvas.editBackground') }}</p>
 
           <!-- Opacity -->
           <div>
             <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.opacity') }}: {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
+              {{ t('imageControls.opacity') }}:
+              {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
             </label>
             <input
               type="range"
               :value="collage.settings.backgroundImage.opacity"
-              @input="updateBackgroundOpacity(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="1"
               step="0.01"
               class="w-full accent-accent"
+              @input="updateBackgroundOpacity(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
           <!-- Brightness -->
           <div>
             <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.brightness') }}: {{ collage.settings.backgroundImage.brightness }}%
+              {{ t('imageControls.brightness') }}:
+              {{ collage.settings.backgroundImage.brightness }}%
             </label>
             <input
               type="range"
               :value="collage.settings.backgroundImage.brightness"
-              @input="updateBackgroundBrightness(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
               step="1"
               class="w-full accent-accent"
+              @input="updateBackgroundBrightness(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -228,27 +245,28 @@ function resetView() {
             <input
               type="range"
               :value="collage.settings.backgroundImage.contrast"
-              @input="updateBackgroundContrast(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
               step="1"
               class="w-full accent-accent"
+              @input="updateBackgroundContrast(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
           <!-- Saturation -->
           <div>
             <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.saturation') }}: {{ collage.settings.backgroundImage.saturation }}%
+              {{ t('imageControls.saturation') }}:
+              {{ collage.settings.backgroundImage.saturation }}%
             </label>
             <input
               type="range"
               :value="collage.settings.backgroundImage.saturation"
-              @input="updateBackgroundSaturation(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="200"
               step="1"
               class="w-full accent-accent"
+              @input="updateBackgroundSaturation(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
 
@@ -260,11 +278,11 @@ function resetView() {
             <input
               type="range"
               :value="collage.settings.backgroundImage.blur"
-              @input="updateBackgroundBlur(Number(($event.target as HTMLInputElement).value))"
               min="0"
               max="20"
               step="0.5"
               class="w-full accent-accent"
+              @input="updateBackgroundBlur(Number(($event.target as HTMLInputElement).value))"
             />
           </div>
         </div>
@@ -281,8 +299,8 @@ function resetView() {
             {{ t('canvas.zoom') }}: {{ Math.round(collage.canvasZoom * 100) }}%
           </label>
           <button
-            @click="resetView"
             class="text-xs px-2 py-1 bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded transition-colors"
+            @click="resetView"
           >
             {{ t('canvas.resetView') }}
           </button>
@@ -290,11 +308,11 @@ function resetView() {
         <input
           type="range"
           :value="collage.canvasZoom"
-          @input="updateZoom(Number(($event.target as HTMLInputElement).value))"
           min="0.25"
           max="4"
           step="0.05"
           class="w-full"
+          @input="updateZoom(Number(($event.target as HTMLInputElement).value))"
         />
         <p class="text-xs text-muted mt-1">
           {{ t('canvas.zoomHint') }}

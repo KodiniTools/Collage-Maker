@@ -30,9 +30,9 @@ const JPEG_QUALITY = 0.7
 const MAX_AGE_MS = 30 * 60 * 1000 // 30 minutes
 
 const TARGET_URLS: Record<string, string> = {
-  'bildkonverter': '/bildkonverter/gallery',
-  'collagemaker': '/collagemaker/editor',
-  'color-extractor': '/kodini-color-extractor/app'
+  bildkonverter: '/bildkonverter/gallery',
+  collagemaker: '/collagemaker/editor',
+  'color-extractor': '/kodini-color-extractor/app',
 }
 
 // ─── Sender API ───────────────────────────────────────────────────────────────
@@ -40,7 +40,11 @@ const TARGET_URLS: Record<string, string> = {
 /**
  * Compress a canvas to a data URL (max 1200px, JPEG 0.7).
  */
-function compressCanvas(canvas: HTMLCanvasElement): { dataUrl: string; width: number; height: number } {
+function compressCanvas(canvas: HTMLCanvasElement): {
+  dataUrl: string
+  width: number
+  height: number
+} {
   let { width, height } = canvas
 
   if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
@@ -58,7 +62,7 @@ function compressCanvas(canvas: HTMLCanvasElement): { dataUrl: string; width: nu
   return {
     dataUrl: offscreen.toDataURL('image/jpeg', JPEG_QUALITY),
     width,
-    height
+    height,
   }
 }
 
@@ -89,7 +93,7 @@ export function prepareHandoff(
   const payload: HandoffPayload = {
     source,
     images,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   }
 
   try {

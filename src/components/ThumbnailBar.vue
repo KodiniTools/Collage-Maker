@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useCollageStore } from '@/stores/collage'
+  import { computed } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { useCollageStore } from '@/stores/collage'
 
-const { t } = useI18n()
-const collage = useCollageStore()
+  const { t } = useI18n()
+  const collage = useCollageStore()
 
-// Nur Canvas-Bilder anzeigen (keine Gallery-Templates)
-const canvasImages = computed(() =>
-  collage.images.filter(img => img.isGalleryTemplate !== true)
-)
+  // Nur Canvas-Bilder anzeigen (keine Gallery-Templates)
+  const canvasImages = computed(() =>
+    collage.images.filter((img) => img.isGalleryTemplate !== true)
+  )
 
-function handleThumbnailClick(id: string, event: MouseEvent) {
-  if (event.ctrlKey || event.metaKey) {
-    // Mehrfachauswahl mit Ctrl/Cmd-Klick
-    collage.toggleImageSelection(id)
-  } else {
-    // Einzelauswahl
-    collage.selectImage(id)
+  function handleThumbnailClick(id: string, event: MouseEvent) {
+    if (event.ctrlKey || event.metaKey) {
+      // Mehrfachauswahl mit Ctrl/Cmd-Klick
+      collage.toggleImageSelection(id)
+    } else {
+      // Einzelauswahl
+      collage.selectImage(id)
+    }
+    // Text-Auswahl aufheben wenn Bild ausgewählt wird
+    collage.selectText(null)
   }
-  // Text-Auswahl aufheben wenn Bild ausgewählt wird
-  collage.selectText(null)
-}
 
-function handleRemove(id: string, event: MouseEvent) {
-  event.stopPropagation()
-  collage.removeImage(id)
-}
+  function handleRemove(id: string, event: MouseEvent) {
+    event.stopPropagation()
+    collage.removeImage(id)
+  }
 </script>
 
 <template>
@@ -47,11 +47,12 @@ function handleRemove(id: string, event: MouseEvent) {
           :key="img.id"
           class="relative group shrink-0 cursor-pointer transition-all duration-150"
           :class="{
-            'ring-2 ring-primary ring-offset-2 ring-offset-surface-light dark:ring-offset-surface-dark': collage.isImageSelected(img.id),
-            'hover:ring-2 hover:ring-muted/50': !collage.isImageSelected(img.id)
+            'ring-2 ring-primary ring-offset-2 ring-offset-surface-light dark:ring-offset-surface-dark':
+              collage.isImageSelected(img.id),
+            'hover:ring-2 hover:ring-muted/50': !collage.isImageSelected(img.id),
           }"
-          @click="handleThumbnailClick(img.id, $event)"
           :title="t('thumbnailBar.clickToSelect')"
+          @click="handleThumbnailClick(img.id, $event)"
         >
           <!-- Thumbnail Image -->
           <img
@@ -60,7 +61,7 @@ function handleRemove(id: string, event: MouseEvent) {
             class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded"
             :style="{
               transform: `rotate(${img.rotation}deg)`,
-              opacity: img.opacity
+              opacity: img.opacity,
             }"
           />
 
@@ -77,18 +78,28 @@ function handleRemove(id: string, event: MouseEvent) {
             class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-surface-light rounded-full flex items-center justify-center"
           >
             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
 
           <!-- Remove Button (on hover) -->
           <button
             class="absolute -bottom-1 -right-1 w-4 h-4 bg-warm hover:bg-warm-dark text-surface-light rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex"
-            @click="handleRemove(img.id, $event)"
             :title="t('thumbnailBar.remove')"
+            @click="handleRemove(img.id, $event)"
           >
             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -104,8 +115,8 @@ function handleRemove(id: string, event: MouseEvent) {
         </span>
         <button
           v-if="collage.selectedImageIds.length > 0"
-          @click="collage.deselectAllImages()"
           class="text-xs text-primary hover:text-primary-dark transition-colors"
+          @click="collage.deselectAllImages()"
         >
           {{ t('thumbnailBar.deselectAll') }}
         </button>
@@ -120,26 +131,26 @@ function handleRemove(id: string, event: MouseEvent) {
 </template>
 
 <style scoped>
-.scrollbar-thin::-webkit-scrollbar {
-  height: 6px;
-}
-
-@media (pointer: fine) {
   .scrollbar-thin::-webkit-scrollbar {
-    height: 4px;
+    height: 6px;
   }
-}
 
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
-}
+  @media (pointer: fine) {
+    .scrollbar-thin::-webkit-scrollbar {
+      height: 4px;
+    }
+  }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 2px;
-}
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.7);
-}
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.7);
+  }
 </style>

@@ -34,22 +34,18 @@ export const useHistoryStore = defineStore('history', () => {
   ): HistorySnapshot {
     return {
       // Entferne File-Objekte aus dem Snapshot (nicht serialisierbar)
-      images: images.map(img => {
+      images: images.map((img) => {
         const { file, ...rest } = img
         return rest
       }),
       texts: JSON.parse(JSON.stringify(texts)),
       settings: JSON.parse(JSON.stringify(settings)),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }
   }
 
   // Speichert den aktuellen Zustand in der History
-  function saveSnapshot(
-    images: CollageImage[],
-    texts: CollageText[],
-    settings: CollageSettings
-  ) {
+  function saveSnapshot(images: CollageImage[], texts: CollageText[], settings: CollageSettings) {
     // Nicht speichern während einer Undo/Redo-Operation
     if (isRestoring.value) return
 
@@ -133,6 +129,6 @@ export const useHistoryStore = defineStore('history', () => {
     undo,
     redo,
     clearHistory,
-    getIsRestoring
+    getIsRestoring,
   }
 })

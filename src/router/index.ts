@@ -7,18 +7,18 @@ const routes = [
   {
     path: '/',
     name: 'landing',
-    component: LandingPage
+    component: LandingPage,
   },
   {
     path: '/editor',
     name: 'editor',
-    component: EditorPage
+    component: EditorPage,
   },
   {
     path: '/faq',
     name: 'faq',
-    component: FaqPage
-  }
+    component: FaqPage,
+  },
 ]
 
 const router = createRouter({
@@ -30,7 +30,7 @@ const router = createRouter({
     } else {
       return { top: 0 }
     }
-  }
+  },
 })
 
 // Handoff Guard: redirect to editor when handoff data is detected

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+  import { ref, computed } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
-const { t, tm } = useI18n()
-const openIndex = ref<number | null>(null)
+  const { t, tm } = useI18n()
+  const openIndex = ref<number | null>(null)
 
-// Hole die FAQ-Fragen aus den Übersetzungen
-const faqQuestions = computed(() => {
-  const questions = tm('faq.questions') as Array<{ question: string; answer: string }>
-  return questions
-})
+  // Hole die FAQ-Fragen aus den Übersetzungen
+  const faqQuestions = computed(() => {
+    const questions = tm('faq.questions') as Array<{ question: string; answer: string }>
+    return questions
+  })
 
-function toggleQuestion(index: number) {
-  openIndex.value = openIndex.value === index ? null : index
-}
+  function toggleQuestion(index: number) {
+    openIndex.value = openIndex.value === index ? null : index
+  }
 </script>
 
 <template>
@@ -28,10 +28,12 @@ function toggleQuestion(index: number) {
           class="border border-muted/30 dark:border-slate/50 rounded-lg overflow-hidden"
         >
           <button
-            @click="toggleQuestion(index)"
             class="w-full px-6 py-4 text-left bg-surface-light dark:bg-navy/30 hover:bg-muted/10 dark:hover:bg-navy/40 transition-colors flex items-center justify-between gap-4"
+            @click="toggleQuestion(index)"
           >
-            <span class="font-semibold text-lg text-slate-dark dark:text-white">{{ item.question }}</span>
+            <span class="font-semibold text-lg text-slate-dark dark:text-white">{{
+              item.question
+            }}</span>
             <svg
               class="w-5 h-5 flex-shrink-0 transition-transform text-slate dark:text-muted-light"
               :class="{ 'rotate-180': openIndex === index }"
@@ -39,7 +41,12 @@ function toggleQuestion(index: number) {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
 

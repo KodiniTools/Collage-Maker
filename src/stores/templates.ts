@@ -33,7 +33,9 @@ export const useTemplatesStore = defineStore('templates', () => {
     try {
       // Nutze import.meta.env.BASE_URL für korrekten Base-Path
       const basePath = import.meta.env.BASE_URL || '/'
-      const url = `${basePath}templates/default-templates.json`.replace(/\/+/g, '/').replace(':/', '://')
+      const url = `${basePath}templates/default-templates.json`
+        .replace(/\/+/g, '/')
+        .replace(':/', '://')
       console.log('Fetching templates from:', url)
       const response = await fetch(url)
       if (!response.ok) {
@@ -79,7 +81,7 @@ export const useTemplatesStore = defineStore('templates', () => {
 
   // Lösche eine Benutzer-Vorlage
   function deleteUserTemplate(id: string) {
-    const index = userTemplates.value.findIndex(t => t.id === id)
+    const index = userTemplates.value.findIndex((t) => t.id === id)
     if (index !== -1) {
       userTemplates.value.splice(index, 1)
       saveUserTemplates()
@@ -93,7 +95,7 @@ export const useTemplatesStore = defineStore('templates', () => {
 
   // Vorlage nach ID finden
   function getTemplateById(id: string): Template | undefined {
-    return getAllTemplates().find(t => t.id === id)
+    return getAllTemplates().find((t) => t.id === id)
   }
 
   return {
@@ -104,6 +106,6 @@ export const useTemplatesStore = defineStore('templates', () => {
     addUserTemplate,
     deleteUserTemplate,
     getAllTemplates,
-    getTemplateById
+    getTemplateById,
   }
 })

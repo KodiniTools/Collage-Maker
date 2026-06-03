@@ -7,8 +7,8 @@ export default defineConfig({
   base: '/collagemaker/',
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   build: {
     outDir: 'dist',
@@ -16,10 +16,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'vue-vendor': ['vue', 'pinia', 'vue-i18n']
-        }
-      }
-    }
-  }
+          'vue-vendor': ['vue', 'pinia', 'vue-i18n'],
+        },
+      },
+    },
+  },
 })
-
