@@ -3,13 +3,13 @@
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
-  import { renderCollage } from '@/lib/export-engine'
+  import { renderCollage, exportToPdf } from '@/lib/export-engine'
 
   const collage = useCollageStore()
   const toast = useToastStore()
   const { t } = useI18n()
 
-  const exportFormat = ref<'png' | 'png-transparent' | 'jpeg' | 'webp'>('png')
+  const exportFormat = ref<'png' | 'png-transparent' | 'jpeg' | 'webp' | 'pdf'>('png')
   const exportQuality = ref(0.95)
   const isExporting = ref(false)
   const isGeneratingPreview = ref(false)
@@ -38,6 +38,13 @@
     isExporting.value = true
     try {
       const canvas = await renderCollage(buildRenderOptions())
+
+      if (exportFormat.value === 'pdf') {
+        await exportToPdf({ canvas, quality: exportQuality.value })
+        toast.success(t('toast.exportSuccess'))
+        return
+      }
+
       const mimeType = getMimeType()
       const fileExtension = exportFormat.value === 'png-transparent' ? 'png' : exportFormat.value
 
@@ -74,7 +81,9 @@
     isGeneratingPreview.value = true
     try {
       const canvas = await renderCollage(buildRenderOptions())
-      previewDataUrl.value = canvas.toDataURL(getMimeType(), exportQuality.value)
+      // PDF-Vorschau als JPEG anzeigen (PDF selbst hat kein dataURL-Format)
+      const mimeType = exportFormat.value === 'pdf' ? 'image/jpeg' : getMimeType()
+      previewDataUrl.value = canvas.toDataURL(mimeType, exportQuality.value)
       showPreviewModal.value = true
     } catch (error) {
       console.error('Preview error:', error)
@@ -110,10 +119,11 @@
         <option value="png-transparent">{{ t('export.pngTransparent') }}</option>
         <option value="jpeg">JPEG</option>
         <option value="webp">WebP</option>
+        <option value="pdf">PDF</option>
       </select>
     </div>
 
-    <div v-if="exportFormat === 'jpeg' || exportFormat === 'webp'">
+    <div v-if="exportFormat === 'jpeg' || exportFormat === 'webp' || exportFormat === 'pdf'">
       <label class="block text-sm font-medium mb-2">
         {{ t('export.quality') }}: {{ Math.round(exportQuality * 100) }}%
       </label>
