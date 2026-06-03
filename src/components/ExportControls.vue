@@ -873,6 +873,11 @@
     showPreviewModal.value = false
     previewDataUrl.value = null
   }
+
+  function closePreviewAndExport() {
+    closePreview()
+    exportCollage()
+  }
 </script>
 
 <template>
@@ -1048,10 +1053,7 @@
               </button>
               <button
                 class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors text-sm"
-                @click="
-                  closePreview()
-                  exportCollage()
-                "
+                @click="closePreviewAndExport"
               >
                 {{ t('export.download') }}
               </button>
