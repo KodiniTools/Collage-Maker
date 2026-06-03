@@ -58,6 +58,26 @@
     previewImage.value = null
   }
 
+  function toggleSelectionAndClose() {
+    if (previewImage.value) collage.toggleGallerySelection(previewImage.value.id)
+    closePreview()
+  }
+
+  function addToCanvasAndClose() {
+    if (!previewImage.value) return
+    collage.deselectAllGalleryImages()
+    collage.toggleGallerySelection(previewImage.value.id)
+    collage.addSelectedGalleryToCanvas()
+    closePreview()
+  }
+
+  function setAsBackgroundAndClose() {
+    if (!previewImage.value) return
+    collage.setBackgroundImage(previewImage.value.url)
+    collage.selectBackground(true)
+    closePreview()
+  }
+
   function toggleSelectAll() {
     if (allSelected.value) {
       collage.deselectAllGalleryImages()
@@ -369,10 +389,7 @@
                       ? 'bg-muted/20 hover:bg-muted/30 dark:bg-navy/30 dark:hover:bg-navy/40'
                       : 'bg-primary hover:bg-primary-dark text-surface-light',
                   ]"
-                  @click="
-                    collage.toggleGallerySelection(previewImage.id)
-                    closePreview()
-                  "
+                  @click="toggleSelectionAndClose"
                 >
                   {{
                     collage.isGalleryImageSelected(previewImage.id)
@@ -382,23 +399,14 @@
                 </button>
                 <button
                   class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-slate-dark transition-colors"
-                  @click="
-                    collage.deselectAllGalleryImages()
-                    collage.toggleGallerySelection(previewImage.id)
-                    collage.addSelectedGalleryToCanvas()
-                    closePreview()
-                  "
+                  @click="addToCanvasAndClose"
                 >
                   {{ t('gallery.addThisToCanvas') }}
                 </button>
               </div>
               <button
                 class="w-full px-4 py-2 text-sm font-medium rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-slate-dark transition-colors flex items-center justify-center gap-2"
-                @click="
-                  collage.setBackgroundImage(previewImage.url)
-                  collage.selectBackground(true)
-                  closePreview()
-                "
+                @click="setAsBackgroundAndClose"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
