@@ -15,6 +15,7 @@
     "format:check": "prettier --check src/"
   },
   "dependencies": {
+    "jspdf": "^4.2.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.0",
     "vue-i18n": "^9.8.0",
