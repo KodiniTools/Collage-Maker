@@ -9,6 +9,7 @@ export interface KeyboardShortcut {
   description: string
   descriptionKey: string
   category: 'selection' | 'editing' | 'navigation' | 'canvas' | 'general'
+  displayOnly?: boolean
   action: () => void
 }
 
@@ -262,6 +263,7 @@ export function useKeyboardShortcuts() {
       description: 'Paste image from clipboard',
       descriptionKey: 'shortcuts.pasteFromClipboard',
       category: 'general',
+      displayOnly: true,
       action: () => {},
     },
     {
@@ -310,6 +312,7 @@ export function useKeyboardShortcuts() {
 
     // Finde passendes Shortcut
     const matchingShortcut = shortcuts.find((shortcut) => {
+      if (shortcut.displayOnly) return false
       const keys = Array.isArray(shortcut.key) ? shortcut.key : [shortcut.key]
       const keyMatch = keys.some((k) => e.key.toLowerCase() === k.toLowerCase() || e.key === k)
       const ctrlMatch = !!shortcut.ctrl === (e.ctrlKey || e.metaKey)
