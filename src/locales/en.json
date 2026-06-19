@@ -194,7 +194,8 @@
     "button": "Select Images",
     "buttonFolder": "Select Folder",
     "formats": "PNG, JPG, WebP (max. 50MB per image)",
-    "processing": "Optimizing images..."
+    "processing": "Optimizing images...",
+    "pasteHint": "or Ctrl+V to paste from clipboard"
   },
   "layout": {
     "title": "Layout",
@@ -480,13 +481,15 @@
       "title": "Tips",
       "multiSelect": "Ctrl+Click for multi-select of images",
       "shiftResize": "Shift while resizing keeps aspect ratio (or releases it)"
-    }
+    },
+    "pasteFromClipboard": "Paste image from clipboard"
   },
   "toast": {
     "uploadSuccess": "{count} image(s) uploaded successfully",
     "uploadError": "Error processing images",
     "exportSuccess": "Collage exported successfully",
-    "exportError": "Error exporting collage"
+    "exportError": "Error exporting collage",
+    "pasteSuccess": "{count} image(s) pasted from clipboard"
   },
   "autoSave": {
     "restoreTitle": "Previous Work Found",

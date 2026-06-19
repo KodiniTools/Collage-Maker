@@ -194,7 +194,8 @@
     "button": "Bilder auswählen",
     "buttonFolder": "Ordner auswählen",
     "formats": "PNG, JPG, WebP (max. 50MB pro Bild)",
-    "processing": "Bilder werden optimiert..."
+    "processing": "Bilder werden optimiert...",
+    "pasteHint": "oder Ctrl+V zum Einfügen aus der Zwischenablage"
   },
   "layout": {
     "title": "Layout",
@@ -480,13 +481,15 @@
       "title": "Tipps",
       "multiSelect": "Strg+Klick für Mehrfachauswahl von Bildern",
       "shiftResize": "Shift beim Skalieren hält das Seitenverhältnis (oder hebt es auf)"
-    }
+    },
+    "pasteFromClipboard": "Bild aus Zwischenablage einfügen"
   },
   "toast": {
     "uploadSuccess": "{count} Bild(er) erfolgreich hochgeladen",
     "uploadError": "Fehler beim Verarbeiten der Bilder",
     "exportSuccess": "Collage erfolgreich exportiert",
-    "exportError": "Fehler beim Exportieren der Collage"
+    "exportError": "Fehler beim Exportieren der Collage",
+    "pasteSuccess": "{count} Bild(er) aus Zwischenablage eingefügt"
   },
   "autoSave": {
     "restoreTitle": "Vorherige Arbeit gefunden",
