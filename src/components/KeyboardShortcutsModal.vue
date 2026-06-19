@@ -2,13 +2,7 @@
   import { useI18n } from 'vue-i18n'
   import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 
-  defineProps<{
-    modelValue: boolean
-  }>()
-
-  const emit = defineEmits<{
-    (e: 'update:modelValue', value: boolean): void
-  }>()
+  const modelValue = defineModel<boolean>({ required: true })
 
   const { t } = useI18n()
   const { getShortcutsByCategory, formatShortcut } = useKeyboardShortcuts()
@@ -16,7 +10,7 @@
   const categories = getShortcutsByCategory()
 
   function close() {
-    emit('update:modelValue', false)
+    modelValue.value = false
   }
 
   const categoryIcons = {
