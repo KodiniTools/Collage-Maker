@@ -17,6 +17,7 @@
   import ToastContainer from '@/components/ToastContainer.vue'
   import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
   import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
+  import { useClipboardPaste } from '@/composables/useClipboardPaste'
   import HandoffReceiver from '@/components/HandoffReceiver.vue'
   import { handoffImageToFile, type HandoffImage } from '@/lib/core/handoff'
   import { useCollageStore } from '@/stores/collage'
@@ -43,6 +44,7 @@
 
   const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } =
     useKeyboardShortcuts()
+  const { setupClipboardListener, cleanupClipboardListener } = useClipboardPaste()
   const autoSave = useAutoSave()
 
   // Wiederherstellungsdialog Funktionen
@@ -73,6 +75,7 @@
 
   onMounted(() => {
     setupKeyboardListeners()
+    setupClipboardListener()
     autoSave.setupAutoSave()
 
     // Auto-collapse left sidebar on smaller screens
@@ -89,6 +92,7 @@
 
   onUnmounted(() => {
     cleanupKeyboardListeners()
+    cleanupClipboardListener()
   })
 </script>
 

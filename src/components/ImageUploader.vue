@@ -161,6 +161,9 @@
         <p class="text-xs text-muted dark:text-muted">
           {{ t('upload.formats') }}
         </p>
+        <p class="text-xs text-muted dark:text-muted opacity-70">
+          {{ t('upload.pasteHint') }}
+        </p>
       </div>
     </div>
 

@@ -278,6 +278,14 @@ export function useKeyboardShortcuts() {
 
     // === GENERAL ===
     {
+      key: 'v',
+      ctrl: true,
+      description: 'Paste image from clipboard',
+      descriptionKey: 'shortcuts.pasteFromClipboard',
+      category: 'general',
+      action: () => {},
+    },
+    {
       key: 'z',
       ctrl: true,
       description: 'Undo',
