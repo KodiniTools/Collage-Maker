@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, useTemplateRef } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
@@ -11,8 +11,8 @@
 
   const isDragging = ref(false)
   const isProcessing = ref(false)
-  const fileInput = ref<HTMLInputElement | null>(null)
-  const folderInput = ref<HTMLInputElement | null>(null)
+  const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+  const folderInput = useTemplateRef<HTMLInputElement>('folderInput')
 
   async function handleDrop(e: DragEvent) {
     isDragging.value = false
