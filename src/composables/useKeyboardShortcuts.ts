@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 
 export interface KeyboardShortcut {
-  key: string
+  key: string | string[]
   ctrl?: boolean
   shift?: boolean
   alt?: boolean
@@ -39,20 +39,7 @@ export function useKeyboardShortcuts() {
       },
     },
     {
-      key: 'Delete',
-      description: 'Delete selected',
-      descriptionKey: 'shortcuts.delete',
-      category: 'selection',
-      action: () => {
-        if (collage.selectedImageIds.length > 0) {
-          collage.removeSelectedImages()
-        } else if (collage.selectedTextId) {
-          collage.removeText(collage.selectedTextId)
-        }
-      },
-    },
-    {
-      key: 'Backspace',
+      key: ['Delete', 'Backspace'],
       description: 'Delete selected',
       descriptionKey: 'shortcuts.delete',
       category: 'selection',
@@ -244,15 +231,7 @@ export function useKeyboardShortcuts() {
       action: () => collage.toggleGrid(),
     },
     {
-      key: '+',
-      ctrl: true,
-      description: 'Zoom in',
-      descriptionKey: 'shortcuts.zoomIn',
-      category: 'canvas',
-      action: () => collage.setCanvasZoom(collage.canvasZoom + 0.1),
-    },
-    {
-      key: '=',
+      key: ['+', '='],
       ctrl: true,
       description: 'Zoom in',
       descriptionKey: 'shortcuts.zoomIn',
@@ -331,7 +310,8 @@ export function useKeyboardShortcuts() {
 
     // Finde passendes Shortcut
     const matchingShortcut = shortcuts.find((shortcut) => {
-      const keyMatch = e.key.toLowerCase() === shortcut.key.toLowerCase() || e.key === shortcut.key
+      const keys = Array.isArray(shortcut.key) ? shortcut.key : [shortcut.key]
+      const keyMatch = keys.some((k) => e.key.toLowerCase() === k.toLowerCase() || e.key === k)
       const ctrlMatch = !!shortcut.ctrl === (e.ctrlKey || e.metaKey)
       const shiftMatch = !!shortcut.shift === e.shiftKey
       const altMatch = !!shortcut.alt === e.altKey
@@ -363,7 +343,7 @@ export function useKeyboardShortcuts() {
       general: [] as KeyboardShortcut[],
     }
 
-    // Filtere Duplikate (z.B. Delete und Backspace)
+    // Filtere Shortcuts mit gleicher descriptionKey (z.B. Redo: Ctrl+Y / Ctrl+Shift+Z)
     const seen = new Set<string>()
     shortcuts.forEach((shortcut) => {
       const key = shortcut.descriptionKey
@@ -376,46 +356,30 @@ export function useKeyboardShortcuts() {
     return categories
   }
 
-  function formatShortcut(shortcut: KeyboardShortcut): string {
-    const parts: string[] = []
-
-    if (shortcut.ctrl) parts.push('Ctrl')
-    if (shortcut.shift) parts.push('Shift')
-    if (shortcut.alt) parts.push('Alt')
-
-    // Formatiere Tastennamen
-    let keyName = shortcut.key
-    switch (shortcut.key) {
-      case 'ArrowUp':
-        keyName = '↑'
-        break
-      case 'ArrowDown':
-        keyName = '↓'
-        break
-      case 'ArrowLeft':
-        keyName = '←'
-        break
-      case 'ArrowRight':
-        keyName = '→'
-        break
-      case 'Delete':
-        keyName = 'Del'
-        break
-      case 'Backspace':
-        keyName = '⌫'
-        break
-      case 'Escape':
-        keyName = 'Esc'
-        break
-      case ' ':
-        keyName = 'Space'
-        break
-      default:
-        keyName = shortcut.key.toUpperCase()
+  function formatKey(key: string): string {
+    switch (key) {
+      case 'ArrowUp': return '↑'
+      case 'ArrowDown': return '↓'
+      case 'ArrowLeft': return '←'
+      case 'ArrowRight': return '→'
+      case 'Delete': return 'Del'
+      case 'Backspace': return '⌫'
+      case 'Escape': return 'Esc'
+      case ' ': return 'Space'
+      default: return key.toUpperCase()
     }
+  }
 
-    parts.push(keyName)
-    return parts.join(' + ')
+  function formatShortcut(shortcut: KeyboardShortcut): string {
+    const modifiers: string[] = []
+    if (shortcut.ctrl) modifiers.push('Ctrl')
+    if (shortcut.shift) modifiers.push('Shift')
+    if (shortcut.alt) modifiers.push('Alt')
+
+    const keys = Array.isArray(shortcut.key) ? shortcut.key : [shortcut.key]
+    const keyLabel = keys.map(formatKey).join(' / ')
+
+    return [...modifiers, keyLabel].join(' + ')
   }
 
   function setupKeyboardListeners() {
