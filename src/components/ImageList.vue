@@ -307,17 +307,17 @@
         @click.self="closePreview"
       >
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-muted/10 dark:border-white/10"
         >
           <!-- Header -->
           <div
-            class="flex items-center justify-between p-3 sm:p-4 border-b border-muted/30 dark:border-slate/30"
+            class="flex items-center justify-between p-3 sm:p-4 border-b border-muted/20 dark:border-white/10"
           >
-            <h3 class="text-base sm:text-lg font-semibold truncate pr-4">
+            <h3 class="text-base sm:text-lg font-semibold truncate pr-4 text-slate-900 dark:text-white">
               {{ t('gallery.preview') }}
             </h3>
             <button
-              class="p-1 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
+              class="p-1 text-slate-500 dark:text-slate-400 hover:bg-muted/20 dark:hover:bg-white/10 rounded-lg transition-colors"
               @click="closePreview"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +332,7 @@
           </div>
 
           <!-- Image -->
-          <div class="p-2 sm:p-4 flex justify-center bg-muted/10 dark:bg-navy/20">
+          <div class="p-2 sm:p-4 flex justify-center bg-slate-100 dark:bg-slate-900/50">
             <img
               :src="previewImage.url"
               :alt="previewImage.file.name"
@@ -344,38 +344,38 @@
           <div class="p-3 sm:p-4 space-y-3">
             <!-- Filename -->
             <div>
-              <p class="text-xs text-muted uppercase tracking-wide mb-1">
+              <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                 {{ t('gallery.previewTitle') }}
               </p>
-              <p class="font-medium truncate">{{ previewImage.file.name }}</p>
+              <p class="font-medium truncate text-slate-800 dark:text-slate-100">{{ previewImage.file.name }}</p>
             </div>
 
             <!-- Details Grid -->
             <div class="grid grid-cols-3 gap-2 sm:gap-4">
               <!-- Format -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
-                <p class="text-xs text-muted uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-slate-100 dark:bg-slate-700/60 rounded-lg">
+                <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewFormat') }}
                 </p>
-                <p class="font-semibold text-primary">
+                <p class="font-semibold text-primary dark:text-accent">
                   {{ getFileExtension(previewImage.file.name) }}
                 </p>
               </div>
 
               <!-- Size -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
-                <p class="text-xs text-muted uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-slate-100 dark:bg-slate-700/60 rounded-lg">
+                <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewSize') }}
                 </p>
-                <p class="font-semibold">{{ formatFileSize(previewImage.file.size) }}</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100">{{ formatFileSize(previewImage.file.size) }}</p>
               </div>
 
               <!-- Dimensions -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-navy/20 rounded-lg">
-                <p class="text-xs text-muted uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-slate-100 dark:bg-slate-700/60 rounded-lg">
+                <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewDimensions') }}
                 </p>
-                <p class="font-semibold">{{ getImageDimensions(previewImage) }}</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100">{{ getImageDimensions(previewImage) }}</p>
               </div>
             </div>
 
@@ -386,7 +386,7 @@
                   :class="[
                     'flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
                     collage.isGalleryImageSelected(previewImage.id)
-                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-navy/30 dark:hover:bg-navy/40'
+                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200'
                       : 'bg-primary hover:bg-primary-dark text-surface-light',
                   ]"
                   @click="toggleSelectionAndClose"
