@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, nextTick } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
@@ -15,6 +15,40 @@
   const isGeneratingPreview = ref(false)
   const showPreviewModal = ref(false)
   const previewDataUrl = ref<string | null>(null)
+
+  // Filename dialog state
+  const showFilenameDialog = ref(false)
+  const customFilename = ref('collage')
+  const filenameInput = ref<HTMLInputElement | null>(null)
+  let resolveFilename: ((name: string | null) => void) | null = null
+
+  function getFileExtension(): string {
+    return exportFormat.value === 'png-transparent' ? 'png' : exportFormat.value
+  }
+
+  function promptFilename(): Promise<string | null> {
+    customFilename.value = 'collage'
+    showFilenameDialog.value = true
+    nextTick(() => {
+      filenameInput.value?.select()
+    })
+    return new Promise((resolve) => {
+      resolveFilename = resolve
+    })
+  }
+
+  function confirmFilename() {
+    const name = customFilename.value.trim() || 'collage'
+    showFilenameDialog.value = false
+    resolveFilename?.(name)
+    resolveFilename = null
+  }
+
+  function cancelFilename() {
+    showFilenameDialog.value = false
+    resolveFilename?.(null)
+    resolveFilename = null
+  }
 
   function buildRenderOptions() {
     return {
@@ -34,19 +68,20 @@
     return 'image/jpeg'
   }
 
-  async function exportCollage() {
+  async function exportCollage(filename?: string) {
     isExporting.value = true
     try {
       const canvas = await renderCollage(buildRenderOptions())
+      const fileExtension = getFileExtension()
+      const finalName = `${filename ?? 'collage'}.${fileExtension}`
 
       if (exportFormat.value === 'pdf') {
-        await exportToPdf({ canvas, quality: exportQuality.value })
+        await exportToPdf({ canvas, quality: exportQuality.value, filename: finalName })
         toast.success(t('toast.exportSuccess'))
         return
       }
 
       const mimeType = getMimeType()
-      const fileExtension = exportFormat.value === 'png-transparent' ? 'png' : exportFormat.value
 
       await new Promise<void>((resolve, reject) => {
         canvas.toBlob(
@@ -58,7 +93,7 @@
             const url = URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = url
-            a.download = `collage-${Date.now()}.${fileExtension}`
+            a.download = finalName
             a.click()
             URL.revokeObjectURL(url)
             resolve()
@@ -75,6 +110,12 @@
     } finally {
       isExporting.value = false
     }
+  }
+
+  async function startExport() {
+    const filename = await promptFilename()
+    if (filename === null) return
+    exportCollage(filename)
   }
 
   async function generatePreview() {
@@ -98,9 +139,11 @@
     previewDataUrl.value = null
   }
 
-  function closePreviewAndExport() {
+  async function closePreviewAndExport() {
     closePreview()
-    exportCollage()
+    const filename = await promptFilename()
+    if (filename === null) return
+    exportCollage(filename)
   }
 </script>
 
@@ -183,7 +226,7 @@
       :disabled="collage.images.length === 0 || isExporting"
       class="w-full px-4 py-3 bg-accent hover:bg-accent-dark disabled:bg-muted/50 text-slate-dark font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
       aria-label="Download collage"
-      @click="exportCollage"
+      @click="startExport"
     >
       <!-- loading spinner -->
       <svg v-if="isExporting" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -212,6 +255,51 @@
     >
       {{ t('controls.clear') }}
     </button>
+
+    <!-- Filename Dialog -->
+    <Teleport to="#modal-portal">
+      <div
+        v-if="showFilenameDialog"
+        class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        @click.self="cancelFilename"
+      >
+        <div class="w-full max-w-sm bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden">
+          <div class="px-5 py-4 border-b border-muted/20 dark:border-slate/20">
+            <h3 class="text-base font-semibold">{{ t('export.filenameDialogTitle') }}</h3>
+          </div>
+          <div class="px-5 py-4 space-y-3">
+            <label class="block text-sm font-medium">{{ t('export.filenameLabel') }}</label>
+            <div class="flex items-center gap-0">
+              <input
+                ref="filenameInput"
+                v-model="customFilename"
+                type="text"
+                class="flex-1 min-w-0 px-3 py-2 border border-muted/50 dark:border-slate rounded-l-lg bg-surface-light dark:bg-surface-dark text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                @keydown.enter="confirmFilename"
+                @keydown.esc="cancelFilename"
+              />
+              <span class="px-3 py-2 bg-muted/10 dark:bg-navy/30 border border-l-0 border-muted/50 dark:border-slate rounded-r-lg text-sm text-muted select-none">
+                .{{ getFileExtension() }}
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 px-5 py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
+            <button
+              class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors text-sm"
+              @click="cancelFilename"
+            >
+              {{ t('export.filenameCancel') }}
+            </button>
+            <button
+              class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors text-sm"
+              @click="confirmFilename"
+            >
+              {{ t('export.filenameConfirm') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Preview Modal -->
     <Teleport to="#modal-portal">

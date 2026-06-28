@@ -282,7 +282,11 @@
     "previewAlt": "Vorschau der fertigen Collage",
     "close": "Schließen",
     "download": "Herunterladen",
-    "pngTransparent": "PNG (Transparent)"
+    "pngTransparent": "PNG (Transparent)",
+    "filenameDialogTitle": "Dateiname festlegen",
+    "filenameLabel": "Dateiname",
+    "filenameConfirm": "Speichern",
+    "filenameCancel": "Abbrechen"
   },
   "controls": {
     "clear": "Alles löschen",
