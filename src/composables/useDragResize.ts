@@ -3,6 +3,9 @@ import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import type { GuideLine } from './useAlignmentGuides'
 
+// Emitter for double-tap events (used by CollageCanvas to show preview)
+type DoubleTapHandler = (clientX: number, clientY: number) => void
+
 export function useDragResize(
   canvas: Ref<HTMLCanvasElement | null>,
   autoFitScale: ComputedRef<number>,
@@ -32,7 +35,8 @@ export function useDragResize(
       guides: GuideLine[]
     }
   },
-  getCtx: () => CanvasRenderingContext2D | null
+  getCtx: () => CanvasRenderingContext2D | null,
+  onDoubleTap?: DoubleTapHandler
 ) {
   const collage = useCollageStore()
 
@@ -64,9 +68,21 @@ export function useDragResize(
   const panStart = ref({ x: 0, y: 0 })
   const panStartOffset = ref({ x: 0, y: 0 })
 
-  function getResizeHandle(x: number, y: number, img: any): string | null {
+  // Touch / pinch state
+  const isPinching = ref(false)
+  const pinchStartDistance = ref(0)
+  const pinchStartWidth = ref(0)
+  const pinchStartHeight = ref(0)
+  const pinchStartImgX = ref(0)
+  const pinchStartImgY = ref(0)
+  const pinchInitialZoom = ref(1)
+  const pinchCenterStart = ref({ x: 0, y: 0 })
+  const pinchPanStartOffset = ref({ x: 0, y: 0 })
+  const lastTapTime = ref(0)
+
+  function getResizeHandle(x: number, y: number, img: any, touchMode = false): string | null {
     const handleSize = 8
-    const hitRadius = handleSize * 1.5 // Größerer Hit-Bereich
+    const hitRadius = handleSize * (touchMode ? 4.5 : 1.5) // Larger hit area for touch
     const centerX = img.x + img.width / 2
     const centerY = img.y + img.height / 2
 
@@ -101,8 +117,8 @@ export function useDragResize(
     return null
   }
 
-  function isDeleteButtonClicked(x: number, y: number, img: any): boolean {
-    const deleteButtonSize = 14
+  function isDeleteButtonClicked(x: number, y: number, img: any, touchMode = false): boolean {
+    const deleteButtonSize = touchMode ? 28 : 14
     const centerX = img.x + img.width / 2
     const centerY = img.y + img.height / 2
 
@@ -534,5 +550,169 @@ export function useDragResize(
     guides.activeGuides.value = []
   }
 
-  return { handleMouseDown, handleMouseMove, handleMouseUp, cursorStyle }
+  // ─── Touch helpers ───────────────────────────────────────────────────────────
+
+  function getPinchDistance(e: TouchEvent): number {
+    const dx = e.touches[1].clientX - e.touches[0].clientX
+    const dy = e.touches[1].clientY - e.touches[0].clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
+  function getPinchCenter(e: TouchEvent): { x: number; y: number } {
+    return {
+      x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+      y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+    }
+  }
+
+  /** Synthetic mouse-like object for delegating touch coords to existing handlers */
+  function syntheticMouse(clientX: number, clientY: number, extra?: Partial<MouseEvent>): MouseEvent {
+    return { clientX, clientY, button: 0, shiftKey: false, ctrlKey: false, metaKey: false, ...extra } as unknown as MouseEvent
+  }
+
+  // ─── Touch event handlers ────────────────────────────────────────────────────
+
+  function handleTouchStart(e: TouchEvent) {
+    e.preventDefault()
+    if (!canvas.value) return
+
+    if (e.touches.length === 2) {
+      // Stop any single-touch drag that was in progress
+      handleMouseUp()
+
+      const selectedImg = collage.selectedImage
+      const distance = getPinchDistance(e)
+      const center = getPinchCenter(e)
+
+      if (selectedImg) {
+        // Two fingers on a selected image: pinch to resize + pan simultaneously
+        collage.saveStateForUndo()
+        isPinching.value = true
+        pinchStartDistance.value = distance
+        pinchStartWidth.value = selectedImg.width
+        pinchStartHeight.value = selectedImg.height
+        pinchStartImgX.value = selectedImg.x
+        pinchStartImgY.value = selectedImg.y
+        initialAspectRatio.value = selectedImg.width / selectedImg.height
+      } else {
+        // Two fingers with no selection: pinch-zoom the canvas
+        isPinching.value = true
+        pinchStartDistance.value = distance
+        pinchInitialZoom.value = collage.canvasZoom
+      }
+
+      // Always allow two-finger pan alongside pinch
+      isPanning.value = true
+      pinchCenterStart.value = center
+      pinchPanStartOffset.value = { ...panOffset.value }
+      return
+    }
+
+    // ── Single touch ──────────────────────────────────────────────────────────
+    const touch = e.touches[0]
+
+    // Double-tap detection (300 ms window)
+    const now = Date.now()
+    if (now - lastTapTime.value < 300) {
+      lastTapTime.value = 0
+      onDoubleTap?.(touch.clientX, touch.clientY)
+      return
+    }
+    lastTapTime.value = now
+
+    if (!canvas.value) return
+    const rect = canvas.value.getBoundingClientRect()
+    const zoom = autoFitScale.value
+    const x = (touch.clientX - rect.left) / zoom
+    const y = (touch.clientY - rect.top) / zoom
+
+    // Delete button (enlarged for touch)
+    const clickedDeleteImage = collage.images
+      .filter((img) => img.isGalleryTemplate !== true)
+      .sort((a, b) => b.zIndex - a.zIndex)
+      .find((img) => isDeleteButtonClicked(x, y, img, true))
+
+    if (clickedDeleteImage) {
+      collage.removeImage(clickedDeleteImage.id)
+      return
+    }
+
+    // Resize handle (enlarged for touch)
+    const selectedImg = collage.selectedImage
+    if (selectedImg) {
+      const handle = getResizeHandle(x, y, selectedImg, true)
+      if (handle) {
+        collage.saveStateForUndo()
+        isResizing.value = true
+        resizeHandle.value = handle
+        dragStartPos.value = { x, y }
+        resizeStart.value = {
+          x: selectedImg.x,
+          y: selectedImg.y,
+          width: selectedImg.width,
+          height: selectedImg.height,
+        }
+        shiftPressed.value = false
+        initialAspectRatio.value = selectedImg.width / selectedImg.height
+        return
+      }
+    }
+
+    // Delegate the rest to existing mousedown logic
+    handleMouseDown(syntheticMouse(touch.clientX, touch.clientY))
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    e.preventDefault()
+    if (!canvas.value) return
+
+    if (e.touches.length === 2 && isPinching.value) {
+      const currentDistance = getPinchDistance(e)
+      const currentCenter = getPinchCenter(e)
+      const scale = currentDistance / pinchStartDistance.value
+
+      // Pan: move with the center of the two fingers
+      if (isPanning.value) {
+        panOffset.value = {
+          x: pinchPanStartOffset.value.x + (currentCenter.x - pinchCenterStart.value.x),
+          y: pinchPanStartOffset.value.y + (currentCenter.y - pinchCenterStart.value.y),
+        }
+      }
+
+      const selectedImg = collage.selectedImage
+      if (selectedImg && pinchStartWidth.value > 0) {
+        // Pinch to resize selected image
+        const newWidth = Math.max(20, pinchStartWidth.value * scale)
+        const newHeight = Math.max(20, newWidth / initialAspectRatio.value)
+        // Keep the image centered around its original center
+        const newX = pinchStartImgX.value + (pinchStartWidth.value - newWidth) / 2
+        const newY = pinchStartImgY.value + (pinchStartHeight.value - newHeight) / 2
+        collage.updateImage(selectedImg.id, { x: newX, y: newY, width: newWidth, height: newHeight })
+      } else {
+        // Pinch to zoom canvas (no image selected)
+        const newZoom = Math.max(0.25, Math.min(4, pinchInitialZoom.value * scale))
+        collage.setCanvasZoom(newZoom)
+      }
+      return
+    }
+
+    if (e.touches.length === 1 && !isPinching.value) {
+      const touch = e.touches[0]
+      handleMouseMove(syntheticMouse(touch.clientX, touch.clientY))
+    }
+  }
+
+  function handleTouchEnd(e: TouchEvent) {
+    if (e.touches.length < 2) {
+      if (isPinching.value) {
+        isPinching.value = false
+        pinchStartWidth.value = 0 // reset image-pinch flag
+      }
+      if (e.touches.length === 0) {
+        handleMouseUp()
+      }
+    }
+  }
+
+  return { handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd, cursorStyle }
 }

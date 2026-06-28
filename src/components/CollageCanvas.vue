@@ -13,24 +13,25 @@
   const { autoFitScale, panOffset, spacePressed } = useCanvasPan(container)
   const { activeGuides, detectAlignments, detectResizeAlignments, drawGuides } = useAlignmentGuides()
   const { getCtx } = useCanvasRenderer(canvas, drawGuides)
-  const { handleMouseDown, handleMouseMove, handleMouseUp, cursorStyle } = useDragResize(
+  const { handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd, cursorStyle } = useDragResize(
     canvas,
     autoFitScale,
     panOffset,
     spacePressed,
     { activeGuides, detectAlignments, detectResizeAlignments },
-    getCtx
+    getCtx,
+    showPreviewAt
   )
 
-  // Image preview overlay on double-click
+  // Image preview overlay on double-click / double-tap
   const previewUrl = ref<string | null>(null)
 
-  function handleDblClick(e: MouseEvent) {
+  function showPreviewAt(clientX: number, clientY: number) {
     if (!canvas.value) return
     const rect = canvas.value.getBoundingClientRect()
     const zoom = autoFitScale.value
-    const x = (e.clientX - rect.left) / zoom
-    const y = (e.clientY - rect.top) / zoom
+    const x = (clientX - rect.left) / zoom
+    const y = (clientY - rect.top) / zoom
 
     const hit = [...collage.images]
       .filter((img) => img.isGalleryTemplate !== true)
@@ -38,6 +39,10 @@
       .find((img) => x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height)
 
     if (hit) previewUrl.value = hit.url
+  }
+
+  function handleDblClick(e: MouseEvent) {
+    showPreviewAt(e.clientX, e.clientY)
   }
 
   function closePreview() {
@@ -92,7 +97,8 @@
       v-if="collage.canvasZoom > 1"
       class="absolute top-2 left-2 z-10 bg-slate-dark/80 text-surface-light text-xs px-2 py-1 rounded pointer-events-none"
     >
-      Space + Drag / Arrows to pan
+      <span class="hidden sm:inline">Space + Drag / Arrows to pan</span>
+      <span class="sm:hidden">2 Finger zum Verschieben</span>
     </div>
     <!-- Canvas Wrapper - centered with auto-fit scaling and pan offset -->
     <div
@@ -109,6 +115,7 @@
           transform: `scale(${autoFitScale})`,
           transformOrigin: 'center center',
           cursor: spacePressed && collage.canvasZoom > 1 ? 'grab' : cursorStyle,
+          touchAction: 'none',
         }"
         style="image-rendering: high-quality"
         @mousedown.prevent="handleMouseDown"
@@ -118,6 +125,10 @@
         @dblclick="handleDblClick"
         @dragover="handleDragOver"
         @drop="handleDrop"
+        @touchstart.prevent="handleTouchStart"
+        @touchmove.prevent="handleTouchMove"
+        @touchend="handleTouchEnd"
+        @touchcancel="handleTouchEnd"
       />
     </div>
   </div>
