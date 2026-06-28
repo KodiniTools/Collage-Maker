@@ -22,6 +22,28 @@
     getCtx
   )
 
+  // Image preview overlay on double-click
+  const previewUrl = ref<string | null>(null)
+
+  function handleDblClick(e: MouseEvent) {
+    if (!canvas.value) return
+    const rect = canvas.value.getBoundingClientRect()
+    const zoom = autoFitScale.value
+    const x = (e.clientX - rect.left) / zoom
+    const y = (e.clientY - rect.top) / zoom
+
+    const hit = [...collage.images]
+      .filter((img) => img.isGalleryTemplate !== true)
+      .sort((a, b) => b.zIndex - a.zIndex)
+      .find((img) => x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height)
+
+    if (hit) previewUrl.value = hit.url
+  }
+
+  function closePreview() {
+    previewUrl.value = null
+  }
+
   // Drag-Drop Funktionalität für Bilder aus der Galerie
   function handleDragOver(e: DragEvent) {
     e.preventDefault()
@@ -93,9 +115,52 @@
         @mousemove="handleMouseMove"
         @mouseup="handleMouseUp"
         @mouseleave="handleMouseUp"
+        @dblclick="handleDblClick"
         @dragover="handleDragOver"
         @drop="handleDrop"
       />
     </div>
   </div>
+
+  <!-- Image Preview Overlay -->
+  <Teleport to="#modal-portal">
+    <Transition name="preview-fade">
+      <div
+        v-if="previewUrl"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        @click.self="closePreview"
+        @keydown.esc="closePreview"
+      >
+        <div class="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+          <!-- Close button -->
+          <button
+            class="absolute -top-4 -right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 text-white transition-colors shadow-lg"
+            aria-label="Vorschau schliessen"
+            @click="closePreview"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <!-- Image -->
+          <img
+            :src="previewUrl"
+            class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            alt="Bildvorschau"
+          />
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
+
+<style scoped>
+.preview-fade-enter-active,
+.preview-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.preview-fade-enter-from,
+.preview-fade-leave-to {
+  opacity: 0;
+}
+</style>
