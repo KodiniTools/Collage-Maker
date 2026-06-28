@@ -205,10 +205,18 @@
 
           <!-- Opacity -->
           <div>
-            <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.opacity') }}:
-              {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-medium text-muted">
+                {{ t('imageControls.opacity') }}:
+                {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
+              </label>
+              <button
+                v-if="collage.settings.backgroundImage.opacity !== 1"
+                class="text-xs text-accent hover:text-accent-dark transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateBackgroundOpacity(1)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.settings.backgroundImage.opacity"
@@ -222,10 +230,18 @@
 
           <!-- Brightness -->
           <div>
-            <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.brightness') }}:
-              {{ collage.settings.backgroundImage.brightness }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-medium text-muted">
+                {{ t('imageControls.brightness') }}:
+                {{ collage.settings.backgroundImage.brightness }}%
+              </label>
+              <button
+                v-if="collage.settings.backgroundImage.brightness !== 100"
+                class="text-xs text-accent hover:text-accent-dark transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateBackgroundBrightness(100)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.settings.backgroundImage.brightness"
@@ -239,9 +255,17 @@
 
           <!-- Contrast -->
           <div>
-            <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-medium text-muted">
+                {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
+              </label>
+              <button
+                v-if="collage.settings.backgroundImage.contrast !== 100"
+                class="text-xs text-accent hover:text-accent-dark transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateBackgroundContrast(100)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.settings.backgroundImage.contrast"
@@ -255,10 +279,18 @@
 
           <!-- Saturation -->
           <div>
-            <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('imageControls.saturation') }}:
-              {{ collage.settings.backgroundImage.saturation }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-medium text-muted">
+                {{ t('imageControls.saturation') }}:
+                {{ collage.settings.backgroundImage.saturation }}%
+              </label>
+              <button
+                v-if="collage.settings.backgroundImage.saturation !== 100"
+                class="text-xs text-accent hover:text-accent-dark transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateBackgroundSaturation(100)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.settings.backgroundImage.saturation"
@@ -272,9 +304,17 @@
 
           <!-- Blur -->
           <div>
-            <label class="block text-xs font-medium mb-1 text-muted">
-              {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-medium text-muted">
+                {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
+              </label>
+              <button
+                v-if="collage.settings.backgroundImage.blur !== 0"
+                class="text-xs text-accent hover:text-accent-dark transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateBackgroundBlur(0)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.settings.backgroundImage.blur"
