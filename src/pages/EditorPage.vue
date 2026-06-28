@@ -560,18 +560,18 @@
     <Teleport to="#modal-portal">
       <div
         v-if="showRestoreDialog"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
       >
         <div
-          class="bg-surface-light dark:bg-navy rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-muted/20 dark:border-muted/30"
+          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-muted/20 dark:border-white/10"
         >
           <!-- Icon -->
           <div class="flex justify-center mb-4">
             <div
-              class="w-16 h-16 bg-slate/10 dark:bg-navy/20 rounded-full flex items-center justify-center"
+              class="w-16 h-16 bg-accent/10 dark:bg-accent/20 rounded-full flex items-center justify-center"
             >
               <svg
-                class="w-8 h-8 text-slate dark:text-muted-light"
+                class="w-8 h-8 text-accent"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -587,19 +587,19 @@
           </div>
 
           <!-- Title -->
-          <h3 class="text-xl font-bold text-center mb-2">
+          <h3 class="text-xl font-bold text-center mb-2 text-slate-900 dark:text-white">
             {{ t('autoSave.restoreTitle') }}
           </h3>
 
           <!-- Description -->
-          <p class="text-muted dark:text-muted-light text-center mb-2">
+          <p class="text-slate-600 dark:text-slate-300 text-center mb-2">
             {{ t('autoSave.restoreDescription') }}
           </p>
 
           <!-- Save Date -->
           <p
             v-if="restoreSaveDate"
-            class="text-sm text-muted dark:text-muted-light text-center mb-6"
+            class="text-sm text-slate-500 dark:text-slate-400 text-center mb-6"
           >
             {{ t('autoSave.savedAt') }}: {{ restoreSaveDate.toLocaleString() }}
           </p>
@@ -607,19 +607,19 @@
           <!-- Buttons -->
           <div class="flex flex-col gap-3">
             <button
-              class="w-full px-4 py-3 bg-slate hover:bg-slate-dark text-cream rounded-lg font-semibold transition-colors"
+              class="w-full px-4 py-3 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-semibold transition-colors"
               @click="handleRestore"
             >
               {{ t('autoSave.restore') }}
             </button>
             <button
-              class="w-full px-4 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/30 dark:hover:bg-navy/50 rounded-lg font-medium transition-colors"
+              class="w-full px-4 py-2 bg-muted/20 hover:bg-muted/30 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition-colors"
               @click="handleContinueWithoutRestore"
             >
               {{ t('autoSave.continueWithout') }}
             </button>
             <button
-              class="w-full px-4 py-2 text-warm hover:text-warm-dark text-sm transition-colors"
+              class="w-full px-4 py-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors"
               @click="handleDiscardRestore"
             >
               {{ t('autoSave.discard') }}
