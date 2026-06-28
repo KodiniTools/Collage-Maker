@@ -263,29 +263,29 @@
         class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
         @click.self="cancelFilename"
       >
-        <div class="w-full max-w-sm bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden">
-          <div class="px-5 py-4 border-b border-muted/20 dark:border-slate/20">
-            <h3 class="text-base font-semibold">{{ t('export.filenameDialogTitle') }}</h3>
+        <div class="w-full max-w-sm bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-muted/10 dark:border-white/10">
+          <div class="px-5 py-4 border-b border-muted/20 dark:border-white/10">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white">{{ t('export.filenameDialogTitle') }}</h3>
           </div>
           <div class="px-5 py-4 space-y-3">
-            <label class="block text-sm font-medium">{{ t('export.filenameLabel') }}</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">{{ t('export.filenameLabel') }}</label>
             <div class="flex items-center gap-0">
               <input
                 ref="filenameInput"
                 v-model="customFilename"
                 type="text"
-                class="flex-1 min-w-0 px-3 py-2 border border-muted/50 dark:border-slate rounded-l-lg bg-surface-light dark:bg-surface-dark text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                class="flex-1 min-w-0 px-3 py-2 border border-muted/50 dark:border-slate-600 rounded-l-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                 @keydown.enter="confirmFilename"
                 @keydown.esc="cancelFilename"
               />
-              <span class="px-3 py-2 bg-muted/10 dark:bg-navy/30 border border-l-0 border-muted/50 dark:border-slate rounded-r-lg text-sm text-muted select-none">
+              <span class="px-3 py-2 bg-slate-100 dark:bg-slate-600 border border-l-0 border-muted/50 dark:border-slate-600 rounded-r-lg text-sm text-slate-500 dark:text-slate-300 select-none">
                 .{{ getFileExtension() }}
               </span>
             </div>
           </div>
-          <div class="flex gap-2 px-5 py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5">
+          <div class="flex gap-2 px-5 py-4 border-t border-muted/20 dark:border-white/10 bg-slate-50 dark:bg-slate-700/50">
             <button
-              class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors text-sm"
+              class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate-500 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 font-medium rounded-lg transition-colors text-sm"
               @click="cancelFilename"
             >
               {{ t('export.filenameCancel') }}
