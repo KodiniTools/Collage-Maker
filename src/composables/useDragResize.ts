@@ -36,10 +36,23 @@ export function useDragResize(
 ) {
   const collage = useCollageStore()
 
+  // Cursor map for resize handles
+  const HANDLE_CURSORS: Record<string, string> = {
+    nw: 'nw-resize',
+    n:  'n-resize',
+    ne: 'ne-resize',
+    e:  'e-resize',
+    se: 'se-resize',
+    s:  's-resize',
+    sw: 'sw-resize',
+    w:  'w-resize',
+  }
+
   // All the drag/resize/pan state:
   const isDragging = ref(false)
   const isResizing = ref(false)
   const resizeHandle = ref<string | null>(null)
+  const cursorStyle = ref<string>('move')
   const dragStartPos = ref({ x: 0, y: 0 })
   const dragImageStart = ref({ x: 0, y: 0 })
   // Startpositionen aller ausgewählten Bilder für Mehfach-Drag
@@ -275,7 +288,33 @@ export function useDragResize(
         x: panStartOffset.value.x + dx,
         y: panStartOffset.value.y + dy,
       }
+      cursorStyle.value = 'grabbing'
       return
+    }
+
+    const rect = canvas.value.getBoundingClientRect()
+    const zoom = autoFitScale.value
+    const x = (e.clientX - rect.left) / zoom
+    const y = (e.clientY - rect.top) / zoom
+
+    // Cursor-Update when idle (not dragging/resizing)
+    if (!isDragging.value && !isResizing.value) {
+      const selectedImg = collage.selectedImage
+      if (selectedImg) {
+        const handle = getResizeHandle(x, y, selectedImg)
+        if (handle) {
+          cursorStyle.value = HANDLE_CURSORS[handle] ?? 'move'
+        } else if (
+          x >= selectedImg.x && x <= selectedImg.x + selectedImg.width &&
+          y >= selectedImg.y && y <= selectedImg.y + selectedImg.height
+        ) {
+          cursorStyle.value = 'move'
+        } else {
+          cursorStyle.value = 'default'
+        }
+      } else {
+        cursorStyle.value = 'default'
+      }
     }
 
     if (
@@ -283,12 +322,6 @@ export function useDragResize(
       (!isDragging.value && !isResizing.value)
     )
       return
-
-    const rect = canvas.value.getBoundingClientRect()
-    // Berücksichtige Auto-Fit-Zoom beim Berechnen der Koordinaten
-    const zoom = autoFitScale.value
-    const x = (e.clientX - rect.left) / zoom
-    const y = (e.clientY - rect.top) / zoom
 
     // Text-Drag-Funktionalität
     if (isDragging.value && collage.selectedTextId && collage.selectedText) {
@@ -496,9 +529,10 @@ export function useDragResize(
     isResizing.value = false
     isPanning.value = false
     resizeHandle.value = null
+    cursorStyle.value = 'default'
     // Smart Guides ausblenden wenn Drag/Resize beendet
     guides.activeGuides.value = []
   }
 
-  return { handleMouseDown, handleMouseMove, handleMouseUp }
+  return { handleMouseDown, handleMouseMove, handleMouseUp, cursorStyle }
 }

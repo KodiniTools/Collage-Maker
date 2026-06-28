@@ -13,7 +13,7 @@
   const { autoFitScale, panOffset, spacePressed } = useCanvasPan(container)
   const { activeGuides, detectAlignments, detectResizeAlignments, drawGuides } = useAlignmentGuides()
   const { getCtx } = useCanvasRenderer(canvas, drawGuides)
-  const { handleMouseDown, handleMouseMove, handleMouseUp } = useDragResize(
+  const { handleMouseDown, handleMouseMove, handleMouseUp, cursorStyle } = useDragResize(
     canvas,
     autoFitScale,
     panOffset,
@@ -105,10 +105,10 @@
         ref="canvas"
         tabindex="-1"
         class="shadow-lg outline-none transition-transform duration-200"
-        :class="spacePressed && collage.canvasZoom > 1 ? 'cursor-grab' : 'cursor-move'"
         :style="{
           transform: `scale(${autoFitScale})`,
           transformOrigin: 'center center',
+          cursor: spacePressed && collage.canvasZoom > 1 ? 'grab' : cursorStyle,
         }"
         style="image-rendering: high-quality"
         @mousedown.prevent="handleMouseDown"
