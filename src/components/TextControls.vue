@@ -328,9 +328,17 @@
 
       <!-- Font Size -->
       <div>
-        <label class="block text-sm font-medium mb-2">
-          {{ t('text.fontSize') }}: {{ collage.selectedText.fontSize }}px
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('text.fontSize') }}: {{ collage.selectedText.fontSize }}px
+          </label>
+          <button
+            v-if="collage.selectedText.fontSize !== 48"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="updateFontSize(48)"
+          >↺</button>
+        </div>
         <input
           type="range"
           :value="collage.selectedText.fontSize"
@@ -344,9 +352,17 @@
 
       <!-- Letter Spacing -->
       <div>
-        <label class="block text-sm font-medium mb-2">
-          {{ t('text.letterSpacing') }}: {{ collage.selectedText.letterSpacing }}px
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('text.letterSpacing') }}: {{ collage.selectedText.letterSpacing }}px
+          </label>
+          <button
+            v-if="collage.selectedText.letterSpacing !== 0"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="updateLetterSpacing(0)"
+          >↺</button>
+        </div>
         <input
           type="range"
           :value="collage.selectedText.letterSpacing"
@@ -453,9 +469,17 @@
         <div v-if="collage.selectedText.shadowEnabled" class="space-y-3">
           <!-- Shadow X Offset -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('text.shadowOffsetX') }}: {{ collage.selectedText.shadowOffsetX }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('text.shadowOffsetX') }}: {{ collage.selectedText.shadowOffsetX }}px
+              </label>
+              <button
+                v-if="collage.selectedText.shadowOffsetX !== 2"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateShadowOffsetX(2)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.selectedText.shadowOffsetX"
@@ -469,9 +493,17 @@
 
           <!-- Shadow Y Offset -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('text.shadowOffsetY') }}: {{ collage.selectedText.shadowOffsetY }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('text.shadowOffsetY') }}: {{ collage.selectedText.shadowOffsetY }}px
+              </label>
+              <button
+                v-if="collage.selectedText.shadowOffsetY !== 2"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateShadowOffsetY(2)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.selectedText.shadowOffsetY"
@@ -485,9 +517,17 @@
 
           <!-- Shadow Blur -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('text.shadowBlur') }}: {{ collage.selectedText.shadowBlur }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('text.shadowBlur') }}: {{ collage.selectedText.shadowBlur }}px
+              </label>
+              <button
+                v-if="collage.selectedText.shadowBlur !== 4"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateShadowBlur(4)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.selectedText.shadowBlur"
@@ -543,9 +583,17 @@
         <div v-if="collage.selectedText.strokeEnabled" class="space-y-3">
           <!-- Stroke Width -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('text.strokeWidth') }}: {{ collage.selectedText.strokeWidth }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('text.strokeWidth') }}: {{ collage.selectedText.strokeWidth }}px
+              </label>
+              <button
+                v-if="collage.selectedText.strokeWidth !== 2"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="updateStrokeWidth(2)"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="collage.selectedText.strokeWidth"
