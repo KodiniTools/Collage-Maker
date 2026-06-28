@@ -507,9 +507,17 @@
 
       <!-- Rotation Control -->
       <div v-if="displayImage">
-        <label class="block text-sm font-medium mb-2">
-          {{ t('controls.rotate') }}: {{ Math.round(displayImage.rotation) }}°
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('controls.rotate') }}: {{ Math.round(displayImage.rotation) }}°
+          </label>
+          <button
+            v-if="displayImage.rotation !== 0"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="applyToSelected({ rotation: 0 })"
+          >↺</button>
+        </div>
         <input
           type="range"
           :value="displayImage.rotation"
@@ -522,9 +530,17 @@
 
       <!-- Opacity Control -->
       <div v-if="displayImage">
-        <label class="block text-sm font-medium mb-2">
-          {{ t('imageControls.opacity') }}: {{ Math.round(displayImage.opacity * 100) }}%
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('imageControls.opacity') }}: {{ Math.round(displayImage.opacity * 100) }}%
+          </label>
+          <button
+            v-if="displayImage.opacity !== 1"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="applyToSelected({ opacity: 1 })"
+          >↺</button>
+        </div>
         <input
           type="range"
           :value="displayImage.opacity"
@@ -538,9 +554,17 @@
 
       <!-- Border Radius Control -->
       <div v-if="displayImage">
-        <label class="block text-sm font-medium mb-2">
-          {{ t('imageControls.borderRadius') }}: {{ Math.round(displayImage.borderRadius) }}px
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('imageControls.borderRadius') }}: {{ Math.round(displayImage.borderRadius) }}px
+          </label>
+          <button
+            v-if="displayImage.borderRadius !== 0"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="applyToSelected({ borderRadius: 0 })"
+          >↺</button>
+        </div>
         <input
           type="range"
           :value="displayImage.borderRadius"
@@ -558,9 +582,17 @@
         <div class="space-y-3">
           <!-- Helligkeit -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.brightness') }}: {{ Math.round(displayImage.brightness ?? 100) }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.brightness') }}: {{ Math.round(displayImage.brightness ?? 100) }}%
+              </label>
+              <button
+                v-if="(displayImage.brightness ?? 100) !== 100"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ brightness: 100 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.brightness ?? 100"
@@ -573,9 +605,17 @@
 
           <!-- Kontrast -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.contrast') }}: {{ Math.round(displayImage.contrast ?? 100) }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.contrast') }}: {{ Math.round(displayImage.contrast ?? 100) }}%
+              </label>
+              <button
+                v-if="(displayImage.contrast ?? 100) !== 100"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ contrast: 100 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.contrast ?? 100"
@@ -588,9 +628,17 @@
 
           <!-- Lichter -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.highlights') }}: {{ Math.round(displayImage.highlights ?? 0) }}
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.highlights') }}: {{ Math.round(displayImage.highlights ?? 0) }}
+              </label>
+              <button
+                v-if="(displayImage.highlights ?? 0) !== 0"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ highlights: 0 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.highlights ?? 0"
@@ -603,9 +651,17 @@
 
           <!-- Tiefen -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadows') }}: {{ Math.round(displayImage.shadows ?? 0) }}
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.shadows') }}: {{ Math.round(displayImage.shadows ?? 0) }}
+              </label>
+              <button
+                v-if="(displayImage.shadows ?? 0) !== 0"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ shadows: 0 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.shadows ?? 0"
@@ -618,9 +674,17 @@
 
           <!-- Sättigung -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.saturation') }}: {{ Math.round(displayImage.saturation ?? 100) }}%
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.saturation') }}: {{ Math.round(displayImage.saturation ?? 100) }}%
+              </label>
+              <button
+                v-if="(displayImage.saturation ?? 100) !== 100"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ saturation: 100 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.saturation ?? 100"
@@ -633,9 +697,17 @@
 
           <!-- Wärme -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.warmth') }}: {{ Math.round(displayImage.warmth ?? 0) }}
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.warmth') }}: {{ Math.round(displayImage.warmth ?? 0) }}
+              </label>
+              <button
+                v-if="(displayImage.warmth ?? 0) !== 0"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ warmth: 0 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.warmth ?? 0"
@@ -648,9 +720,17 @@
 
           <!-- Schärfen -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.sharpness') }}: {{ Math.round(displayImage.sharpness ?? 0) }}
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.sharpness') }}: {{ Math.round(displayImage.sharpness ?? 0) }}
+              </label>
+              <button
+                v-if="(displayImage.sharpness ?? 0) !== 0"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ sharpness: 0 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.sharpness ?? 0"
@@ -687,9 +767,17 @@
         <div v-if="displayImage.borderEnabled" class="space-y-3">
           <!-- Border Width -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.borderWidth') }}: {{ displayImage.borderWidth }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.borderWidth') }}: {{ displayImage.borderWidth }}px
+              </label>
+              <button
+                v-if="displayImage.borderWidth !== 4"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ borderWidth: 4 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.borderWidth"
@@ -762,10 +850,18 @@
             <div v-if="displayImage.borderShadowEnabled" class="space-y-2">
               <!-- Border Shadow Offset X -->
               <div>
-                <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowOffsetX') }}:
-                  {{ displayImage.borderShadowOffsetX }}px
-                </label>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-xs text-muted">
+                    {{ t('imageControls.borderShadowOffsetX') }}:
+                    {{ displayImage.borderShadowOffsetX }}px
+                  </label>
+                  <button
+                    v-if="displayImage.borderShadowOffsetX !== 3"
+                    class="text-xs text-muted hover:text-accent transition-colors"
+                    :title="t('imageControls.resetValue')"
+                    @click="applyToSelected({ borderShadowOffsetX: 3 })"
+                  >↺</button>
+                </div>
                 <input
                   type="range"
                   :value="displayImage.borderShadowOffsetX"
@@ -780,10 +876,18 @@
 
               <!-- Border Shadow Offset Y -->
               <div>
-                <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowOffsetY') }}:
-                  {{ displayImage.borderShadowOffsetY }}px
-                </label>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-xs text-muted">
+                    {{ t('imageControls.borderShadowOffsetY') }}:
+                    {{ displayImage.borderShadowOffsetY }}px
+                  </label>
+                  <button
+                    v-if="displayImage.borderShadowOffsetY !== 3"
+                    class="text-xs text-muted hover:text-accent transition-colors"
+                    :title="t('imageControls.resetValue')"
+                    @click="applyToSelected({ borderShadowOffsetY: 3 })"
+                  >↺</button>
+                </div>
                 <input
                   type="range"
                   :value="displayImage.borderShadowOffsetY"
@@ -798,9 +902,17 @@
 
               <!-- Border Shadow Blur -->
               <div>
-                <label class="block text-xs text-muted mb-1">
-                  {{ t('imageControls.borderShadowBlur') }}: {{ displayImage.borderShadowBlur }}px
-                </label>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-xs text-muted">
+                    {{ t('imageControls.borderShadowBlur') }}: {{ displayImage.borderShadowBlur }}px
+                  </label>
+                  <button
+                    v-if="displayImage.borderShadowBlur !== 6"
+                    class="text-xs text-muted hover:text-accent transition-colors"
+                    :title="t('imageControls.resetValue')"
+                    @click="applyToSelected({ borderShadowBlur: 6 })"
+                  >↺</button>
+                </div>
                 <input
                   type="range"
                   :value="displayImage.borderShadowBlur"
@@ -860,9 +972,17 @@
         <div v-if="displayImage.shadowEnabled" class="space-y-3">
           <!-- Shadow Offset X -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadowOffsetX') }}: {{ displayImage.shadowOffsetX }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.shadowOffsetX') }}: {{ displayImage.shadowOffsetX }}px
+              </label>
+              <button
+                v-if="displayImage.shadowOffsetX !== 5"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ shadowOffsetX: 5 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.shadowOffsetX"
@@ -875,9 +995,17 @@
 
           <!-- Shadow Offset Y -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadowOffsetY') }}: {{ displayImage.shadowOffsetY }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.shadowOffsetY') }}: {{ displayImage.shadowOffsetY }}px
+              </label>
+              <button
+                v-if="displayImage.shadowOffsetY !== 5"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ shadowOffsetY: 5 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.shadowOffsetY"
@@ -890,9 +1018,17 @@
 
           <!-- Shadow Blur -->
           <div>
-            <label class="block text-xs text-muted mb-1">
-              {{ t('imageControls.shadowBlur') }}: {{ displayImage.shadowBlur }}px
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs text-muted">
+                {{ t('imageControls.shadowBlur') }}: {{ displayImage.shadowBlur }}px
+              </label>
+              <button
+                v-if="displayImage.shadowBlur !== 10"
+                class="text-xs text-muted hover:text-accent transition-colors"
+                :title="t('imageControls.resetValue')"
+                @click="applyToSelected({ shadowBlur: 10 })"
+              >↺</button>
+            </div>
             <input
               type="range"
               :value="displayImage.shadowBlur"
