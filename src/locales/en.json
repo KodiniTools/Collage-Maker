@@ -323,6 +323,7 @@
     "saturation": "Saturation",
     "warmth": "Warmth",
     "sharpness": "Sharpness",
+    "resetValue": "Reset",
     "border": "Image Border",
     "borderEnabled": "Enabled",
     "borderDisabled": "Disabled",
