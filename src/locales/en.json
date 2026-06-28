@@ -282,7 +282,11 @@
     "previewAlt": "Preview of the finished collage",
     "close": "Close",
     "download": "Download",
-    "pngTransparent": "PNG (Transparent)"
+    "pngTransparent": "PNG (Transparent)",
+    "filenameDialogTitle": "Set filename",
+    "filenameLabel": "Filename",
+    "filenameConfirm": "Save",
+    "filenameCancel": "Cancel"
   },
   "controls": {
     "clear": "Clear All",
