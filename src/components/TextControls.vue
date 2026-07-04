@@ -343,7 +343,7 @@
           type="range"
           :value="collage.selectedText.fontSize"
           min="12"
-          max="120"
+          max="400"
           step="2"
           class="w-full"
           @input="updateFontSize(Number(($event.target as HTMLInputElement).value))"
