@@ -330,7 +330,7 @@
       <div>
         <div class="flex items-center justify-between mb-2">
           <label class="text-sm font-medium">
-            {{ t('text.fontSize') }}: {{ collage.selectedText.fontSize }}px
+            {{ t('text.fontSize') }}: {{ Math.round(collage.selectedText.fontSize) }}px
           </label>
           <button
             v-if="collage.selectedText.fontSize !== 48"

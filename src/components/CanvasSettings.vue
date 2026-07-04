@@ -2,7 +2,7 @@
   import { ref } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
-  import type { BackgroundImageFit, CollageSettings } from '@/types'
+  import type { BackgroundImageFit } from '@/types'
 
   const collage = useCollageStore()
   const { t } = useI18n()
@@ -33,8 +33,8 @@
 
   function applySize(width: number, height: number) {
     collage.saveStateForUndoDebounced()
-    const updates: Partial<CollageSettings> = { width, height }
-    collage.updateSettings(updates)
+    // Bilder proportional zur neuen Canvasgröße mitskalieren
+    collage.resizeCanvas(width, height)
   }
 
   function updateWidth(value: number) {
@@ -54,7 +54,7 @@
     const height = keepAspect.value
       ? clampSize(DEFAULT_WIDTH / aspectRatio.value)
       : collage.settings.height
-    collage.updateSettings({ width: DEFAULT_WIDTH, height })
+    collage.resizeCanvas(DEFAULT_WIDTH, height)
   }
 
   function resetHeight() {
@@ -62,7 +62,7 @@
     const width = keepAspect.value
       ? clampSize(DEFAULT_HEIGHT * aspectRatio.value)
       : collage.settings.width
-    collage.updateSettings({ width, height: DEFAULT_HEIGHT })
+    collage.resizeCanvas(width, DEFAULT_HEIGHT)
   }
 
   function updateBackgroundColor(value: string) {
