@@ -110,6 +110,7 @@
       <canvas
         ref="canvas"
         tabindex="-1"
+        data-collage-canvas
         class="shadow-lg outline-none transition-transform duration-200"
         :style="{
           transform: `scale(${autoFitScale})`,

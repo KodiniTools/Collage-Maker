@@ -140,3 +140,77 @@ html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent)
   color: #c9984d !important;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Touch / Mobile Optimierungen
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Kein grauer Tap-Highlight, keine 300ms-Klickverzögerung auf Bedienelementen */
+#app button,
+#app [role='button'],
+#app select,
+#app input[type='range'],
+#app input[type='color'] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Touch-freundliche Range-Slider (einheitlich im Akzent-Design, hell & dunkel).
+   Vertikales Scrollen bleibt möglich, horizontales Ziehen bewegt den Regler. */
+#app input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(89, 109, 128, 0.25);
+  outline: none;
+  touch-action: pan-y;
+}
+#app input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #c9984d;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+#app input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #c9984d;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+#app input[type='range']::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(89, 109, 128, 0.25);
+}
+#app input[type='range']:focus-visible {
+  box-shadow: 0 0 0 2px rgba(201, 152, 77, 0.5);
+}
+html.dark #app input[type='range']::-webkit-slider-thumb,
+html.dark #app input[type='range']::-moz-range-thumb {
+  border-color: #091428;
+}
+
+/* Auf Touch-Geräten (grober Zeiger) grössere Trefferflächen */
+@media (pointer: coarse) {
+  #app input[type='range'] {
+    height: 8px;
+  }
+  #app input[type='range']::-webkit-slider-thumb {
+    width: 26px;
+    height: 26px;
+  }
+  #app input[type='range']::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+  }
+}
+
