@@ -470,6 +470,53 @@ export const useCollageStore = defineStore('collage', () => {
     Object.assign(settings.value, updates)
   }
 
+  // Canvasgröße ändern und dabei die platzierten Bilder UND Texte proportional
+  // mitskalieren (Option "Inhalte mitskalieren"). Galerie-Templates bleiben
+  // unberührt (sie liegen nicht auf dem Canvas).
+  function resizeCanvas(newWidth: number, newHeight: number) {
+    // Ungültige Zielgrößen ignorieren (z. B. leeres/„0"-Eingabefeld),
+    // sonst würden Inhalte auf 0 kollabieren.
+    if (
+      !Number.isFinite(newWidth) ||
+      !Number.isFinite(newHeight) ||
+      newWidth <= 0 ||
+      newHeight <= 0
+    ) {
+      return
+    }
+
+    const oldWidth = settings.value.width
+    const oldHeight = settings.value.height
+
+    if (oldWidth > 0 && oldHeight > 0) {
+      const ratioX = newWidth / oldWidth
+      const ratioY = newHeight / oldHeight
+
+      if (ratioX !== 1 || ratioY !== 1) {
+        images.value.forEach((img) => {
+          if (img.isGalleryTemplate === true) return
+          img.x *= ratioX
+          img.y *= ratioY
+          img.width *= ratioX
+          img.height *= ratioY
+        })
+
+        // Schriftgröße über das geometrische Mittel skalieren: identisch zur
+        // Breiten-/Höhenskalierung bei gleichmäßigem Resize und exakt
+        // teleskopierend über Zwischenschritte (fontSize bleibt Float).
+        const fontRatio = Math.sqrt(ratioX * ratioY)
+        texts.value.forEach((txt) => {
+          txt.x *= ratioX
+          txt.y *= ratioY
+          txt.fontSize *= fontRatio
+        })
+      }
+    }
+
+    settings.value.width = newWidth
+    settings.value.height = newHeight
+  }
+
   // Hintergrundbild setzen (von einem Galerie-Bild)
   function setBackgroundImage(imageUrl: string) {
     saveStateForUndo()
@@ -842,6 +889,7 @@ export const useCollageStore = defineStore('collage', () => {
     applyLayout,
     clearCollage,
     updateSettings,
+    resizeCanvas,
     // Hintergrundbild
     isBackgroundSelected,
     setBackgroundImage,
