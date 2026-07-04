@@ -4,10 +4,14 @@
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
   import type { CollageImage } from '@/types'
+  import { useGalleryTouchDrag } from '@/composables/useGalleryTouchDrag'
 
   const collage = useCollageStore()
   const { selectedGalleryIds, images } = storeToRefs(collage)
   const { t } = useI18n()
+
+  // Touch-Drag vom Galerie-Eintrag auf das Canvas (Ersatz für HTML5-DnD auf Mobil)
+  const { onItemTouchStart, onItemTouchMove, onItemTouchEnd } = useGalleryTouchDrag()
 
   // Preview Modal State
   const showPreview = ref(false)
@@ -143,10 +147,15 @@
               : 'hover:bg-muted/10 dark:hover:bg-navy/30',
           ]"
           :title="t('gallery.doubleClickHint')"
+          style="touch-action: pan-y"
           @dragstart="handleDragStart($event, image.id)"
           @click="handleImageClick(image.id, $event)"
           @dblclick="handleDoubleClick(image)"
           @keydown.enter="handleImageClick(image.id, $event as any)"
+          @touchstart.passive="onItemTouchStart($event, image.id)"
+          @touchmove.passive="onItemTouchMove($event)"
+          @touchend="onItemTouchEnd"
+          @touchcancel="onItemTouchEnd"
         >
           <!-- Selection Checkbox - Improved -->
           <div
