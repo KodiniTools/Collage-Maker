@@ -32,8 +32,8 @@
   // ── Neues Layout: Icon-Leiste + kontextbezogenes Werkzeug-Panel (links)
   //    und ein auswahlabhängiger Inspektor (rechts). Alle Panels liegen im
   //    Fluss (flex) – sie verkleinern die Leinwand, überdecken sie nie.
-  type ToolTab = 'upload' | 'layouts' | 'images' | 'text' | null
-  type InspectorTab = 'selection' | 'canvas' | 'export'
+  type ToolTab = 'upload' | 'layouts' | 'images' | null
+  type InspectorTab = 'selection' | 'text' | 'canvas' | 'export'
 
   const activeTool = ref<ToolTab>('upload')
   const inspectorOpen = ref(true)
@@ -56,16 +56,12 @@
       label: 'images.title',
       icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
     },
-    {
-      id: 'text',
-      label: 'text.title',
-      icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-    },
   ]
 
-  // Reiter des Inspektors
+  // Reiter des Inspektors (Text jetzt hier statt in der linken Leiste)
   const inspectorTabs: { id: InspectorTab; label: string }[] = [
     { id: 'selection', label: 'editor.tabSelection' },
+    { id: 'text', label: 'text.title' },
     { id: 'canvas', label: 'editor.tabCanvas' },
     { id: 'export', label: 'editor.tabExport' },
   ]
@@ -306,7 +302,6 @@
             <GridControls />
           </div>
           <ImageList v-else-if="activeTool === 'images'" />
-          <TextList v-else-if="activeTool === 'text'" />
         </aside>
 
         <!-- Canvas - Expands to fill available space -->
@@ -365,6 +360,12 @@
                 <TextControls v-if="collage.selectedTextId" />
                 <ImageControls v-else />
               </template>
+              <div
+                v-else-if="inspectorTab === 'text'"
+                class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
+              >
+                <TextList />
+              </div>
               <CanvasSettings v-else-if="inspectorTab === 'canvas'" />
               <div
                 v-else
