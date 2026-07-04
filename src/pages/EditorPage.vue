@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue'
+  import { ref, onMounted, onUnmounted, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
   import ImageUploader from '@/components/ImageUploader.vue'
@@ -29,18 +29,62 @@
   const restoreSaveDate = ref<Date | null>(null)
   const collage = useCollageStore()
 
-  // Collapsible Sidebar State
-  const leftSidebarCollapsed = ref(false)
-  const rightSidebarCollapsed = ref(false)
-  const mobileRightPanel = ref(false)
+  // ── Neues Layout: Icon-Leiste + kontextbezogenes Werkzeug-Panel (links)
+  //    und ein auswahlabhängiger Inspektor (rechts). Alle Panels liegen im
+  //    Fluss (flex) – sie verkleinern die Leinwand, überdecken sie nie.
+  type ToolTab = 'upload' | 'layouts' | 'images' | 'text' | null
+  type InspectorTab = 'selection' | 'canvas' | 'export'
 
-  function toggleLeftSidebar() {
-    leftSidebarCollapsed.value = !leftSidebarCollapsed.value
+  const activeTool = ref<ToolTab>('upload')
+  const inspectorOpen = ref(true)
+  const inspectorTab = ref<InspectorTab>('canvas')
+
+  // Werkzeuge der Icon-Leiste (Reihenfolge = Anzeige). Icons als SVG-Pfad.
+  const tools: { id: Exclude<ToolTab, null>; label: string; icon: string }[] = [
+    {
+      id: 'upload',
+      label: 'upload.title',
+      icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+    },
+    {
+      id: 'layouts',
+      label: 'layout.title',
+      icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
+    },
+    {
+      id: 'images',
+      label: 'images.title',
+      icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+    },
+    {
+      id: 'text',
+      label: 'text.title',
+      icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
+    },
+  ]
+
+  // Reiter des Inspektors
+  const inspectorTabs: { id: InspectorTab; label: string }[] = [
+    { id: 'selection', label: 'editor.tabSelection' },
+    { id: 'canvas', label: 'editor.tabCanvas' },
+    { id: 'export', label: 'editor.tabExport' },
+  ]
+
+  // Icon-Leiste: aktives Werkzeug erneut anklicken klappt das Panel ein
+  function selectTool(tool: Exclude<ToolTab, null>) {
+    activeTool.value = activeTool.value === tool ? null : tool
   }
 
-  function toggleRightSidebar() {
-    rightSidebarCollapsed.value = !rightSidebarCollapsed.value
-  }
+  // Inspektor folgt der Auswahl: Bild/Text markiert → Reiter "Auswahl"
+  watch(
+    () => [collage.selectedImageId, collage.selectedTextId] as const,
+    ([imgId, textId]) => {
+      if (imgId || textId) {
+        inspectorTab.value = 'selection'
+        inspectorOpen.value = true
+      }
+    }
+  )
 
   const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } =
     useKeyboardShortcuts()
@@ -78,9 +122,11 @@
     setupClipboardListener()
     autoSave.setupAutoSave()
 
-    // Auto-collapse left sidebar on smaller screens
+    // Auf kleinen Bildschirmen: Panels eingeklappt starten, damit die
+    // Leinwand oben sofort sichtbar ist (Panels schieben Inhalt nur nach unten).
     if (window.innerWidth < 1024) {
-      leftSidebarCollapsed.value = true
+      activeTool.value = null
+      inspectorOpen.value = false
     }
 
     // Prüfe ob gespeicherte Daten vorhanden sind
@@ -216,126 +262,51 @@
 
     <!-- Main Content -->
     <main class="flex-1 container mx-auto px-2 py-3 sm:px-4 sm:py-6">
-      <div class="flex gap-2 sm:gap-4 lg:gap-6">
-        <!-- Left Sidebar - Collapsible -->
-        <aside
-          class="transition-all duration-300 ease-in-out flex-shrink-0"
-          :class="leftSidebarCollapsed ? 'w-14' : 'w-72 xl:w-80'"
+      <div class="flex flex-col lg:flex-row gap-3 lg:gap-4">
+        <!-- Icon-Leiste: wechselt das Werkzeug-Panel. Aktives Werkzeug erneut
+             anklicken klappt das Panel ein. Immer sichtbar, immer im Fluss. -->
+        <nav
+          class="flex lg:flex-col gap-1.5 p-1.5 flex-shrink-0 lg:self-start overflow-x-auto bg-surface-light dark:bg-surface-dark rounded-xl border border-muted/30 dark:border-slate/30"
+          :aria-label="t('editor.tools')"
         >
-          <!-- Sidebar Header with Toggle -->
-          <div class="flex items-center justify-between mb-4">
-            <h2
-              v-if="!leftSidebarCollapsed"
-              class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide"
-            >
-              {{ t('editor.tools') }}
-            </h2>
-            <button
-              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
-              :title="
-                leftSidebarCollapsed ? t('editor.expandSidebar') : t('editor.collapseSidebar')
-              "
-              @click="toggleLeftSidebar"
-            >
-              <svg
-                class="w-5 h-5 transition-transform duration-300"
-                :class="leftSidebarCollapsed ? 'rotate-180' : ''"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                />
-              </svg>
-            </button>
-          </div>
+          <button
+            v-for="tool in tools"
+            :key="tool.id"
+            class="w-11 h-11 flex-shrink-0 rounded-xl flex items-center justify-center transition-colors"
+            :class="
+              activeTool === tool.id
+                ? 'bg-accent/20 text-slate-dark dark:text-accent'
+                : 'text-muted hover:bg-muted/15 dark:hover:bg-navy/40'
+            "
+            :title="t(tool.label)"
+            :aria-label="t(tool.label)"
+            :aria-pressed="activeTool === tool.id"
+            @click="selectTool(tool.id)"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.8"
+                :d="tool.icon"
+              />
+            </svg>
+          </button>
+        </nav>
 
-          <!-- Collapsed State: Icon Bar -->
-          <div v-if="leftSidebarCollapsed" class="flex flex-col items-center gap-2">
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('upload.title')"
-              @click="toggleLeftSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('layout.title')"
-              @click="toggleLeftSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
-                />
-              </svg>
-            </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('grid.title')"
-              @click="toggleLeftSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                />
-              </svg>
-            </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('images.title')"
-              @click="toggleLeftSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                />
-              </svg>
-            </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('text.title')"
-              @click="toggleLeftSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <!-- Expanded State: Full Content -->
-          <div v-else class="space-y-6 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-2">
-            <ImageUploader />
+        <!-- Kontext-Panel: zeigt nur das aktive Werkzeug. Liegt im Fluss und
+             verkleinert die Leinwand, statt sie zu überdecken. -->
+        <aside
+          v-if="activeTool"
+          class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start bg-surface-light dark:bg-surface-dark rounded-xl border border-muted/30 dark:border-slate/30 p-4 lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
+        >
+          <ImageUploader v-if="activeTool === 'upload'" />
+          <div v-else-if="activeTool === 'layouts'" class="space-y-6">
             <LayoutSelector />
             <GridControls />
-            <ImageList />
-            <TextList />
           </div>
+          <ImageList v-else-if="activeTool === 'images'" />
+          <TextList v-else-if="activeTool === 'text'" />
         </aside>
 
         <!-- Canvas - Expands to fill available space -->
@@ -344,59 +315,86 @@
           <CollageCanvas />
         </section>
 
-        <!-- Mobile Settings FAB -->
-        <button
-          class="lg:hidden fixed bottom-4 right-4 z-40 w-12 h-12 rounded-full bg-accent hover:bg-accent-dark text-slate-dark shadow-lg flex items-center justify-center transition-colors"
-          :title="t('editor.settings')"
-          @click="mobileRightPanel = !mobileRightPanel"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-        </button>
-
-        <!-- Mobile backdrop for right panel -->
-        <div
-          v-if="mobileRightPanel"
-          class="lg:hidden fixed inset-0 bg-black/50 z-40"
-          @click="mobileRightPanel = false"
-        />
-
-        <!-- Right Sidebar - Collapsible Controls -->
+        <!-- Inspektor: folgt der Auswahl (Bild / Text / Leinwand / Export).
+             Liegt im Fluss und überdeckt die Leinwand nie. -->
         <aside
-          class="transition-all duration-300 ease-in-out flex-shrink-0"
-          :class="[
-            mobileRightPanel
-              ? 'fixed right-0 top-0 bottom-0 z-50 w-80 max-w-[calc(100vw-3rem)] bg-surface-light dark:bg-surface-dark shadow-2xl overflow-y-auto p-4 lg:p-0 lg:static lg:z-auto lg:max-w-none lg:bg-transparent lg:dark:bg-transparent lg:shadow-none lg:overflow-visible'
-              : 'hidden lg:block',
-            rightSidebarCollapsed ? 'lg:w-14' : 'lg:w-72 xl:w-80',
-          ]"
+          class="w-full flex-shrink-0 lg:self-start transition-all duration-300"
+          :class="inspectorOpen ? 'lg:w-80 xl:w-96' : 'lg:w-12'"
         >
-          <!-- Mobile close button -->
-          <div v-if="mobileRightPanel" class="lg:hidden flex items-center justify-between mb-4">
-            <h2
-              class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide"
-            >
-              {{ t('editor.settings') }}
-            </h2>
+          <template v-if="inspectorOpen">
+            <!-- Reiter + Einklappen -->
+            <div class="flex items-center gap-1 mb-3">
+              <div
+                class="flex-1 flex gap-1 p-1 bg-muted/15 dark:bg-navy/40 rounded-xl overflow-hidden"
+              >
+                <button
+                  v-for="tab in inspectorTabs"
+                  :key="tab.id"
+                  class="flex-1 px-2 py-2 text-xs font-medium rounded-lg transition-colors truncate"
+                  :class="
+                    inspectorTab === tab.id
+                      ? 'bg-surface-light dark:bg-surface-dark shadow-sm text-slate-dark dark:text-white'
+                      : 'text-muted hover:text-slate-dark dark:hover:text-white'
+                  "
+                  :aria-pressed="inspectorTab === tab.id"
+                  @click="inspectorTab = tab.id"
+                >
+                  {{ t(tab.label) }}
+                </button>
+              </div>
+              <button
+                class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors flex-shrink-0"
+                :title="t('editor.hidePanel')"
+                :aria-label="t('editor.hidePanel')"
+                @click="inspectorOpen = false"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Inhalt je nach Reiter -->
+            <div class="space-y-6 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
+              <template v-if="inspectorTab === 'selection'">
+                <TextControls v-if="collage.selectedTextId" />
+                <ImageControls v-else />
+              </template>
+              <CanvasSettings v-else-if="inspectorTab === 'canvas'" />
+              <div
+                v-else
+                class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
+              >
+                <ExportControls />
+              </div>
+            </div>
+          </template>
+
+          <!-- Eingeklappt: Wieder-Öffnen -->
+          <template v-else>
             <button
-              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
-              @click="mobileRightPanel = false"
+              class="hidden lg:flex w-10 h-10 mx-auto rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 items-center justify-center transition-colors"
+              :title="t('editor.showSettings')"
+              :aria-label="t('editor.showSettings')"
+              @click="inspectorOpen = true"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+            <button
+              class="lg:hidden w-full px-4 py-2.5 rounded-lg bg-muted/15 dark:bg-navy/40 hover:bg-muted/25 dark:hover:bg-navy/60 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+              @click="inspectorOpen = true"
             >
               <svg
                 class="w-5 h-5"
@@ -405,116 +403,20 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <!-- Sidebar Header with Toggle (desktop) -->
-          <div
-            class="hidden lg:flex items-center mb-4"
-            :class="rightSidebarCollapsed ? 'justify-center' : 'justify-between'"
-          >
-            <h2
-              v-if="!rightSidebarCollapsed"
-              class="text-sm font-semibold text-muted dark:text-muted-light uppercase tracking-wide"
-            >
-              {{ t('editor.settings') }}
-            </h2>
-            <button
-              class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
-              :title="
-                rightSidebarCollapsed ? t('editor.expandSidebar') : t('editor.collapseSidebar')
-              "
-              @click="toggleRightSidebar"
-            >
-              <svg
-                class="w-5 h-5 transition-transform duration-300"
-                :class="rightSidebarCollapsed ? '' : 'rotate-180'"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
                 />
-              </svg>
-            </button>
-          </div>
-
-          <!-- Collapsed State: Icon Bar (desktop only) -->
-          <div v-if="rightSidebarCollapsed" class="hidden lg:flex flex-col items-center gap-2">
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('canvas.size')"
-              @click="toggleRightSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
+              {{ t('editor.showSettings') }}
             </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('imageControls.title')"
-              @click="toggleRightSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('text.title')"
-              @click="toggleRightSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />
-              </svg>
-            </button>
-            <button
-              class="w-10 h-10 rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 flex items-center justify-center transition-colors"
-              :title="t('export.title')"
-              @click="toggleRightSidebar"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <!-- Expanded State: Full Content -->
-          <div
-            v-if="!rightSidebarCollapsed || mobileRightPanel"
-            class="space-y-6 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-2"
-          >
-            <CanvasSettings />
-            <ImageControls />
-            <TextControls />
-            <ExportControls />
-          </div>
+          </template>
         </aside>
       </div>
     </main>

@@ -95,7 +95,12 @@
     "tools": "Tools",
     "settings": "Settings",
     "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar"
+    "collapseSidebar": "Collapse sidebar",
+    "tabSelection": "Selection",
+    "tabCanvas": "Canvas",
+    "tabExport": "Export",
+    "showSettings": "Show settings",
+    "hidePanel": "Collapse"
   },
   "faqPage": {
     "title": "Frequently Asked Questions",
