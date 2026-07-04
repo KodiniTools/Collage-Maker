@@ -19,6 +19,10 @@
   const keepAspect = ref(false)
   const aspectRatio = ref(collage.settings.width / collage.settings.height)
 
+  // Inhalte mitskalieren: Aus = Leinwand ändert sich, Bilder/Texte behalten
+  // ihre Größe (Teleskop). Ein = Bilder/Texte skalieren proportional mit.
+  const scaleContent = ref(false)
+
   function toggleKeepAspect() {
     keepAspect.value = !keepAspect.value
     if (keepAspect.value) {
@@ -27,14 +31,26 @@
     }
   }
 
+  function toggleScaleContent() {
+    scaleContent.value = !scaleContent.value
+  }
+
   function clampSize(value: number) {
     return Math.min(MAX_SIZE, Math.max(MIN_SIZE, Math.round(value)))
   }
 
+  // Neue Canvasgröße anwenden – je nach Option mit oder ohne Inhalts-Skalierung
+  function commitSize(width: number, height: number) {
+    if (scaleContent.value) {
+      collage.resizeCanvas(width, height)
+    } else {
+      collage.updateSettings({ width, height })
+    }
+  }
+
   function applySize(width: number, height: number) {
     collage.saveStateForUndoDebounced()
-    // Nur die Leinwand ändern – Bilder/Texte behalten ihre eigene Größe (Teleskop)
-    collage.updateSettings({ width, height })
+    commitSize(width, height)
   }
 
   function updateWidth(value: number) {
@@ -54,7 +70,7 @@
     const height = keepAspect.value
       ? clampSize(DEFAULT_WIDTH / aspectRatio.value)
       : collage.settings.height
-    collage.updateSettings({ width: DEFAULT_WIDTH, height })
+    commitSize(DEFAULT_WIDTH, height)
   }
 
   function resetHeight() {
@@ -62,7 +78,7 @@
     const width = keepAspect.value
       ? clampSize(DEFAULT_HEIGHT * aspectRatio.value)
       : collage.settings.width
-    collage.updateSettings({ width, height: DEFAULT_HEIGHT })
+    commitSize(width, DEFAULT_HEIGHT)
   }
 
   function updateBackgroundColor(value: string) {
@@ -156,6 +172,32 @@
             />
           </svg>
           {{ keepAspect ? t('canvas.on') : t('canvas.off') }}
+        </button>
+      </div>
+
+      <!-- Inhalte mitskalieren -->
+      <div class="flex items-center justify-between">
+        <label class="text-sm font-medium">{{ t('canvas.scaleContent') }}</label>
+        <button
+          :class="[
+            'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
+            scaleContent
+              ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+          ]"
+          :title="t('canvas.scaleContent')"
+          :aria-pressed="scaleContent"
+          @click="toggleScaleContent"
+        >
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+            />
+          </svg>
+          {{ scaleContent ? t('canvas.on') : t('canvas.off') }}
         </button>
       </div>
 

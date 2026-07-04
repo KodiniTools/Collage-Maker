@@ -49,7 +49,9 @@
             <p class="text-sm font-medium truncate">
               {{ text.text || t('text.empty') }}
             </p>
-            <p class="text-xs text-muted mt-1">{{ text.fontFamily }} • {{ text.fontSize }}px</p>
+            <p class="text-xs text-muted mt-1">
+              {{ text.fontFamily }} • {{ Math.round(text.fontSize) }}px
+            </p>
           </div>
           <div
             class="w-6 h-6 rounded border border-muted/50 dark:border-slate flex-shrink-0"

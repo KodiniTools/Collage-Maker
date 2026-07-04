@@ -244,7 +244,8 @@
     "blur": "Blur",
     "keepAspectRatio": "Keep aspect ratio",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "scaleContent": "Scale content with canvas"
   },
   "images": {
     "title": "Images",
