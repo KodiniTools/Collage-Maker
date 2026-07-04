@@ -674,6 +674,22 @@ export function useCanvasRenderer(
         context.strokeStyle = '#3b82f6'
         context.lineWidth = 2
         context.strokeRect(offsetX - 5, -boxHeight / 2 - 5, boxWidth + 10, boxHeight + 10)
+
+        // Skalierungspunkte (Eck-Handles) zum Vergrössern/Verkleinern des Textes
+        const handleSize = 8
+        const corners = [
+          { hx: offsetX - 5, hy: -boxHeight / 2 - 5 },
+          { hx: offsetX + boxWidth + 5, hy: -boxHeight / 2 - 5 },
+          { hx: offsetX + boxWidth + 5, hy: boxHeight / 2 + 5 },
+          { hx: offsetX - 5, hy: boxHeight / 2 + 5 },
+        ]
+        context.fillStyle = '#ffffff'
+        context.strokeStyle = '#3b82f6'
+        context.lineWidth = 1.5
+        corners.forEach((c) => {
+          context.fillRect(c.hx - handleSize / 2, c.hy - handleSize / 2, handleSize, handleSize)
+          context.strokeRect(c.hx - handleSize / 2, c.hy - handleSize / 2, handleSize, handleSize)
+        })
       }
 
       context.restore()

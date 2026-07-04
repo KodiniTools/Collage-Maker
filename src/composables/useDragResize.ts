@@ -80,6 +80,11 @@ export function useDragResize(
   const pinchPanStartOffset = ref({ x: 0, y: 0 })
   const lastTapTime = ref(0)
 
+  // Text-Skalierung (Resize über Eck-Handles)
+  const isTextResizing = ref(false)
+  const textResizeStartFont = ref(0)
+  const textResizeStartDist = ref(0)
+
   function getResizeHandle(x: number, y: number, img: any, touchMode = false): string | null {
     const handleSize = 8
     const hitRadius = handleSize * (touchMode ? 4.5 : 1.5) // Larger hit area for touch
@@ -141,6 +146,64 @@ export function useDragResize(
     return distance <= deleteButtonSize / 2
   }
 
+  // Bounding-Box eines Textes in dessen lokalem (unrotiertem) Koordinatensystem.
+  // Muss zur Darstellung im Renderer passen (gleiche Schrift/Metriken).
+  function getTextBox(text: any, ctx: CanvasRenderingContext2D) {
+    ctx.save()
+    ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+    ctx.letterSpacing = `${text.letterSpacing}px`
+    const lines: string[] = text.text.split('\n')
+    const lineHeight = text.fontSize * 1.2
+    const boxHeight = lines.length * lineHeight
+    const boxWidth = Math.max(0, ...lines.map((line) => ctx.measureText(line).width))
+    ctx.restore()
+
+    let offsetX = 0
+    if (text.textAlign === 'center') offsetX = -boxWidth / 2
+    else if (text.textAlign === 'right') offsetX = -boxWidth
+
+    return {
+      left: offsetX - 5,
+      right: offsetX + boxWidth + 5,
+      top: -boxHeight / 2 - 5,
+      bottom: boxHeight / 2 + 5,
+    }
+  }
+
+  // Prüft, ob ein Eck-Skalierungspunkt des Textes getroffen wurde.
+  function getTextResizeHandle(
+    x: number,
+    y: number,
+    text: any,
+    ctx: CanvasRenderingContext2D,
+    touchMode = false
+  ): string | null {
+    const box = getTextBox(text, ctx)
+    const handleSize = 8
+    const hitRadius = handleSize * (touchMode ? 4.5 : 1.5) // grössere Trefferfläche für Touch
+
+    // Klickpunkt ins lokale (unrotierte) Koordinatensystem des Textes transformieren
+    const angle = (text.rotation * Math.PI) / 180
+    const dx = x - text.x
+    const dy = y - text.y
+    const localX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
+    const localY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
+
+    const corners = [
+      { x: box.left, y: box.top, name: 'nw' },
+      { x: box.right, y: box.top, name: 'ne' },
+      { x: box.right, y: box.bottom, name: 'se' },
+      { x: box.left, y: box.bottom, name: 'sw' },
+    ]
+
+    for (const corner of corners) {
+      if (Math.hypot(localX - corner.x, localY - corner.y) <= hitRadius) {
+        return corner.name
+      }
+    }
+    return null
+  }
+
   function handleMouseDown(e: MouseEvent) {
     if (!canvas.value) return
 
@@ -191,6 +254,25 @@ export function useDragResize(
         }
         shiftPressed.value = e.shiftKey
         initialAspectRatio.value = selectedImg.width / selectedImg.height
+        return
+      }
+    }
+
+    // Skalierungspunkt des ausgewählten Textes angeklickt?
+    const selectedTextForResize = collage.selectedText
+    if (selectedTextForResize) {
+      const ctxForText = getCtx()
+      const handle = ctxForText
+        ? getTextResizeHandle(x, y, selectedTextForResize, ctxForText)
+        : null
+      if (handle) {
+        collage.saveStateForUndo()
+        isTextResizing.value = true
+        textResizeStartFont.value = selectedTextForResize.fontSize
+        textResizeStartDist.value = Math.max(
+          1,
+          Math.hypot(x - selectedTextForResize.x, y - selectedTextForResize.y)
+        )
         return
       }
     }
@@ -314,7 +396,7 @@ export function useDragResize(
     const y = (e.clientY - rect.top) / zoom
 
     // Cursor-Update when idle (not dragging/resizing)
-    if (!isDragging.value && !isResizing.value) {
+    if (!isDragging.value && !isResizing.value && !isTextResizing.value) {
       const selectedImg = collage.selectedImage
       if (selectedImg) {
         const handle = getResizeHandle(x, y, selectedImg)
@@ -328,9 +410,28 @@ export function useDragResize(
         } else {
           cursorStyle.value = 'default'
         }
+      } else if (collage.selectedText) {
+        const ctxForCursor = getCtx()
+        const handle = ctxForCursor
+          ? getTextResizeHandle(x, y, collage.selectedText, ctxForCursor)
+          : null
+        cursorStyle.value = handle
+          ? handle === 'nw' || handle === 'se'
+            ? 'nwse-resize'
+            : 'nesw-resize'
+          : 'default'
       } else {
         cursorStyle.value = 'default'
       }
+    }
+
+    // Text-Skalierung über Eck-Handles (Schriftgröße proportional zur Distanz)
+    if (isTextResizing.value && collage.selectedTextId && collage.selectedText) {
+      const dist = Math.hypot(x - collage.selectedText.x, y - collage.selectedText.y)
+      const scale = dist / textResizeStartDist.value
+      const newFontSize = Math.max(12, Math.min(400, Math.round(textResizeStartFont.value * scale)))
+      collage.updateText(collage.selectedText.id, { fontSize: newFontSize })
+      return
     }
 
     if (
@@ -543,6 +644,7 @@ export function useDragResize(
   function handleMouseUp() {
     isDragging.value = false
     isResizing.value = false
+    isTextResizing.value = false
     isPanning.value = false
     resizeHandle.value = null
     cursorStyle.value = 'default'
@@ -654,6 +756,23 @@ export function useDragResize(
         }
         shiftPressed.value = false
         initialAspectRatio.value = selectedImg.width / selectedImg.height
+        return
+      }
+    }
+
+    // Text-Skalierungspunkt (vergrösserte Trefferfläche für Touch)
+    const selectedTextTouch = collage.selectedText
+    if (selectedTextTouch) {
+      const ctxTouch = getCtx()
+      const handle = ctxTouch ? getTextResizeHandle(x, y, selectedTextTouch, ctxTouch, true) : null
+      if (handle) {
+        collage.saveStateForUndo()
+        isTextResizing.value = true
+        textResizeStartFont.value = selectedTextTouch.fontSize
+        textResizeStartDist.value = Math.max(
+          1,
+          Math.hypot(x - selectedTextTouch.x, y - selectedTextTouch.y)
+        )
         return
       }
     }
