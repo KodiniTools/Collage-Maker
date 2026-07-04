@@ -470,6 +470,32 @@ export const useCollageStore = defineStore('collage', () => {
     Object.assign(settings.value, updates)
   }
 
+  // Canvasgröße ändern und die platzierten Bilder proportional mitskalieren,
+  // damit sie relativ zur neuen Leinwand an ihrer Position/Größe bleiben.
+  // Galerie-Templates bleiben unberührt (sie liegen nicht auf dem Canvas).
+  function resizeCanvas(newWidth: number, newHeight: number) {
+    const oldWidth = settings.value.width
+    const oldHeight = settings.value.height
+
+    if (oldWidth > 0 && oldHeight > 0) {
+      const ratioX = newWidth / oldWidth
+      const ratioY = newHeight / oldHeight
+
+      if (ratioX !== 1 || ratioY !== 1) {
+        images.value.forEach((img) => {
+          if (img.isGalleryTemplate === true) return
+          img.x *= ratioX
+          img.y *= ratioY
+          img.width *= ratioX
+          img.height *= ratioY
+        })
+      }
+    }
+
+    settings.value.width = newWidth
+    settings.value.height = newHeight
+  }
+
   // Hintergrundbild setzen (von einem Galerie-Bild)
   function setBackgroundImage(imageUrl: string) {
     saveStateForUndo()
@@ -842,6 +868,7 @@ export const useCollageStore = defineStore('collage', () => {
     applyLayout,
     clearCollage,
     updateSettings,
+    resizeCanvas,
     // Hintergrundbild
     isBackgroundSelected,
     setBackgroundImage,
