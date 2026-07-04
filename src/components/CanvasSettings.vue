@@ -33,8 +33,8 @@
 
   function applySize(width: number, height: number) {
     collage.saveStateForUndoDebounced()
-    // Bilder proportional zur neuen Canvasgröße mitskalieren
-    collage.resizeCanvas(width, height)
+    // Nur die Leinwand ändern – Bilder/Texte behalten ihre eigene Größe (Teleskop)
+    collage.updateSettings({ width, height })
   }
 
   function updateWidth(value: number) {
@@ -54,7 +54,7 @@
     const height = keepAspect.value
       ? clampSize(DEFAULT_WIDTH / aspectRatio.value)
       : collage.settings.height
-    collage.resizeCanvas(DEFAULT_WIDTH, height)
+    collage.updateSettings({ width: DEFAULT_WIDTH, height })
   }
 
   function resetHeight() {
@@ -62,7 +62,7 @@
     const width = keepAspect.value
       ? clampSize(DEFAULT_HEIGHT * aspectRatio.value)
       : collage.settings.width
-    collage.resizeCanvas(width, DEFAULT_HEIGHT)
+    collage.updateSettings({ width, height: DEFAULT_HEIGHT })
   }
 
   function updateBackgroundColor(value: string) {
