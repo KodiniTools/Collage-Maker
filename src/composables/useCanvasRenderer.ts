@@ -1,6 +1,7 @@
 import { watch, nextTick, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
+import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
 
 export function useCanvasRenderer(
   canvas: Ref<HTMLCanvasElement | null>,
@@ -694,6 +695,9 @@ export function useCanvasRenderer(
 
       context.restore()
     }
+
+    // Rahmen um die Leinwand (über allen Inhalten, vor den Smart Guides)
+    drawCanvasBorder(context, canvas.value.width, canvas.value.height, collage.settings.border)
 
     // Smart Guides zeichnen (nach Bildern und Texten, während des Draggings)
     drawGuides(ctx)

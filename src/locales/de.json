@@ -245,7 +245,8 @@
     "keepAspectRatio": "Seitenverhältnis beibehalten",
     "on": "An",
     "off": "Aus",
-    "scaleContent": "Inhalte mitskalieren"
+    "scaleContent": "Inhalte mitskalieren",
+    "border": "Rahmen"
   },
   "images": {
     "title": "Bilder",

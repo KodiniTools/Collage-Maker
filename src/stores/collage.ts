@@ -7,6 +7,7 @@ import type {
   LayoutType,
   BackgroundImageFit,
   BackgroundImageSettings,
+  CanvasBorderSettings,
 } from '@/types'
 import { computeLayout } from '@/lib/layouts'
 import { useHistoryStore } from '@/stores/history'
@@ -40,6 +41,12 @@ export const useCollageStore = defineStore('collage', () => {
     layout: 'grid-3x3',
     gridEnabled: false,
     gridSize: 50,
+    border: {
+      enabled: false,
+      width: 12,
+      color: '#000000',
+      style: 'solid',
+    },
   })
 
   // History Store für Undo/Redo
@@ -548,6 +555,11 @@ export const useCollageStore = defineStore('collage', () => {
     Object.assign(settings.value.backgroundImage, updates)
   }
 
+  // Canvas-Rahmen-Einstellungen aktualisieren
+  function updateCanvasBorder(updates: Partial<CanvasBorderSettings>) {
+    Object.assign(settings.value.border, updates)
+  }
+
   // Hintergrundbild auswählen/abwählen
   function selectBackground(selected: boolean) {
     isBackgroundSelected.value = selected
@@ -824,6 +836,14 @@ export const useCollageStore = defineStore('collage', () => {
       settings.value.gridEnabled = ts.gridEnabled ?? false
       settings.value.gridSize = ts.gridSize ?? 50
 
+      // Canvas-Rahmen mit Defaults
+      settings.value.border = {
+        enabled: ts.border?.enabled ?? false,
+        width: ts.border?.width ?? 12,
+        color: ts.border?.color ?? '#000000',
+        style: ts.border?.style ?? 'solid',
+      }
+
       // BackgroundImage mit Defaults
       if (ts.backgroundImage) {
         settings.value.backgroundImage.url = ts.backgroundImage.url ?? null
@@ -896,6 +916,7 @@ export const useCollageStore = defineStore('collage', () => {
     removeBackgroundImage,
     setBackgroundImageFit,
     updateBackgroundImage,
+    updateCanvasBorder,
     selectBackground,
     setLockAspectRatio,
     setCanvasZoom,

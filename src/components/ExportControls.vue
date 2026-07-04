@@ -59,6 +59,7 @@
       images: collage.images.filter((img) => img.isGalleryTemplate !== true),
       texts: collage.texts,
       transparent: exportFormat.value === 'png-transparent',
+      border: collage.settings.border,
     }
   }
 

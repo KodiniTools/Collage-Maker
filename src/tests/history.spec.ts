@@ -20,6 +20,12 @@ function makeSettings(overrides: Partial<CollageSettings> = {}): CollageSettings
     layout: 'freestyle',
     gridEnabled: false,
     gridSize: 50,
+    border: {
+      enabled: false,
+      width: 12,
+      color: '#000000',
+      style: 'solid',
+    },
     ...overrides,
   }
 }

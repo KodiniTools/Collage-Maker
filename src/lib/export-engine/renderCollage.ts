@@ -1,7 +1,13 @@
-import type { CollageImage, CollageText, BackgroundImageSettings } from '@/types'
+import type {
+  CollageImage,
+  CollageText,
+  BackgroundImageSettings,
+  CanvasBorderSettings,
+} from '@/types'
 import { drawBackground } from './drawBackground'
 import { drawCollageImage } from './drawCollageImage'
 import { drawCollageText } from './drawCollageText'
+import { drawCanvasBorder } from './drawCanvasBorder'
 
 export interface RenderOptions {
   width: number
@@ -11,6 +17,7 @@ export interface RenderOptions {
   images: CollageImage[]
   texts: CollageText[]
   transparent: boolean
+  border?: CanvasBorderSettings
 }
 
 export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasElement> {
@@ -41,6 +48,9 @@ export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasE
   for (const text of sortedTexts) {
     drawCollageText(ctx, text)
   }
+
+  // Rahmen zuletzt zeichnen, damit er über allen Inhalten liegt
+  drawCanvasBorder(ctx, options.width, options.height, options.border)
 
   return canvas
 }
