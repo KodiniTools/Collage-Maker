@@ -348,6 +348,7 @@ export function useAutoSave() {
         layout: state.settings.layout,
         gridEnabled: state.settings.gridEnabled,
         gridSize: state.settings.gridSize,
+        cornerRadius: state.settings.cornerRadius ?? 0,
       })
 
       // Canvas-Rahmen wiederherstellen (mit Defaults für ältere Speicherstände)

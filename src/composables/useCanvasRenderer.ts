@@ -2,6 +2,7 @@ import { watch, nextTick, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
+import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
 
 export function useCanvasRenderer(
   canvas: Ref<HTMLCanvasElement | null>,
@@ -168,6 +169,18 @@ export function useCanvasRenderer(
 
     canvas.value.width = collage.settings.width
     canvas.value.height = collage.settings.height
+
+    // Abgerundete Ecken: Inhalte auf abgerundeten Pfad clippen (Ecken transparent)
+    const cornerRadius = clampCornerRadius(
+      collage.settings.cornerRadius,
+      canvas.value.width,
+      canvas.value.height
+    )
+    if (cornerRadius > 0) {
+      context.save()
+      roundedRectPath(context, 0, 0, canvas.value.width, canvas.value.height, cornerRadius)
+      context.clip()
+    }
 
     // Background Color
     context.fillStyle = collage.settings.backgroundColor
@@ -696,8 +709,19 @@ export function useCanvasRenderer(
       context.restore()
     }
 
-    // Rahmen um die Leinwand (über allen Inhalten, vor den Smart Guides)
-    drawCanvasBorder(context, canvas.value.width, canvas.value.height, collage.settings.border)
+    // Clipping der abgerundeten Ecken aufheben, bevor der Rahmen gezeichnet wird
+    if (cornerRadius > 0) {
+      context.restore()
+    }
+
+    // Rahmen um die Leinwand (über allen Inhalten, folgt der Rundung)
+    drawCanvasBorder(
+      context,
+      canvas.value.width,
+      canvas.value.height,
+      collage.settings.border,
+      cornerRadius
+    )
 
     // Smart Guides zeichnen (nach Bildern und Texten, während des Draggings)
     drawGuides(ctx)

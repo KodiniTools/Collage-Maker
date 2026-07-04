@@ -47,6 +47,7 @@ export const useCollageStore = defineStore('collage', () => {
       color: '#000000',
       style: 'solid',
     },
+    cornerRadius: 0,
   })
 
   // History Store für Undo/Redo
@@ -843,6 +844,7 @@ export const useCollageStore = defineStore('collage', () => {
         color: ts.border?.color ?? '#000000',
         style: ts.border?.style ?? 'solid',
       }
+      settings.value.cornerRadius = ts.cornerRadius ?? 0
 
       // BackgroundImage mit Defaults
       if (ts.backgroundImage) {

@@ -26,6 +26,7 @@ function makeSettings(overrides: Partial<CollageSettings> = {}): CollageSettings
       color: '#000000',
       style: 'solid',
     },
+    cornerRadius: 0,
     ...overrides,
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
   import type { BackgroundImageFit } from '@/types'
@@ -79,6 +79,16 @@
       ? clampSize(DEFAULT_HEIGHT * aspectRatio.value)
       : collage.settings.width
     commitSize(width, DEFAULT_HEIGHT)
+  }
+
+  // ── Abgerundete Ecken ──────────────────────────────────────────────────
+  const maxCornerRadius = computed(() =>
+    Math.floor(Math.min(collage.settings.width, collage.settings.height) / 2)
+  )
+
+  function updateCornerRadius(value: number) {
+    collage.saveStateForUndoDebounced()
+    collage.updateSettings({ cornerRadius: value })
   }
 
   // ── Canvas-Rahmen ──────────────────────────────────────────────────────
@@ -291,6 +301,33 @@
           class="w-full mt-2"
           :aria-label="t('canvas.height')"
           @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
+        />
+      </div>
+
+      <!-- Ecken abrunden -->
+      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('canvas.cornerRadius') }}: {{ collage.settings.cornerRadius }}px
+          </label>
+          <button
+            v-if="collage.settings.cornerRadius !== 0"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="updateCornerRadius(0)"
+          >
+            ↺
+          </button>
+        </div>
+        <input
+          type="range"
+          :value="collage.settings.cornerRadius"
+          min="0"
+          :max="maxCornerRadius"
+          step="1"
+          class="w-full"
+          :aria-label="t('canvas.cornerRadius')"
+          @input="updateCornerRadius(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 

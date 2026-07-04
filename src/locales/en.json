@@ -246,7 +246,8 @@
     "on": "On",
     "off": "Off",
     "scaleContent": "Scale content with canvas",
-    "border": "Frame"
+    "border": "Frame",
+    "cornerRadius": "Rounded corners"
   },
   "images": {
     "title": "Images",

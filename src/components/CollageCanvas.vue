@@ -117,6 +117,7 @@
           transformOrigin: 'center center',
           cursor: spacePressed && collage.canvasZoom > 1 ? 'grab' : cursorStyle,
           touchAction: 'none',
+          borderRadius: `${collage.settings.cornerRadius}px`,
         }"
         style="image-rendering: high-quality"
         @mousedown.prevent="handleMouseDown"

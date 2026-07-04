@@ -107,6 +107,8 @@ export interface CollageSettings {
   gridSize: number
   // Rahmen um die gesamte Leinwand (wird mitexportiert)
   border: CanvasBorderSettings
+  // Eckenradius der Leinwand in px (0 = eckig, wird mitexportiert)
+  cornerRadius: number
 }
 
 export type Theme = 'light' | 'dark'

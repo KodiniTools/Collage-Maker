@@ -246,7 +246,8 @@
     "on": "An",
     "off": "Aus",
     "scaleContent": "Inhalte mitskalieren",
-    "border": "Rahmen"
+    "border": "Rahmen",
+    "cornerRadius": "Ecken abrunden"
   },
   "images": {
     "title": "Bilder",
