@@ -1,7 +1,34 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCollageStore } from '@/stores/collage'
-import type { CollageImage } from '@/types'
+import type { CollageImage, CollageText } from '@/types'
+
+function makeText(id: string, overrides: Partial<CollageText> = {}): CollageText {
+  return {
+    id,
+    text: 'Hallo',
+    x: 100,
+    y: 200,
+    fontSize: 48,
+    fontFamily: 'Arial',
+    color: '#000',
+    rotation: 0,
+    zIndex: 0,
+    fontWeight: 400,
+    fontStyle: 'normal',
+    textAlign: 'center',
+    shadowEnabled: false,
+    shadowOffsetX: 0,
+    shadowOffsetY: 0,
+    shadowBlur: 0,
+    shadowColor: '#000',
+    strokeEnabled: false,
+    strokeColor: '#fff',
+    strokeWidth: 2,
+    letterSpacing: 0,
+    ...overrides,
+  }
+}
 
 function makeImg(id: string, overrides: Partial<CollageImage> = {}): CollageImage {
   return {
@@ -82,5 +109,51 @@ describe('resizeCanvas', () => {
     const tpl = collage.images[0]
     expect(tpl.x).toBe(10)
     expect(tpl.width).toBe(200)
+  })
+
+  it('scales text position and font size proportionally', () => {
+    const collage = useCollageStore()
+    collage.texts.push(makeText('t'))
+    // 700x740 -> beide verdoppeln
+    collage.resizeCanvas(1400, 1480)
+
+    const txt = collage.texts[0]
+    expect(txt.x).toBeCloseTo(200) // 100 * 2
+    expect(txt.y).toBeCloseTo(400) // 200 * 2
+    expect(txt.fontSize).toBeCloseTo(96) // 48 * sqrt(2*2) = 48 * 2
+  })
+
+  it('uses the geometric mean for font size on non-uniform resize', () => {
+    const collage = useCollageStore()
+    collage.texts.push(makeText('t'))
+    // Breite verdoppeln, Höhe halbieren -> Flächenverhältnis 1 -> fontSize gleich
+    collage.resizeCanvas(1400, 370)
+
+    const txt = collage.texts[0]
+    expect(txt.fontSize).toBeCloseTo(48) // 48 * sqrt(2 * 0.5) = 48
+  })
+
+  it('keeps text font size exact across intermediate steps (telescoping)', () => {
+    const collage = useCollageStore()
+    collage.texts.push(makeText('t'))
+    collage.resizeCanvas(1, 740)
+    collage.resizeCanvas(14, 740)
+    collage.resizeCanvas(1400, 740)
+
+    // Netto: sqrt((1400/700) * (740/740)) = sqrt(2)
+    expect(collage.texts[0].fontSize).toBeCloseTo(48 * Math.SQRT2)
+  })
+
+  it('ignores invalid target sizes (0 / NaN) and keeps content intact', () => {
+    const collage = useCollageStore()
+    collage.images.push(makeImg('a'))
+    collage.texts.push(makeText('t'))
+
+    collage.resizeCanvas(0, 740)
+    collage.resizeCanvas(Number.NaN, 740)
+
+    expect(collage.settings.width).toBe(700)
+    expect(collage.images[0].width).toBe(300)
+    expect(collage.texts[0].fontSize).toBe(48)
   })
 })

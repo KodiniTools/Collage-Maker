@@ -470,10 +470,22 @@ export const useCollageStore = defineStore('collage', () => {
     Object.assign(settings.value, updates)
   }
 
-  // Canvasgröße ändern und die platzierten Bilder proportional mitskalieren,
-  // damit sie relativ zur neuen Leinwand an ihrer Position/Größe bleiben.
-  // Galerie-Templates bleiben unberührt (sie liegen nicht auf dem Canvas).
+  // Canvasgröße ändern und die platzierten Bilder UND Texte proportional
+  // mitskalieren, damit die gesamte Collage relativ zur neuen Leinwand
+  // maßstabsgetreu bleibt. Galerie-Templates bleiben unberührt (sie liegen
+  // nicht auf dem Canvas).
   function resizeCanvas(newWidth: number, newHeight: number) {
+    // Ungültige Zielgrößen ignorieren (z. B. leeres/„0"-Eingabefeld),
+    // sonst würden Inhalte auf 0 kollabieren.
+    if (
+      !Number.isFinite(newWidth) ||
+      !Number.isFinite(newHeight) ||
+      newWidth <= 0 ||
+      newHeight <= 0
+    ) {
+      return
+    }
+
     const oldWidth = settings.value.width
     const oldHeight = settings.value.height
 
@@ -488,6 +500,16 @@ export const useCollageStore = defineStore('collage', () => {
           img.y *= ratioY
           img.width *= ratioX
           img.height *= ratioY
+        })
+
+        // Schriftgröße über das geometrische Mittel skalieren: identisch zur
+        // Breiten-/Höhenskalierung bei gleichmäßigem Resize und exakt
+        // teleskopierend über Zwischenschritte (fontSize bleibt Float).
+        const fontRatio = Math.sqrt(ratioX * ratioY)
+        texts.value.forEach((txt) => {
+          txt.x *= ratioX
+          txt.y *= ratioY
+          txt.fontSize *= fontRatio
         })
       }
     }
