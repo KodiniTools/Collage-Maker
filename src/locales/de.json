@@ -95,7 +95,12 @@
     "tools": "Werkzeuge",
     "settings": "Einstellungen",
     "expandSidebar": "Seitenleiste ausklappen",
-    "collapseSidebar": "Seitenleiste einklappen"
+    "collapseSidebar": "Seitenleiste einklappen",
+    "tabSelection": "Auswahl",
+    "tabCanvas": "Leinwand",
+    "tabExport": "Export",
+    "showSettings": "Einstellungen anzeigen",
+    "hidePanel": "Einklappen"
   },
   "faqPage": {
     "title": "Häufig gestellte Fragen",
