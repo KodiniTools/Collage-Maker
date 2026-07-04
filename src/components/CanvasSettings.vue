@@ -1,19 +1,68 @@
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
-  import type { BackgroundImageFit } from '@/types'
+  import type { BackgroundImageFit, CollageSettings } from '@/types'
 
   const collage = useCollageStore()
   const { t } = useI18n()
 
-  function updateWidth(value: number) {
+  // Standard-Canvasgröße (für die Reset-Buttons)
+  const DEFAULT_WIDTH = 700
+  const DEFAULT_HEIGHT = 740
+  // Grenzen der Größen-Regler / -Eingaben
+  const MIN_SIZE = 400
+  const MAX_SIZE = 4000
+
+  // Seitenverhältnis beibehalten: bei aktivierter Option wird die jeweils
+  // andere Dimension proportional mitgeführt.
+  const keepAspect = ref(false)
+  const aspectRatio = ref(collage.settings.width / collage.settings.height)
+
+  function toggleKeepAspect() {
+    keepAspect.value = !keepAspect.value
+    if (keepAspect.value) {
+      // Aktuelles Verhältnis als Referenz merken
+      aspectRatio.value = collage.settings.width / collage.settings.height
+    }
+  }
+
+  function clampSize(value: number) {
+    return Math.min(MAX_SIZE, Math.max(MIN_SIZE, Math.round(value)))
+  }
+
+  function applySize(width: number, height: number) {
     collage.saveStateForUndoDebounced()
-    collage.updateSettings({ width: value })
+    const updates: Partial<CollageSettings> = { width, height }
+    collage.updateSettings(updates)
+  }
+
+  function updateWidth(value: number) {
+    const width = value
+    const height = keepAspect.value ? clampSize(width / aspectRatio.value) : collage.settings.height
+    applySize(width, height)
   }
 
   function updateHeight(value: number) {
-    collage.saveStateForUndoDebounced()
-    collage.updateSettings({ height: value })
+    const height = value
+    const width = keepAspect.value ? clampSize(height * aspectRatio.value) : collage.settings.width
+    applySize(width, height)
+  }
+
+  function resetWidth() {
+    collage.saveStateForUndo()
+    const height = keepAspect.value
+      ? clampSize(DEFAULT_WIDTH / aspectRatio.value)
+      : collage.settings.height
+    collage.updateSettings({ width: DEFAULT_WIDTH, height })
+  }
+
+  function resetHeight() {
+    collage.saveStateForUndo()
+    const width = keepAspect.value
+      ? clampSize(DEFAULT_HEIGHT * aspectRatio.value)
+      : collage.settings.width
+    collage.updateSettings({ width, height: DEFAULT_HEIGHT })
   }
 
   function updateBackgroundColor(value: string) {
@@ -76,34 +125,108 @@
     <h2 class="text-lg font-semibold mb-4">{{ t('canvas.size') }}</h2>
 
     <div class="space-y-4">
+      <!-- Seitenverhältnis beibehalten -->
+      <div class="flex items-center justify-between">
+        <label class="text-sm font-medium">{{ t('canvas.keepAspectRatio') }}</label>
+        <button
+          :class="[
+            'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
+            keepAspect
+              ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+          ]"
+          :title="t('canvas.keepAspectRatio')"
+          :aria-pressed="keepAspect"
+          @click="toggleKeepAspect"
+        >
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              v-if="keepAspect"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            />
+            <path
+              v-else
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
+            />
+          </svg>
+          {{ keepAspect ? t('canvas.on') : t('canvas.off') }}
+        </button>
+      </div>
+
       <!-- Canvas Width -->
       <div>
-        <label class="block text-sm font-medium mb-2">
-          {{ t('canvas.width') }}: {{ collage.settings.width }}px
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('canvas.width') }}: {{ collage.settings.width }}px
+          </label>
+          <button
+            v-if="collage.settings.width !== DEFAULT_WIDTH"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="resetWidth"
+          >
+            ↺
+          </button>
+        </div>
         <input
           type="number"
           :value="collage.settings.width"
-          min="400"
-          max="4000"
+          :min="MIN_SIZE"
+          :max="MAX_SIZE"
           step="10"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+          @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
+        />
+        <input
+          type="range"
+          :value="collage.settings.width"
+          :min="MIN_SIZE"
+          :max="MAX_SIZE"
+          step="10"
+          class="w-full mt-2"
+          :aria-label="t('canvas.width')"
           @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
 
       <!-- Canvas Height -->
       <div>
-        <label class="block text-sm font-medium mb-2">
-          {{ t('canvas.height') }}: {{ collage.settings.height }}px
-        </label>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-sm font-medium">
+            {{ t('canvas.height') }}: {{ collage.settings.height }}px
+          </label>
+          <button
+            v-if="collage.settings.height !== DEFAULT_HEIGHT"
+            class="text-xs text-muted hover:text-accent transition-colors"
+            :title="t('imageControls.resetValue')"
+            @click="resetHeight"
+          >
+            ↺
+          </button>
+        </div>
         <input
           type="number"
           :value="collage.settings.height"
-          min="400"
-          max="4000"
+          :min="MIN_SIZE"
+          :max="MAX_SIZE"
           step="10"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+          @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
+        />
+        <input
+          type="range"
+          :value="collage.settings.height"
+          :min="MIN_SIZE"
+          :max="MAX_SIZE"
+          step="10"
+          class="w-full mt-2"
+          :aria-label="t('canvas.height')"
           @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
@@ -215,7 +338,9 @@
                 class="text-xs text-accent hover:text-accent-dark transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateBackgroundOpacity(1)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -240,7 +365,9 @@
                 class="text-xs text-accent hover:text-accent-dark transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateBackgroundBrightness(100)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -264,7 +391,9 @@
                 class="text-xs text-accent hover:text-accent-dark transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateBackgroundContrast(100)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -289,7 +418,9 @@
                 class="text-xs text-accent hover:text-accent-dark transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateBackgroundSaturation(100)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -313,7 +444,9 @@
                 class="text-xs text-accent hover:text-accent-dark transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateBackgroundBlur(0)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"

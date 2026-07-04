@@ -241,7 +241,10 @@
     "selected": "Selected",
     "editBackground": "Edit background image",
     "colorReplacesImage": "Selecting a color will replace the background image",
-    "blur": "Blur"
+    "blur": "Blur",
+    "keepAspectRatio": "Keep aspect ratio",
+    "on": "On",
+    "off": "Off"
   },
   "images": {
     "title": "Images",

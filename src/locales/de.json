@@ -241,7 +241,10 @@
     "selected": "Ausgewählt",
     "editBackground": "Hintergrundbild bearbeiten",
     "colorReplacesImage": "Bei Farbauswahl wird das Hintergrundbild ersetzt",
-    "blur": "Unschärfe"
+    "blur": "Unschärfe",
+    "keepAspectRatio": "Seitenverhältnis beibehalten",
+    "on": "An",
+    "off": "Aus"
   },
   "images": {
     "title": "Bilder",
