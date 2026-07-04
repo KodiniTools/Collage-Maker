@@ -90,6 +90,13 @@ export interface BackgroundImageSettings {
   blur: number
 }
 
+export interface CanvasBorderSettings {
+  enabled: boolean
+  width: number
+  color: string
+  style: 'solid' | 'dashed' | 'dotted' | 'double'
+}
+
 export interface CollageSettings {
   width: number
   height: number
@@ -98,6 +105,8 @@ export interface CollageSettings {
   layout: LayoutType
   gridEnabled: boolean
   gridSize: number
+  // Rahmen um die gesamte Leinwand (wird mitexportiert)
+  border: CanvasBorderSettings
 }
 
 export type Theme = 'light' | 'dark'

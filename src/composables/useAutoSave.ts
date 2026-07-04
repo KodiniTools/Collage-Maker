@@ -350,6 +350,11 @@ export function useAutoSave() {
         gridSize: state.settings.gridSize,
       })
 
+      // Canvas-Rahmen wiederherstellen (mit Defaults für ältere Speicherstände)
+      if (state.settings.border) {
+        collage.updateCanvasBorder(state.settings.border)
+      }
+
       // Hintergrundbild wiederherstellen
       if (state.settings.backgroundImage.url) {
         collage.settings.backgroundImage = {

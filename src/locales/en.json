@@ -245,7 +245,8 @@
     "keepAspectRatio": "Keep aspect ratio",
     "on": "On",
     "off": "Off",
-    "scaleContent": "Scale content with canvas"
+    "scaleContent": "Scale content with canvas",
+    "border": "Frame"
   },
   "images": {
     "title": "Images",
