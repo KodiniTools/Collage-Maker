@@ -201,7 +201,9 @@
     "buttonFolder": "Select Folder",
     "formats": "PNG, JPG, WebP (max. 50MB per image)",
     "processing": "Optimizing images...",
-    "pasteHint": "or Ctrl+V to paste from clipboard"
+    "pasteHint": "or Ctrl+V to paste from clipboard",
+    "keepOriginal": "Keep original resolution",
+    "keepOriginalHint": "No optimization — best quality but higher memory usage."
   },
   "layout": {
     "title": "Layout",

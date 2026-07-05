@@ -201,7 +201,9 @@
     "buttonFolder": "Ordner auswählen",
     "formats": "PNG, JPG, WebP (max. 50MB pro Bild)",
     "processing": "Bilder werden optimiert...",
-    "pasteHint": "oder Ctrl+V zum Einfügen aus der Zwischenablage"
+    "pasteHint": "oder Ctrl+V zum Einfügen aus der Zwischenablage",
+    "keepOriginal": "Originalauflösung beibehalten",
+    "keepOriginalHint": "Ohne Optimierung – beste Qualität, aber höherer Speicherbedarf."
   },
   "layout": {
     "title": "Layout",
