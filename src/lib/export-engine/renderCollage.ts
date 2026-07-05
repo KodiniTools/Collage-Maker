@@ -30,9 +30,17 @@ export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasE
   canvas.width = options.width
   canvas.height = options.height
 
-  // Abgerundete Ecken: alle Inhalte auf einen abgerundeten Pfad clippen,
-  // sodass die Ecken transparent bleiben (ideal für PNG).
+  // Abgerundete Ecken: alle Inhalte auf einen abgerundeten Pfad clippen.
   const radius = clampCornerRadius(options.cornerRadius ?? 0, options.width, options.height)
+
+  // Bei nicht-transparenten Formaten (JPEG/WebP/PDF/normales PNG) die Ecken
+  // vor dem Clipping mit der Hintergrundfarbe füllen, damit sie nicht
+  // transparent (→ bei JPEG schwarz) erscheinen. png-transparent bleibt offen.
+  if (radius > 0 && !options.transparent) {
+    ctx.fillStyle = options.backgroundColor
+    ctx.fillRect(0, 0, options.width, options.height)
+  }
+
   if (radius > 0) {
     ctx.save()
     roundedRectPath(ctx, 0, 0, options.width, options.height, radius)
