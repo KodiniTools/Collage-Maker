@@ -126,7 +126,8 @@ export function useDragResize(
 
   function isDeleteButtonClicked(x: number, y: number, img: any, touchMode = false): boolean {
     const fit = autoFitScale.value || 1
-    const deleteButtonSize = (touchMode ? 30 : 16) / fit
+    // Muss zur Zeichnung passen: 14 * ui, innen in der oberen rechten Ecke.
+    const drawSize = 14 / fit
     const centerX = img.x + img.width / 2
     const centerY = img.y + img.height / 2
 
@@ -137,16 +138,19 @@ export function useDragResize(
     const rotatedX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
     const rotatedY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
 
-    // Position des Löschbuttons im Bild-Koordinatensystem
-    const deleteButtonX = img.width / 2 - deleteButtonSize / 2
-    const deleteButtonY = -img.height / 2 - deleteButtonSize / 2
+    // Position des Löschbuttons im Bild-Koordinatensystem (Mittelpunkt)
+    const deleteButtonX = img.width / 2 - drawSize / 2 - 2 / fit
+    const deleteButtonY = -img.height / 2 + drawSize / 2 + 2 / fit
+
+    // Trefferradius etwas grösser als der sichtbare Radius (7 / fit), für Touch mehr
+    const hitRadius = (touchMode ? 22 : 11) / fit
 
     // Prüfe ob Klick innerhalb des Löschbuttons ist (Kreis)
     const distance = Math.sqrt(
       Math.pow(rotatedX - deleteButtonX, 2) + Math.pow(rotatedY - deleteButtonY, 2)
     )
 
-    return distance <= deleteButtonSize / 2
+    return distance <= hitRadius
   }
 
   // Bounding-Box eines Textes in dessen lokalem (unrotiertem) Koordinatensystem.
