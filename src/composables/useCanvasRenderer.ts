@@ -1,12 +1,13 @@
 import { watch, nextTick, onMounted } from 'vue'
-import type { Ref } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
 import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
 
 export function useCanvasRenderer(
   canvas: Ref<HTMLCanvasElement | null>,
-  drawGuides: (ctx: CanvasRenderingContext2D | null) => void
+  drawGuides: (ctx: CanvasRenderingContext2D | null) => void,
+  autoFitScale?: ComputedRef<number>
 ) {
   const collage = useCollageStore()
   let ctx: CanvasRenderingContext2D | null = null
@@ -191,6 +192,13 @@ export function useCanvasRenderer(
 
     // Grid zeichnen (nach Hintergrund, vor Bildern)
     drawGrid()
+
+    // Auswahl-Handles/Umrandungen in konstanter Bildschirmgröße halten: Der
+    // Canvas wird per CSS um autoFitScale skaliert, daher würden fest in
+    // Canvas-Pixeln gezeichnete Handles auf großen Leinwänden unsichtbar klein.
+    // ui kompensiert das (Zeichengröße = Zielgröße / Anzeige-Zoom).
+    const fitScale = autoFitScale?.value ?? 1
+    const ui = fitScale > 0 ? 1 / fitScale : 1
 
     // Nur Canvas-Instanzen rendern (keine Gallery-Templates)
     const canvasImages = collage.images.filter((img) => img.isGalleryTemplate !== true)
@@ -524,14 +532,14 @@ export function useCanvasRenderer(
       }
 
       // Löschbutton zeichnen (oben rechts, immer sichtbar für alle Bilder)
-      const deleteButtonSize = 14
+      const deleteButtonSize = 14 * ui
       const deleteButtonX = img.width / 2 - deleteButtonSize / 2
       const deleteButtonY = -img.height / 2 - deleteButtonSize / 2
 
       // Roter Kreis für Löschbutton
       context.fillStyle = '#ef4444'
       context.strokeStyle = '#ffffff'
-      context.lineWidth = 1.5
+      context.lineWidth = 1.5 * ui
       context.beginPath()
       context.arc(deleteButtonX, deleteButtonY, deleteButtonSize / 2, 0, Math.PI * 2)
       context.fill()
@@ -539,7 +547,7 @@ export function useCanvasRenderer(
 
       // Weißes X im Löschbutton
       context.strokeStyle = '#ffffff'
-      context.lineWidth = 1.5
+      context.lineWidth = 1.5 * ui
       context.lineCap = 'round'
       const xSize = deleteButtonSize * 0.4
       context.beginPath()
@@ -556,12 +564,12 @@ export function useCanvasRenderer(
       if (isSelected) {
         // Primär ausgewähltes Bild: Blau, sekundäre: Cyan
         context.strokeStyle = isPrimarySelected ? '#3b82f6' : '#06b6d4'
-        context.lineWidth = isPrimarySelected ? 2 : 1.5
+        context.lineWidth = (isPrimarySelected ? 2 : 1.5) * ui
         context.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
 
         // Resize-Handles nur für das primär ausgewählte Bild zeichnen
         if (isPrimarySelected) {
-          const handleSize = 8
+          const handleSize = 9 * ui
           const handles = [
             { x: -img.width / 2, y: -img.height / 2, cursor: 'nw' }, // top-left
             { x: 0, y: -img.height / 2, cursor: 'n' }, // top-center
@@ -575,8 +583,8 @@ export function useCanvasRenderer(
 
           // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
           context.fillStyle = '#ffffff'
-          context.strokeStyle = '#3b82f6'
-          context.lineWidth = 1.5
+          context.strokeStyle = '#2563eb'
+          context.lineWidth = 1.5 * ui
           handles.forEach((handle) => {
             context.fillRect(
               handle.x - handleSize / 2,
@@ -595,9 +603,9 @@ export function useCanvasRenderer(
 
         // Auswahl-Indikator für Mehrfachauswahl (kleine Markierung oben links)
         if (collage.selectedImageIds.length > 1) {
-          const checkSize = 12
-          const checkX = -img.width / 2 + 6
-          const checkY = -img.height / 2 + 6
+          const checkSize = 12 * ui
+          const checkX = -img.width / 2 + 6 * ui
+          const checkY = -img.height / 2 + 6 * ui
 
           // Grüner Kreis mit Häkchen
           context.fillStyle = '#22c55e'
@@ -607,13 +615,13 @@ export function useCanvasRenderer(
 
           // Weißes Häkchen
           context.strokeStyle = '#ffffff'
-          context.lineWidth = 1.5
+          context.lineWidth = 1.5 * ui
           context.lineCap = 'round'
           context.lineJoin = 'round'
           context.beginPath()
-          context.moveTo(checkX - 3, checkY)
-          context.lineTo(checkX - 0.5, checkY + 2)
-          context.lineTo(checkX + 3.5, checkY - 3)
+          context.moveTo(checkX - 3 * ui, checkY)
+          context.lineTo(checkX - 0.5 * ui, checkY + 2 * ui)
+          context.lineTo(checkX + 3.5 * ui, checkY - 3 * ui)
           context.stroke()
         }
       }
@@ -686,11 +694,11 @@ export function useCanvasRenderer(
         else if (text.textAlign === 'right') offsetX = -boxWidth
 
         context.strokeStyle = '#3b82f6'
-        context.lineWidth = 2
+        context.lineWidth = 2 * ui
         context.strokeRect(offsetX - 5, -boxHeight / 2 - 5, boxWidth + 10, boxHeight + 10)
 
         // Skalierungspunkte (Eck-Handles) zum Vergrössern/Verkleinern des Textes
-        const handleSize = 8
+        const handleSize = 9 * ui
         const corners = [
           { hx: offsetX - 5, hy: -boxHeight / 2 - 5 },
           { hx: offsetX + boxWidth + 5, hy: -boxHeight / 2 - 5 },
@@ -698,8 +706,8 @@ export function useCanvasRenderer(
           { hx: offsetX - 5, hy: boxHeight / 2 + 5 },
         ]
         context.fillStyle = '#ffffff'
-        context.strokeStyle = '#3b82f6'
-        context.lineWidth = 1.5
+        context.strokeStyle = '#2563eb'
+        context.lineWidth = 1.5 * ui
         corners.forEach((c) => {
           context.fillRect(c.hx - handleSize / 2, c.hy - handleSize / 2, handleSize, handleSize)
           context.strokeRect(c.hx - handleSize / 2, c.hy - handleSize / 2, handleSize, handleSize)

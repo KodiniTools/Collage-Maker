@@ -12,7 +12,7 @@
 
   const { autoFitScale, panOffset, spacePressed } = useCanvasPan(container)
   const { activeGuides, detectAlignments, detectResizeAlignments, drawGuides } = useAlignmentGuides()
-  const { getCtx } = useCanvasRenderer(canvas, drawGuides)
+  const { getCtx } = useCanvasRenderer(canvas, drawGuides, autoFitScale)
   const { handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd, cursorStyle } = useDragResize(
     canvas,
     autoFitScale,
