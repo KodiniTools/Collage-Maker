@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { ref, useTemplateRef } from 'vue'
+  import { ref, watch, useTemplateRef } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
-  import { compressImages } from '@/utils/imageCompression'
+  import { compressImages, copyImagesInMemory } from '@/utils/imageCompression'
 
   const collage = useCollageStore()
   const toast = useToastStore()
@@ -11,6 +11,12 @@
 
   const isDragging = ref(false)
   const isProcessing = ref(false)
+
+  // Originalauflösung beibehalten (überspringt die Upload-Optimierung).
+  // Als Präferenz im localStorage gespeichert.
+  const KEEP_ORIGINAL_KEY = 'collage:keepOriginalResolution'
+  const keepOriginal = ref(localStorage.getItem(KEEP_ORIGINAL_KEY) === '1')
+  watch(keepOriginal, (v) => localStorage.setItem(KEEP_ORIGINAL_KEY, v ? '1' : '0'))
   const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
   const folderInput = useTemplateRef<HTMLInputElement>('folderInput')
 
@@ -85,8 +91,10 @@
     if (validFiles.length > 0) {
       isProcessing.value = true
       try {
-        const compressedFiles = await compressImages(validFiles)
-        collage.addImages(compressedFiles)
+        const processedFiles = keepOriginal.value
+          ? await copyImagesInMemory(validFiles)
+          : await compressImages(validFiles)
+        collage.addImages(processedFiles)
         toast.success(t('toast.uploadSuccess', { count: validFiles.length }))
       } catch {
         toast.error(t('toast.uploadError'))
@@ -198,6 +206,22 @@
         {{ t('upload.buttonFolder') }}
       </button>
     </div>
+
+    <!-- Originalauflösung beibehalten -->
+    <label
+      class="flex items-start gap-2 mt-3 cursor-pointer select-none"
+      :title="t('upload.keepOriginalHint')"
+    >
+      <input
+        v-model="keepOriginal"
+        type="checkbox"
+        class="mt-0.5 w-4 h-4 accent-accent shrink-0 cursor-pointer"
+      />
+      <span class="text-xs text-muted dark:text-muted-light">
+        {{ t('upload.keepOriginal') }}
+        <span class="block text-[10px] opacity-70">{{ t('upload.keepOriginalHint') }}</span>
+      </span>
+    </label>
 
     <!-- Files input (no webkitdirectory) -->
     <input

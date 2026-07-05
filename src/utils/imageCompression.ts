@@ -114,3 +114,22 @@ export async function compressImages(files: File[]): Promise<File[]> {
   const compressed = await Promise.all(files.map((file) => compressImage(file).catch(() => file)))
   return compressed
 }
+
+/**
+ * Übernimmt die Dateien in Originalauflösung/-qualität (keine Skalierung, keine
+ * Re-Kodierung). Es wird lediglich eine In-Memory-Kopie erstellt, um
+ * ERR_UPLOAD_FILE_CHANGED zu vermeiden (Blob-URLs auf Disk-Dateien können brechen,
+ * wenn sich die Datei ändert).
+ */
+export async function copyImagesInMemory(files: File[]): Promise<File[]> {
+  return Promise.all(
+    files.map(async (file) => {
+      try {
+        const buffer = await file.arrayBuffer()
+        return new File([buffer], file.name, { type: file.type, lastModified: file.lastModified })
+      } catch {
+        return file
+      }
+    })
+  )
+}
