@@ -5,10 +5,15 @@ export async function drawBackground(
   canvasWidth: number,
   canvasHeight: number,
   backgroundColor: string,
-  bgSettings: BackgroundImageSettings
+  bgSettings: BackgroundImageSettings,
+  // Bei transparentem Export die Farbfüllung überspringen, das
+  // Hintergrundbild aber weiterhin zeichnen (es ist bewusster Inhalt).
+  fillColor = true
 ): Promise<void> {
-  ctx.fillStyle = backgroundColor
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  if (fillColor) {
+    ctx.fillStyle = backgroundColor
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  }
 
   if (!bgSettings.url) return
 
