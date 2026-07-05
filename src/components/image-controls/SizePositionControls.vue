@@ -58,7 +58,7 @@
             type="number"
             :value="Math.round(image.width)"
             min="10"
-            max="2000"
+            max="8000"
             class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
             @input="api.updateWidth(Number(($event.target as HTMLInputElement).value))"
           />
@@ -69,7 +69,7 @@
             type="number"
             :value="Math.round(image.height)"
             min="10"
-            max="2000"
+            max="8000"
             class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
             @input="api.updateHeight(Number(($event.target as HTMLInputElement).value))"
           />
