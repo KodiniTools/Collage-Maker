@@ -60,7 +60,7 @@
             id: 'canvas',
             title: '5. Leinwand & Hintergrund',
             content: [
-              '<strong>Leinwandgröße</strong> frei wählbar (400–4000 px) oder vordefinierte Formate: Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312), YouTube Thumbnail (1280×720) und mehr.',
+              '<strong>Leinwandgröße</strong> frei wählbar (400–8000 px) oder vordefinierte Formate: Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312), YouTube Thumbnail (1280×720) und mehr.',
               '<strong>Hintergrundfarbe</strong> per Farbwähler oder Hex-Code. Alternativ ein <strong>Hintergrundbild</strong> mit 4 Anpassungsmodi: Cover, Contain, Stretch, Tile – plus eigene Filter (Helligkeit, Kontrast, Sättigung, Unschärfe) und Deckkraft.',
               '<strong>Hilfslinien-Raster</strong> (ein/aus, Größe anpassbar) und automatische Ausrichtungshilfen. Das Raster erscheint nicht im exportierten Bild.',
             ],
@@ -146,7 +146,7 @@
             id: 'canvas',
             title: '5. Canvas & Background',
             content: [
-              'Freely adjustable <strong>canvas size</strong> (400–4000 px) or predefined formats: Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312), YouTube Thumbnail (1280×720) and more.',
+              'Freely adjustable <strong>canvas size</strong> (400–8000 px) or predefined formats: Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312), YouTube Thumbnail (1280×720) and more.',
               '<strong>Background colour</strong> via colour picker or hex code. Alternatively a <strong>background image</strong> with 4 fitting modes: Cover, Contain, Stretch, Tile – plus dedicated filters (brightness, contrast, saturation, blur) and opacity.',
               '<strong>Guide grid</strong> (on/off, adjustable size) and automatic alignment guides. The grid does not appear in the exported image.',
             ],

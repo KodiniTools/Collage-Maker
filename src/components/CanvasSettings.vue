@@ -12,7 +12,14 @@
   const DEFAULT_HEIGHT = 740
   // Grenzen der Größen-Regler / -Eingaben
   const MIN_SIZE = 400
-  const MAX_SIZE = 4000
+  const MAX_SIZE = 8000
+  // Ab dieser Kantenlänge kann der Export auf Mobilgeräten (v.a. iOS Safari,
+  // Canvas-Flächenlimit ~16 MP) fehlschlagen → Warnhinweis anzeigen.
+  const WARN_SIZE = 4096
+
+  const showLargeSizeWarning = computed(
+    () => collage.settings.width > WARN_SIZE || collage.settings.height > WARN_SIZE
+  )
 
   // Seitenverhältnis beibehalten: bei aktivierter Option wird die jeweils
   // andere Dimension proportional mitgeführt.
@@ -303,6 +310,27 @@
           @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
+
+      <!-- Warnung bei sehr großer Leinwand (Mobile-Export-Limit) -->
+      <p
+        v-if="showLargeSizeWarning"
+        class="flex items-start gap-1.5 text-xs text-amber-600 dark:text-amber-400"
+      >
+        <svg
+          class="w-4 h-4 flex-shrink-0 mt-0.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v2m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z"
+          />
+        </svg>
+        <span>{{ t('canvas.largeSizeWarning') }}</span>
+      </p>
 
       <!-- Ecken abrunden -->
       <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
