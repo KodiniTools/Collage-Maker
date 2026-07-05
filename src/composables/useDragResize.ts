@@ -86,8 +86,10 @@ export function useDragResize(
   const textResizeStartDist = ref(0)
 
   function getResizeHandle(x: number, y: number, img: any, touchMode = false): string | null {
-    const handleSize = 8
-    const hitRadius = handleSize * (touchMode ? 4.5 : 1.5) // Larger hit area for touch
+    // Trefferradius an den Anzeige-Zoom koppeln (konstante Bildschirmgröße),
+    // damit Handles auf großen Leinwänden nicht winzig zu treffen sind.
+    const fit = autoFitScale.value || 1
+    const hitRadius = (touchMode ? 40 : 13) / fit
     const centerX = img.x + img.width / 2
     const centerY = img.y + img.height / 2
 
@@ -123,7 +125,8 @@ export function useDragResize(
   }
 
   function isDeleteButtonClicked(x: number, y: number, img: any, touchMode = false): boolean {
-    const deleteButtonSize = touchMode ? 28 : 14
+    const fit = autoFitScale.value || 1
+    const deleteButtonSize = (touchMode ? 30 : 16) / fit
     const centerX = img.x + img.width / 2
     const centerY = img.y + img.height / 2
 
@@ -179,8 +182,9 @@ export function useDragResize(
     touchMode = false
   ): string | null {
     const box = getTextBox(text, ctx)
-    const handleSize = 8
-    const hitRadius = handleSize * (touchMode ? 4.5 : 1.5) // grössere Trefferfläche für Touch
+    // Trefferradius an den Anzeige-Zoom koppeln (konstante Bildschirmgröße)
+    const fit = autoFitScale.value || 1
+    const hitRadius = (touchMode ? 40 : 13) / fit
 
     // Klickpunkt ins lokale (unrotierte) Koordinatensystem des Textes transformieren
     const angle = (text.rotation * Math.PI) / 180
