@@ -169,7 +169,7 @@
       },
       {
         "question": "What is the maximum canvas size?",
-        "answer": "The canvas can be up to 4000×4000 pixels. There are also predefined sizes for Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312) and YouTube Thumbnail (1280×720).",
+        "answer": "The canvas can be up to 8000×8000 pixels. There are also predefined sizes for Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312) and YouTube Thumbnail (1280×720).",
         "category": "export"
       },
       {
@@ -247,7 +247,8 @@
     "off": "Off",
     "scaleContent": "Scale content with canvas",
     "border": "Frame",
-    "cornerRadius": "Rounded corners"
+    "cornerRadius": "Rounded corners",
+    "largeSizeWarning": "Very large canvases (over 4096 px) may fail to export on mobile devices — especially iOS (blank image)."
   },
   "images": {
     "title": "Images",

@@ -169,7 +169,7 @@
       },
       {
         "question": "Was ist die maximale Canvas-Größe?",
-        "answer": "Die Leinwand kann bis zu 4000×4000 Pixel groß sein. Es gibt auch vordefinierte Größen für Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312) und YouTube Thumbnail (1280×720).",
+        "answer": "Die Leinwand kann bis zu 8000×8000 Pixel groß sein. Es gibt auch vordefinierte Größen für Instagram Post (1080×1080), Instagram Story (1080×1920), Facebook Cover (820×312) und YouTube Thumbnail (1280×720).",
         "category": "export"
       },
       {
@@ -247,7 +247,8 @@
     "off": "Aus",
     "scaleContent": "Inhalte mitskalieren",
     "border": "Rahmen",
-    "cornerRadius": "Ecken abrunden"
+    "cornerRadius": "Ecken abrunden",
+    "largeSizeWarning": "Sehr große Leinwände (über 4096 px) können auf Mobilgeräten – besonders iOS – beim Export fehlschlagen (leeres Bild)."
   },
   "images": {
     "title": "Bilder",
