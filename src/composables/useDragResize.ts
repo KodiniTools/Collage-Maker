@@ -429,7 +429,7 @@ export function useDragResize(
     if (isTextResizing.value && collage.selectedTextId && collage.selectedText) {
       const dist = Math.hypot(x - collage.selectedText.x, y - collage.selectedText.y)
       const scale = dist / textResizeStartDist.value
-      const newFontSize = Math.max(12, Math.min(400, Math.round(textResizeStartFont.value * scale)))
+      const newFontSize = Math.max(12, Math.min(2000, Math.round(textResizeStartFont.value * scale)))
       collage.updateText(collage.selectedText.id, { fontSize: newFontSize })
       return
     }
