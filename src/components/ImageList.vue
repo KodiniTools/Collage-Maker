@@ -96,8 +96,20 @@
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
   }
 
-  function getImageDimensions(image: CollageImage): string {
-    return `${Math.round(image.width)} × ${Math.round(image.height)} px`
+  // Echte Pixelmaße direkt aus dem geladenen Bild lesen (nicht die
+  // Canvas-Platzhaltergröße), damit die Originalauflösung angezeigt wird.
+  const naturalDims = ref<Record<string, { w: number; h: number }>>({})
+
+  function onImageLoad(id: string, event: Event) {
+    const el = event.target as HTMLImageElement
+    if (el.naturalWidth > 0) {
+      naturalDims.value[id] = { w: el.naturalWidth, h: el.naturalHeight }
+    }
+  }
+
+  function dimensionsText(id: string): string {
+    const d = naturalDims.value[id]
+    return d ? `${d.w} × ${d.h} px` : ''
   }
 
   function getFileExtension(filename: string): string {
@@ -190,6 +202,7 @@
               :alt="image.file.name"
               class="w-12 h-12 object-cover rounded"
               :class="{ 'ring-2 ring-primary': collage.isGalleryImageSelected(image.id) }"
+              @load="onImageLoad(image.id, $event)"
             />
             <!-- Selection number badge -->
             <span
@@ -203,7 +216,12 @@
           <!-- File Info -->
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium truncate">{{ image.file.name }}</p>
-            <p class="text-xs text-muted">{{ formatFileSize(image.file.size) }}</p>
+            <p class="text-xs text-muted">
+              {{ formatFileSize(image.file.size)
+              }}<template v-if="dimensionsText(image.id)">
+                • {{ dimensionsText(image.id) }}</template
+              >
+            </p>
           </div>
 
           <!-- Remove Button -->
@@ -346,6 +364,7 @@
               :src="previewImage.url"
               :alt="previewImage.file.name"
               class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-lg"
+              @load="onImageLoad(previewImage.id, $event)"
             />
           </div>
 
@@ -384,7 +403,9 @@
                 <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewDimensions') }}
                 </p>
-                <p class="font-semibold text-slate-800 dark:text-slate-100">{{ getImageDimensions(previewImage) }}</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100">
+                  {{ dimensionsText(previewImage.id) || '…' }}
+                </p>
               </div>
             </div>
 
