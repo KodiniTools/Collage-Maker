@@ -531,10 +531,11 @@ export function useCanvasRenderer(
         context.shadowColor = 'transparent'
       }
 
-      // Löschbutton zeichnen (oben rechts, immer sichtbar für alle Bilder)
+      // Löschbutton zeichnen: innen in der oberen rechten Ecke, damit er nie
+      // vom Canvas-Rand abgeschnitten wird (auch bei randnahen/großen Bildern).
       const deleteButtonSize = 14 * ui
-      const deleteButtonX = img.width / 2 - deleteButtonSize / 2
-      const deleteButtonY = -img.height / 2 - deleteButtonSize / 2
+      const deleteButtonX = img.width / 2 - deleteButtonSize / 2 - 2 * ui
+      const deleteButtonY = -img.height / 2 + deleteButtonSize / 2 + 2 * ui
 
       // Roter Kreis für Löschbutton
       context.fillStyle = '#ef4444'
