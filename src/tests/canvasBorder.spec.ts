@@ -8,11 +8,20 @@ function makeCtx() {
     restore: vi.fn(),
     setLineDash: vi.fn(),
     strokeRect: vi.fn(),
+    stroke: vi.fn(),
+    beginPath: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    arcTo: vi.fn(),
+    rect: vi.fn(),
+    closePath: vi.fn(),
     strokeStyle: '',
     lineWidth: 0,
     lineCap: '' as CanvasLineCap,
   } as unknown as CanvasRenderingContext2D & {
     strokeRect: ReturnType<typeof vi.fn>
+    stroke: ReturnType<typeof vi.fn>
+    arcTo: ReturnType<typeof vi.fn>
     save: ReturnType<typeof vi.fn>
   }
 }
@@ -49,5 +58,13 @@ describe('drawCanvasBorder', () => {
     drawCanvasBorder(ctx, 700, 740, { ...base, style: 'double' })
     const calls = (ctx.strokeRect as ReturnType<typeof vi.fn>).mock.calls
     expect(calls.length).toBe(2)
+  })
+
+  it('strokes a rounded path (not strokeRect) when a corner radius is given', () => {
+    const ctx = makeCtx()
+    drawCanvasBorder(ctx, 700, 740, base, 60) // radius 60, inset 10 -> r=50>0
+    expect((ctx.strokeRect as ReturnType<typeof vi.fn>).mock.calls.length).toBe(0)
+    expect((ctx.arcTo as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(0)
+    expect((ctx.stroke as ReturnType<typeof vi.fn>).mock.calls.length).toBe(1)
   })
 })

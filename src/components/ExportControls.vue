@@ -60,6 +60,7 @@
       texts: collage.texts,
       transparent: exportFormat.value === 'png-transparent',
       border: collage.settings.border,
+      cornerRadius: collage.settings.cornerRadius,
     }
   }
 

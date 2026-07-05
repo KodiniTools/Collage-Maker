@@ -8,6 +8,7 @@ import { drawBackground } from './drawBackground'
 import { drawCollageImage } from './drawCollageImage'
 import { drawCollageText } from './drawCollageText'
 import { drawCanvasBorder } from './drawCanvasBorder'
+import { roundedRectPath, clampCornerRadius } from './roundedRect'
 
 export interface RenderOptions {
   width: number
@@ -18,6 +19,7 @@ export interface RenderOptions {
   texts: CollageText[]
   transparent: boolean
   border?: CanvasBorderSettings
+  cornerRadius?: number
 }
 
 export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasElement> {
@@ -27,6 +29,15 @@ export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasE
 
   canvas.width = options.width
   canvas.height = options.height
+
+  // Abgerundete Ecken: alle Inhalte auf einen abgerundeten Pfad clippen,
+  // sodass die Ecken transparent bleiben (ideal für PNG).
+  const radius = clampCornerRadius(options.cornerRadius ?? 0, options.width, options.height)
+  if (radius > 0) {
+    ctx.save()
+    roundedRectPath(ctx, 0, 0, options.width, options.height, radius)
+    ctx.clip()
+  }
 
   if (!options.transparent) {
     await drawBackground(ctx, options.width, options.height, options.backgroundColor, options.backgroundImage)
@@ -49,8 +60,13 @@ export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasE
     drawCollageText(ctx, text)
   }
 
-  // Rahmen zuletzt zeichnen, damit er über allen Inhalten liegt
-  drawCanvasBorder(ctx, options.width, options.height, options.border)
+  // Clipping der abgerundeten Ecken aufheben, bevor der Rahmen gezeichnet wird
+  if (radius > 0) {
+    ctx.restore()
+  }
+
+  // Rahmen zuletzt zeichnen, damit er über allen Inhalten liegt (folgt der Rundung)
+  drawCanvasBorder(ctx, options.width, options.height, options.border, radius)
 
   return canvas
 }

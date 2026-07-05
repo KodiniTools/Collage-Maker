@@ -1,4 +1,5 @@
 import type { CanvasBorderSettings } from '@/types'
+import { roundedRectPath } from './roundedRect'
 
 /**
  * Zeichnet einen Rahmen entlang der Leinwandkanten. Wird sowohl vom
@@ -7,13 +8,14 @@ import type { CanvasBorderSettings } from '@/types'
  *
  * Der Rahmen wird nach innen gezeichnet (Mittellinie um width/2 eingerückt),
  * sodass er vollständig innerhalb der Leinwand liegt und nicht abgeschnitten
- * wird.
+ * wird. Bei abgerundeten Ecken (cornerRadius > 0) folgt er der Rundung.
  */
 export function drawCanvasBorder(
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
   canvasHeight: number,
-  border: CanvasBorderSettings | undefined | null
+  border: CanvasBorderSettings | undefined | null,
+  cornerRadius = 0
 ): void {
   if (!border || !border.enabled || border.width <= 0) return
 
@@ -27,8 +29,8 @@ export function drawCanvasBorder(
     const line = w / 3
     ctx.lineWidth = line
     ctx.setLineDash([])
-    strokeInset(ctx, canvasWidth, canvasHeight, line / 2)
-    strokeInset(ctx, canvasWidth, canvasHeight, w - line / 2)
+    strokeInset(ctx, canvasWidth, canvasHeight, line / 2, cornerRadius)
+    strokeInset(ctx, canvasWidth, canvasHeight, w - line / 2, cornerRadius)
   } else {
     ctx.lineWidth = w
     if (border.style === 'dashed') {
@@ -41,7 +43,7 @@ export function drawCanvasBorder(
     } else {
       ctx.setLineDash([])
     }
-    strokeInset(ctx, canvasWidth, canvasHeight, w / 2)
+    strokeInset(ctx, canvasWidth, canvasHeight, w / 2, cornerRadius)
   }
 
   ctx.restore()
@@ -51,7 +53,15 @@ function strokeInset(
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
   canvasHeight: number,
-  inset: number
+  inset: number,
+  cornerRadius: number
 ): void {
-  ctx.strokeRect(inset, inset, canvasWidth - inset * 2, canvasHeight - inset * 2)
+  // Radius konzentrisch mit der Einrückung verkleinern
+  const r = cornerRadius - inset
+  if (r > 0) {
+    roundedRectPath(ctx, inset, inset, canvasWidth - inset * 2, canvasHeight - inset * 2, r)
+    ctx.stroke()
+  } else {
+    ctx.strokeRect(inset, inset, canvasWidth - inset * 2, canvasHeight - inset * 2)
+  }
 }
