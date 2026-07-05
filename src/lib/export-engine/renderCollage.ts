@@ -47,9 +47,16 @@ export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasE
     ctx.clip()
   }
 
-  if (!options.transparent) {
-    await drawBackground(ctx, options.width, options.height, options.backgroundColor, options.backgroundImage)
-  }
+  // Bei transparentem Export nur die Hintergrundfarbe weglassen; ein gesetztes
+  // Hintergrundbild bleibt erhalten (es ist bewusster Inhalt der Collage).
+  await drawBackground(
+    ctx,
+    options.width,
+    options.height,
+    options.backgroundColor,
+    options.backgroundImage,
+    !options.transparent
+  )
 
   const sortedImages = [...options.images].sort((a, b) => a.zIndex - b.zIndex)
   for (const img of sortedImages) {
