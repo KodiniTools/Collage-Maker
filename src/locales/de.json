@@ -286,7 +286,12 @@
     "previewDimensions": "Abmessungen",
     "selectImage": "Bild auswählen",
     "deselectImage": "Auswahl aufheben",
-    "addThisToCanvas": "Zu Canvas hinzufügen"
+    "addThisToCanvas": "Zu Canvas hinzufügen",
+    "deleteConfirmTitle": "Bild löschen?",
+    "deleteConfirmMessage": "Dieses Bild wird endgültig aus der Galerie entfernt.",
+    "deleteConfirmOnCanvas": "Es befindet sich noch {count}× auf dem Canvas und wird auch von dort und aus der Vorschauleiste entfernt.",
+    "deleteConfirmConfirm": "Löschen",
+    "deleteConfirmCancel": "Abbrechen"
   },
   "export": {
     "title": "Exportieren",

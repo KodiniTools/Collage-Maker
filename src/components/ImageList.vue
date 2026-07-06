@@ -17,6 +17,32 @@
   const showPreview = ref(false)
   const previewImage = ref<CollageImage | null>(null)
 
+  // Delete Confirmation State
+  const showDeleteConfirm = ref(false)
+  const imageToDelete = ref<CollageImage | null>(null)
+
+  // Anzahl der Canvas-Instanzen des zu löschenden Bildes
+  const deleteInstanceCount = computed(() =>
+    imageToDelete.value ? collage.countGalleryImageInstances(imageToDelete.value.id) : 0
+  )
+
+  function requestDelete(image: CollageImage) {
+    imageToDelete.value = image
+    showDeleteConfirm.value = true
+  }
+
+  function cancelDelete() {
+    showDeleteConfirm.value = false
+    imageToDelete.value = null
+  }
+
+  function confirmDelete() {
+    if (imageToDelete.value) {
+      collage.removeGalleryImage(imageToDelete.value.id)
+    }
+    cancelDelete()
+  }
+
   // Nur Galerie-Templates anzeigen (keine Canvas-Instanzen)
   const galleryImages = computed(() => images.value.filter((img) => img.isGalleryTemplate === true))
 
@@ -228,7 +254,7 @@
           <button
             class="p-1 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm"
             :aria-label="t('images.remove')"
-            @click.stop="collage.removeImage(image.id)"
+            @click.stop="requestDelete(image)"
           >
             <svg class="w-5 h-5 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -449,6 +475,68 @@
                 {{ t('gallery.setAsBackground') }}
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Delete Confirmation Modal -->
+    <Teleport to="#modal-portal">
+      <div
+        v-if="showDeleteConfirm && imageToDelete"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+        @click.self="cancelDelete"
+      >
+        <div
+          class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-sm w-full border border-muted/10 dark:border-white/10 overflow-hidden"
+        >
+          <!-- Header -->
+          <div class="flex items-start gap-3 p-4 sm:p-5">
+            <div
+              class="shrink-0 w-10 h-10 rounded-full bg-warm/15 flex items-center justify-center"
+            >
+              <svg class="w-6 h-6 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base font-semibold text-slate-900 dark:text-white">
+                {{ t('gallery.deleteConfirmTitle') }}
+              </h3>
+              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 break-words">
+                {{ imageToDelete.file.name }}
+              </p>
+              <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
+                {{ t('gallery.deleteConfirmMessage') }}
+              </p>
+              <p
+                v-if="deleteInstanceCount > 0"
+                class="text-sm text-warm-dark dark:text-warm-light mt-2 font-medium"
+              >
+                {{ t('gallery.deleteConfirmOnCanvas', { count: deleteInstanceCount }) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2 px-4 pb-4 sm:px-5 sm:pb-5">
+            <button
+              class="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors"
+              @click="cancelDelete"
+            >
+              {{ t('gallery.deleteConfirmCancel') }}
+            </button>
+            <button
+              class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors"
+              @click="confirmDelete"
+            >
+              {{ t('gallery.deleteConfirmConfirm') }}
+            </button>
           </div>
         </div>
       </div>
