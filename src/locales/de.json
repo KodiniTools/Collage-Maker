@@ -266,7 +266,9 @@
     "remove": "Bild entfernen",
     "selected": "{count} ausgewählt",
     "deselectAll": "Auswahl aufheben",
-    "hint": "Strg+Klick für Mehrfachauswahl"
+    "hint": "Strg+Klick für Mehrfachauswahl",
+    "reorderHint": "Ziehen zum Umsortieren der Ebenen",
+    "layerNumber": "Ebene {n}"
   },
   "gallery": {
     "selectAll": "Alle auswählen",

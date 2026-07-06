@@ -730,6 +730,16 @@ export const useCollageStore = defineStore('collage', () => {
     })
   }
 
+  // Canvas-Bilder anhand einer sortierten ID-Liste neu stapeln.
+  // orderedIds ist von hinten (Index 0 = unterste Ebene) nach vorne sortiert.
+  function reorderCanvasImages(orderedIds: string[]) {
+    if (orderedIds.length === 0) return
+    saveStateForUndo()
+    orderedIds.forEach((id, index) => {
+      updateImage(id, { zIndex: index })
+    })
+  }
+
   // Ausgewählte Bilder nach hinten senden
   function sendSelectedToBack() {
     if (selectedImageIds.value.length === 0) return
@@ -984,6 +994,7 @@ export const useCollageStore = defineStore('collage', () => {
     duplicateSelectedImages,
     bringSelectedToFront,
     sendSelectedToBack,
+    reorderCanvasImages,
     rotateSelectedImages,
     moveSelectedImages,
     moveSelectedText,
