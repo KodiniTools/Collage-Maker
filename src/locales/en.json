@@ -260,7 +260,7 @@
     "dragToCanvas": "Drag the image to the canvas to add it"
   },
   "thumbnailBar": {
-    "title": "Images on canvas:",
+    "title": "Images on canvas",
     "clickToSelect": "Click to select",
     "imageAlt": "Image {index}",
     "remove": "Remove image",

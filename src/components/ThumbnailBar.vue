@@ -37,7 +37,7 @@
     <!-- Header: Label + Auswahl-Info (scrollt nicht mit den Thumbnails) -->
     <div class="flex items-center justify-between gap-2 mb-1.5">
       <span class="text-xs text-muted dark:text-muted-light font-medium truncate">
-        {{ t('thumbnailBar.title') }}
+        {{ t('thumbnailBar.title') }} ({{ canvasImages.length }})
       </span>
 
       <div
