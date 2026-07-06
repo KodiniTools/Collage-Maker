@@ -259,7 +259,7 @@
           :value="collage.settings.width"
           :min="MIN_SIZE"
           :max="MAX_SIZE"
-          step="10"
+          step="1"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
           @input="updateWidth(Number(($event.target as HTMLInputElement).value))"
         />
@@ -295,7 +295,7 @@
           :value="collage.settings.height"
           :min="MIN_SIZE"
           :max="MAX_SIZE"
-          step="10"
+          step="1"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
           @input="updateHeight(Number(($event.target as HTMLInputElement).value))"
         />
