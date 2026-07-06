@@ -1,14 +1,17 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useCollageStore } from '@/stores/collage'
 
   const { t } = useI18n()
   const collage = useCollageStore()
 
-  // Nur Canvas-Bilder anzeigen (keine Gallery-Templates)
+  // Nur Canvas-Bilder anzeigen (keine Gallery-Templates), nach Stapel-Reihenfolge
+  // sortiert: links = hinterste Ebene, rechts = vorderste Ebene.
   const canvasImages = computed(() =>
-    collage.images.filter((img) => img.isGalleryTemplate !== true)
+    collage.images
+      .filter((img) => img.isGalleryTemplate !== true)
+      .sort((a, b) => a.zIndex - b.zIndex)
   )
 
   function handleThumbnailClick(id: string, event: MouseEvent) {
@@ -26,6 +29,45 @@
   function handleRemove(id: string, event: MouseEvent) {
     event.stopPropagation()
     collage.removeImage(id)
+  }
+
+  // ===== Drag & Drop: Ebenen umsortieren =====
+  const dragIndex = ref<number | null>(null)
+  const dragOverIndex = ref<number | null>(null)
+
+  function onReorderStart(event: DragEvent, index: number) {
+    dragIndex.value = index
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move'
+      // Firefox benötigt gesetzte Daten, um das Ziehen zu starten
+      event.dataTransfer.setData('text/plain', String(index))
+    }
+  }
+
+  function onReorderOver(event: DragEvent, index: number) {
+    if (dragIndex.value === null) return
+    event.preventDefault()
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move'
+    dragOverIndex.value = index
+  }
+
+  function onReorderDrop(index: number) {
+    const from = dragIndex.value
+    if (from === null || from === index) {
+      onReorderEnd()
+      return
+    }
+    // Neue Reihenfolge (links = hinten) berechnen und im Store anwenden
+    const ordered = [...canvasImages.value]
+    const [moved] = ordered.splice(from, 1)
+    ordered.splice(index, 0, moved)
+    collage.reorderCanvasImages(ordered.map((img) => img.id))
+    onReorderEnd()
+  }
+
+  function onReorderEnd() {
+    dragIndex.value = null
+    dragOverIndex.value = null
   }
 </script>
 
@@ -62,29 +104,39 @@
       <div
         v-for="(img, index) in canvasImages"
         :key="img.id"
-        class="relative group shrink-0 cursor-pointer rounded transition-all duration-150"
+        draggable="true"
+        class="relative group shrink-0 cursor-grab active:cursor-grabbing rounded transition-all duration-150"
         :class="{
           'ring-2 ring-primary ring-offset-2 ring-offset-surface-light dark:ring-offset-surface-dark':
             collage.isImageSelected(img.id),
-          'hover:ring-2 hover:ring-muted/50': !collage.isImageSelected(img.id),
+          'hover:ring-2 hover:ring-muted/50':
+            !collage.isImageSelected(img.id) && dragOverIndex !== index,
+          'opacity-40': dragIndex === index,
+          'ring-2 ring-accent ring-offset-2 ring-offset-surface-light dark:ring-offset-surface-dark':
+            dragOverIndex === index && dragIndex !== index,
         }"
-        :title="t('thumbnailBar.clickToSelect')"
+        :title="t('thumbnailBar.reorderHint')"
         @click="handleThumbnailClick(img.id, $event)"
+        @dragstart="onReorderStart($event, index)"
+        @dragover="onReorderOver($event, index)"
+        @drop="onReorderDrop(index)"
+        @dragend="onReorderEnd"
       >
         <!-- Thumbnail Image -->
         <img
           :src="img.url"
           :alt="t('thumbnailBar.imageAlt', { index: index + 1 })"
-          class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded"
+          class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded pointer-events-none"
           :style="{
             transform: `rotate(${img.rotation}deg)`,
             opacity: img.opacity,
           }"
         />
 
-        <!-- Index Badge -->
+        <!-- Ebenen-Badge (1 = hinterste Ebene) -->
         <span
           class="absolute -top-1 -left-1 w-4 h-4 bg-slate-dark dark:bg-muted-light text-surface-light dark:text-slate-dark text-[10px] font-bold rounded-full flex items-center justify-center ring-1 ring-surface-light dark:ring-surface-dark"
+          :title="t('thumbnailBar.layerNumber', { n: index + 1 })"
         >
           {{ index + 1 }}
         </span>
@@ -122,9 +174,9 @@
       </div>
     </div>
 
-    <!-- Hint for multi-select -->
+    <!-- Hint: Mehrfachauswahl + Umsortieren -->
     <p class="text-[10px] text-muted/70 dark:text-muted-light/70 mt-1">
-      {{ t('thumbnailBar.hint') }}
+      {{ t('thumbnailBar.hint') }} • {{ t('thumbnailBar.reorderHint') }}
     </p>
   </div>
 </template>

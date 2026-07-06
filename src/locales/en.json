@@ -266,7 +266,9 @@
     "remove": "Remove image",
     "selected": "{count} selected",
     "deselectAll": "Deselect all",
-    "hint": "Ctrl+click for multi-select"
+    "hint": "Ctrl+click for multi-select",
+    "reorderHint": "Drag to reorder layers",
+    "layerNumber": "Layer {n}"
   },
   "gallery": {
     "selectAll": "Select all",
