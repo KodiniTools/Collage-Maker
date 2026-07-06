@@ -17,17 +17,34 @@
   const showPreview = ref(false)
   const previewImage = ref<CollageImage | null>(null)
 
-  // Delete Confirmation State
+  // Delete Confirmation State ('single' = einzelnes Bild, 'selected' = Mehrfachauswahl)
   const showDeleteConfirm = ref(false)
+  const deleteMode = ref<'single' | 'selected'>('single')
   const imageToDelete = ref<CollageImage | null>(null)
 
-  // Anzahl der Canvas-Instanzen des zu löschenden Bildes
-  const deleteInstanceCount = computed(() =>
-    imageToDelete.value ? collage.countGalleryImageInstances(imageToDelete.value.id) : 0
-  )
+  // Anzahl der betroffenen Canvas-Instanzen (für den Hinweis im Dialog)
+  const deleteInstanceCount = computed(() => {
+    if (deleteMode.value === 'single') {
+      return imageToDelete.value
+        ? collage.countGalleryImageInstances(imageToDelete.value.id)
+        : 0
+    }
+    return selectedGalleryIds.value.reduce(
+      (sum, id) => sum + collage.countGalleryImageInstances(id),
+      0
+    )
+  })
 
   function requestDelete(image: CollageImage) {
+    deleteMode.value = 'single'
     imageToDelete.value = image
+    showDeleteConfirm.value = true
+  }
+
+  function requestDeleteSelected() {
+    if (selectedCount.value === 0) return
+    deleteMode.value = 'selected'
+    imageToDelete.value = null
     showDeleteConfirm.value = true
   }
 
@@ -37,8 +54,10 @@
   }
 
   function confirmDelete() {
-    if (imageToDelete.value) {
-      collage.removeGalleryImage(imageToDelete.value.id)
+    if (deleteMode.value === 'single') {
+      if (imageToDelete.value) collage.removeGalleryImage(imageToDelete.value.id)
+    } else {
+      collage.removeSelectedGalleryImages()
     }
     cancelDelete()
   }
@@ -314,7 +333,7 @@
             <!-- Delete Selected Button -->
             <button
               class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
-              @click="collage.removeSelectedGalleryImages()"
+              @click="requestDeleteSelected"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -483,7 +502,7 @@
     <!-- Delete Confirmation Modal -->
     <Teleport to="#modal-portal">
       <div
-        v-if="showDeleteConfirm && imageToDelete"
+        v-if="showDeleteConfirm"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
         @click.self="cancelDelete"
       >
@@ -506,13 +525,24 @@
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-base font-semibold text-slate-900 dark:text-white">
-                {{ t('gallery.deleteConfirmTitle') }}
+                {{
+                  deleteMode === 'single'
+                    ? t('gallery.deleteConfirmTitle')
+                    : t('gallery.deleteSelectedConfirmTitle', { count: selectedCount })
+                }}
               </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 break-words">
+              <p
+                v-if="deleteMode === 'single' && imageToDelete"
+                class="text-sm text-slate-600 dark:text-slate-300 mt-1 break-words"
+              >
                 {{ imageToDelete.file.name }}
               </p>
               <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
-                {{ t('gallery.deleteConfirmMessage') }}
+                {{
+                  deleteMode === 'single'
+                    ? t('gallery.deleteConfirmMessage')
+                    : t('gallery.deleteSelectedConfirmMessage')
+                }}
               </p>
               <p
                 v-if="deleteInstanceCount > 0"

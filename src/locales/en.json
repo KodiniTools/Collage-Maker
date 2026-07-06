@@ -291,7 +291,9 @@
     "deleteConfirmMessage": "This image will be permanently removed from the gallery.",
     "deleteConfirmOnCanvas": "It is still used {count}× on the canvas and will also be removed from there and from the preview bar.",
     "deleteConfirmConfirm": "Delete",
-    "deleteConfirmCancel": "Cancel"
+    "deleteConfirmCancel": "Cancel",
+    "deleteSelectedConfirmTitle": "Delete {count} images?",
+    "deleteSelectedConfirmMessage": "These images will be permanently removed from the gallery."
   },
   "export": {
     "title": "Export",
