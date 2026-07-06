@@ -76,6 +76,12 @@
     () => [collage.selectedImageId, collage.selectedTextId] as const,
     ([imgId, textId]) => {
       if (imgId || textId) {
+        // Ist der Nutzer bereits im Text-Reiter und wählt einen Text aus,
+        // dort bleiben – die Bearbeitung wird inline unter der Liste angezeigt.
+        if (textId && inspectorTab.value === 'text') {
+          inspectorOpen.value = true
+          return
+        }
         inspectorTab.value = 'selection'
         inspectorOpen.value = true
       }
@@ -360,12 +366,14 @@
                 <TextControls v-if="collage.selectedTextId" />
                 <ImageControls v-else />
               </template>
-              <div
-                v-else-if="inspectorTab === 'text'"
-                class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-              >
-                <TextList />
-              </div>
+              <template v-else-if="inspectorTab === 'text'">
+                <div
+                  class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
+                >
+                  <TextList />
+                </div>
+                <TextControls v-if="collage.selectedTextId" />
+              </template>
               <CanvasSettings v-else-if="inspectorTab === 'canvas'" />
               <div
                 v-else
