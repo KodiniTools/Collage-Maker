@@ -17,8 +17,32 @@ interface SavedState {
   settings: CollageSettings
 }
 
-interface SavedImage extends Omit<CollageImage, 'file' | 'url'> {
+export interface SavedImage extends Omit<CollageImage, 'file' | 'url'> {
   dataUrl: string // Base64-kodiertes Bild (komprimiert)
+}
+
+/**
+ * Migration für ältere Speicherstände ohne sourceId: verknüpft Canvas-Instanzen
+ * wieder mit ihrem Galerie-Template. Template und Instanzen desselben Bildes
+ * teilen identischen dataUrl-Inhalt – da die Blob-URLs beim Wiederherstellen neu
+ * erzeugt werden, ist der dataUrl die einzige stabile Gemeinsamkeit.
+ * Mutiert die übergebenen Objekte (setzt sourceId nur, wenn es noch fehlt).
+ */
+export function relinkGalleryInstances(images: SavedImage[]): void {
+  const templateIdByDataUrl = new Map<string, string>()
+  for (const img of images) {
+    if (img.isGalleryTemplate === true && img.dataUrl) {
+      if (!templateIdByDataUrl.has(img.dataUrl)) {
+        templateIdByDataUrl.set(img.dataUrl, img.id)
+      }
+    }
+  }
+  for (const img of images) {
+    if (img.isGalleryTemplate !== true && !img.sourceId && img.dataUrl) {
+      const tplId = templateIdByDataUrl.get(img.dataUrl)
+      if (tplId) img.sourceId = tplId
+    }
+  }
 }
 
 export function useAutoSave() {
@@ -362,6 +386,9 @@ export function useAutoSave() {
           ...state.settings.backgroundImage,
         }
       }
+
+      // Ältere Speicherstände ohne sourceId wieder verknüpfen (Migration)
+      relinkGalleryInstances(state.images)
 
       // Konvertiere Base64 zurück zu Blob-URLs und stelle Bilder wieder her
       for (const savedImg of state.images) {
