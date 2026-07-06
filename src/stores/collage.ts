@@ -424,6 +424,37 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
+  // Anzahl der Canvas-Instanzen eines Galerie-Bildes (gleiche URL, keine Templates)
+  function countGalleryImageInstances(galleryId: string): number {
+    const galleryImage = images.value.find((img) => img.id === galleryId)
+    if (!galleryImage) return 0
+    return images.value.filter(
+      (img) => img.url === galleryImage.url && img.isGalleryTemplate !== true
+    ).length
+  }
+
+  // Einzelnes Galerie-Bild entfernen (Template + alle Canvas-Instanzen)
+  function removeGalleryImage(galleryId: string) {
+    saveStateForUndo()
+    const galleryImage = images.value.find((img) => img.id === galleryId)
+    if (!galleryImage) return
+
+    // Template und alle Canvas-Instanzen teilen dieselbe URL
+    const relatedImages = images.value.filter((img) => img.url === galleryImage.url)
+    relatedImages.forEach((img) => removeImage(img.id, true))
+
+    // Aus der Galerie-Auswahl entfernen
+    const selIndex = selectedGalleryIds.value.indexOf(galleryId)
+    if (selIndex !== -1) {
+      selectedGalleryIds.value.splice(selIndex, 1)
+    }
+
+    // Layout neu anwenden, damit verbleibende Bilder nachrücken
+    if (settings.value.layout !== 'freestyle') {
+      applyLayout(settings.value.layout, true)
+    }
+  }
+
   // Ausgewählte Galerie-Bilder entfernen (Template + alle Canvas-Instanzen)
   function removeSelectedGalleryImages() {
     saveStateForUndo()
@@ -902,6 +933,8 @@ export const useCollageStore = defineStore('collage', () => {
     isGalleryImageSelected,
     addSelectedGalleryToCanvas,
     removeSelectedGalleryImages,
+    removeGalleryImage,
+    countGalleryImageInstances,
     // Text-Funktionen
     addText,
     removeText,
