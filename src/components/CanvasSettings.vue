@@ -11,7 +11,7 @@
   const DEFAULT_WIDTH = 700
   const DEFAULT_HEIGHT = 740
   // Grenzen der Größen-Regler / -Eingaben
-  const MIN_SIZE = 400
+  const MIN_SIZE = 10
   const MAX_SIZE = 8000
   // Ab dieser Kantenlänge kann der Export auf Mobilgeräten (v.a. iOS Safari,
   // Canvas-Flächenlimit ~16 MP) fehlschlagen → Warnhinweis anzeigen.
