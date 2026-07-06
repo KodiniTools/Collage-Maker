@@ -6,6 +6,12 @@ export default {
     extend: {
       colors: {
         // custom color scheme
+        // Selektions-/Aktionsfarbe (Galerie-Checkboxen, Auswahl-Badges, Buttons)
+        primary: {
+          DEFAULT: '#014f99',
+          light: '#3373b3',
+          dark: '#003971',
+        },
         accent: {
           DEFAULT: '#c9984d',
           light: '#f8e1a9',
