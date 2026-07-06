@@ -411,6 +411,7 @@ export function useAutoSave() {
             warmth: savedImg.warmth ?? 0,
             sharpness: savedImg.sharpness ?? 0,
             isGalleryTemplate: savedImg.isGalleryTemplate,
+            sourceId: savedImg.sourceId,
           }
 
           collage.images.push(restoredImage)

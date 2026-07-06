@@ -34,6 +34,10 @@ export interface CollageImage {
   sharpness: number
   // Template/Instanz-System: Templates sind in der Galerie, Instanzen im Canvas
   isGalleryTemplate?: boolean
+  // ID des Galerie-Templates, von dem diese Canvas-Instanz abstammt.
+  // Bleibt über das Speichern/Wiederherstellen stabil (im Gegensatz zur Blob-URL)
+  // und verknüpft Canvas-Instanzen mit ihrem Galerie-Bild.
+  sourceId?: string
 }
 
 export interface CollageText {

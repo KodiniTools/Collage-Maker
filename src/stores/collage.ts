@@ -233,6 +233,7 @@ export const useCollageStore = defineStore('collage', () => {
         id: instanceId,
         zIndex: images.value.length,
         isGalleryTemplate: false,
+        sourceId: templateId,
       })
     })
 
@@ -407,6 +408,7 @@ export const useCollageStore = defineStore('collage', () => {
         warmth: 0,
         sharpness: 0,
         isGalleryTemplate: false,
+        sourceId: sourceImage.id,
       })
 
       newIds.push(newId)
@@ -424,12 +426,23 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
-  // Anzahl der Canvas-Instanzen eines Galerie-Bildes (gleiche URL, keine Templates)
+  // Gehört ein Bild zu einem Galerie-Template? Verknüpfung primär über die
+  // stabile sourceId (übersteht Speichern/Wiederherstellen), mit Fallback auf
+  // die geteilte URL (gleiche Sitzung, alte Speicherstände ohne sourceId).
+  function isRelatedToGalleryImage(img: CollageImage, galleryImage: CollageImage): boolean {
+    return (
+      img.id === galleryImage.id ||
+      img.sourceId === galleryImage.id ||
+      (!!img.url && img.url === galleryImage.url)
+    )
+  }
+
+  // Anzahl der Canvas-Instanzen eines Galerie-Bildes (keine Templates)
   function countGalleryImageInstances(galleryId: string): number {
     const galleryImage = images.value.find((img) => img.id === galleryId)
     if (!galleryImage) return 0
     return images.value.filter(
-      (img) => img.url === galleryImage.url && img.isGalleryTemplate !== true
+      (img) => img.isGalleryTemplate !== true && isRelatedToGalleryImage(img, galleryImage)
     ).length
   }
 
@@ -439,9 +452,11 @@ export const useCollageStore = defineStore('collage', () => {
     const galleryImage = images.value.find((img) => img.id === galleryId)
     if (!galleryImage) return
 
-    // Template und alle Canvas-Instanzen teilen dieselbe URL
-    const relatedImages = images.value.filter((img) => img.url === galleryImage.url)
-    relatedImages.forEach((img) => removeImage(img.id, true))
+    // Template und alle zugehörigen Canvas-Instanzen entfernen
+    const relatedIds = images.value
+      .filter((img) => isRelatedToGalleryImage(img, galleryImage))
+      .map((img) => img.id)
+    relatedIds.forEach((id) => removeImage(id, true))
 
     // Aus der Galerie-Auswahl entfernen
     const selIndex = selectedGalleryIds.value.indexOf(galleryId)
@@ -463,13 +478,20 @@ export const useCollageStore = defineStore('collage', () => {
     idsToRemove.forEach((galleryId) => {
       const galleryImage = images.value.find((img) => img.id === galleryId)
       if (galleryImage) {
-        // Finde alle Canvas-Instanzen mit der gleichen URL
-        const relatedImages = images.value.filter((img) => img.url === galleryImage.url)
-        relatedImages.forEach((img) => removeImage(img.id, true))
+        // Finde Template + alle zugehörigen Canvas-Instanzen
+        const relatedIds = images.value
+          .filter((img) => isRelatedToGalleryImage(img, galleryImage))
+          .map((img) => img.id)
+        relatedIds.forEach((id) => removeImage(id, true))
       }
     })
 
     selectedGalleryIds.value = []
+
+    // Layout neu anwenden, damit verbleibende Bilder nachrücken
+    if (settings.value.layout !== 'freestyle') {
+      applyLayout(settings.value.layout, true)
+    }
   }
 
   // ========== Layout Funktionen ==========
@@ -660,6 +682,8 @@ export const useCollageStore = defineStore('collage', () => {
       sharpness: 0,
       // Als Canvas-Instanz markieren (kein Galerie-Template)
       isGalleryTemplate: false,
+      // Verknüpfung zum Galerie-Template beibehalten (Instanz oder Template als Quelle)
+      sourceId: sourceImage.sourceId ?? sourceImage.id,
     })
 
     // Selektiere das neue Bild (ersetzt vorherige Auswahl)

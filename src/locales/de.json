@@ -291,7 +291,9 @@
     "deleteConfirmMessage": "Dieses Bild wird endgültig aus der Galerie entfernt.",
     "deleteConfirmOnCanvas": "Es befindet sich noch {count}× auf dem Canvas und wird auch von dort und aus der Vorschauleiste entfernt.",
     "deleteConfirmConfirm": "Löschen",
-    "deleteConfirmCancel": "Abbrechen"
+    "deleteConfirmCancel": "Abbrechen",
+    "deleteSelectedConfirmTitle": "{count} Bilder löschen?",
+    "deleteSelectedConfirmMessage": "Diese Bilder werden endgültig aus der Galerie entfernt."
   },
   "export": {
     "title": "Exportieren",
