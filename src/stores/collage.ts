@@ -11,7 +11,9 @@ import type {
 } from '@/types'
 import { computeLayout } from '@/lib/layouts'
 import { useHistoryStore } from '@/stores/history'
+import { useToastStore } from '@/stores/toast'
 import { UNDO_DEBOUNCE_MS } from '@/config/constants'
+import { i18n } from '@/i18n'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
@@ -266,6 +268,25 @@ export const useCollageStore = defineStore('collage', () => {
     if (selectionIndex !== -1) {
       selectedImageIds.value.splice(selectionIndex, 1)
     }
+  }
+
+  // Zeigt einen Toast mit „Rückgängig"-Aktion nach einer Löschung.
+  // Die Löschfunktionen sichern zuvor den Zustand via saveStateForUndo,
+  // daher stellt undo() das/die gelöschte(n) Bild(er) wieder her.
+  function showUndoToast(messageKey = 'toast.imageDeleted', params?: Record<string, unknown>) {
+    const toast = useToastStore()
+    toast.showToast(i18n.global.t(messageKey, params ?? {}), 'info', 6000, {
+      label: i18n.global.t('toast.undo'),
+      handler: () => undo(),
+    })
+  }
+
+  // Einzelnes Bild löschen und einen „Rückgängig"-Toast anzeigen.
+  // Für sofortige Löschungen (rotes ✕ auf Canvas und in der Vorschauleiste),
+  // damit kein Bestätigungsdialog nötig ist, das Löschen aber sicher bleibt.
+  function removeImageWithUndoToast(id: string) {
+    removeImage(id)
+    showUndoToast()
   }
 
   // Alle ausgewählten Bilder entfernen
@@ -951,6 +972,8 @@ export const useCollageStore = defineStore('collage', () => {
     // Bild-Funktionen
     addImages,
     removeImage,
+    removeImageWithUndoToast,
+    showUndoToast,
     removeSelectedImages,
     updateImage,
     updateSelectedImages,

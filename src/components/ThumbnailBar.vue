@@ -28,7 +28,7 @@
 
   function handleRemove(id: string, event: MouseEvent) {
     event.stopPropagation()
-    collage.removeImage(id)
+    collage.removeImageWithUndoToast(id)
   }
 
   // ===== Drag & Drop: Ebenen umsortieren =====

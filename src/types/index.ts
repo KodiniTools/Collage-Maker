@@ -118,9 +118,15 @@ export interface CollageSettings {
 export type Theme = 'light' | 'dark'
 export type Locale = 'de' | 'en'
 
+export interface ToastAction {
+  label: string
+  handler: () => void
+}
+
 export interface Toast {
   id: string
   message: string
   type: 'success' | 'error' | 'info'
   duration?: number
+  action?: ToastAction
 }

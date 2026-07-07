@@ -5,9 +5,14 @@ import type { Toast } from '@/types'
 export const useToastStore = defineStore('toast', () => {
   const toasts = ref<Toast[]>([])
 
-  function showToast(message: string, type: Toast['type'] = 'info', duration = 3000) {
+  function showToast(
+    message: string,
+    type: Toast['type'] = 'info',
+    duration = 3000,
+    action?: Toast['action']
+  ) {
     const id = crypto.randomUUID()
-    const toast: Toast = { id, message, type, duration }
+    const toast: Toast = { id, message, type, duration, action }
 
     toasts.value.push(toast)
 

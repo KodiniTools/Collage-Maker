@@ -1,7 +1,13 @@
 <script setup lang="ts">
   import { useToastStore } from '@/stores/toast'
+  import type { Toast } from '@/types'
 
   const toast = useToastStore()
+
+  function runAction(t: Toast) {
+    t.action?.handler()
+    toast.removeToast(t.id)
+  }
 </script>
 
 <template>
@@ -75,6 +81,15 @@
           />
         </svg>
         <span class="text-sm font-medium">{{ t.message }}</span>
+
+        <!-- Optionale Aktion (z. B. Rückgängig) -->
+        <button
+          v-if="t.action"
+          class="ml-1 sm:ml-2 shrink-0 px-2 py-1 rounded-md text-xs font-semibold underline underline-offset-2 hover:bg-white/20 transition-colors"
+          @click.stop="runAction(t)"
+        >
+          {{ t.action.label }}
+        </button>
       </div>
     </TransitionGroup>
   </div>

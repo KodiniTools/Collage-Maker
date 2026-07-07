@@ -239,8 +239,8 @@ export function useDragResize(
       .find((img) => isDeleteButtonClicked(x, y, img))
 
     if (clickedDeleteImage) {
-      // Bild aus Canvas entfernen (Undo wird in removeImage gespeichert)
-      collage.removeImage(clickedDeleteImage.id)
+      // Bild aus Canvas entfernen mit „Rückgängig"-Toast (kein Dialog nötig)
+      collage.removeImageWithUndoToast(clickedDeleteImage.id)
       return
     }
 
@@ -743,7 +743,7 @@ export function useDragResize(
       .find((img) => isDeleteButtonClicked(x, y, img, true))
 
     if (clickedDeleteImage) {
-      collage.removeImage(clickedDeleteImage.id)
+      collage.removeImageWithUndoToast(clickedDeleteImage.id)
       return
     }
 
