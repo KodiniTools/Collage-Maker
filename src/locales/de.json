@@ -295,7 +295,8 @@
     "deleteConfirmConfirm": "Löschen",
     "deleteConfirmCancel": "Abbrechen",
     "deleteSelectedConfirmTitle": "{count} Bilder löschen?",
-    "deleteSelectedConfirmMessage": "Diese Bilder werden endgültig aus der Galerie entfernt."
+    "deleteSelectedConfirmMessage": "Diese Bilder werden endgültig aus der Galerie entfernt.",
+    "dontAskAgain": "Nicht mehr fragen"
   },
   "export": {
     "title": "Exportieren",
@@ -518,7 +519,10 @@
     "uploadError": "Fehler beim Verarbeiten der Bilder",
     "exportSuccess": "Collage erfolgreich exportiert",
     "exportError": "Fehler beim Exportieren der Collage",
-    "pasteSuccess": "{count} Bild(er) aus Zwischenablage eingefügt"
+    "pasteSuccess": "{count} Bild(er) aus Zwischenablage eingefügt",
+    "imageDeleted": "Bild gelöscht",
+    "imagesDeleted": "{count} Bilder gelöscht",
+    "undo": "Rückgängig"
   },
   "autoSave": {
     "restoreTitle": "Vorherige Arbeit gefunden",

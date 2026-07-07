@@ -295,7 +295,8 @@
     "deleteConfirmConfirm": "Delete",
     "deleteConfirmCancel": "Cancel",
     "deleteSelectedConfirmTitle": "Delete {count} images?",
-    "deleteSelectedConfirmMessage": "These images will be permanently removed from the gallery."
+    "deleteSelectedConfirmMessage": "These images will be permanently removed from the gallery.",
+    "dontAskAgain": "Don't ask again"
   },
   "export": {
     "title": "Export",
@@ -518,7 +519,10 @@
     "uploadError": "Error processing images",
     "exportSuccess": "Collage exported successfully",
     "exportError": "Error exporting collage",
-    "pasteSuccess": "{count} image(s) pasted from clipboard"
+    "pasteSuccess": "{count} image(s) pasted from clipboard",
+    "imageDeleted": "Image deleted",
+    "imagesDeleted": "{count} images deleted",
+    "undo": "Undo"
   },
   "autoSave": {
     "restoreTitle": "Previous Work Found",

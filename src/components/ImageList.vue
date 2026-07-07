@@ -22,6 +22,11 @@
   const deleteMode = ref<'single' | 'selected'>('single')
   const imageToDelete = ref<CollageImage | null>(null)
 
+  // „Nicht mehr fragen"-Einstellung (persistiert in localStorage)
+  const SKIP_CONFIRM_KEY = 'collage-skip-gallery-delete-confirm'
+  const skipDeleteConfirm = ref(localStorage.getItem(SKIP_CONFIRM_KEY) === 'true')
+  const dontAskAgain = ref(false)
+
   // Anzahl der betroffenen Canvas-Instanzen (für den Hinweis im Dialog)
   const deleteInstanceCount = computed(() => {
     if (deleteMode.value === 'single') {
@@ -35,7 +40,24 @@
     )
   })
 
+  // Führt die eigentliche Löschung aus und zeigt einen „Rückgängig"-Toast.
+  function performDelete(mode: 'single' | 'selected', image: CollageImage | null) {
+    if (mode === 'single') {
+      if (!image) return
+      collage.removeGalleryImage(image.id)
+      collage.showUndoToast('toast.imageDeleted')
+    } else {
+      const count = selectedCount.value
+      collage.removeSelectedGalleryImages()
+      collage.showUndoToast('toast.imagesDeleted', { count })
+    }
+  }
+
   function requestDelete(image: CollageImage) {
+    if (skipDeleteConfirm.value) {
+      performDelete('single', image)
+      return
+    }
     deleteMode.value = 'single'
     imageToDelete.value = image
     showDeleteConfirm.value = true
@@ -43,6 +65,10 @@
 
   function requestDeleteSelected() {
     if (selectedCount.value === 0) return
+    if (skipDeleteConfirm.value) {
+      performDelete('selected', null)
+      return
+    }
     deleteMode.value = 'selected'
     imageToDelete.value = null
     showDeleteConfirm.value = true
@@ -51,14 +77,16 @@
   function cancelDelete() {
     showDeleteConfirm.value = false
     imageToDelete.value = null
+    dontAskAgain.value = false
   }
 
   function confirmDelete() {
-    if (deleteMode.value === 'single') {
-      if (imageToDelete.value) collage.removeGalleryImage(imageToDelete.value.id)
-    } else {
-      collage.removeSelectedGalleryImages()
+    // „Nicht mehr fragen" persistieren, falls angehakt
+    if (dontAskAgain.value) {
+      skipDeleteConfirm.value = true
+      localStorage.setItem(SKIP_CONFIRM_KEY, 'true')
     }
+    performDelete(deleteMode.value, imageToDelete.value)
     cancelDelete()
   }
 
@@ -552,6 +580,18 @@
               </p>
             </div>
           </div>
+
+          <!-- „Nicht mehr fragen" -->
+          <label
+            class="flex items-center gap-2 px-4 sm:px-5 pb-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer select-none"
+          >
+            <input
+              v-model="dontAskAgain"
+              type="checkbox"
+              class="w-4 h-4 rounded border-muted/50 text-warm focus:ring-warm cursor-pointer"
+            />
+            {{ t('gallery.dontAskAgain') }}
+          </label>
 
           <!-- Actions -->
           <div class="flex gap-2 px-4 pb-4 sm:px-5 sm:pb-5">
