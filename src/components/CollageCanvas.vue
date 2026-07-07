@@ -1,14 +1,22 @@
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { useCollageStore } from '@/stores/collage'
   import { useCanvasPan } from '@/composables/useCanvasPan'
   import { useAlignmentGuides } from '@/composables/useAlignmentGuides'
   import { useCanvasRenderer } from '@/composables/useCanvasRenderer'
   import { useDragResize } from '@/composables/useDragResize'
 
+  const { t } = useI18n()
   const collage = useCollageStore()
   const canvas = ref<HTMLCanvasElement | null>(null)
   const container = ref<HTMLDivElement | null>(null)
+
+  // Zoom-Steuerung (Schrittweite 25 %)
+  const ZOOM_STEP = 0.25
+  function zoomBy(delta: number) {
+    collage.setCanvasZoom(Math.round((collage.canvasZoom + delta) * 100) / 100)
+  }
 
   const { autoFitScale, panOffset, spacePressed } = useCanvasPan(container)
   const { activeGuides, detectAlignments, detectResizeAlignments, drawGuides } = useAlignmentGuides()
@@ -85,12 +93,40 @@
       overflow: 'hidden',
     }"
   >
-    <!-- Zoom Info-Badge -->
+    <!-- Zoom-Steuerung -->
     <div
-      v-if="collage.canvasZoom !== 1"
-      class="absolute top-2 right-2 z-10 bg-slate-dark/80 text-surface-light text-xs px-2 py-1 rounded pointer-events-none"
+      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-slate-dark/85 dark:bg-surface-darker/90 backdrop-blur-sm text-surface-light rounded-lg shadow-lg px-1 py-1"
     >
-      {{ Math.round(collage.canvasZoom * 100) }}%
+      <button
+        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        :disabled="collage.canvasZoom <= 0.25"
+        :title="t('shortcuts.zoomOut')"
+        :aria-label="t('shortcuts.zoomOut')"
+        @click="zoomBy(-ZOOM_STEP)"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-width="2" d="M20 12H4" />
+        </svg>
+      </button>
+      <button
+        class="min-w-[3.25rem] h-8 px-1 flex items-center justify-center rounded-md text-xs font-semibold hover:bg-white/15 transition-colors"
+        :title="t('shortcuts.resetZoom')"
+        :aria-label="t('shortcuts.resetZoom')"
+        @click="collage.resetCanvasView()"
+      >
+        {{ Math.round(collage.canvasZoom * 100) }}%
+      </button>
+      <button
+        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        :disabled="collage.canvasZoom >= 4"
+        :title="t('shortcuts.zoomIn')"
+        :aria-label="t('shortcuts.zoomIn')"
+        @click="zoomBy(ZOOM_STEP)"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
     </div>
     <!-- Pan hint when zoomed -->
     <div
