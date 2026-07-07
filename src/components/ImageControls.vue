@@ -8,6 +8,7 @@
   import BorderControls from './image-controls/BorderControls.vue'
   import ShadowControls from './image-controls/ShadowControls.vue'
   import LayerControls from './image-controls/LayerControls.vue'
+  import AlignControls from './image-controls/AlignControls.vue'
 
   const { t } = useI18n()
   const api = useImageControls()
@@ -23,6 +24,9 @@
     <div v-if="api.selectedCount.value > 0" class="space-y-4">
       <!-- Mehrfachauswahl-Banner + Auswahl-Buttons -->
       <SelectionBanner :api="api" />
+
+      <!-- Ausrichten & Verteilen (nur bei Mehrfachauswahl) -->
+      <AlignControls v-if="api.isMultiSelection.value" :api="api" />
 
       <!-- Größe & Position (nur bei Einzelauswahl) -->
       <SizePositionControls

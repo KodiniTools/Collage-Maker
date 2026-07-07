@@ -394,6 +394,8 @@ export function useImageControls() {
     sendToBack,
     bringForward,
     sendBackward,
+    alignImages: collage.alignSelectedImages,
+    distributeImages: collage.distributeSelectedImages,
     updateBrightness,
     updateContrast,
     updateHighlights,

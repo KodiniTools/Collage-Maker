@@ -772,6 +772,76 @@ export const useCollageStore = defineStore('collage', () => {
     })
   }
 
+  // Ausgewählte Bilder an der gemeinsamen Bounding-Box ausrichten
+  type AlignMode = 'left' | 'center-h' | 'right' | 'top' | 'middle-v' | 'bottom'
+  function alignSelectedImages(mode: AlignMode) {
+    const imgs = selectedImages.value
+    if (imgs.length < 2) return
+    saveStateForUndo()
+
+    const minX = Math.min(...imgs.map((i) => i.x))
+    const minY = Math.min(...imgs.map((i) => i.y))
+    const maxRight = Math.max(...imgs.map((i) => i.x + i.width))
+    const maxBottom = Math.max(...imgs.map((i) => i.y + i.height))
+    const centerX = (minX + maxRight) / 2
+    const centerY = (minY + maxBottom) / 2
+
+    imgs.forEach((img) => {
+      switch (mode) {
+        case 'left':
+          updateImage(img.id, { x: minX })
+          break
+        case 'center-h':
+          updateImage(img.id, { x: centerX - img.width / 2 })
+          break
+        case 'right':
+          updateImage(img.id, { x: maxRight - img.width })
+          break
+        case 'top':
+          updateImage(img.id, { y: minY })
+          break
+        case 'middle-v':
+          updateImage(img.id, { y: centerY - img.height / 2 })
+          break
+        case 'bottom':
+          updateImage(img.id, { y: maxBottom - img.height })
+          break
+      }
+    })
+  }
+
+  // Ausgewählte Bilder gleichmäßig verteilen (gleiche Abstände zwischen den Kanten).
+  // Benötigt mindestens 3 Bilder; erstes und letztes bleiben an ihrer Position.
+  function distributeSelectedImages(axis: 'horizontal' | 'vertical') {
+    const imgs = [...selectedImages.value]
+    if (imgs.length < 3) return
+    saveStateForUndo()
+
+    if (axis === 'horizontal') {
+      imgs.sort((a, b) => a.x - b.x)
+      const minLeft = imgs[0].x
+      const maxRight = Math.max(...imgs.map((i) => i.x + i.width))
+      const totalWidth = imgs.reduce((sum, i) => sum + i.width, 0)
+      const gap = (maxRight - minLeft - totalWidth) / (imgs.length - 1)
+      let cursor = minLeft
+      imgs.forEach((img) => {
+        updateImage(img.id, { x: cursor })
+        cursor += img.width + gap
+      })
+    } else {
+      imgs.sort((a, b) => a.y - b.y)
+      const minTop = imgs[0].y
+      const maxBottom = Math.max(...imgs.map((i) => i.y + i.height))
+      const totalHeight = imgs.reduce((sum, i) => sum + i.height, 0)
+      const gap = (maxBottom - minTop - totalHeight) / (imgs.length - 1)
+      let cursor = minTop
+      imgs.forEach((img) => {
+        updateImage(img.id, { y: cursor })
+        cursor += img.height + gap
+      })
+    }
+  }
+
   // Ausgewählte Bilder um Grad drehen
   function rotateSelectedImages(degrees: number) {
     saveStateForUndo()
@@ -1018,6 +1088,8 @@ export const useCollageStore = defineStore('collage', () => {
     bringSelectedToFront,
     sendSelectedToBack,
     reorderCanvasImages,
+    alignSelectedImages,
+    distributeSelectedImages,
     rotateSelectedImages,
     moveSelectedImages,
     moveSelectedText,
