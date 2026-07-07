@@ -47,7 +47,9 @@ const y = (c: ReturnType<typeof useCollageStore>, id: string) =>
   c.images.find((i) => i.id === id)!.y
 
 describe('alignSelectedImages', () => {
-  beforeEach(() => setActivePinia(createPinia()))
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
 
   it('aligns left edges to the selection bounding box', () => {
     const c = useCollageStore()
@@ -95,7 +97,9 @@ describe('alignSelectedImages', () => {
 })
 
 describe('distributeSelectedImages', () => {
-  beforeEach(() => setActivePinia(createPinia()))
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
 
   it('distributes horizontally with equal gaps, keeping endpoints', () => {
     const c = useCollageStore()
