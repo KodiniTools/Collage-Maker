@@ -358,6 +358,8 @@
     "transform": "Transformation",
     "flipHorizontal": "Horizontal spiegeln",
     "flipVertical": "Vertikal spiegeln",
+    "flipHorizontalShort": "Horizontal",
+    "flipVerticalShort": "Vertikal",
     "skewHorizontal": "Neigung horizontal",
     "skewVertical": "Neigung vertikal",
     "imageFilters": "Bildfilter",
