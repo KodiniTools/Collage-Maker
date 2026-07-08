@@ -358,6 +358,8 @@
     "transform": "Transform",
     "flipHorizontal": "Flip Horizontal",
     "flipVertical": "Flip Vertical",
+    "flipHorizontalShort": "Horizontal",
+    "flipVerticalShort": "Vertical",
     "skewHorizontal": "Skew Horizontal",
     "skewVertical": "Skew Vertical",
     "imageFilters": "Image Filters",
