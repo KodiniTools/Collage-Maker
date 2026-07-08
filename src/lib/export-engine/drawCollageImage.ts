@@ -102,6 +102,17 @@ export function drawCollageImage(
   ctx.save()
   ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
   ctx.rotate((img.rotation * Math.PI) / 180)
+
+  // Spiegelung (um die Bildmitte) & Neigung/Scherung
+  const flipH = img.flipHorizontal ? -1 : 1
+  const flipV = img.flipVertical ? -1 : 1
+  if (flipH !== 1 || flipV !== 1) ctx.scale(flipH, flipV)
+  const skewX = img.skewX ?? 0
+  const skewY = img.skewY ?? 0
+  if (skewX !== 0 || skewY !== 0) {
+    ctx.transform(1, Math.tan((skewY * Math.PI) / 180), Math.tan((skewX * Math.PI) / 180), 1, 0, 0)
+  }
+
   ctx.globalAlpha = img.opacity
 
   const x = -img.width / 2

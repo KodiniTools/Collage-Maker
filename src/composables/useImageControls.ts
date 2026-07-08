@@ -199,6 +199,37 @@ export function useImageControls() {
     applyToSelected({ shadowColor: value })
   }
 
+  // Transformation: Spiegelung & Neigung
+  function toggleFlipHorizontal() {
+    saveUndoImmediate()
+    if (isMultiSelection.value) {
+      const anyEnabled = selectedImages.value.some((img) => img.flipHorizontal)
+      applyToSelected({ flipHorizontal: !anyEnabled })
+    } else if (selectedImage.value) {
+      applyToSelected({ flipHorizontal: !selectedImage.value.flipHorizontal })
+    }
+  }
+
+  function toggleFlipVertical() {
+    saveUndoImmediate()
+    if (isMultiSelection.value) {
+      const anyEnabled = selectedImages.value.some((img) => img.flipVertical)
+      applyToSelected({ flipVertical: !anyEnabled })
+    } else if (selectedImage.value) {
+      applyToSelected({ flipVertical: !selectedImage.value.flipVertical })
+    }
+  }
+
+  function updateSkewX(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ skewX: value })
+  }
+
+  function updateSkewY(value: number) {
+    saveUndoDebounced()
+    applyToSelected({ skewY: value })
+  }
+
   function deleteImage() {
     // Undo wird in removeSelectedImages/removeImage gespeichert
     if (isMultiSelection.value) {
@@ -345,6 +376,10 @@ export function useImageControls() {
       saturation: 100,
       warmth: 0,
       sharpness: 0,
+      flipHorizontal: false,
+      flipVertical: false,
+      skewX: 0,
+      skewY: 0,
     }
     applyToSelected(defaultValues)
   }
@@ -389,6 +424,10 @@ export function useImageControls() {
     updateShadowOffsetY,
     updateShadowBlur,
     updateShadowColor,
+    toggleFlipHorizontal,
+    toggleFlipVertical,
+    updateSkewX,
+    updateSkewY,
     deleteImage,
     bringToFront,
     sendToBack,

@@ -437,6 +437,10 @@ export function useAutoSave() {
             saturation: savedImg.saturation ?? 100,
             warmth: savedImg.warmth ?? 0,
             sharpness: savedImg.sharpness ?? 0,
+            flipHorizontal: savedImg.flipHorizontal ?? false,
+            flipVertical: savedImg.flipVertical ?? false,
+            skewX: savedImg.skewX ?? 0,
+            skewY: savedImg.skewY ?? 0,
             isGalleryTemplate: savedImg.isGalleryTemplate,
             sourceId: savedImg.sourceId,
           }

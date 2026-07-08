@@ -36,6 +36,10 @@ function makeImg(id: string, width = 200, height = 150): CollageImage {
     saturation: 100,
     warmth: 0,
     sharpness: 0,
+    flipHorizontal: false,
+    flipVertical: false,
+    skewX: 0,
+    skewY: 0,
   }
 }
 

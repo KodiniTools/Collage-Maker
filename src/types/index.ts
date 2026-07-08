@@ -32,6 +32,11 @@ export interface CollageImage {
   saturation: number
   warmth: number
   sharpness: number
+  // Transformation: Spiegelung & Neigung (Scherung)
+  flipHorizontal: boolean
+  flipVertical: boolean
+  skewX: number // horizontale Neigung in Grad
+  skewY: number // vertikale Neigung in Grad
   // Template/Instanz-System: Templates sind in der Galerie, Instanzen im Canvas
   isGalleryTemplate?: boolean
   // ID des Galerie-Templates, von dem diese Canvas-Instanz abstammt.
