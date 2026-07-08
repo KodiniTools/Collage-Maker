@@ -4,7 +4,6 @@
   import { RouterLink } from 'vue-router'
   import ImageUploader from '@/components/ImageUploader.vue'
   import LayoutSelector from '@/components/LayoutSelector.vue'
-  import GridControls from '@/components/GridControls.vue'
   import CanvasSettings from '@/components/CanvasSettings.vue'
   import ImageList from '@/components/ImageList.vue'
   import TextList from '@/components/TextList.vue'
@@ -303,10 +302,7 @@
           class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start bg-surface-light dark:bg-surface-dark rounded-xl border border-muted/30 dark:border-slate/30 p-4 lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
         >
           <ImageUploader v-if="activeTool === 'upload'" />
-          <div v-else-if="activeTool === 'layouts'" class="space-y-6">
-            <LayoutSelector />
-            <GridControls />
-          </div>
+          <LayoutSelector v-else-if="activeTool === 'layouts'" />
           <ImageList v-else-if="activeTool === 'images'" />
         </aside>
 
