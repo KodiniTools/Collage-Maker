@@ -50,10 +50,9 @@ Collage-Maker/
 │
 ├── src/                              # Hauptquellcode
 │   ├── components/                   # 19 Vue-Komponenten
-│   │   ├── CanvasSettings.vue       # Leinwand-Dimensionen & Hintergrund (Zoom 400%)
+│   │   ├── CanvasSettings.vue       # Leinwand-Dimensionen, Hintergrund, Zoom & Hilfsraster
 │   │   ├── CollageCanvas.vue        # Haupt-Canvas-Rendering (Auto-Fit, Pan)
 │   │   ├── ExportControls.vue       # PNG/JPEG/WEBP Export
-│   │   ├── GridControls.vue         # Raster-Sichtbarkeit & Größe
 │   │   ├── ImageControls.vue        # Bildbearbeitung (Filter, Effekte, Ebenen)
 │   │   ├── ImageList.vue            # Galerie-Thumbnail-Liste
 │   │   ├── ImageUploader.vue        # Drag & Drop Upload
