@@ -37,6 +37,10 @@ function makeImg(id: string, overrides: Partial<CollageImage> = {}): CollageImag
     saturation: 100,
     warmth: 0,
     sharpness: 0,
+    flipHorizontal: false,
+    flipVertical: false,
+    skewX: 0,
+    skewY: 0,
     ...overrides,
   }
 }

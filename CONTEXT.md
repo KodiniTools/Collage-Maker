@@ -181,6 +181,12 @@ interface CollageImage {
   saturation: number            // 0-200 (100 = normal)
   warmth: number                // -100 bis +100
   sharpness: number             // -100 bis +100
+
+  // Transformation (Spiegelung & Neigung)
+  flipHorizontal: boolean       // horizontal spiegeln
+  flipVertical: boolean         // vertikal spiegeln
+  skewX: number                 // horizontale Neigung (Grad)
+  skewY: number                 // vertikale Neigung (Grad)
 }
 ```
 

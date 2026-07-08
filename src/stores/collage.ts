@@ -219,6 +219,11 @@ export const useCollageStore = defineStore('collage', () => {
         saturation: 100,
         warmth: 0,
         sharpness: 0,
+        // Transformation (Standard = keine Spiegelung/Neigung)
+        flipHorizontal: false,
+        flipVertical: false,
+        skewX: 0,
+        skewY: 0,
       }
 
       // Füge Galerie-Template hinzu (für wiederholte Verwendung)
@@ -428,6 +433,10 @@ export const useCollageStore = defineStore('collage', () => {
         saturation: 100,
         warmth: 0,
         sharpness: 0,
+        flipHorizontal: false,
+        flipVertical: false,
+        skewX: 0,
+        skewY: 0,
         isGalleryTemplate: false,
         sourceId: sourceImage.id,
       })
@@ -701,6 +710,11 @@ export const useCollageStore = defineStore('collage', () => {
       saturation: 100,
       warmth: 0,
       sharpness: 0,
+      // Transformation (Standard = keine Spiegelung/Neigung)
+      flipHorizontal: false,
+      flipVertical: false,
+      skewX: 0,
+      skewY: 0,
       // Als Canvas-Instanz markieren (kein Galerie-Template)
       isGalleryTemplate: false,
       // Verknüpfung zum Galerie-Template beibehalten (Instanz oder Template als Quelle)

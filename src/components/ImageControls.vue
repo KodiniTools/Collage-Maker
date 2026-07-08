@@ -4,6 +4,7 @@
   import SelectionBanner from './image-controls/SelectionBanner.vue'
   import SizePositionControls from './image-controls/SizePositionControls.vue'
   import AdjustControls from './image-controls/AdjustControls.vue'
+  import TransformControls from './image-controls/TransformControls.vue'
   import FilterControls from './image-controls/FilterControls.vue'
   import BorderControls from './image-controls/BorderControls.vue'
   import ShadowControls from './image-controls/ShadowControls.vue'
@@ -37,6 +38,9 @@
 
       <!-- Rotation, Deckkraft & Eckenradius -->
       <AdjustControls v-if="api.displayImage.value" :image="api.displayImage.value" :api="api" />
+
+      <!-- Transformation: Spiegelung & Neigung (klappbar) -->
+      <TransformControls v-if="api.displayImage.value" :image="api.displayImage.value" :api="api" />
 
       <!-- Bildbearbeitungs-Filter -->
       <FilterControls v-if="api.displayImage.value" :image="api.displayImage.value" :api="api" />
