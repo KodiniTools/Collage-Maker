@@ -230,6 +230,23 @@ export function useImageControls() {
     applyToSelected({ skewY: value })
   }
 
+  // Freies Verzerren (Distort) an-/ausschalten
+  function toggleDistort() {
+    saveUndoImmediate()
+    if (isMultiSelection.value) {
+      const anyEnabled = selectedImages.value.some((img) => img.distortEnabled)
+      applyToSelected({ distortEnabled: !anyEnabled })
+    } else if (selectedImage.value) {
+      applyToSelected({ distortEnabled: !selectedImage.value.distortEnabled })
+    }
+  }
+
+  // Verzerrung zurücksetzen (Ecken auf 0), Modus bleibt aktiv
+  function resetDistort() {
+    saveUndoImmediate()
+    applyToSelected({ cornerOffsets: undefined })
+  }
+
   function deleteImage() {
     // Undo wird in removeSelectedImages/removeImage gespeichert
     if (isMultiSelection.value) {
@@ -380,6 +397,8 @@ export function useImageControls() {
       flipVertical: false,
       skewX: 0,
       skewY: 0,
+      distortEnabled: false,
+      cornerOffsets: undefined,
     }
     applyToSelected(defaultValues)
   }
@@ -428,6 +447,8 @@ export function useImageControls() {
     toggleFlipVertical,
     updateSkewX,
     updateSkewY,
+    toggleDistort,
+    resetDistort,
     deleteImage,
     bringToFront,
     sendToBack,

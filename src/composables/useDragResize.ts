@@ -2,6 +2,10 @@ import { ref } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import type { GuideLine } from './useAlignmentGuides'
+import { computeLocalCorners, hasDistortion } from '@/lib/warpImage'
+import type { CornerOffsets } from '@/types'
+
+type Corner = 'nw' | 'ne' | 'se' | 'sw'
 
 // Emitter for double-tap events (used by CollageCanvas to show preview)
 type DoubleTapHandler = (clientX: number, clientY: number) => void
@@ -43,13 +47,13 @@ export function useDragResize(
   // Cursor map for resize handles
   const HANDLE_CURSORS: Record<string, string> = {
     nw: 'nw-resize',
-    n:  'n-resize',
+    n: 'n-resize',
     ne: 'ne-resize',
-    e:  'e-resize',
+    e: 'e-resize',
     se: 'se-resize',
-    s:  's-resize',
+    s: 's-resize',
     sw: 'sw-resize',
-    w:  'w-resize',
+    w: 'w-resize',
   }
 
   // All the drag/resize/pan state:
@@ -84,6 +88,10 @@ export function useDragResize(
   const isTextResizing = ref(false)
   const textResizeStartFont = ref(0)
   const textResizeStartDist = ref(0)
+
+  // Freies Verzerren (Distort): einzelne Ecke ziehen
+  const isDistorting = ref(false)
+  const distortCorner = ref<Corner | null>(null)
 
   // Wandelt einen Klickpunkt (Canvas-Koordinaten) in das lokale, um die Bildmitte
   // zentrierte Koordinatensystem des Bildes um – inkl. Rotation, Spiegelung und
@@ -151,6 +159,79 @@ export function useDragResize(
     }
 
     return null
+  }
+
+  // ─── Freies Verzerren (Distort) ────────────────────────────────────────────
+
+  // Basis-Eckposition (unverzerrt) im lokalen Bildsystem.
+  function baseCorner(img: any, corner: Corner): { x: number; y: number } {
+    const hw = img.width / 2
+    const hh = img.height / 2
+    switch (corner) {
+      case 'nw':
+        return { x: -hw, y: -hh }
+      case 'ne':
+        return { x: hw, y: -hh }
+      case 'se':
+        return { x: hw, y: hh }
+      case 'sw':
+        return { x: -hw, y: hh }
+    }
+  }
+
+  // Vollständiges Offsets-Objekt aus dem aktuellen Bild (fehlende Ecken = 0).
+  function currentOffsets(img: any): CornerOffsets {
+    const o = img.cornerOffsets
+    return {
+      nw: { x: o?.nw.x ?? 0, y: o?.nw.y ?? 0 },
+      ne: { x: o?.ne.x ?? 0, y: o?.ne.y ?? 0 },
+      se: { x: o?.se.x ?? 0, y: o?.se.y ?? 0 },
+      sw: { x: o?.sw.x ?? 0, y: o?.sw.y ?? 0 },
+    }
+  }
+
+  // Prüft, ob ein Distort-Eckpunkt getroffen wurde (lokale, verzerrte Ecken).
+  function getDistortHandle(x: number, y: number, img: any, touchMode = false): Corner | null {
+    const { localX, localY } = toLocalImagePoint(x, y, img)
+    const c = computeLocalCorners(img.width, img.height, img.cornerOffsets)
+    const fit = autoFitScale.value || 1
+    const hitRadius = (touchMode ? 40 : 13) / fit
+    const entries: [Corner, { x: number; y: number }][] = [
+      ['nw', c.nw],
+      ['ne', c.ne],
+      ['se', c.se],
+      ['sw', c.sw],
+    ]
+    for (const [name, p] of entries) {
+      if (Math.hypot(localX - p.x, localY - p.y) <= hitRadius) return name
+    }
+    return null
+  }
+
+  // Punkt-in-Viereck-Test im lokalen System (für Auswahl verzerrter Bilder).
+  function isPointInDistortedImage(x: number, y: number, img: any): boolean {
+    const { localX, localY } = toLocalImagePoint(x, y, img)
+    const c = computeLocalCorners(img.width, img.height, img.cornerOffsets)
+    const pts = [c.nw, c.ne, c.se, c.sw]
+    let inside = false
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      const xi = pts[i].x
+      const yi = pts[i].y
+      const xj = pts[j].x
+      const yj = pts[j].y
+      const intersect =
+        yi > localY !== yj > localY && localX < ((xj - xi) * (localY - yi)) / (yj - yi) + xi
+      if (intersect) inside = !inside
+    }
+    return inside
+  }
+
+  // Trefferzone eines Bildes (verzerrt: Viereck, sonst achsenparallele Box).
+  function isPointInImage(x: number, y: number, img: any): boolean {
+    if (img.distortEnabled && hasDistortion(img.cornerOffsets)) {
+      return isPointInDistortedImage(x, y, img)
+    }
+    return x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height
   }
 
   function isDeleteButtonClicked(x: number, y: number, img: any, touchMode = false): boolean {
@@ -268,9 +349,18 @@ export function useDragResize(
       return
     }
 
-    // Prüfe ob ein Resize-Handle des ausgewählten Bildes angeklickt wurde
+    // Distort-Modus: einzelne Ecke ziehen (hat Vorrang, Skalierpunkte sind aus)
     const selectedImg = collage.selectedImage
-    if (selectedImg) {
+    if (selectedImg && selectedImg.distortEnabled) {
+      const corner = getDistortHandle(x, y, selectedImg)
+      if (corner) {
+        collage.saveStateForUndo()
+        isDistorting.value = true
+        distortCorner.value = corner
+        return
+      }
+    } else if (selectedImg) {
+      // Prüfe ob ein Resize-Handle des ausgewählten Bildes angeklickt wurde
       const handle = getResizeHandle(x, y, selectedImg)
       if (handle) {
         // Speichere Zustand für Undo VOR dem Resize
@@ -355,7 +445,7 @@ export function useDragResize(
     const canvasImages = collage.images.filter((img) => img.isGalleryTemplate !== true)
     const clickedImage = [...canvasImages]
       .sort((a, b) => b.zIndex - a.zIndex)
-      .find((img) => x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height)
+      .find((img) => isPointInImage(x, y, img))
 
     if (clickedImage) {
       // Speichere Zustand für Undo VOR dem Verschieben
@@ -427,16 +517,28 @@ export function useDragResize(
     const x = (e.clientX - rect.left) / zoom
     const y = (e.clientY - rect.top) / zoom
 
-    // Cursor-Update when idle (not dragging/resizing)
-    if (!isDragging.value && !isResizing.value && !isTextResizing.value) {
+    // Cursor-Update when idle (not dragging/resizing/distorting)
+    if (!isDragging.value && !isResizing.value && !isTextResizing.value && !isDistorting.value) {
       const selectedImg = collage.selectedImage
-      if (selectedImg) {
+      if (selectedImg && selectedImg.distortEnabled) {
+        // Distort-Modus: Eckpunkte + Innenfläche
+        const corner = getDistortHandle(x, y, selectedImg)
+        if (corner) {
+          cursorStyle.value = 'crosshair'
+        } else if (isPointInImage(x, y, selectedImg)) {
+          cursorStyle.value = 'move'
+        } else {
+          cursorStyle.value = 'default'
+        }
+      } else if (selectedImg) {
         const handle = getResizeHandle(x, y, selectedImg)
         if (handle) {
           cursorStyle.value = HANDLE_CURSORS[handle] ?? 'move'
         } else if (
-          x >= selectedImg.x && x <= selectedImg.x + selectedImg.width &&
-          y >= selectedImg.y && y <= selectedImg.y + selectedImg.height
+          x >= selectedImg.x &&
+          x <= selectedImg.x + selectedImg.width &&
+          y >= selectedImg.y &&
+          y <= selectedImg.y + selectedImg.height
         ) {
           cursorStyle.value = 'move'
         } else {
@@ -461,8 +563,27 @@ export function useDragResize(
     if (isTextResizing.value && collage.selectedTextId && collage.selectedText) {
       const dist = Math.hypot(x - collage.selectedText.x, y - collage.selectedText.y)
       const scale = dist / textResizeStartDist.value
-      const newFontSize = Math.max(12, Math.min(2000, Math.round(textResizeStartFont.value * scale)))
+      const newFontSize = Math.max(
+        12,
+        Math.min(2000, Math.round(textResizeStartFont.value * scale))
+      )
       collage.updateText(collage.selectedText.id, { fontSize: newFontSize })
+      return
+    }
+
+    // Freies Verzerren: gezogene Ecke einzeln versetzen (lokales System)
+    if (
+      isDistorting.value &&
+      distortCorner.value &&
+      collage.selectedImageId &&
+      collage.selectedImage
+    ) {
+      const img = collage.selectedImage
+      const { localX, localY } = toLocalImagePoint(x, y, img)
+      const base = baseCorner(img, distortCorner.value)
+      const offsets = currentOffsets(img)
+      offsets[distortCorner.value] = { x: localX - base.x, y: localY - base.y }
+      collage.updateImage(img.id, { cornerOffsets: offsets })
       return
     }
 
@@ -677,6 +798,8 @@ export function useDragResize(
     isDragging.value = false
     isResizing.value = false
     isTextResizing.value = false
+    isDistorting.value = false
+    distortCorner.value = null
     isPanning.value = false
     resizeHandle.value = null
     cursorStyle.value = 'default'
@@ -700,8 +823,20 @@ export function useDragResize(
   }
 
   /** Synthetic mouse-like object for delegating touch coords to existing handlers */
-  function syntheticMouse(clientX: number, clientY: number, extra?: Partial<MouseEvent>): MouseEvent {
-    return { clientX, clientY, button: 0, shiftKey: false, ctrlKey: false, metaKey: false, ...extra } as unknown as MouseEvent
+  function syntheticMouse(
+    clientX: number,
+    clientY: number,
+    extra?: Partial<MouseEvent>
+  ): MouseEvent {
+    return {
+      clientX,
+      clientY,
+      button: 0,
+      shiftKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      ...extra,
+    } as unknown as MouseEvent
   }
 
   // ─── Touch event handlers ────────────────────────────────────────────────────
@@ -771,9 +906,18 @@ export function useDragResize(
       return
     }
 
-    // Resize handle (enlarged for touch)
+    // Distort-Eckpunkt (vergrößerte Trefferfläche für Touch) – Vorrang im Modus
     const selectedImg = collage.selectedImage
-    if (selectedImg) {
+    if (selectedImg && selectedImg.distortEnabled) {
+      const corner = getDistortHandle(x, y, selectedImg, true)
+      if (corner) {
+        collage.saveStateForUndo()
+        isDistorting.value = true
+        distortCorner.value = corner
+        return
+      }
+    } else if (selectedImg) {
+      // Resize handle (enlarged for touch)
       const handle = getResizeHandle(x, y, selectedImg, true)
       if (handle) {
         collage.saveStateForUndo()
@@ -838,7 +982,12 @@ export function useDragResize(
         // Keep the image centered around its original center
         const newX = pinchStartImgX.value + (pinchStartWidth.value - newWidth) / 2
         const newY = pinchStartImgY.value + (pinchStartHeight.value - newHeight) / 2
-        collage.updateImage(selectedImg.id, { x: newX, y: newY, width: newWidth, height: newHeight })
+        collage.updateImage(selectedImg.id, {
+          x: newX,
+          y: newY,
+          width: newWidth,
+          height: newHeight,
+        })
       } else {
         // Pinch to zoom canvas (no image selected)
         const newZoom = Math.max(0.25, Math.min(4, pinchInitialZoom.value * scale))
@@ -865,5 +1014,13 @@ export function useDragResize(
     }
   }
 
-  return { handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd, cursorStyle }
+  return {
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    cursorStyle,
+  }
 }

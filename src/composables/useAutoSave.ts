@@ -441,6 +441,8 @@ export function useAutoSave() {
             flipVertical: savedImg.flipVertical ?? false,
             skewX: savedImg.skewX ?? 0,
             skewY: savedImg.skewY ?? 0,
+            distortEnabled: savedImg.distortEnabled ?? false,
+            cornerOffsets: savedImg.cornerOffsets ?? undefined,
             isGalleryTemplate: savedImg.isGalleryTemplate,
             sourceId: savedImg.sourceId,
           }
