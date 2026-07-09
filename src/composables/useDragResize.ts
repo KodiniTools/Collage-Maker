@@ -85,20 +85,49 @@ export function useDragResize(
   const textResizeStartFont = ref(0)
   const textResizeStartDist = ref(0)
 
+  // Wandelt einen Klickpunkt (Canvas-Koordinaten) in das lokale, um die Bildmitte
+  // zentrierte Koordinatensystem des Bildes um – inkl. Rotation, Spiegelung und
+  // Neigung/Scherung. Muss zur Zeichenreihenfolge im Renderer passen:
+  // translate → rotate → scale(flip) → skew.
+  function toLocalImagePoint(x: number, y: number, img: any): { localX: number; localY: number } {
+    const centerX = img.x + img.width / 2
+    const centerY = img.y + img.height / 2
+
+    // 1) Rotation invertieren
+    const angle = (img.rotation * Math.PI) / 180
+    const dx = x - centerX
+    const dy = y - centerY
+    let localX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
+    let localY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
+
+    // 2) Spiegelung invertieren (Faktor ±1, selbst-invers)
+    localX *= img.flipHorizontal ? -1 : 1
+    localY *= img.flipVertical ? -1 : 1
+
+    // 3) Neigung/Scherung invertieren: Matrix [[1, tanX], [tanY, 1]] umkehren
+    const tanX = Math.tan(((img.skewX ?? 0) * Math.PI) / 180)
+    const tanY = Math.tan(((img.skewY ?? 0) * Math.PI) / 180)
+    if (tanX !== 0 || tanY !== 0) {
+      let det = 1 - tanX * tanY
+      if (Math.abs(det) < 1e-6) det = det < 0 ? -1e-6 : 1e-6
+      const sx = localX
+      const sy = localY
+      localX = (sx - tanX * sy) / det
+      localY = (sy - tanY * sx) / det
+    }
+
+    return { localX, localY }
+  }
+
   function getResizeHandle(x: number, y: number, img: any, touchMode = false): string | null {
     // Trefferradius an den Anzeige-Zoom koppeln (konstante Bildschirmgröße),
     // damit Handles auf großen Leinwänden nicht winzig zu treffen sind.
     const fit = autoFitScale.value || 1
     const hitRadius = (touchMode ? 40 : 13) / fit
-    const centerX = img.x + img.width / 2
-    const centerY = img.y + img.height / 2
 
-    // Transform click point to image coordinate system (considering rotation)
-    const angle = (img.rotation * Math.PI) / 180
-    const dx = x - centerX
-    const dy = y - centerY
-    const rotatedX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
-    const rotatedY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
+    // Klickpunkt ins lokale Bildkoordinatensystem transformieren
+    // (Rotation + Spiegelung + Neigung)
+    const { localX: rotatedX, localY: rotatedY } = toLocalImagePoint(x, y, img)
 
     const handles = [
       { x: -img.width / 2, y: -img.height / 2, name: 'nw' },
@@ -128,15 +157,10 @@ export function useDragResize(
     const fit = autoFitScale.value || 1
     // Muss zur Zeichnung passen: 14 * ui, innen in der oberen rechten Ecke.
     const drawSize = 14 / fit
-    const centerX = img.x + img.width / 2
-    const centerY = img.y + img.height / 2
 
-    // Transform click point to image coordinate system (considering rotation)
-    const angle = (img.rotation * Math.PI) / 180
-    const dx = x - centerX
-    const dy = y - centerY
-    const rotatedX = dx * Math.cos(-angle) - dy * Math.sin(-angle)
-    const rotatedY = dx * Math.sin(-angle) + dy * Math.cos(-angle)
+    // Klickpunkt ins lokale Bildkoordinatensystem transformieren
+    // (Rotation + Spiegelung + Neigung) – muss zur Zeichnung im Renderer passen
+    const { localX: rotatedX, localY: rotatedY } = toLocalImagePoint(x, y, img)
 
     // Position des Löschbuttons im Bild-Koordinatensystem (Mittelpunkt)
     const deleteButtonX = img.width / 2 - drawSize / 2 - 2 / fit
