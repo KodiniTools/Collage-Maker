@@ -15,6 +15,18 @@ export interface CornerOffsets {
   sw: Point
 }
 
+/**
+ * Zuschnitt-Rechteck (Crop) in normierten Quell-Koordinaten (0..1, bezogen auf
+ * das Originalbild). Ein Rechteck von {0,0,1,1} entspricht dem ungeschnittenen
+ * Bild. Kleinere Werte zeigen nur den entsprechenden Ausschnitt.
+ */
+export interface CropRect {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
 export interface CollageImage {
   id: string
   file: File
@@ -59,6 +71,9 @@ export interface CollageImage {
   distortEnabled?: boolean
   // Eck-Versätze im lokalen Bildsystem (Default: alle 0 → unverzerrtes Rechteck)
   cornerOffsets?: CornerOffsets
+  // Zuschnitt (Crop): normierter Ausschnitt der Bildquelle. Fehlt der Wert oder
+  // ist er {0,0,1,1}, wird das gesamte Bild angezeigt.
+  crop?: CropRect
   // Template/Instanz-System: Templates sind in der Galerie, Instanzen im Canvas
   isGalleryTemplate?: boolean
   // ID des Galerie-Templates, von dem diese Canvas-Instanz abstammt.

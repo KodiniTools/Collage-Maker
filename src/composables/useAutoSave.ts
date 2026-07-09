@@ -443,6 +443,7 @@ export function useAutoSave() {
             skewY: savedImg.skewY ?? 0,
             distortEnabled: savedImg.distortEnabled ?? false,
             cornerOffsets: savedImg.cornerOffsets ?? undefined,
+            crop: savedImg.crop ?? undefined,
             isGalleryTemplate: savedImg.isGalleryTemplate,
             sourceId: savedImg.sourceId,
           }

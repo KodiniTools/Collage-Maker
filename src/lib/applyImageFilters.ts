@@ -1,4 +1,5 @@
-import type { CollageImage } from '@/types'
+import type { CollageImage, CropRect } from '@/types'
+import { cropSourceRect, hasCrop } from '@/lib/cropImage'
 
 /**
  * Bildbearbeitungs-Parameter (mit Abwärtskompatibilität ausgelesen).
@@ -49,9 +50,12 @@ export function createFilteredImageSource(
   htmlImg: HTMLImageElement,
   width: number,
   height: number,
-  p: ImageFilterParams
+  p: ImageFilterParams,
+  crop?: CropRect
 ): CanvasImageSource {
-  if (!hasAnyFilter(p)) return htmlImg
+  const cropped = hasCrop(crop)
+  // Ohne Filter UND ohne Zuschnitt kann das Original direkt verwendet werden.
+  if (!hasAnyFilter(p) && !cropped) return htmlImg
 
   const canvas = document.createElement('canvas')
   canvas.width = Math.max(1, Math.round(width))
@@ -65,7 +69,9 @@ export function createFilteredImageSource(
   if (p.saturation !== 100) cssFilters.push(`saturate(${p.saturation}%)`)
   if (cssFilters.length > 0) ctx.filter = cssFilters.join(' ')
 
-  ctx.drawImage(htmlImg, 0, 0, canvas.width, canvas.height)
+  // Nur den Zuschnitt-Ausschnitt der Quelle auf das Ziel-Canvas skalieren.
+  const { sx, sy, sw, sh } = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, crop)
+  ctx.drawImage(htmlImg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
   ctx.filter = 'none'
 
   const needsPixel = p.highlights !== 0 || p.shadows !== 0 || p.warmth !== 0 || p.sharpness !== 0

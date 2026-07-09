@@ -11,6 +11,20 @@
 
   // Klappbare Untersektion – standardmäßig eingeklappt
   const expanded = ref(false)
+
+  // Seitenverhältnis-Presets für den Zuschnitt (Breite : Höhe)
+  const cropPresets: { label: string; ratio: number }[] = [
+    { label: '1:1', ratio: 1 },
+    { label: '4:3', ratio: 4 / 3 },
+    { label: '3:2', ratio: 3 / 2 },
+    { label: '16:9', ratio: 16 / 9 },
+    { label: '3:4', ratio: 3 / 4 },
+    { label: '2:3', ratio: 2 / 3 },
+    { label: '9:16', ratio: 9 / 16 },
+  ]
+
+  // Insets in Prozent (0..90) für die freien Zuschnitt-Slider
+  const pct = (v: number) => Math.round(v * 100)
 </script>
 
 <template>
@@ -151,6 +165,86 @@
         >
           ↺ {{ t('imageControls.distortReset') }}
         </button>
+      </div>
+
+      <!-- Zuschneiden (Crop): Presets & freies Zuschneiden -->
+      <div class="border-t border-muted/20 dark:border-slate/20 pt-3">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-xs text-muted">{{ t('imageControls.crop') }}</label>
+          <button
+            v-if="api.isCropped.value"
+            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            :title="t('imageControls.cropReset')"
+            @click="api.resetCrop"
+          >
+            ↺ {{ t('imageControls.cropFree') }}
+          </button>
+        </div>
+
+        <!-- Seitenverhältnis-Presets -->
+        <div class="grid grid-cols-4 gap-1.5">
+          <button
+            v-for="preset in cropPresets"
+            :key="preset.label"
+            class="px-1 py-1.5 text-xs rounded-md font-medium transition-colors bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted"
+            :title="t('imageControls.cropPresetHint', { ratio: preset.label })"
+            @click="api.applyCropPreset(preset.ratio)"
+          >
+            {{ preset.label }}
+          </button>
+        </div>
+
+        <!-- Freies Zuschneiden über die vier Ränder -->
+        <div class="space-y-2 mt-3">
+          <ControlSlider
+            label-size="xs"
+            :label="t('imageControls.cropTop')"
+            :display-value="`${pct(api.cropInsets.value.top)}%`"
+            :value="pct(api.cropInsets.value.top)"
+            :min="0"
+            :max="90"
+            :show-reset="api.cropInsets.value.top > 0"
+            :reset-title="t('imageControls.resetValue')"
+            @input="(v) => api.updateCropInset('top', v / 100)"
+            @reset="api.updateCropInset('top', 0)"
+          />
+          <ControlSlider
+            label-size="xs"
+            :label="t('imageControls.cropBottom')"
+            :display-value="`${pct(api.cropInsets.value.bottom)}%`"
+            :value="pct(api.cropInsets.value.bottom)"
+            :min="0"
+            :max="90"
+            :show-reset="api.cropInsets.value.bottom > 0"
+            :reset-title="t('imageControls.resetValue')"
+            @input="(v) => api.updateCropInset('bottom', v / 100)"
+            @reset="api.updateCropInset('bottom', 0)"
+          />
+          <ControlSlider
+            label-size="xs"
+            :label="t('imageControls.cropLeft')"
+            :display-value="`${pct(api.cropInsets.value.left)}%`"
+            :value="pct(api.cropInsets.value.left)"
+            :min="0"
+            :max="90"
+            :show-reset="api.cropInsets.value.left > 0"
+            :reset-title="t('imageControls.resetValue')"
+            @input="(v) => api.updateCropInset('left', v / 100)"
+            @reset="api.updateCropInset('left', 0)"
+          />
+          <ControlSlider
+            label-size="xs"
+            :label="t('imageControls.cropRight')"
+            :display-value="`${pct(api.cropInsets.value.right)}%`"
+            :value="pct(api.cropInsets.value.right)"
+            :min="0"
+            :max="90"
+            :show-reset="api.cropInsets.value.right > 0"
+            :reset-title="t('imageControls.resetValue')"
+            @input="(v) => api.updateCropInset('right', v / 100)"
+            @reset="api.updateCropInset('right', 0)"
+          />
+        </div>
       </div>
     </div>
   </div>
