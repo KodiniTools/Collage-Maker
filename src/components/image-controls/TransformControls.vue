@@ -120,6 +120,38 @@
         @input="api.updateSkewY"
         @reset="api.applyToSelected({ skewY: 0 })"
       />
+
+      <!-- Freies Verzerren (Distort): Eckpunkte einzeln ziehen -->
+      <div class="border-t border-muted/20 dark:border-slate/20 pt-3">
+        <div class="flex items-center justify-between">
+          <label class="text-xs text-muted">{{ t('imageControls.distort') }}</label>
+          <button
+            :class="[
+              'px-2.5 py-1 text-xs rounded transition-colors',
+              image.distortEnabled
+                ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            ]"
+            :title="t('imageControls.distortHint')"
+            :aria-pressed="image.distortEnabled"
+            @click="api.toggleDistort"
+          >
+            {{
+              image.distortEnabled ? t('imageControls.distortOn') : t('imageControls.distortOff')
+            }}
+          </button>
+        </div>
+        <p v-if="image.distortEnabled" class="text-xs text-muted mt-2">
+          {{ t('imageControls.distortHint') }}
+        </p>
+        <button
+          v-if="image.distortEnabled && image.cornerOffsets"
+          class="mt-2 text-xs text-accent hover:text-accent-dark transition-colors"
+          @click="api.resetDistort"
+        >
+          ↺ {{ t('imageControls.distortReset') }}
+        </button>
+      </div>
     </div>
   </div>
 </template>

@@ -1,3 +1,20 @@
+export interface Point {
+  x: number
+  y: number
+}
+
+/**
+ * Eck-Versätze für das freie Verzerren (Distort). Definiert im lokalen
+ * Bildkoordinatensystem (Ursprung = Bildmitte, VOR Rotation/Spiegelung/Neigung).
+ * Ein Versatz von 0/0 lässt die jeweilige Ecke am Rechteck; ≠0 verformt das Bild.
+ */
+export interface CornerOffsets {
+  nw: Point
+  ne: Point
+  se: Point
+  sw: Point
+}
+
 export interface CollageImage {
   id: string
   file: File
@@ -37,6 +54,11 @@ export interface CollageImage {
   flipVertical: boolean
   skewX: number // horizontale Neigung in Grad
   skewY: number // vertikale Neigung in Grad
+  // Freies Verzerren (Distort / Eckpunkt-Pinning): Ist es aktiv, ziehen die
+  // 4 Eckpunkte einzeln und verformen das Bild zu einem beliebigen Viereck.
+  distortEnabled?: boolean
+  // Eck-Versätze im lokalen Bildsystem (Default: alle 0 → unverzerrtes Rechteck)
+  cornerOffsets?: CornerOffsets
   // Template/Instanz-System: Templates sind in der Galerie, Instanzen im Canvas
   isGalleryTemplate?: boolean
   // ID des Galerie-Templates, von dem diese Canvas-Instanz abstammt.

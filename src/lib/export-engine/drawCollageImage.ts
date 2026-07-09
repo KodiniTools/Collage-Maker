@@ -1,4 +1,10 @@
 import type { CollageImage } from '@/types'
+import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
+import { createFilteredImageSource, readFilterParams } from '@/lib/applyImageFilters'
+
+// Gitterauflösung für das freie Verzerren (Distort) im Export. Höher als in der
+// Live-Ansicht, da der Export nicht interaktiv ist und Qualität wichtiger ist.
+const DISTORT_SUBDIVISIONS = 16
 
 function buildRoundedPath(
   ctx: CanvasRenderingContext2D,
@@ -114,6 +120,19 @@ export function drawCollageImage(
   }
 
   ctx.globalAlpha = img.opacity
+
+  // Freies Verzerren (Distort): gefilterte Quelle in das Viereck warpen. Rahmen,
+  // runde Ecken und Schatten entfallen dabei (identisch zur Live-Ansicht).
+  if (img.distortEnabled && hasDistortion(img.cornerOffsets)) {
+    const params = readFilterParams(img)
+    const source = createFilteredImageSource(htmlImg, img.width, img.height, params)
+    const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
+    const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
+    const corners = computeLocalCorners(img.width, img.height, img.cornerOffsets)
+    drawWarpedImage(ctx, source, sw, sh, corners, DISTORT_SUBDIVISIONS)
+    ctx.restore()
+    return
+  }
 
   const x = -img.width / 2
   const y = -img.height / 2

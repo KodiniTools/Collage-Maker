@@ -3,6 +3,11 @@ import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
 import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
+import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
+import { createFilteredImageSource, readFilterParams } from '@/lib/applyImageFilters'
+
+// Gitterauflösung für das freie Verzerren (Distort). Höher = genauer, langsamer.
+const DISTORT_SUBDIVISIONS = 12
 
 export function useCanvasRenderer(
   canvas: Ref<HTMLCanvasElement | null>,
@@ -269,8 +274,23 @@ export function useCanvasRenderer(
       const y = -img.height / 2
       const radius = Math.min(img.borderRadius, img.width / 2, img.height / 2)
 
+      // Freies Verzerren (Distort): Bild wird als gefilterte Quelle in ein
+      // beliebiges Viereck gewarpt. Rahmen/runde Ecken/Schatten entfallen dabei.
+      const distorted = !!img.distortEnabled && hasDistortion(img.cornerOffsets)
+      const localCorners = distorted
+        ? computeLocalCorners(img.width, img.height, img.cornerOffsets)
+        : null
+
+      if (distorted && localCorners) {
+        const params = readFilterParams(img)
+        const source = createFilteredImageSource(htmlImg, img.width, img.height, params)
+        const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
+        const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
+        drawWarpedImage(context, source, sw, sh, localCorners, DISTORT_SUBDIVISIONS)
+      }
+
       // Wenn abgerundete Ecken + Schatten: Erst Schatten-Form zeichnen, dann Bild mit Clipping
-      if (radius > 0 && img.shadowEnabled) {
+      if (!distorted && radius > 0 && img.shadowEnabled) {
         // Schatten auf abgerundete Form anwenden
         context.shadowOffsetX = img.shadowOffsetX
         context.shadowOffsetY = img.shadowOffsetY
@@ -297,7 +317,7 @@ export function useCanvasRenderer(
         context.shadowOffsetY = 0
         context.shadowBlur = 0
         context.shadowColor = 'transparent'
-      } else if (img.shadowEnabled) {
+      } else if (!distorted && img.shadowEnabled) {
         // Normaler Schatten ohne abgerundete Ecken
         context.shadowOffsetX = img.shadowOffsetX
         context.shadowOffsetY = img.shadowOffsetY
@@ -306,7 +326,7 @@ export function useCanvasRenderer(
       }
 
       // Clip-Pfad mit abgerundeten Ecken erstellen
-      if (radius > 0) {
+      if (!distorted && radius > 0) {
         context.beginPath()
         context.moveTo(x + radius, y)
         context.lineTo(x + img.width - radius, y)
@@ -331,7 +351,8 @@ export function useCanvasRenderer(
       const sharpness = img.sharpness ?? 0
 
       // Prüfe ob erweiterte Filter benötigt werden (Pixel-basiert)
-      if (highlights !== 0 || shadows !== 0 || warmth !== 0 || sharpness !== 0) {
+      // Im Distort wurde das Bild bereits gewarpt gezeichnet → hier überspringen.
+      if (!distorted && (highlights !== 0 || shadows !== 0 || warmth !== 0 || sharpness !== 0)) {
         // Erstelle ein temporäres Canvas für die Bildmanipulation
         const tempCanvas = document.createElement('canvas')
         tempCanvas.width = img.width
@@ -418,7 +439,7 @@ export function useCanvasRenderer(
           // Zeichne das manipulierte Bild zurück auf das Haupt-Canvas
           context.drawImage(tempCanvas, x, y, img.width, img.height)
         }
-      } else {
+      } else if (!distorted) {
         // Verwende nur CSS-Filter (schneller)
         const filters = []
         if (brightness !== 100) {
@@ -442,15 +463,15 @@ export function useCanvasRenderer(
       }
 
       // Schatten für normale Bilder (ohne abgerundete Ecken) zurücksetzen
-      if (img.shadowEnabled && radius === 0) {
+      if (!distorted && img.shadowEnabled && radius === 0) {
         context.shadowOffsetX = 0
         context.shadowOffsetY = 0
         context.shadowBlur = 0
         context.shadowColor = 'transparent'
       }
 
-      // Border zeichnen (falls aktiviert)
-      if (img.borderEnabled) {
+      // Border zeichnen (falls aktiviert; im Distort ausgeblendet)
+      if (!distorted && img.borderEnabled) {
         // Border-Shadow anwenden (falls aktiviert) oder Bildschatten beibehalten
         if (img.borderShadowEnabled) {
           context.shadowOffsetX = img.borderShadowOffsetX
@@ -583,21 +604,36 @@ export function useCanvasRenderer(
         // Primär ausgewähltes Bild: Blau, sekundäre: Cyan
         context.strokeStyle = isPrimarySelected ? '#3b82f6' : '#06b6d4'
         context.lineWidth = (isPrimarySelected ? 2 : 1.5) * ui
-        context.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
+        if (distorted && localCorners) {
+          // Auswahlrahmen folgt dem verzerrten Viereck
+          context.beginPath()
+          context.moveTo(localCorners.nw.x, localCorners.nw.y)
+          context.lineTo(localCorners.ne.x, localCorners.ne.y)
+          context.lineTo(localCorners.se.x, localCorners.se.y)
+          context.lineTo(localCorners.sw.x, localCorners.sw.y)
+          context.closePath()
+          context.stroke()
+        } else {
+          context.strokeRect(-img.width / 2, -img.height / 2, img.width, img.height)
+        }
 
         // Resize-Handles nur für das primär ausgewählte Bild zeichnen
         if (isPrimarySelected) {
           const handleSize = 9 * ui
-          const handles = [
-            { x: -img.width / 2, y: -img.height / 2, cursor: 'nw' }, // top-left
-            { x: 0, y: -img.height / 2, cursor: 'n' }, // top-center
-            { x: img.width / 2, y: -img.height / 2, cursor: 'ne' }, // top-right
-            { x: img.width / 2, y: 0, cursor: 'e' }, // middle-right
-            { x: img.width / 2, y: img.height / 2, cursor: 'se' }, // bottom-right
-            { x: 0, y: img.height / 2, cursor: 's' }, // bottom-center
-            { x: -img.width / 2, y: img.height / 2, cursor: 'sw' }, // bottom-left
-            { x: -img.width / 2, y: 0, cursor: 'w' }, // middle-left
-          ]
+          // Im Distort nur die 4 (verzerrten) Eckpunkte, sonst 8 Skalierpunkte.
+          const handles =
+            distorted && localCorners
+              ? [localCorners.nw, localCorners.ne, localCorners.se, localCorners.sw]
+              : [
+                  { x: -img.width / 2, y: -img.height / 2 }, // nw
+                  { x: 0, y: -img.height / 2 }, // n
+                  { x: img.width / 2, y: -img.height / 2 }, // ne
+                  { x: img.width / 2, y: 0 }, // e
+                  { x: img.width / 2, y: img.height / 2 }, // se
+                  { x: 0, y: img.height / 2 }, // s
+                  { x: -img.width / 2, y: img.height / 2 }, // sw
+                  { x: -img.width / 2, y: 0 }, // w
+                ]
 
           // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
           context.fillStyle = '#ffffff'
