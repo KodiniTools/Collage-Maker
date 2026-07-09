@@ -1,6 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { useCollageStore } from '@/stores/collage'
-import type { CollageImage } from '@/types'
+import type { CollageImage, CropRect } from '@/types'
+import { FULL_CROP, clampCrop, hasCrop } from '@/lib/cropImage'
 
 /**
  * Kapselt die gesamte Logik der Bildsteuerung (ImageControls).
@@ -247,6 +248,98 @@ export function useImageControls() {
     applyToSelected({ cornerOffsets: undefined })
   }
 
+  // ========== Zuschneiden (Crop) ==========
+
+  // Aktuelle Zuschnitt-Ränder (Insets, 0..1) des Referenzbildes für die UI.
+  const cropInsets = computed(() => {
+    const c = displayImage.value?.crop ?? FULL_CROP
+    return {
+      left: c.x,
+      top: c.y,
+      right: 1 - (c.x + c.width),
+      bottom: 1 - (c.y + c.height),
+    }
+  })
+
+  // Ist auf dem Referenzbild aktuell ein Zuschnitt aktiv?
+  const isCropped = computed(() => hasCrop(displayImage.value?.crop))
+
+  /**
+   * Berechnet die Box-Updates (Position + Größe), damit der neue Zuschnitt
+   * verzerrungsfrei angezeigt wird. Das (virtuelle) Vollbild bleibt dabei an
+   * derselben Stelle auf der Leinwand verankert – Zuschneiden einer Seite lässt
+   * die gegenüberliegende Kante stehen.
+   */
+  function cropBoxUpdates(img: CollageImage, rawCrop: CropRect): Partial<CollageImage> {
+    const oldCrop = img.crop ?? FULL_CROP
+    const newCrop = clampCrop(rawCrop)
+    const fullW = img.width / oldCrop.width
+    const fullH = img.height / oldCrop.height
+    const fullX = img.x - oldCrop.x * fullW
+    const fullY = img.y - oldCrop.y * fullH
+    return {
+      crop: hasCrop(newCrop) ? newCrop : undefined,
+      width: fullW * newCrop.width,
+      height: fullH * newCrop.height,
+      x: fullX + newCrop.x * fullW,
+      y: fullY + newCrop.y * fullH,
+    }
+  }
+
+  // Zielbilder für Zuschnitt (Einzel- oder Mehrfachauswahl)
+  function cropTargets(): CollageImage[] {
+    if (isMultiSelection.value) return selectedImages.value
+    return selectedImage.value ? [selectedImage.value] : []
+  }
+
+  function applyCropToSelected(cropFor: (img: CollageImage) => CropRect, immediate = true) {
+    if (immediate) saveUndoImmediate()
+    else saveUndoDebounced()
+    cropTargets().forEach((img) => {
+      collage.updateImage(img.id, cropBoxUpdates(img, cropFor(img)))
+    })
+  }
+
+  /**
+   * Wendet ein Seitenverhältnis-Preset an: mittig platzierter, größtmöglicher
+   * Ausschnitt mit dem Ziel-Seitenverhältnis (relativ zum Original des Bildes).
+   */
+  function applyCropPreset(aspect: number) {
+    applyCropToSelected((img) => {
+      const oldCrop = img.crop ?? FULL_CROP
+      const fullW = img.width / oldCrop.width
+      const fullH = img.height / oldCrop.height
+      const sourceAspect = fullW / fullH
+      let cw: number
+      let ch: number
+      if (aspect >= sourceAspect) {
+        cw = 1
+        ch = sourceAspect / aspect
+      } else {
+        ch = 1
+        cw = aspect / sourceAspect
+      }
+      return { x: (1 - cw) / 2, y: (1 - ch) / 2, width: cw, height: ch }
+    })
+  }
+
+  // Freies Zuschneiden über die vier Ränder (Insets). side = welche Kante.
+  function updateCropInset(side: 'left' | 'top' | 'right' | 'bottom', value: number) {
+    const insets = { ...cropInsets.value, [side]: value }
+    const rawCrop: CropRect = {
+      x: insets.left,
+      y: insets.top,
+      width: 1 - insets.left - insets.right,
+      height: 1 - insets.top - insets.bottom,
+    }
+    applyCropToSelected(() => rawCrop, false)
+  }
+
+  // Zuschnitt vollständig zurücksetzen (Vollbild wiederherstellen)
+  function resetCrop() {
+    applyCropToSelected(() => FULL_CROP)
+  }
+
   function deleteImage() {
     // Undo wird in removeSelectedImages/removeImage gespeichert
     if (isMultiSelection.value) {
@@ -400,7 +493,11 @@ export function useImageControls() {
       distortEnabled: false,
       cornerOffsets: undefined,
     }
-    applyToSelected(defaultValues)
+    // Zuschnitt pro Bild zurücksetzen (stellt die Vollbild-Box wieder her),
+    // danach die übrigen Standardwerte anwenden.
+    cropTargets().forEach((img) => {
+      collage.updateImage(img.id, { ...defaultValues, ...cropBoxUpdates(img, FULL_CROP) })
+    })
   }
 
   // Alle Canvas-Bilder auswählen
@@ -449,6 +546,11 @@ export function useImageControls() {
     updateSkewY,
     toggleDistort,
     resetDistort,
+    cropInsets,
+    isCropped,
+    applyCropPreset,
+    updateCropInset,
+    resetCrop,
     deleteImage,
     bringToFront,
     sendToBack,

@@ -5,6 +5,7 @@ import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
 import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
 import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
 import { createFilteredImageSource, readFilterParams } from '@/lib/applyImageFilters'
+import { cropSourceRect } from '@/lib/cropImage'
 
 // Gitterauflösung für das freie Verzerren (Distort). Höher = genauer, langsamer.
 const DISTORT_SUBDIVISIONS = 12
@@ -283,7 +284,7 @@ export function useCanvasRenderer(
 
       if (distorted && localCorners) {
         const params = readFilterParams(img)
-        const source = createFilteredImageSource(htmlImg, img.width, img.height, params)
+        const source = createFilteredImageSource(htmlImg, img.width, img.height, params, img.crop)
         const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
         const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
         drawWarpedImage(context, source, sw, sh, localCorners, DISTORT_SUBDIVISIONS)
@@ -375,8 +376,19 @@ export function useCanvasRenderer(
             tempCtx.filter = filters.join(' ')
           }
 
-          // Zeichne das Bild auf das temporäre Canvas mit CSS-Filtern
-          tempCtx.drawImage(htmlImg, 0, 0, img.width, img.height)
+          // Zeichne den (ggf. zugeschnittenen) Bildausschnitt auf das temporäre Canvas
+          const cropSrc = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, img.crop)
+          tempCtx.drawImage(
+            htmlImg,
+            cropSrc.sx,
+            cropSrc.sy,
+            cropSrc.sw,
+            cropSrc.sh,
+            0,
+            0,
+            img.width,
+            img.height
+          )
           tempCtx.filter = 'none'
 
           // Hole die Bilddaten für Pixel-basierte Manipulation
@@ -455,8 +467,19 @@ export function useCanvasRenderer(
           context.filter = filters.join(' ')
         }
 
-        // Zeichne das Bild mit CSS-Filtern
-        context.drawImage(htmlImg, x, y, img.width, img.height)
+        // Zeichne den (ggf. zugeschnittenen) Bildausschnitt mit CSS-Filtern
+        const cropSrc = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, img.crop)
+        context.drawImage(
+          htmlImg,
+          cropSrc.sx,
+          cropSrc.sy,
+          cropSrc.sw,
+          cropSrc.sh,
+          x,
+          y,
+          img.width,
+          img.height
+        )
 
         // Filter zurücksetzen
         context.filter = 'none'

@@ -1,6 +1,7 @@
-import type { CollageImage } from '@/types'
+import type { CollageImage, CropRect } from '@/types'
 import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
 import { createFilteredImageSource, readFilterParams } from '@/lib/applyImageFilters'
+import { cropSourceRect } from '@/lib/cropImage'
 
 // Gitterauflösung für das freie Verzerren (Distort) im Export. Höher als in der
 // Live-Ansicht, da der Export nicht interaktiv ist und Qualität wichtiger ist.
@@ -37,7 +38,8 @@ function applyPixelFilters(
   highlights: number,
   shadows: number,
   warmth: number,
-  sharpness: number
+  sharpness: number,
+  crop?: CropRect
 ): HTMLCanvasElement {
   const tempCanvas = document.createElement('canvas')
   tempCanvas.width = width
@@ -50,7 +52,8 @@ function applyPixelFilters(
   if (saturation !== 100) cssFilters.push(`saturate(${saturation}%)`)
   if (cssFilters.length > 0) tempCtx.filter = cssFilters.join(' ')
 
-  tempCtx.drawImage(htmlImg, 0, 0, width, height)
+  const src = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, crop)
+  tempCtx.drawImage(htmlImg, src.sx, src.sy, src.sw, src.sh, 0, 0, width, height)
   tempCtx.filter = 'none'
 
   const imageData = tempCtx.getImageData(0, 0, width, height)
@@ -125,7 +128,7 @@ export function drawCollageImage(
   // runde Ecken und Schatten entfallen dabei (identisch zur Live-Ansicht).
   if (img.distortEnabled && hasDistortion(img.cornerOffsets)) {
     const params = readFilterParams(img)
-    const source = createFilteredImageSource(htmlImg, img.width, img.height, params)
+    const source = createFilteredImageSource(htmlImg, img.width, img.height, params, img.crop)
     const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
     const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
     const corners = computeLocalCorners(img.width, img.height, img.cornerOffsets)
@@ -186,7 +189,8 @@ export function drawCollageImage(
       highlights,
       shadows,
       warmth,
-      sharpness
+      sharpness,
+      img.crop
     )
     ctx.drawImage(processed, x, y, img.width, img.height)
   } else {
@@ -195,7 +199,8 @@ export function drawCollageImage(
     if (contrast !== 100) cssFilters.push(`contrast(${contrast}%)`)
     if (saturation !== 100) cssFilters.push(`saturate(${saturation}%)`)
     if (cssFilters.length > 0) ctx.filter = cssFilters.join(' ')
-    ctx.drawImage(htmlImg, x, y, img.width, img.height)
+    const s = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, img.crop)
+    ctx.drawImage(htmlImg, s.sx, s.sy, s.sw, s.sh, x, y, img.width, img.height)
     ctx.filter = 'none'
   }
 
