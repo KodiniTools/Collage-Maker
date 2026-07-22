@@ -608,12 +608,21 @@ export const useCollageStore = defineStore('collage', () => {
     settings.value.height = newHeight
   }
 
-  // Canvasgröße ändern und dabei nur die POSITIONEN der Bilder/Texte
-  // proportional mitführen – ihre Größe (Breite/Höhe/Schriftgröße) bleibt
-  // unverändert. Verwendet, wenn "Inhalte mitskalieren" AUS ist: Beim
-  // Verkleinern der Leinwand (v. a. der Höhe) bleiben alle Bilder im
-  // Sichtfeld und der Abstand zwischen ihnen verringert sich, ohne dass die
-  // Bilder selbst kleiner werden. Galerie-Templates bleiben unberührt.
+  // Canvasgröße ändern und dabei die gesamte Komposition (alle Canvas-Bilder
+  // UND Texte) als EINEN Block behandeln: Sie wird mit EINEM einheitlichen
+  // Faktor skaliert (Seitenverhältnisse bleiben erhalten → keine Verzerrung)
+  // und anschließend im Canvas zentriert. Verwendet, wenn "Inhalte
+  // mitskalieren" AUS ist.
+  //
+  // Dadurch bleiben beim Verkleinern (v. a. der Höhe) alle Bilder im Sichtfeld,
+  // die Ränder wirken auf allen vier Seiten ausgewogen (oben=unten, links=
+  // rechts) und schrumpfen mit. Galerie-Templates bleiben unberührt.
+  //
+  // Skalierungsfaktor = Änderung der tatsächlich geänderten Achse (bei reiner
+  // Höhenänderung ratioY, bei reiner Breitenänderung ratioX). So passt der
+  // Inhalt exakt auf die geänderte Achse und die Operation ist umkehrbar
+  // (Slider runter + rauf ⇒ wieder Ausgangszustand). Ändern sich beide Achsen
+  // gleichzeitig ungleichmäßig, dient das geometrische Mittel als Kompromiss.
   function repositionContent(newWidth: number, newHeight: number) {
     // Ungültige Zielgrößen ignorieren (z. B. leeres/„0"-Eingabefeld).
     if (
@@ -633,22 +642,61 @@ export const useCollageStore = defineStore('collage', () => {
       const ratioY = newHeight / oldHeight
 
       if (ratioX !== 1 || ratioY !== 1) {
-        // Positionen werden – wie bei resizeCanvas – über die obere linke Ecke
-        // skaliert (NICHT über den Mittelpunkt). Dadurch bleibt der Rand zum
-        // Canvas proportional erhalten: der obere weiße Rand schrumpft/wächst
-        // mit, wird aber nie abgeschnitten. Die Bildgröße selbst bleibt gleich,
-        // sodass sich beim Verkleinern der Höhe die Abstände verringern und die
-        // Bilder im Sichtfeld bleiben. Galerie-Templates bleiben unberührt.
-        images.value.forEach((img) => {
-          if (img.isGalleryTemplate === true) return
-          img.x *= ratioX
-          img.y *= ratioY
+        // Einheitlicher Skalierungsfaktor (verzerrungsfrei).
+        let scale: number
+        if (ratioX === 1) scale = ratioY
+        else if (ratioY === 1) scale = ratioX
+        else scale = Math.sqrt(ratioX * ratioY)
+
+        // Bounding-Box der Komposition bestimmen (Bilder mit ihrer Fläche,
+        // Texte als Punkt – sie haben im Modell keine Ausdehnung). Galerie-
+        // Templates zählen nicht zur Canvas-Komposition.
+        const contentImages = images.value.filter((img) => img.isGalleryTemplate !== true)
+
+        let minX = Infinity
+        let minY = Infinity
+        let maxX = -Infinity
+        let maxY = -Infinity
+
+        contentImages.forEach((img) => {
+          minX = Math.min(minX, img.x)
+          minY = Math.min(minY, img.y)
+          maxX = Math.max(maxX, img.x + img.width)
+          maxY = Math.max(maxY, img.y + img.height)
+        })
+        texts.value.forEach((txt) => {
+          minX = Math.min(minX, txt.x)
+          minY = Math.min(minY, txt.y)
+          maxX = Math.max(maxX, txt.x)
+          maxY = Math.max(maxY, txt.y)
         })
 
-        texts.value.forEach((txt) => {
-          txt.x *= ratioX
-          txt.y *= ratioY
-        })
+        // Nur transformieren, wenn es überhaupt Inhalt gibt.
+        if (Number.isFinite(minX) && Number.isFinite(minY)) {
+          const bboxCenterX = (minX + maxX) / 2
+          const bboxCenterY = (minY + maxY) / 2
+          const targetCenterX = newWidth / 2
+          const targetCenterY = newHeight / 2
+
+          // Jeden Punkt um das Bounding-Box-Zentrum skalieren und das Zentrum
+          // auf die Canvas-Mitte legen (zentrieren).
+          contentImages.forEach((img) => {
+            const cx = img.x + img.width / 2
+            const cy = img.y + img.height / 2
+            const newCx = targetCenterX + (cx - bboxCenterX) * scale
+            const newCy = targetCenterY + (cy - bboxCenterY) * scale
+            img.width *= scale
+            img.height *= scale
+            img.x = newCx - img.width / 2
+            img.y = newCy - img.height / 2
+          })
+
+          texts.value.forEach((txt) => {
+            txt.x = targetCenterX + (txt.x - bboxCenterX) * scale
+            txt.y = targetCenterY + (txt.y - bboxCenterY) * scale
+            txt.fontSize *= scale
+          })
+        }
       }
     }
 

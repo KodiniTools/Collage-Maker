@@ -167,69 +167,97 @@ describe('repositionContent (scale content option OFF)', () => {
     setActivePinia(createPinia())
   })
 
-  it('scales image positions (top-left based) but keeps their size', () => {
+  it('scales the whole composition uniformly and centers it on height change', () => {
     const collage = useCollageStore()
-    // Bild im unteren Bereich der Standard-Leinwand (700x740)
     collage.images.push(makeImg('a', { x: 100, y: 600, width: 300, height: 100 }))
-    // Höhe halbieren -> Position rutscht hoch, Größe bleibt unverändert.
+    // Höhe halbieren -> einheitlicher Faktor = ratioY = 0.5
     collage.repositionContent(700, 370)
 
     const img = collage.images[0]
     expect(collage.settings.width).toBe(700)
     expect(collage.settings.height).toBe(370)
-    // Oben-links-basiert: y * 0.5 = 300 (kein Mittelpunkt-Versatz)
-    expect(img.y).toBeCloseTo(300)
-    expect(img.x).toBeCloseTo(100) // Breite unverändert -> x bleibt
-    expect(img.width).toBe(300) // Größe bleibt erhalten
-    expect(img.height).toBe(100)
+    // Größe einheitlich halbiert
+    expect(img.width).toBeCloseTo(150)
+    expect(img.height).toBeCloseTo(50)
+    // Zentriert in der neuen Leinwand
+    expect(img.x + img.width / 2).toBeCloseTo(350) // 700 / 2
+    expect(img.y + img.height / 2).toBeCloseTo(185) // 370 / 2
   })
 
-  it('does not push the top image off-canvas (preserves the top margin)', () => {
+  it('keeps image aspect ratio (no distortion) on a height-only change', () => {
     const collage = useCollageStore()
-    // Großes Bild oben mit kleinem weißen Rand (y=30), fast volle Höhe
+    collage.images.push(makeImg('a', { x: 100, y: 100, width: 300, height: 100 }))
+    const ratioBefore = collage.images[0].width / collage.images[0].height
+
+    collage.repositionContent(700, 370) // nur Höhe ändert sich
+
+    const img = collage.images[0]
+    expect(img.width / img.height).toBeCloseTo(ratioBefore) // 3:1 bleibt 3:1
+  })
+
+  it('produces balanced margins on all four sides (top=bottom, left=right)', () => {
+    const collage = useCollageStore()
     collage.images.push(makeImg('big', { x: 0, y: 30, width: 700, height: 400 }))
-    // Höhe halbieren
     collage.repositionContent(700, 370)
 
-    // Oberkante bleibt positiv (Rand schrumpft proportional, wird nicht
-    // abgeschnitten): 30 * (370/740) = 15
-    expect(collage.images[0].y).toBeCloseTo(15)
-    expect(collage.images[0].y).toBeGreaterThan(0)
+    const img = collage.images[0]
+    const left = img.x
+    const right = 700 - (img.x + img.width)
+    const top = img.y
+    const bottom = 370 - (img.y + img.height)
+    expect(left).toBeCloseTo(right)
+    expect(top).toBeCloseTo(bottom)
   })
 
-  it('shrinks the vertical gap between two images proportionally to the height', () => {
+  it('keeps all content within the canvas (stays in view) when shrinking', () => {
     const collage = useCollageStore()
-    const top = makeImg('top', { x: 100, y: 50, width: 300, height: 150 })
-    const bottom = makeImg('bottom', { x: 100, y: 600, width: 300, height: 100 })
-    collage.images.push(top, bottom)
-
-    // Abstand der Positionen (Oberkanten) vor der Änderung
-    const gapBefore = 600 - 50
+    collage.images.push(makeImg('big', { x: 0, y: 30, width: 700, height: 400 }))
     collage.repositionContent(700, 370)
 
-    const [t, b] = collage.images
-    // Positions-Abstand skaliert exakt mit der Höhe (0.5)
-    expect(b.y - t.y).toBeCloseTo(gapBefore * 0.5)
+    const img = collage.images[0]
+    expect(img.x).toBeGreaterThanOrEqual(0)
+    expect(img.y).toBeGreaterThanOrEqual(0)
+    expect(img.x + img.width).toBeLessThanOrEqual(700 + 1e-6)
+    expect(img.y + img.height).toBeLessThanOrEqual(370 + 1e-6)
   })
 
-  it('does not reposition gallery templates', () => {
+  it('is reversible for centered content (telescoping)', () => {
     const collage = useCollageStore()
-    collage.images.push(makeImg('tpl', { isGalleryTemplate: true, x: 10, y: 20 }))
-    collage.repositionContent(700, 370)
+    // Bereits zentriertes Bild (Mittelpunkt = Canvas-Mitte 350/370)
+    collage.images.push(makeImg('a', { x: 200, y: 320, width: 300, height: 100 }))
 
-    expect(collage.images[0].x).toBe(10)
-    expect(collage.images[0].y).toBe(20)
+    collage.repositionContent(700, 370) // verkleinern
+    collage.repositionContent(700, 740) // zurück auf Original
+
+    const img = collage.images[0]
+    expect(img.x).toBeCloseTo(200)
+    expect(img.y).toBeCloseTo(320)
+    expect(img.width).toBeCloseTo(300)
+    expect(img.height).toBeCloseTo(100)
   })
 
-  it('scales text position but keeps font size', () => {
+  it('does not touch gallery templates', () => {
+    const collage = useCollageStore()
+    collage.images.push(makeImg('tpl', { isGalleryTemplate: true, x: 10, y: 20, width: 200, height: 200 }))
+    collage.repositionContent(700, 370)
+
+    const tpl = collage.images[0]
+    expect(tpl.x).toBe(10)
+    expect(tpl.y).toBe(20)
+    expect(tpl.width).toBe(200)
+    expect(tpl.height).toBe(200)
+  })
+
+  it('scales text position and font size uniformly', () => {
     const collage = useCollageStore()
     collage.texts.push(makeText('t', { x: 100, y: 200, fontSize: 48 }))
     collage.repositionContent(700, 370)
 
     const txt = collage.texts[0]
-    expect(txt.y).toBeCloseTo(100) // 200 * 0.5
-    expect(txt.x).toBeCloseTo(100) // Breite unverändert
-    expect(txt.fontSize).toBe(48) // Schriftgröße bleibt
+    // Einzelner Text (Bounding-Box = Punkt) landet in der Canvas-Mitte
+    expect(txt.x).toBeCloseTo(350)
+    expect(txt.y).toBeCloseTo(185)
+    expect(txt.fontSize).toBeCloseTo(24) // 48 * 0.5
   })
 
   it('ignores invalid target sizes and keeps content intact', () => {
