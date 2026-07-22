@@ -167,38 +167,49 @@ describe('repositionContent (scale content option OFF)', () => {
     setActivePinia(createPinia())
   })
 
-  it('scales image positions but keeps their size when height shrinks', () => {
+  it('scales image positions (top-left based) but keeps their size', () => {
     const collage = useCollageStore()
     // Bild im unteren Bereich der Standard-Leinwand (700x740)
     collage.images.push(makeImg('a', { x: 100, y: 600, width: 300, height: 100 }))
-    // Höhe halbieren -> Bilder sollen im Sichtfeld bleiben (Position rutscht
-    // hoch), Größe bleibt aber unverändert.
+    // Höhe halbieren -> Position rutscht hoch, Größe bleibt unverändert.
     collage.repositionContent(700, 370)
 
     const img = collage.images[0]
     expect(collage.settings.width).toBe(700)
     expect(collage.settings.height).toBe(370)
-    // Mittelpunkt (y=650) skaliert mit 0.5 -> 325, Höhe 100 unverändert -> y=275
-    expect(img.y).toBeCloseTo(275)
+    // Oben-links-basiert: y * 0.5 = 300 (kein Mittelpunkt-Versatz)
+    expect(img.y).toBeCloseTo(300)
     expect(img.x).toBeCloseTo(100) // Breite unverändert -> x bleibt
     expect(img.width).toBe(300) // Größe bleibt erhalten
     expect(img.height).toBe(100)
   })
 
-  it('shrinks the gap between two images proportionally to the height', () => {
+  it('does not push the top image off-canvas (preserves the top margin)', () => {
+    const collage = useCollageStore()
+    // Großes Bild oben mit kleinem weißen Rand (y=30), fast volle Höhe
+    collage.images.push(makeImg('big', { x: 0, y: 30, width: 700, height: 400 }))
+    // Höhe halbieren
+    collage.repositionContent(700, 370)
+
+    // Oberkante bleibt positiv (Rand schrumpft proportional, wird nicht
+    // abgeschnitten): 30 * (370/740) = 15
+    expect(collage.images[0].y).toBeCloseTo(15)
+    expect(collage.images[0].y).toBeGreaterThan(0)
+  })
+
+  it('shrinks the vertical gap between two images proportionally to the height', () => {
     const collage = useCollageStore()
     const top = makeImg('top', { x: 100, y: 50, width: 300, height: 150 })
     const bottom = makeImg('bottom', { x: 100, y: 600, width: 300, height: 100 })
     collage.images.push(top, bottom)
 
-    // Abstand zwischen den Mittelpunkten vor der Änderung
-    const gapBefore = 650 - 125 // bottom center 650, top center 125
+    // Abstand der Positionen (Oberkanten) vor der Änderung
+    const gapBefore = 600 - 50
     collage.repositionContent(700, 370)
 
     const [t, b] = collage.images
-    const tCenter = t.y + t.height / 2
-    const bCenter = b.y + b.height / 2
-    expect(bCenter - tCenter).toBeCloseTo(gapBefore * 0.5)
+    // Positions-Abstand skaliert exakt mit der Höhe (0.5)
+    expect(b.y - t.y).toBeCloseTo(gapBefore * 0.5)
   })
 
   it('does not reposition gallery templates', () => {

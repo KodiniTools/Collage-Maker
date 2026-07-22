@@ -633,16 +633,16 @@ export const useCollageStore = defineStore('collage', () => {
       const ratioY = newHeight / oldHeight
 
       if (ratioX !== 1 || ratioY !== 1) {
-        // Um Bilder/Texte relativ zu ihrem Mittelpunkt an der neuen Leinwand
-        // auszurichten (statt an der oberen linken Ecke), wird der Mittelpunkt
-        // skaliert und die Position daraus zurückgerechnet. So bleibt der
-        // Inhalt sichtbar zentriert und die Abstände schrumpfen gleichmäßig.
+        // Positionen werden – wie bei resizeCanvas – über die obere linke Ecke
+        // skaliert (NICHT über den Mittelpunkt). Dadurch bleibt der Rand zum
+        // Canvas proportional erhalten: der obere weiße Rand schrumpft/wächst
+        // mit, wird aber nie abgeschnitten. Die Bildgröße selbst bleibt gleich,
+        // sodass sich beim Verkleinern der Höhe die Abstände verringern und die
+        // Bilder im Sichtfeld bleiben. Galerie-Templates bleiben unberührt.
         images.value.forEach((img) => {
           if (img.isGalleryTemplate === true) return
-          const centerX = (img.x + img.width / 2) * ratioX
-          const centerY = (img.y + img.height / 2) * ratioY
-          img.x = centerX - img.width / 2
-          img.y = centerY - img.height / 2
+          img.x *= ratioX
+          img.y *= ratioY
         })
 
         texts.value.forEach((txt) => {
