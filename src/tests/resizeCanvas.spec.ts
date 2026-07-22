@@ -161,3 +161,74 @@ describe('resizeCanvas (scale content option)', () => {
     expect(collage.texts[0].fontSize).toBe(48)
   })
 })
+
+describe('repositionContent (scale content option OFF)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  it('scales image positions but keeps their size when height shrinks', () => {
+    const collage = useCollageStore()
+    // Bild im unteren Bereich der Standard-Leinwand (700x740)
+    collage.images.push(makeImg('a', { x: 100, y: 600, width: 300, height: 100 }))
+    // Höhe halbieren -> Bilder sollen im Sichtfeld bleiben (Position rutscht
+    // hoch), Größe bleibt aber unverändert.
+    collage.repositionContent(700, 370)
+
+    const img = collage.images[0]
+    expect(collage.settings.width).toBe(700)
+    expect(collage.settings.height).toBe(370)
+    // Mittelpunkt (y=650) skaliert mit 0.5 -> 325, Höhe 100 unverändert -> y=275
+    expect(img.y).toBeCloseTo(275)
+    expect(img.x).toBeCloseTo(100) // Breite unverändert -> x bleibt
+    expect(img.width).toBe(300) // Größe bleibt erhalten
+    expect(img.height).toBe(100)
+  })
+
+  it('shrinks the gap between two images proportionally to the height', () => {
+    const collage = useCollageStore()
+    const top = makeImg('top', { x: 100, y: 50, width: 300, height: 150 })
+    const bottom = makeImg('bottom', { x: 100, y: 600, width: 300, height: 100 })
+    collage.images.push(top, bottom)
+
+    // Abstand zwischen den Mittelpunkten vor der Änderung
+    const gapBefore = 650 - 125 // bottom center 650, top center 125
+    collage.repositionContent(700, 370)
+
+    const [t, b] = collage.images
+    const tCenter = t.y + t.height / 2
+    const bCenter = b.y + b.height / 2
+    expect(bCenter - tCenter).toBeCloseTo(gapBefore * 0.5)
+  })
+
+  it('does not reposition gallery templates', () => {
+    const collage = useCollageStore()
+    collage.images.push(makeImg('tpl', { isGalleryTemplate: true, x: 10, y: 20 }))
+    collage.repositionContent(700, 370)
+
+    expect(collage.images[0].x).toBe(10)
+    expect(collage.images[0].y).toBe(20)
+  })
+
+  it('scales text position but keeps font size', () => {
+    const collage = useCollageStore()
+    collage.texts.push(makeText('t', { x: 100, y: 200, fontSize: 48 }))
+    collage.repositionContent(700, 370)
+
+    const txt = collage.texts[0]
+    expect(txt.y).toBeCloseTo(100) // 200 * 0.5
+    expect(txt.x).toBeCloseTo(100) // Breite unverändert
+    expect(txt.fontSize).toBe(48) // Schriftgröße bleibt
+  })
+
+  it('ignores invalid target sizes and keeps content intact', () => {
+    const collage = useCollageStore()
+    collage.images.push(makeImg('a', { y: 600 }))
+
+    collage.repositionContent(0, 370)
+    collage.repositionContent(700, Number.NaN)
+
+    expect(collage.settings.height).toBe(740)
+    expect(collage.images[0].y).toBe(600)
+  })
+})

@@ -57,7 +57,10 @@ export function useCanvasSettings() {
     if (scaleContent.value) {
       collage.resizeCanvas(width, height)
     } else {
-      collage.updateSettings({ width, height })
+      // "Inhalte mitskalieren" AUS: Bildgrößen bleiben, aber die Positionen
+      // werden proportional mitgeführt, damit beim Verkleinern der Leinwand
+      // alle Bilder im Sichtfeld bleiben und die Abstände schrumpfen.
+      collage.repositionContent(width, height)
     }
   }
 
