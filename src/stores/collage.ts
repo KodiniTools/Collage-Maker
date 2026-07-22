@@ -608,6 +608,54 @@ export const useCollageStore = defineStore('collage', () => {
     settings.value.height = newHeight
   }
 
+  // Canvasgröße ändern und dabei nur die POSITIONEN der Bilder/Texte
+  // proportional mitführen – ihre Größe (Breite/Höhe/Schriftgröße) bleibt
+  // unverändert. Verwendet, wenn "Inhalte mitskalieren" AUS ist: Beim
+  // Verkleinern der Leinwand (v. a. der Höhe) bleiben alle Bilder im
+  // Sichtfeld und der Abstand zwischen ihnen verringert sich, ohne dass die
+  // Bilder selbst kleiner werden. Galerie-Templates bleiben unberührt.
+  function repositionContent(newWidth: number, newHeight: number) {
+    // Ungültige Zielgrößen ignorieren (z. B. leeres/„0"-Eingabefeld).
+    if (
+      !Number.isFinite(newWidth) ||
+      !Number.isFinite(newHeight) ||
+      newWidth <= 0 ||
+      newHeight <= 0
+    ) {
+      return
+    }
+
+    const oldWidth = settings.value.width
+    const oldHeight = settings.value.height
+
+    if (oldWidth > 0 && oldHeight > 0) {
+      const ratioX = newWidth / oldWidth
+      const ratioY = newHeight / oldHeight
+
+      if (ratioX !== 1 || ratioY !== 1) {
+        // Um Bilder/Texte relativ zu ihrem Mittelpunkt an der neuen Leinwand
+        // auszurichten (statt an der oberen linken Ecke), wird der Mittelpunkt
+        // skaliert und die Position daraus zurückgerechnet. So bleibt der
+        // Inhalt sichtbar zentriert und die Abstände schrumpfen gleichmäßig.
+        images.value.forEach((img) => {
+          if (img.isGalleryTemplate === true) return
+          const centerX = (img.x + img.width / 2) * ratioX
+          const centerY = (img.y + img.height / 2) * ratioY
+          img.x = centerX - img.width / 2
+          img.y = centerY - img.height / 2
+        })
+
+        texts.value.forEach((txt) => {
+          txt.x *= ratioX
+          txt.y *= ratioY
+        })
+      }
+    }
+
+    settings.value.width = newWidth
+    settings.value.height = newHeight
+  }
+
   // Hintergrundbild setzen (von einem Galerie-Bild)
   function setBackgroundImage(imageUrl: string) {
     saveStateForUndo()
@@ -1086,6 +1134,7 @@ export const useCollageStore = defineStore('collage', () => {
     clearCollage,
     updateSettings,
     resizeCanvas,
+    repositionContent,
     // Hintergrundbild
     isBackgroundSelected,
     setBackgroundImage,
