@@ -1,4 +1,22 @@
 {
+  "seo": {
+    "landing": {
+      "title": "Photo Collage Maker – free & no upload | KodiniTools",
+      "description": "Create stunning photo collages right in your browser: 14 layouts, image editing and text. Free, no sign-up, 100% private – your images stay on your device."
+    },
+    "editor": {
+      "title": "Collage Editor – arrange your photos | KodiniTools",
+      "description": "Drop your images onto the canvas, pick a layout and adjust brightness, borders, shadows and text. All local in your browser, privacy-friendly."
+    },
+    "faq": {
+      "title": "Collage Maker FAQ | KodiniTools",
+      "description": "Answers about the free photo collage maker: privacy, supported formats, layouts, export and usage."
+    },
+    "blog": {
+      "title": "Blog – photo collage tips | KodiniTools",
+      "description": "Guides, tips and ideas for stunning photo collages with the free KodiniTools collage maker."
+    }
+  },
   "app": {
     "title": "Image Collage Maker",
     "subtitle": "Create your own photo collage in the browser",
