@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useCollageStore } from '@/stores/collage'
   import { useCanvasPan } from '@/composables/useCanvasPan'
@@ -12,6 +12,12 @@
   const canvas = ref<HTMLCanvasElement | null>(null)
   const container = ref<HTMLDivElement | null>(null)
 
+  // Bilder auf dem Canvas (ohne Galerie-Templates). Die Zoom-Steuerung ist
+  // nur sinnvoll, sobald mindestens ein Bild platziert wurde.
+  const hasCanvasImages = computed(() =>
+    collage.images.some((img) => img.isGalleryTemplate !== true)
+  )
+
   // Zoom-Steuerung (Schrittweite 25 %)
   const ZOOM_STEP = 0.25
   function zoomBy(delta: number) {
@@ -19,9 +25,18 @@
   }
 
   const { autoFitScale, panOffset, spacePressed } = useCanvasPan(container)
-  const { activeGuides, detectAlignments, detectResizeAlignments, drawGuides } = useAlignmentGuides()
+  const { activeGuides, detectAlignments, detectResizeAlignments, drawGuides } =
+    useAlignmentGuides()
   const { getCtx } = useCanvasRenderer(canvas, drawGuides, autoFitScale)
-  const { handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd, cursorStyle } = useDragResize(
+  const {
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    cursorStyle,
+  } = useDragResize(
     canvas,
     autoFitScale,
     panOffset,
@@ -87,15 +102,17 @@
 <template>
   <div
     ref="container"
-    class="w-full bg-muted/10 dark:bg-navy/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
+    class="group w-full bg-muted/10 dark:bg-navy/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
     :style="{
       height: 'calc(100vh - 12rem)',
       overflow: 'hidden',
     }"
   >
-    <!-- Zoom-Steuerung -->
+    <!-- Zoom-Steuerung: nur aktiv, sobald Bilder auf dem Canvas liegen;
+         auf Zeigegeräten erst bei Mouse-Over (oder Tastaturfokus) eingeblendet -->
     <div
-      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-slate-dark/85 dark:bg-surface-darker/90 backdrop-blur-sm text-surface-light rounded-lg shadow-lg px-1 py-1"
+      v-if="hasCanvasImages"
+      class="zoom-control absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-slate-dark/85 dark:bg-surface-darker/90 backdrop-blur-sm text-surface-light rounded-lg shadow-lg px-1 py-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100"
     >
       <button
         class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
@@ -187,7 +204,13 @@
             aria-label="Vorschau schliessen"
             @click="closePreview"
           >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -204,12 +227,20 @@
 </template>
 
 <style scoped>
-.preview-fade-enter-active,
-.preview-fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-.preview-fade-enter-from,
-.preview-fade-leave-to {
-  opacity: 0;
-}
+  .preview-fade-enter-active,
+  .preview-fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+  .preview-fade-enter-from,
+  .preview-fade-leave-to {
+    opacity: 0;
+  }
+
+  /* Auf Geräten ohne Hover (Touch) lässt sich die Zoom-Steuerung nicht per
+   Mouse-Over einblenden – dort bleibt sie dauerhaft sichtbar. */
+  @media (hover: none) {
+    .zoom-control {
+      opacity: 1;
+    }
+  }
 </style>
