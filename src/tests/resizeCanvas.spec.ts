@@ -238,7 +238,9 @@ describe('repositionContent (scale content option OFF)', () => {
 
   it('does not touch gallery templates', () => {
     const collage = useCollageStore()
-    collage.images.push(makeImg('tpl', { isGalleryTemplate: true, x: 10, y: 20, width: 200, height: 200 }))
+    collage.images.push(
+      makeImg('tpl', { isGalleryTemplate: true, x: 10, y: 20, width: 200, height: 200 })
+    )
     collage.repositionContent(700, 370)
 
     const tpl = collage.images[0]

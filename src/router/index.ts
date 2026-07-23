@@ -9,21 +9,25 @@ const routes = [
     path: '/',
     name: 'landing',
     component: LandingPage,
+    meta: { seo: 'landing' },
   },
   {
     path: '/editor',
     name: 'editor',
     component: EditorPage,
+    meta: { seo: 'editor' },
   },
   {
     path: '/faq',
     name: 'faq',
     component: FaqPage,
+    meta: { seo: 'faq' },
   },
   {
     path: '/blog',
     name: 'blog',
     component: BlogPage,
+    meta: { seo: 'blog' },
   },
 ]
 

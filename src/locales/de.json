@@ -1,4 +1,22 @@
 {
+  "seo": {
+    "landing": {
+      "title": "Bilder-Collage-Macher – kostenlos & ohne Upload | KodiniTools",
+      "description": "Erstelle beeindruckende Foto-Collagen direkt im Browser: 14 Layouts, Bildbearbeitung und Texte. Kostenlos, ohne Registrierung, 100 % privat – deine Bilder bleiben auf deinem Gerät."
+    },
+    "editor": {
+      "title": "Collage-Editor – Fotos zusammenstellen | KodiniTools",
+      "description": "Ziehe deine Bilder auf die Leinwand, wähle ein Layout und bearbeite Helligkeit, Rahmen, Schatten und Text. Alles lokal im Browser, DSGVO-konform."
+    },
+    "faq": {
+      "title": "Häufige Fragen zum Collage-Macher | KodiniTools",
+      "description": "Antworten rund um den kostenlosen Bilder-Collage-Macher: Datenschutz, unterstützte Formate, Layouts, Export und Bedienung."
+    },
+    "blog": {
+      "title": "Blog – Tipps für Foto-Collagen | KodiniTools",
+      "description": "Anleitungen, Tipps und Ideen für beeindruckende Foto-Collagen mit dem kostenlosen KodiniTools Collage-Macher."
+    }
+  },
   "app": {
     "title": "Bilder-Collage-Macher",
     "subtitle": "Erstelle deine eigene Foto-Collage im Browser",

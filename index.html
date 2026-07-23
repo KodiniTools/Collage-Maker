@@ -1,18 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="/fonts.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Erstelle deine eigene Foto-Collage direkt im Browser. Kostenlos, keine Registrierung, 100% client-seitig." />
-    <title>Bilder-Collage-Macher | kodinitools.com</title>
+
+    <!-- Primary Meta Tags (DE-Standard; wird pro Route/Sprache dynamisch aktualisiert) -->
+    <title>Bilder-Collage-Macher – kostenlos & ohne Upload | KodiniTools</title>
+    <meta
+      name="description"
+      content="Erstelle beeindruckende Foto-Collagen direkt im Browser: 14 Layouts, Bildbearbeitung und Texte. Kostenlos, ohne Registrierung, 100 % privat – deine Bilder bleiben auf deinem Gerät."
+    />
+    <meta name="author" content="KodiniTools" />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="theme-color" content="#f9f2d5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#142640" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="https://kodinitools.com/collagemaker/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KodiniTools" />
+    <meta property="og:title" content="Bilder-Collage-Macher – kostenlos & ohne Upload" />
+    <meta
+      property="og:description"
+      content="Erstelle beeindruckende Foto-Collagen direkt im Browser. Kostenlos, ohne Registrierung, 100 % privat."
+    />
+    <meta property="og:url" content="https://kodinitools.com/collagemaker/" />
+    <meta property="og:image" content="https://kodinitools.com/public/mstile-310x310.png" />
+    <meta property="og:image:width" content="310" />
+    <meta property="og:image:height" content="310" />
+    <meta property="og:image:alt" content="KodiniTools Bilder-Collage-Macher" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Bilder-Collage-Macher – kostenlos & ohne Upload" />
+    <meta
+      name="twitter:description"
+      content="Erstelle beeindruckende Foto-Collagen direkt im Browser. Kostenlos, ohne Registrierung, 100 % privat."
+    />
+    <meta name="twitter:image" content="https://kodinitools.com/public/mstile-310x310.png" />
+
+    <!-- Favicons & Brand-Icons (KodiniTools, liegen unter /public/) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/public/favicon-96x96.png" />
+    <link rel="shortcut icon" href="/public/favicon-32x32.ico" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/public/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/public/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/public/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/public/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/public/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/public/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/public/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/public/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon-180x180.png" />
+    <meta name="apple-mobile-web-app-title" content="Collage-Macher" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="application-name" content="KodiniTools Collage-Macher" />
+
+    <!-- Web App Manifest (wird von Vite auf /collagemaker/site.webmanifest umgeschrieben) -->
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#142640" />
+    <meta name="msapplication-TileImage" content="/public/mstile-150x150.png" />
+    <meta name="msapplication-config" content="/collagemaker/browserconfig.xml" />
+
+    <!-- Schriften -->
+    <link rel="stylesheet" href="/fonts.css" />
+
+    <!-- Structured Data (schema.org WebApplication) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Bilder-Collage-Macher",
+        "url": "https://kodinitools.com/collagemaker/",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript",
+        "inLanguage": ["de", "en"],
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "description": "Erstelle beeindruckende Foto-Collagen direkt im Browser. Kostenlos, ohne Registrierung, 100 % privat.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "KodiniTools",
+          "url": "https://kodinitools.com/",
+          "logo": "https://kodinitools.com/public/android-icon-192x192.png"
+        }
+      }
+    </script>
   </head>
   <body>
-  <!--#include virtual="/partials/nav.html" -->
+    <!--#include virtual="/partials/nav.html" -->
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
-	<!--#include virtual="/partials/footer.html" -->
-	<!--#include virtual="/partials/cookie-banner.html" -->
+    <!--#include virtual="/partials/footer.html" -->
+    <!--#include virtual="/partials/cookie-banner.html" -->
   </body>
 </html>
