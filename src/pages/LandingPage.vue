@@ -76,6 +76,20 @@
           >
             {{ t('landing.hero.title') }}
           </h1>
+
+          <!-- Hero Video (autoplay once on page load, muted for browser autoplay policy) -->
+          <div class="mb-6 sm:mb-10 max-w-3xl mx-auto">
+            <video
+              class="w-full rounded-2xl shadow-2xl border border-muted/10 dark:border-slate/30"
+              :src="heroVideoSrc"
+              autoplay
+              muted
+              playsinline
+              preload="auto"
+              :aria-label="t('landing.hero.title')"
+            ></video>
+          </div>
+
           <p
             class="text-base sm:text-lg md:text-xl text-muted dark:text-muted-light mb-6 sm:mb-10 max-w-2xl mx-auto"
           >
