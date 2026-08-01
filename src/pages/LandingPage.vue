@@ -6,6 +6,9 @@
 
   const heroFeatures = ['layouts', 'editing', 'privacy']
 
+  // Served from the site root (/var/www/kodinitools.com/videos/), not the app base.
+  const heroVideoSrc = '/videos/collage-maker.webm'
+
   const allFeatures = [
     'layouts',
     'editing',
@@ -102,6 +105,20 @@
               class="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"
             ></div>
           </RouterLink>
+
+          <!-- Hero Video (autoplay once on page load, muted for browser autoplay policy) -->
+          <div class="mt-8 sm:mt-12 max-w-3xl mx-auto">
+            <video
+              class="w-full rounded-2xl shadow-2xl border border-muted/10 dark:border-slate/30"
+              :src="heroVideoSrc"
+              autoplay
+              muted
+              playsinline
+              preload="auto"
+              controls
+              :aria-label="t('landing.hero.title')"
+            ></video>
+          </div>
         </div>
 
         <!-- Hero Feature Cards Grid (3 Cards) -->
