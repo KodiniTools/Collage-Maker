@@ -115,7 +115,6 @@
               muted
               playsinline
               preload="auto"
-              controls
               :aria-label="t('landing.hero.title')"
             ></video>
           </div>
