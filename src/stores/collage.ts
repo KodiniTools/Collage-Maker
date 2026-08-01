@@ -1055,6 +1055,37 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
+  // Ausgewählten Text um Grad drehen
+  function rotateText(id: string, degrees: number) {
+    saveStateForUndo()
+    const txt = texts.value.find((t) => t.id === id)
+    if (txt) {
+      updateText(id, { rotation: (txt.rotation + degrees) % 360 })
+    }
+  }
+
+  // Text über alle Bilder und Texte nach vorne bringen
+  function bringTextToFront(id: string) {
+    saveStateForUndo()
+    const maxZ = Math.max(
+      ...images.value.map((img) => img.zIndex),
+      ...texts.value.map((t) => t.zIndex),
+      0
+    )
+    updateText(id, { zIndex: maxZ + 1 })
+  }
+
+  // Text hinter alle Bilder und Texte senden
+  function sendTextToBack(id: string) {
+    saveStateForUndo()
+    const minZ = Math.min(
+      ...images.value.map((img) => img.zIndex),
+      ...texts.value.map((t) => t.zIndex),
+      0
+    )
+    updateText(id, { zIndex: minZ - 1 })
+  }
+
   // Template-Methoden (NEU für Vorlagenbibliothek)
   async function saveAsTemplate(name: string, description: string) {
     // Screenshot des aktuellen Canvas erstellen (als Thumbnail)
@@ -1177,6 +1208,9 @@ export const useCollageStore = defineStore('collage', () => {
     removeText,
     updateText,
     selectText,
+    rotateText,
+    bringTextToFront,
+    sendTextToBack,
     // Layout & Einstellungen
     applyLayout,
     clearCollage,
