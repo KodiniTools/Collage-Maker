@@ -6,6 +6,7 @@
   import { useAlignmentGuides } from '@/composables/useAlignmentGuides'
   import { useCanvasRenderer } from '@/composables/useCanvasRenderer'
   import { useDragResize } from '@/composables/useDragResize'
+  import QuickActionToolbar from '@/components/QuickActionToolbar.vue'
 
   const { t } = useI18n()
   const collage = useCollageStore()
@@ -186,6 +187,14 @@
         @touchcancel="handleTouchEnd"
       />
     </div>
+
+    <!-- Quick-Action-Toolbar: schwebt direkt am ausgewählten Bild/Text -->
+    <QuickActionToolbar
+      :canvas-el="canvas"
+      :container-el="container"
+      :auto-fit-scale="autoFitScale"
+      :pan-offset="panOffset"
+    />
   </div>
 
   <!-- Image Preview Overlay -->

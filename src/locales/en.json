@@ -563,6 +563,12 @@
     },
     "pasteFromClipboard": "Paste image from clipboard"
   },
+  "quickActions": {
+    "delete": "Delete",
+    "rotate": "Rotate 90°",
+    "bringToFront": "Bring forward",
+    "sendToBack": "Send backward"
+  },
   "toast": {
     "uploadSuccess": "{count} image(s) uploaded successfully",
     "uploadError": "Error processing images",

@@ -563,6 +563,12 @@
     },
     "pasteFromClipboard": "Bild aus Zwischenablage einfügen"
   },
+  "quickActions": {
+    "delete": "Löschen",
+    "rotate": "90° drehen",
+    "bringToFront": "Nach vorne",
+    "sendToBack": "Nach hinten"
+  },
   "toast": {
     "uploadSuccess": "{count} Bild(er) erfolgreich hochgeladen",
     "uploadError": "Fehler beim Verarbeiten der Bilder",
