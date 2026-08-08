@@ -477,6 +477,8 @@
     "nameRequired": "Please enter a name for the template",
     "confirmLoad": "Do you want to load this template? Your current work will be lost.",
     "confirmDelete": "Do you really want to delete this template?",
+    "saveSuccess": "Template saved",
+    "saveError": "Could not save template – storage is full. Please reduce the number or size of images.",
     "predefinedTemplates": {
       "blankLandscape": {
         "name": "Blank Canvas (Landscape)",
