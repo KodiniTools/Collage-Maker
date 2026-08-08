@@ -1116,13 +1116,19 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   function loadFromTemplate(template: any) {
-    // Lösche alle aktuellen Daten
-    images.value = []
-    texts.value = []
-    selectedImageIds.value = []
-    selectedTextId.value = null
+    // Snapshot sichern, damit das Anwenden einer Vorlage rückgängig gemacht
+    // werden kann (Strg+Z / „Rückgängig"-Toast) und keine Arbeit verloren geht.
+    saveStateForUndo()
 
-    // Lade Template-Daten
+    const state = template.collageState ?? {}
+    const templateImages = Array.isArray(state.images) ? state.images : []
+    const templateTexts = Array.isArray(state.texts) ? state.texts : []
+    // Enthält die Vorlage eigene Bilder/Texte (gespeicherte Collage) oder ist
+    // sie ein reines Leinwand-Preset (vordefinierte Vorlagen: Größe/Layout/
+    // Hintergrund, aber kein Inhalt)?
+    const templateHasContent = templateImages.length > 0 || templateTexts.length > 0
+
+    // Lade Template-Einstellungen
     if (template.collageState && template.collageState.settings) {
       const ts = template.collageState.settings
 
@@ -1161,6 +1167,28 @@ export const useCollageStore = defineStore('collage', () => {
         settings.value.backgroundImage.contrast = 100
         settings.value.backgroundImage.saturation = 100
         settings.value.backgroundImage.blur = 0
+      }
+    }
+
+    if (templateHasContent) {
+      // Vollständige Collage-Vorlage: aktuellen Inhalt durch den der Vorlage
+      // ersetzen. Dank des Undo-Snapshots oben ist auch das rückgängig-fähig.
+      selectedImageIds.value = []
+      selectedTextId.value = null
+      isBackgroundSelected.value = false
+      images.value = templateImages.map((img: Partial<CollageImage>) => ({
+        ...img,
+        // File-Referenz kann nicht persistiert werden; Bild wird über die
+        // gespeicherte URL/dataUrl dargestellt.
+        file: img.file ?? (null as unknown as File),
+      })) as CollageImage[]
+      texts.value = templateTexts.map((txt: CollageText) => ({ ...txt })) as CollageText[]
+    } else {
+      // Reines Leinwand-Preset: hochgeladene Bilder und Texte BEHALTEN, damit
+      // die Arbeit ohne Verlust weitergeht. Nur das Layout auf die vorhandenen
+      // Bilder neu anwenden (skipUndo, Snapshot wurde bereits erstellt).
+      if (settings.value.layout !== 'freestyle') {
+        applyLayout(settings.value.layout, true)
       }
     }
   }

@@ -577,6 +577,7 @@
     "pasteSuccess": "{count} Bild(er) aus Zwischenablage eingefügt",
     "imageDeleted": "Bild gelöscht",
     "imagesDeleted": "{count} Bilder gelöscht",
+    "templateApplied": "Vorlage angewendet",
     "undo": "Rückgängig"
   },
   "autoSave": {

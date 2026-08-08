@@ -42,10 +42,12 @@
   })
 
   function loadTemplate(template: Template) {
-    if (confirm(t('templates.confirmLoad'))) {
-      collageStore.loadFromTemplate(template)
-      isOpen.value = false
-    }
+    // Vorlage anwenden, ohne die aktuelle Arbeit zu verwerfen: Presets behalten
+    // die hochgeladenen Bilder, und jede Anwendung ist per Toast/Strg+Z
+    // rückgängig zu machen. Deshalb kein blockierender Warndialog mehr.
+    collageStore.loadFromTemplate(template)
+    collageStore.showUndoToast('toast.templateApplied')
+    isOpen.value = false
   }
 
   function deleteTemplate(id: string) {
