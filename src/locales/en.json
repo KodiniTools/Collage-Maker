@@ -577,6 +577,7 @@
     "pasteSuccess": "{count} image(s) pasted from clipboard",
     "imageDeleted": "Image deleted",
     "imagesDeleted": "{count} images deleted",
+    "templateApplied": "Template applied",
     "undo": "Undo"
   },
   "autoSave": {
