@@ -64,19 +64,30 @@ export const useTemplatesStore = defineStore('templates', () => {
     }
   }
 
-  // Speichere Benutzer-Vorlagen in LocalStorage
-  function saveUserTemplates() {
+  // Speichere Benutzer-Vorlagen in LocalStorage.
+  // Gibt true zurück, wenn erfolgreich persistiert wurde, sonst false
+  // (z. B. wenn die Speicher-Quota überschritten ist).
+  function saveUserTemplates(): boolean {
     try {
       localStorage.setItem('collage-maker-user-templates', JSON.stringify(userTemplates.value))
+      return true
     } catch (error) {
       console.error('Could not save user templates:', error)
+      return false
     }
   }
 
-  // Füge eine Benutzer-Vorlage hinzu
-  function addUserTemplate(template: Template) {
+  // Füge eine Benutzer-Vorlage hinzu. Schlägt das Persistieren fehl (Quota),
+  // wird die Vorlage NICHT im Speicher behalten und false zurückgegeben, damit
+  // der Aufrufer einen Fallback (kleinere Bilder) versuchen oder einen Fehler
+  // anzeigen kann.
+  function addUserTemplate(template: Template): boolean {
     userTemplates.value.unshift(template)
-    saveUserTemplates()
+    if (!saveUserTemplates()) {
+      userTemplates.value.shift()
+      return false
+    }
+    return true
   }
 
   // Lösche eine Benutzer-Vorlage

@@ -477,6 +477,8 @@
     "nameRequired": "Bitte geben Sie einen Namen für die Vorlage ein",
     "confirmLoad": "Möchten Sie diese Vorlage laden? Ihre aktuelle Arbeit geht verloren.",
     "confirmDelete": "Möchten Sie diese Vorlage wirklich löschen?",
+    "saveSuccess": "Vorlage gespeichert",
+    "saveError": "Vorlage konnte nicht gespeichert werden – der Speicher ist voll. Bitte reduzieren Sie die Anzahl oder Größe der Bilder.",
     "predefinedTemplates": {
       "blankLandscape": {
         "name": "Leere Leinwand (Querformat)",

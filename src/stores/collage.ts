@@ -1088,7 +1088,13 @@ export const useCollageStore = defineStore('collage', () => {
   }
 
   // Template-Methoden (NEU für Vorlagenbibliothek)
-  async function saveAsTemplate(name: string, description: string) {
+  async function saveAsTemplate(
+    name: string,
+    description: string,
+    options?: { maxImagePx?: number; quality?: number }
+  ) {
+    const maxImagePx = options?.maxImagePx ?? TEMPLATE_MAX_IMAGE_PX
+    const jpegQuality = options?.quality ?? TEMPLATE_JPEG_QUALITY
     // Screenshot des aktuellen Canvas erstellen (als Thumbnail)
     const canvas = document.querySelector('canvas')
     let thumbnail = ''
@@ -1108,10 +1114,7 @@ export const useCollageStore = defineStore('collage', () => {
     for (const img of images.value) {
       if (img.url && !dataUrlByUrl.has(img.url)) {
         try {
-          dataUrlByUrl.set(
-            img.url,
-            await urlToCompressedDataUrl(img.url, TEMPLATE_MAX_IMAGE_PX, TEMPLATE_JPEG_QUALITY)
-          )
+          dataUrlByUrl.set(img.url, await urlToCompressedDataUrl(img.url, maxImagePx, jpegQuality))
         } catch (error) {
           console.warn('Could not embed template image:', error)
         }

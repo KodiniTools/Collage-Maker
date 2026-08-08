@@ -10,7 +10,13 @@ function makeTemplate(id: string, category: Template['category'] = 'user'): Temp
     category,
     createdAt: Date.now(),
     collageState: {
-      settings: { width: 700, height: 740, backgroundColor: '#fff', gridEnabled: false, gridSize: 50 },
+      settings: {
+        width: 700,
+        height: 740,
+        backgroundColor: '#fff',
+        gridEnabled: false,
+        gridSize: 50,
+      },
       layout: 'freestyle',
       images: [],
       texts: [],
@@ -40,6 +46,24 @@ describe('useTemplatesStore', () => {
       store.addUserTemplate(makeTemplate('t2'))
       expect(store.userTemplates[0].id).toBe('t2')
       expect(store.userTemplates[1].id).toBe('t1')
+    })
+
+    it('returns true on successful save', () => {
+      const store = useTemplatesStore()
+      expect(store.addUserTemplate(makeTemplate('t1'))).toBe(true)
+    })
+
+    it('returns false and does not keep the template when persistence fails', () => {
+      const store = useTemplatesStore()
+      const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new DOMException('quota', 'QuotaExceededError')
+      })
+
+      const result = store.addUserTemplate(makeTemplate('too-big'))
+
+      expect(result).toBe(false)
+      expect(store.userTemplates).toHaveLength(0)
+      spy.mockRestore()
     })
   })
 

@@ -3,12 +3,15 @@
   import { useI18n } from 'vue-i18n'
   import { useTemplatesStore } from '@/stores/templates'
   import { useCollageStore } from '@/stores/collage'
+  import { useToastStore } from '@/stores/toast'
+  import { TEMPLATE_FALLBACK_IMAGE_PX, TEMPLATE_FALLBACK_JPEG_QUALITY } from '@/config/constants'
   import TemplateCard from './TemplateCard.vue'
   import type { Template } from '@/stores/templates'
 
   const { t } = useI18n()
   const templatesStore = useTemplatesStore()
   const collageStore = useCollageStore()
+  const toast = useToastStore()
 
   const isOpen = defineModel<boolean>('isOpen', { required: true })
   const activeTab = ref<'all' | 'predefined' | 'user'>('all')
@@ -68,16 +71,39 @@
       return
     }
 
-    const template = await collageStore.saveAsTemplate(
-      templateName.value.trim(),
-      templateDescription.value.trim()
-    )
+    const name = templateName.value.trim()
+    const description = templateDescription.value.trim()
 
-    templatesStore.addUserTemplate(template)
-    showSaveDialog.value = false
-    templateName.value = ''
-    templateDescription.value = ''
-    activeTab.value = 'user'
+    try {
+      // 1. Versuch: Standard-Bildqualität
+      let template = await collageStore.saveAsTemplate(name, description)
+      let saved = templatesStore.addUserTemplate(template)
+
+      // 2. Fallback: kleinere/geringer komprimierte Bilder, falls die
+      //    Speicher-Quota beim ersten Versuch überschritten wurde.
+      if (!saved) {
+        template = await collageStore.saveAsTemplate(name, description, {
+          maxImagePx: TEMPLATE_FALLBACK_IMAGE_PX,
+          quality: TEMPLATE_FALLBACK_JPEG_QUALITY,
+        })
+        saved = templatesStore.addUserTemplate(template)
+      }
+
+      if (!saved) {
+        // Auch der Fallback passt nicht in den Speicher -> sichtbarer Fehler.
+        toast.error(t('templates.saveError'))
+        return
+      }
+
+      toast.success(t('templates.saveSuccess'))
+      showSaveDialog.value = false
+      templateName.value = ''
+      templateDescription.value = ''
+      activeTab.value = 'user'
+    } catch (error) {
+      console.error('Vorlage speichern fehlgeschlagen:', error)
+      toast.error(t('templates.saveError'))
+    }
   }
 
   function closeModal() {

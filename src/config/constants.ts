@@ -18,3 +18,6 @@ export const COMPRESS_JPEG_QUALITY = 0.85 // 0–1
 // so keep them compact to stay within the storage quota.
 export const TEMPLATE_MAX_IMAGE_PX = 800 // px — max dimension for embedded template images
 export const TEMPLATE_JPEG_QUALITY = 0.7 // 0–1
+// Fallback used when the first save attempt exceeds the storage quota.
+export const TEMPLATE_FALLBACK_IMAGE_PX = 400 // px — smaller dimension on retry
+export const TEMPLATE_FALLBACK_JPEG_QUALITY = 0.5 // 0–1
