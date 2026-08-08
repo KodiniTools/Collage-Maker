@@ -84,6 +84,9 @@
     isOpen.value = false
     showSaveDialog.value = false
   }
+
+  // Ermöglicht dem Editor, die Bibliothek direkt im Speichern-Modus zu öffnen.
+  defineExpose({ openSaveDialog })
 </script>
 
 <template>

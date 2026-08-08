@@ -133,3 +133,60 @@ export async function copyImagesInMemory(files: File[]): Promise<File[]> {
     })
   )
 }
+
+/**
+ * Lädt ein Bild (Blob- oder Data-URL), skaliert es auf maxSize herunter und gibt
+ * es als komprimierte JPEG-Data-URL zurück. Wird zum dauerhaften Einbetten von
+ * Bildern in gespeicherte Benutzer-Vorlagen verwendet (localStorage), damit die
+ * Bilder auch nach einem Reload erhalten bleiben – Blob-URLs sind dann tot.
+ */
+export async function urlToCompressedDataUrl(
+  url: string,
+  maxSize: number,
+  quality: number
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    // crossOrigin nur bei entfernten URLs setzen – NICHT bei blob:/data:.
+    if (!url.startsWith('blob:') && !url.startsWith('data:')) {
+      img.crossOrigin = 'anonymous'
+    }
+
+    img.onload = () => {
+      try {
+        let width = img.naturalWidth
+        let height = img.naturalHeight
+
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = Math.round((height / width) * maxSize)
+            width = maxSize
+          } else {
+            width = Math.round((width / height) * maxSize)
+            height = maxSize
+          }
+        }
+
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'))
+          return
+        }
+
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
+        ctx.drawImage(img, 0, 0, width, height)
+        resolve(canvas.toDataURL('image/jpeg', quality))
+      } catch (e) {
+        reject(e)
+      }
+    }
+
+    img.onerror = () => reject(new Error('Failed to load image'))
+    img.src = url
+  })
+}
