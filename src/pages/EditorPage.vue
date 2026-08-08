@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, watch } from 'vue'
+  import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
   import ImageUploader from '@/components/ImageUploader.vue'
@@ -24,9 +24,17 @@
 
   const { t } = useI18n()
   const showTemplates = ref(false)
+  const templateLibraryRef = ref<InstanceType<typeof TemplateLibrary> | null>(null)
   const showRestoreDialog = ref(false)
   const restoreSaveDate = ref<Date | null>(null)
   const collage = useCollageStore()
+
+  // Öffnet die Vorlagenbibliothek und springt direkt in den Speichern-Dialog,
+  // damit die aktuelle Arbeit ohne Umweg als eigene Vorlage gesichert werden kann.
+  function openSaveTemplate() {
+    showTemplates.value = true
+    nextTick(() => templateLibraryRef.value?.openSaveDialog())
+  }
 
   // ── Neues Layout: Icon-Leiste + kontextbezogenes Werkzeug-Panel (links)
   //    und ein auswahlabhängiger Inspektor (rechts). Alle Panels liegen im
@@ -220,6 +228,26 @@
             </button>
           </div>
 
+          <button
+            class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors flex items-center gap-2"
+            :title="t('templates.saveAsCurrent')"
+            @click="openSaveTemplate"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
+              />
+            </svg>
+            <span class="hidden sm:inline">{{ t('templates.saveAsCurrent') }}</span>
+          </button>
           <button
             class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors flex items-center gap-2"
             @click="showTemplates = true"
@@ -455,7 +483,7 @@
     </section>
 
     <!-- Template Library Modal -->
-    <TemplateLibrary v-model:is-open="showTemplates" />
+    <TemplateLibrary ref="templateLibraryRef" v-model:is-open="showTemplates" />
 
     <!-- Keyboard Shortcuts Modal -->
     <KeyboardShortcutsModal v-model="showShortcutsModal" />

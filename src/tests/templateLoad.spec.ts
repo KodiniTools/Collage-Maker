@@ -148,4 +148,35 @@ describe('loadFromTemplate – Arbeit ohne Verlust', () => {
 
     expect(collage.images.map((i) => i.id)).toEqual(['from-template'])
   })
+
+  it('stellt die Bild-URL aus einer eingebetteten dataUrl wieder her', () => {
+    const collage = useCollageStore()
+    const dataUrl = 'data:image/jpeg;base64,AAAA'
+
+    const contentTemplate = {
+      id: 'content-2',
+      name: 'Eingebettete Collage',
+      category: 'user' as const,
+      createdAt: 0,
+      thumbnail: '',
+      collageState: {
+        settings: {
+          width: 800,
+          height: 600,
+          backgroundColor: '#ffffff',
+          layout: 'freestyle',
+          gridEnabled: false,
+          gridSize: 20,
+        },
+        // So wird eine gespeicherte Vorlage abgelegt: ohne file/url, mit dataUrl.
+        images: [{ ...makeImg('embedded'), file: undefined, url: undefined, dataUrl }],
+        texts: [],
+      },
+    }
+
+    collage.loadFromTemplate(contentTemplate)
+
+    expect(collage.images).toHaveLength(1)
+    expect(collage.images[0].url).toBe(dataUrl)
+  })
 })

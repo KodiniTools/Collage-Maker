@@ -12,7 +12,8 @@ import type {
 import { computeLayout } from '@/lib/layouts'
 import { useHistoryStore } from '@/stores/history'
 import { useToastStore } from '@/stores/toast'
-import { UNDO_DEBOUNCE_MS } from '@/config/constants'
+import { UNDO_DEBOUNCE_MS, TEMPLATE_MAX_IMAGE_PX, TEMPLATE_JPEG_QUALITY } from '@/config/constants'
+import { urlToCompressedDataUrl } from '@/utils/imageCompression'
 import { i18n } from '@/i18n'
 
 export const useCollageStore = defineStore('collage', () => {
@@ -1099,6 +1100,35 @@ export const useCollageStore = defineStore('collage', () => {
       }
     }
 
+    // Bilder dauerhaft einbetten: Blob-URLs und File-Objekte überleben den
+    // localStorage nicht. Deshalb jedes Bild als komprimierte Data-URL ablegen.
+    // Pro eindeutiger URL nur einmal komprimieren (Galerie-Template + Canvas-
+    // Instanzen teilen sich dieselbe URL).
+    const dataUrlByUrl = new Map<string, string>()
+    for (const img of images.value) {
+      if (img.url && !dataUrlByUrl.has(img.url)) {
+        try {
+          dataUrlByUrl.set(
+            img.url,
+            await urlToCompressedDataUrl(img.url, TEMPLATE_MAX_IMAGE_PX, TEMPLATE_JPEG_QUALITY)
+          )
+        } catch (error) {
+          console.warn('Could not embed template image:', error)
+        }
+      }
+    }
+
+    const embeddedImages = images.value.map((img) => {
+      // file/url werden nicht persistiert; das Bild wird beim Laden aus dataUrl
+      // rekonstruiert.
+
+      const { file: _file, url: _url, ...rest } = img
+      return {
+        ...rest,
+        dataUrl: dataUrlByUrl.get(img.url) ?? '',
+      }
+    })
+
     return {
       id: `template-user-${Date.now()}`,
       name,
@@ -1109,7 +1139,7 @@ export const useCollageStore = defineStore('collage', () => {
       collageState: {
         settings: { ...settings.value },
         layout: settings.value.layout,
-        images: images.value.map((img) => ({ ...img })),
+        images: embeddedImages,
         texts: texts.value.map((txt) => ({ ...txt })),
       },
     }
@@ -1176,12 +1206,17 @@ export const useCollageStore = defineStore('collage', () => {
       selectedImageIds.value = []
       selectedTextId.value = null
       isBackgroundSelected.value = false
-      images.value = templateImages.map((img: Partial<CollageImage>) => ({
-        ...img,
-        // File-Referenz kann nicht persistiert werden; Bild wird über die
-        // gespeicherte URL/dataUrl dargestellt.
-        file: img.file ?? (null as unknown as File),
-      })) as CollageImage[]
+      images.value = templateImages.map((img: Partial<CollageImage> & { dataUrl?: string }) => {
+        const { dataUrl, ...rest } = img
+        return {
+          ...rest,
+          // Eingebettete Data-URL als Bildquelle nutzen (überlebt Reload);
+          // Fallback auf eine ggf. vorhandene url.
+          url: dataUrl || rest.url || '',
+          // File-Referenz kann nicht persistiert werden.
+          file: rest.file ?? (null as unknown as File),
+        }
+      }) as CollageImage[]
       texts.value = templateTexts.map((txt: CollageText) => ({ ...txt })) as CollageText[]
     } else {
       // Reines Leinwand-Preset: hochgeladene Bilder und Texte BEHALTEN, damit
