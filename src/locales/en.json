@@ -242,6 +242,21 @@
     "withSelectedImages": "{count} selected images will be added with layout",
     "noImages": "Select images from gallery or upload new ones"
   },
+  "stylePresets": {
+    "title": "Effects",
+    "subtitle": "One click applies rounded corners, borders and shadows to your images.",
+    "noImages": "Upload images first to apply effects.",
+    "scopeAll": "Applied to all {count} images on the canvas",
+    "scopeSelected": "Applied to {count} selected images",
+    "original": "Original",
+    "rounded": "Rounded",
+    "circle": "Circle",
+    "shadow": "Shadow",
+    "softCard": "Soft Card",
+    "frameWhite": "White Frame",
+    "polaroid": "Polaroid",
+    "elegant": "Elegant"
+  },
   "canvas": {
     "size": "Canvas Size",
     "width": "Width",

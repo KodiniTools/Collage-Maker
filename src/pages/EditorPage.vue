@@ -4,6 +4,7 @@
   import { RouterLink } from 'vue-router'
   import ImageUploader from '@/components/ImageUploader.vue'
   import LayoutSelector from '@/components/LayoutSelector.vue'
+  import StylePresets from '@/components/StylePresets.vue'
   import CanvasSettings from '@/components/CanvasSettings.vue'
   import ImageList from '@/components/ImageList.vue'
   import TextList from '@/components/TextList.vue'
@@ -39,7 +40,7 @@
   // ── Neues Layout: Icon-Leiste + kontextbezogenes Werkzeug-Panel (links)
   //    und ein auswahlabhängiger Inspektor (rechts). Alle Panels liegen im
   //    Fluss (flex) – sie verkleinern die Leinwand, überdecken sie nie.
-  type ToolTab = 'upload' | 'layouts' | 'images' | null
+  type ToolTab = 'upload' | 'layouts' | 'effects' | 'images' | null
   type InspectorTab = 'selection' | 'text' | 'canvas' | 'export'
 
   const activeTool = ref<ToolTab>('upload')
@@ -57,6 +58,11 @@
       id: 'layouts',
       label: 'layout.title',
       icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
+    },
+    {
+      id: 'effects',
+      label: 'stylePresets.title',
+      icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
     },
     {
       id: 'images',
@@ -331,6 +337,7 @@
         >
           <ImageUploader v-if="activeTool === 'upload'" />
           <LayoutSelector v-else-if="activeTool === 'layouts'" />
+          <StylePresets v-else-if="activeTool === 'effects'" />
           <ImageList v-else-if="activeTool === 'images'" />
         </aside>
 
