@@ -357,6 +357,28 @@ export const useCollageStore = defineStore('collage', () => {
     })
   }
 
+  // ========== Stil-Presets ==========
+
+  // Wendet ein vorgefertigtes Effekt-Preset (abgerundete Ecken, Rahmen,
+  // Schatten) mit einem Klick auf mehrere Bilder an.
+  //
+  // Zielauswahl: Sind Canvas-Bilder markiert, werden NUR diese geändert –
+  // sonst alle Bilder auf der Leinwand. Galerie-Templates bleiben unberührt.
+  //
+  // Jedes Preset liefert den KOMPLETTEN Satz an Effekt-Feldern, damit der
+  // Wechsel zwischen Presets deterministisch ist: Ein neues Preset entfernt
+  // zuverlässig die Effekte des vorherigen (z. B. Polaroid → Abgerundet
+  // blendet den weißen Rahmen wieder aus). Die eigentliche Bildbearbeitung
+  // (Filter, Position, Rotation) bleibt unangetastet.
+  function applyStylePreset(effects: Partial<CollageImage>) {
+    saveStateForUndo()
+    const hasSelection = selectedImageIds.value.length > 0
+    const targets = hasSelection
+      ? images.value.filter((img) => selectedImageIds.value.includes(img.id))
+      : images.value.filter((img) => img.isGalleryTemplate !== true)
+    targets.forEach((img) => Object.assign(img, effects))
+  }
+
   // ========== Galerie-Auswahl Funktionen ==========
 
   // Galerie-Bild zur Auswahl hinzufügen/entfernen
@@ -1254,6 +1276,7 @@ export const useCollageStore = defineStore('collage', () => {
     removeSelectedImages,
     updateImage,
     updateSelectedImages,
+    applyStylePreset,
     selectImage,
     toggleImageSelection,
     selectAllCanvasImages,

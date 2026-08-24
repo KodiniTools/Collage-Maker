@@ -374,6 +374,8 @@ interface HistorySnapshot {
 
 ### Bearbeitungsfunktionen
 - 14 verschiedene Layout-Presets
+- 8 Stil-Presets (Effekte): abgerundete Ecken, Rahmen & Schatten mit einem Klick
+  auf alle bzw. ausgewählte Bilder anwendbar (`StylePresets.vue` → `applyStylePreset`)
 - Rotation, Skalierung, Positionierung per Drag & Drop
 - Deckkraft, Rahmen, Schatten-Effekte
 - 7 Bildfilter (Helligkeit, Kontrast, Sättigung, etc.)
