@@ -101,6 +101,19 @@ html.dark body > :not(#app):not(script) [class*="toggler-icon"] {
   filter: brightness(0) saturate(100%) invert(1) !important;
 }
 
+/* App-Modals (Bildvorschau, Vorlagen, Dialoge) werden per <Teleport> nach
+   #modal-portal gerendert. Ohne eigenen Stacking-Context konkurrieren ihre
+   z-Werte (z-50/z-[60]) direkt mit der globalen SSI-Navigation (z-index:100)
+   und deren Dropdowns (z-index:200) — dadurch verdeckte die Nav z. B. die
+   Kopfzeile und den Schließen-Button der Bildvorschau.
+   Ein eigener Stacking-Context hebt ALLE teleportierten Modals gemeinsam über
+   Nav und Dropdowns, hält sie aber unter dem Cookie-Banner (z-index:10000).
+   Die internen z-Werte ordnen verschachtelte Modals weiterhin korrekt. */
+#modal-portal {
+  position: relative;
+  z-index: 1000;
+}
+
 /* Cookie Banner: always in foreground, above nav (z-index:100) and dropdowns (z-index:200) */
 .cookie-banner,
 .cookie-consent,
