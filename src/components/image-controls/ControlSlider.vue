@@ -94,7 +94,7 @@
         :min="min"
         :max="max"
         :step="step"
-        class="w-16 flex-shrink-0 px-2 py-1 text-xs text-right border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+        class="w-20 flex-shrink-0 px-2 py-1 text-xs border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         :aria-label="label"
         @change="onNumberInput"
       />
