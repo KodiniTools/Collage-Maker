@@ -94,18 +94,22 @@
         :min="min"
         :max="max"
         :step="step"
-        class="w-20 flex-shrink-0 px-2 py-1 text-xs border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+        class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         :aria-label="label"
         @change="onNumberInput"
       />
-      <button
-        v-if="showReset"
-        class="flex-shrink-0 px-1.5 py-1 text-sm text-muted hover:text-accent transition-colors"
-        :title="resetTitle"
-        @click="emit('reset')"
-      >
-        ↺
-      </button>
+      <!-- Reset-Platz dauerhaft reserviert, damit der Spinner beim Ein-/
+           Ausblenden des Buttons nicht seitlich springt -->
+      <span class="w-5 flex-shrink-0 flex justify-center">
+        <button
+          v-if="showReset"
+          class="text-sm leading-none text-muted hover:text-accent transition-colors"
+          :title="resetTitle"
+          @click="emit('reset')"
+        >
+          ↺
+        </button>
+      </span>
     </div>
   </div>
 </template>
