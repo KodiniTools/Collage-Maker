@@ -55,12 +55,16 @@
     emit('input', Number((event.target as HTMLInputElement).value))
   }
 
-  // Eingabe im Zahlenfeld: leeres/ungültiges Feld ignorieren, sonst auf den
-  // erlaubten Bereich [min, max] begrenzen und übernehmen (commit bei Änderung
-  // bzw. Klick auf die Spinner-Pfeile).
+  // Eingabe im Zahlenfeld: reagiert live auf jede Eingabe (@input), damit die
+  // Spinner-Pfeile sofort – auch beim Halten – wirken und nicht erst beim
+  // Loslassen. Unvollständige/ungültige Zwischenstände werden übersprungen,
+  // damit das Tippen von Dezimalzahlen (z. B. "0.5") nicht abgeschnitten wird:
+  //   - leer, "-", "." bzw. auf "." / "e" endend  → weiter tippen lassen
+  //   - sonst: auf den erlaubten Bereich [min, max] begrenzen und übernehmen
   function onNumberInput(event: Event) {
-    const raw = (event.target as HTMLInputElement).value
-    if (raw === '') return
+    const raw = (event.target as HTMLInputElement).value.trim()
+    if (raw === '' || raw === '-' || raw === '.' || raw === '-.') return
+    if (/[.eE]$/.test(raw)) return
     const n = Number(raw)
     if (Number.isNaN(n)) return
     const clamped = Math.min(props.max, Math.max(props.min, n))
@@ -96,7 +100,7 @@
         :step="step"
         class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
         :aria-label="label"
-        @change="onNumberInput"
+        @input="onNumberInput"
       />
       <!-- Reset-Platz dauerhaft reserviert, damit der Spinner beim Ein-/
            Ausblenden des Buttons nicht seitlich springt -->
