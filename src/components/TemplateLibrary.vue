@@ -130,14 +130,19 @@
         @click.self="closeModal"
       >
         <!-- Modal Content -->
+        <!-- Explizite Textfarbe: Das Modal wird per <Teleport> aus dem themed
+             Editor-Wrapper herausgelöst und erbt dessen Standardfarbe nicht mehr;
+             ohne diese Angabe wären Überschriften/Titel kontaktarm. -->
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col"
+          class="bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col"
         >
           <!-- Header -->
           <div
             class="flex items-center justify-between p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30"
           >
-            <h2 class="text-xl sm:text-2xl font-bold">{{ t('templates.library') }}</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              {{ t('templates.library') }}
+            </h2>
             <button
               class="p-2 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
               @click="closeModal"
@@ -233,9 +238,11 @@
             @click.self="showSaveDialog = false"
           >
             <div
-              class="bg-surface-light dark:bg-surface-dark rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
+              class="bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
             >
-              <h3 class="text-lg sm:text-xl font-bold mb-4">{{ t('templates.saveAsCurrent') }}</h3>
+              <h3 class="text-lg sm:text-xl font-bold mb-4 text-slate-900 dark:text-white">
+                {{ t('templates.saveAsCurrent') }}
+              </h3>
 
               <div class="space-y-4">
                 <div>
