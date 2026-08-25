@@ -1,7 +1,12 @@
-import type { CollageImage, CropRect } from '@/types'
+import type { CollageImage } from '@/types'
 import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
-import { createFilteredImageSource, readFilterParams } from '@/lib/applyImageFilters'
-import { cropSourceRect } from '@/lib/cropImage'
+import {
+  createFilteredImageSource,
+  readFilterParams,
+  renderFilteredImage,
+  hasAnyFilter,
+} from '@/lib/applyImageFilters'
+import { hasCrop } from '@/lib/cropImage'
 
 // Gitterauflösung für das freie Verzerren (Distort) im Export. Höher als in der
 // Live-Ansicht, da der Export nicht interaktiv ist und Qualität wichtiger ist.
@@ -26,81 +31,6 @@ function buildRoundedPath(
   ctx.lineTo(x, y + radius)
   ctx.arcTo(x, y, x + radius, y, radius)
   ctx.closePath()
-}
-
-function applyPixelFilters(
-  htmlImg: HTMLImageElement,
-  width: number,
-  height: number,
-  brightness: number,
-  contrast: number,
-  saturation: number,
-  highlights: number,
-  shadows: number,
-  warmth: number,
-  sharpness: number,
-  crop?: CropRect
-): HTMLCanvasElement {
-  const tempCanvas = document.createElement('canvas')
-  tempCanvas.width = width
-  tempCanvas.height = height
-  const tempCtx = tempCanvas.getContext('2d')!
-
-  const cssFilters: string[] = []
-  if (brightness !== 100) cssFilters.push(`brightness(${brightness}%)`)
-  if (contrast !== 100) cssFilters.push(`contrast(${contrast}%)`)
-  if (saturation !== 100) cssFilters.push(`saturate(${saturation}%)`)
-  if (cssFilters.length > 0) tempCtx.filter = cssFilters.join(' ')
-
-  const src = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, crop)
-  tempCtx.drawImage(htmlImg, src.sx, src.sy, src.sw, src.sh, 0, 0, width, height)
-  tempCtx.filter = 'none'
-
-  const imageData = tempCtx.getImageData(0, 0, width, height)
-  const data = imageData.data
-
-  for (let i = 0; i < data.length; i += 4) {
-    let r = data[i]
-    let g = data[i + 1]
-    let b = data[i + 2]
-    const pixelBrightness = (r + g + b) / 3
-
-    if (highlights !== 0) {
-      const factor = highlights / 100
-      const mask = Math.pow(pixelBrightness / 255, 2)
-      const adj = factor * mask * 50
-      r = Math.max(0, Math.min(255, r + adj))
-      g = Math.max(0, Math.min(255, g + adj))
-      b = Math.max(0, Math.min(255, b + adj))
-    }
-    if (shadows !== 0) {
-      const factor = shadows / 100
-      const mask = Math.pow(1 - pixelBrightness / 255, 2)
-      const adj = factor * mask * 50
-      r = Math.max(0, Math.min(255, r + adj))
-      g = Math.max(0, Math.min(255, g + adj))
-      b = Math.max(0, Math.min(255, b + adj))
-    }
-    if (warmth !== 0) {
-      const factor = warmth / 100
-      r = Math.max(0, Math.min(255, r + factor * 30))
-      b = Math.max(0, Math.min(255, b - factor * 30))
-    }
-    if (sharpness !== 0) {
-      const factor = sharpness / 100
-      const avg = (r + g + b) / 3
-      r = Math.max(0, Math.min(255, r + (r - avg) * factor))
-      g = Math.max(0, Math.min(255, g + (g - avg) * factor))
-      b = Math.max(0, Math.min(255, b + (b - avg) * factor))
-    }
-
-    data[i] = r
-    data[i + 1] = g
-    data[i + 2] = b
-  }
-
-  tempCtx.putImageData(imageData, 0, 0)
-  return tempCanvas
 }
 
 export function drawCollageImage(
@@ -167,41 +97,15 @@ export function drawCollageImage(
     ctx.clip()
   }
 
-  // Bildfilter anwenden
-  const brightness = img.brightness ?? 100
-  const contrast = img.contrast ?? 100
-  const saturation = img.saturation ?? 100
-  const highlights = img.highlights ?? 0
-  const shadows = img.shadows ?? 0
-  const warmth = img.warmth ?? 0
-  const sharpness = img.sharpness ?? 0
-
-  const needsPixelFilters = highlights !== 0 || shadows !== 0 || warmth !== 0 || sharpness !== 0
-
-  if (needsPixelFilters) {
-    const processed = applyPixelFilters(
-      htmlImg,
-      img.width,
-      img.height,
-      brightness,
-      contrast,
-      saturation,
-      highlights,
-      shadows,
-      warmth,
-      sharpness,
-      img.crop
-    )
+  // Bildfilter rein pixelbasiert anwenden (Helligkeit/Kontrast/Sättigung
+  // eingeschlossen – kein CSS-Filter mehr). Ohne Filter und ohne Zuschnitt
+  // wird das Original direkt gezeichnet.
+  const params = readFilterParams(img)
+  if (hasAnyFilter(params) || hasCrop(img.crop)) {
+    const processed = renderFilteredImage(htmlImg, img.width, img.height, params, img.crop)
     ctx.drawImage(processed, x, y, img.width, img.height)
   } else {
-    const cssFilters: string[] = []
-    if (brightness !== 100) cssFilters.push(`brightness(${brightness}%)`)
-    if (contrast !== 100) cssFilters.push(`contrast(${contrast}%)`)
-    if (saturation !== 100) cssFilters.push(`saturate(${saturation}%)`)
-    if (cssFilters.length > 0) ctx.filter = cssFilters.join(' ')
-    const s = cropSourceRect(htmlImg.naturalWidth, htmlImg.naturalHeight, img.crop)
-    ctx.drawImage(htmlImg, s.sx, s.sy, s.sw, s.sh, x, y, img.width, img.height)
-    ctx.filter = 'none'
+    ctx.drawImage(htmlImg, x, y, img.width, img.height)
   }
 
   // Schatten zurücksetzen (für Bilder ohne rounded corners)

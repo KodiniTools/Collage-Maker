@@ -378,7 +378,8 @@ interface HistorySnapshot {
   auf alle bzw. ausgewählte Bilder anwendbar (`StylePresets.vue` → `applyStylePreset`)
 - Rotation, Skalierung, Positionierung per Drag & Drop
 - Deckkraft, Rahmen, Schatten-Effekte
-- 7 Bildfilter (Helligkeit, Kontrast, Sättigung, etc.)
+- 7 Bildfilter (Helligkeit, Kontrast, Sättigung, etc.) – rein pixelbasiert
+  (kein CSS-`filter`), gemeinsame Pipeline `applyFilterPixels` für Live & Export
 - Z-Index/Ebenen-Verwaltung mit stufenweisem Wechsel
 - Rotations-Slider zentriert bei 0° (Bereich: -180° bis +180°)
 
