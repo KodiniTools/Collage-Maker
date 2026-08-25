@@ -75,7 +75,9 @@
     <div class="p-4">
       <div class="flex items-start justify-between gap-2">
         <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-sm truncate">{{ displayName }}</h3>
+          <h3 class="font-semibold text-sm truncate text-slate-900 dark:text-white">
+            {{ displayName }}
+          </h3>
           <p v-if="displayDescription" class="text-xs text-muted mt-1 line-clamp-2">
             {{ displayDescription }}
           </p>
