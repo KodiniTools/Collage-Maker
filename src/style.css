@@ -182,21 +182,21 @@ html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent)
 #app input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #c9984d;
-  border: 2px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 #app input[type='range']::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #c9984d;
-  border: 2px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 #app input[type='range']::-moz-range-track {
@@ -218,12 +218,12 @@ html.dark #app input[type='range']::-moz-range-thumb {
     height: 8px;
   }
   #app input[type='range']::-webkit-slider-thumb {
-    width: 26px;
-    height: 26px;
+    width: 18px;
+    height: 18px;
   }
   #app input[type='range']::-moz-range-thumb {
-    width: 26px;
-    height: 26px;
+    width: 18px;
+    height: 18px;
   }
 }
 
