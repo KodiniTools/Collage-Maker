@@ -27,7 +27,7 @@
  */
 
 import { readdirSync, writeFileSync, existsSync, statSync } from 'node:fs'
-import { join, dirname, resolve } from 'node:path'
+import { join, dirname, resolve, basename } from 'node:path'
 
 // ---------------------------------------------------------------------------
 // Argumente & Konfiguration
@@ -149,11 +149,29 @@ if (!existsSync(FONTS_DIR) || !statSync(FONTS_DIR).isDirectory()) {
   process.exit(1)
 }
 
-const entries = readdirSync(FONTS_DIR).filter((f) => {
-  const dot = f.lastIndexOf('.')
-  if (dot < 0) return false
-  return Object.prototype.hasOwnProperty.call(FORMATS, f.slice(dot).toLowerCase())
-})
+// Rekursiv einlesen: Schriften dürfen auch in Unterordnern liegen
+// (z. B. /fonts/Switzer/Switzer-Bold.woff2). Der relative Pfad bleibt für die
+// URL erhalten; die Familien-/Schnitt-Erkennung nutzt nur den Dateinamen.
+function isFontFile(name) {
+  const dot = name.lastIndexOf('.')
+  return dot >= 0 && Object.prototype.hasOwnProperty.call(FORMATS, name.slice(dot).toLowerCase())
+}
+
+function walkFontFiles(dir, rel = '') {
+  const out = []
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith('.')) continue // versteckte Dateien/Ordner überspringen
+    const relPath = rel ? `${rel}/${entry.name}` : entry.name
+    if (entry.isDirectory()) {
+      out.push(...walkFontFiles(join(dir, entry.name), relPath))
+    } else if (entry.isFile() && isFontFile(entry.name)) {
+      out.push(relPath)
+    }
+  }
+  return out
+}
+
+const entries = walkFontFiles(FONTS_DIR)
 
 if (entries.length === 0) {
   console.error(
@@ -167,7 +185,8 @@ if (entries.length === 0) {
 const families = {}
 
 for (const file of entries.sort()) {
-  const parsed = parseFontFile(file)
+  // Familie/Schnitt aus dem Dateinamen (ohne Unterordner) ableiten.
+  const parsed = parseFontFile(basename(file))
   const key = parsed.family
   if (!families[key]) {
     families[key] = { family: parsed.family, faces: new Map(), hasVariable: false }
@@ -205,6 +224,13 @@ function sortSources(sources) {
   )
 }
 
+// Datei-URL bilden; jedes Pfadsegment einzeln kodieren (Leerzeichen, Umlaute
+// in Unterordnern/Dateinamen), Schrägstriche als Trenner beibehalten.
+function fileUrl(file) {
+  const encoded = file.split('/').map(encodeURIComponent).join('/')
+  return `${URL_BASE}/${encoded}`
+}
+
 for (const key of Object.keys(families).sort()) {
   const fam = families[key]
   const faces = [...fam.faces.values()]
@@ -230,13 +256,13 @@ for (const key of Object.keys(families).sort()) {
     faces: faces.map((f) => ({
       weight: f.variable ? '100 900' : f.weight,
       style: f.italic ? 'italic' : 'normal',
-      src: sortSources(f.sources).map((s) => ({ url: `${URL_BASE}/${s.file}`, format: s.format })),
+      src: sortSources(f.sources).map((s) => ({ url: fileUrl(s.file), format: s.format })),
     })),
   }
 
   for (const face of faces) {
     const srcList = sortSources(face.sources)
-      .map((s) => `url('${URL_BASE}/${s.file}') format('${s.format}')`)
+      .map((s) => `url('${fileUrl(s.file)}') format('${s.format}')`)
       .join(',\n    ')
 
     const weightDecl = face.variable ? '100 900' : String(face.weight)
