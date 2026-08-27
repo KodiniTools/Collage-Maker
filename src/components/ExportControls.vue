@@ -356,12 +356,12 @@
           <div
             class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5"
           >
-            <p class="text-xs sm:text-sm text-muted dark:text-slate/70">
+            <p class="text-xs sm:text-sm text-muted dark:text-muted-light">
               {{ collage.settings.width }} x {{ collage.settings.height }} px
             </p>
             <div class="flex gap-2 w-full sm:w-auto">
               <button
-                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-slate/70 hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors text-sm"
+                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 border border-muted/50 dark:border-slate/50 text-muted dark:text-muted-light hover:bg-muted/10 dark:hover:bg-navy/10 font-medium rounded-lg transition-colors text-sm"
                 @click="closePreview"
               >
                 {{ t('export.close') }}

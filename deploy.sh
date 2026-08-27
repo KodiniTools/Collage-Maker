@@ -80,7 +80,12 @@ main() {
   local FONTS_DIR="${FONTS_DIR:-/var/www/kodinitools.com/public/fonts}"
   if [[ -d "$FONTS_DIR" ]]; then
     echo "==> Generiere Font-Manifest aus $FONTS_DIR ..."
-    FONTS_DIR="$FONTS_DIR" node scripts/generate-fonts.mjs
+    # Fehler hier dürfen den Deploy NICHT abbrechen (z. B. leerer Ordner oder
+    # fehlende Schreibrechte). Die App fällt sonst auf gebündelte/entdeckte
+    # Fonts zurück.
+    if ! FONTS_DIR="$FONTS_DIR" node scripts/generate-fonts.mjs; then
+      echo "!! Font-Generierung fehlgeschlagen – fahre mit Deploy fort." >&2
+    fi
   else
     echo "!! Font-Ordner $FONTS_DIR nicht gefunden – überspringe Font-Generierung." >&2
   fi

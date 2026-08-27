@@ -75,7 +75,7 @@
             <!-- Selection Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -93,7 +93,7 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-slate/90">{{
+                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
@@ -108,7 +108,7 @@
             <!-- Editing Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -126,7 +126,7 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-slate/90">{{
+                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
@@ -141,7 +141,7 @@
             <!-- Navigation Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -159,7 +159,7 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-slate/90">{{
+                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
@@ -168,7 +168,7 @@
                     {{ formatShortcut(shortcut) }}
                   </kbd>
                 </div>
-                <div class="text-xs text-muted dark:text-slate/60 mt-2">
+                <div class="text-xs text-muted dark:text-muted-light mt-2">
                   {{ t('shortcuts.shiftHint') }}
                 </div>
               </div>
@@ -177,7 +177,7 @@
             <!-- Canvas Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -197,7 +197,7 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-slate/90">{{
+                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
@@ -212,8 +212,10 @@
 
           <!-- Tips Section -->
           <div class="mt-6 p-4 bg-accent/10 dark:bg-accent/5 rounded-lg border border-accent/20">
-            <h3 class="text-sm font-semibold text-accent mb-2">{{ t('shortcuts.tips.title') }}</h3>
-            <ul class="text-sm text-slate-dark dark:text-slate/80 space-y-1">
+            <h3 class="text-sm font-semibold text-accent dark:text-accent-light mb-2">
+              {{ t('shortcuts.tips.title') }}
+            </h3>
+            <ul class="text-sm text-slate-dark dark:text-surface-light space-y-1">
               <li>{{ t('shortcuts.tips.multiSelect') }}</li>
               <li>{{ t('shortcuts.tips.shiftResize') }}</li>
             </ul>
@@ -225,7 +227,7 @@
           class="px-3 py-3 sm:px-6 sm:py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5"
         >
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted dark:text-slate/60">
+            <span class="text-xs text-muted dark:text-muted-light">
               {{ t('shortcuts.pressToOpen') }}
             </span>
             <button

@@ -3,6 +3,7 @@
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
   import ControlSlider from './image-controls/ControlSlider.vue'
+  import { loadCustomFonts, type FontFamily } from '@/utils/fonts'
 
   const collage = useCollageStore()
   const { t } = useI18n()
@@ -19,47 +20,25 @@
     'Trebuchet MS',
   ]
 
-  // Custom fonts
-  interface FontFamily {
-    name: string
-    variants: string[]
-    hasItalic?: boolean
-    hasVariable?: boolean
-  }
-
+  // Custom fonts (Typen + Ladelogik in @/utils/fonts)
   const customFonts = ref<Record<string, FontFamily>>({})
   const selectedFontFamily = ref<string>('Arial')
   const selectedFontVariant = ref<string>('Regular')
 
-  // Load custom fonts.
-  //
-  // Primärquelle ist das Manifest im Server-Font-Ordner
-  //   /var/www/kodinitools.com/public/fonts  →  /fonts/fonts.json
-  // Es wird beim Deploy von scripts/generate-fonts.mjs erzeugt und enthält
-  // ALLE Schriften, die in diesem Ordner liegen. So genügt es, eine neue
-  // Schrift dort abzulegen (und das Skript auszuführen), damit sie hier im
-  // Text-Bereich automatisch auswählbar ist.
-  //
-  // Fallback ist die gebündelte fonts.json (z. B. für die lokale Entwicklung,
-  // wo /fonts/fonts.json nicht existiert).
+  // Custom Fonts laden: liest ALLE Schriften aus dem Server-Ordner
+  //   /var/www/kodinitools.com/public/fonts  (ausgeliefert unter /fonts/)
+  // über das generierte Manifest /fonts/fonts.json, mit gebündeltem Fallback
+  // und – falls kein Manifest existiert – direktem Auslesen des Verzeichnisses.
+  // Die @font-face-Regeln werden dabei per FontFace-API selbst injiziert.
+  // Details siehe @/utils/fonts.
   onMounted(async () => {
     const basePath = import.meta.env.BASE_URL || '/'
-    const sources = ['/fonts/fonts.json', basePath + 'fonts.json']
-
-    for (const url of sources) {
-      try {
-        const response = await fetch(url)
-        if (!response.ok) continue
-        const data = await response.json()
-        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
-          customFonts.value = data
-          return
-        }
-      } catch {
-        // Nächste Quelle versuchen.
-      }
+    const fonts = await loadCustomFonts(basePath)
+    if (Object.keys(fonts).length > 0) {
+      customFonts.value = fonts
+    } else {
+      console.error('Keine benutzerdefinierten Schriften gefunden (/fonts/fonts.json fehlt?).')
     }
-    console.error('Failed to load custom fonts from', sources.join(' or '))
   })
 
   // Available variants for selected family

@@ -224,6 +224,14 @@ for (const key of Object.keys(families).sort()) {
     variants: baseVariants,
     hasItalic,
     ...(fam.hasVariable ? { hasVariable: true } : {}),
+    // faces = alle konkreten Schnitte mit Datei-URL(s), Gewicht und Stil.
+    // Damit kann die App die @font-face-Regeln selbst injizieren und ist
+    // nicht darauf angewiesen, dass fonts.css separat geladen/aktuell ist.
+    faces: faces.map((f) => ({
+      weight: f.variable ? '100 900' : f.weight,
+      style: f.italic ? 'italic' : 'normal',
+      src: sortSources(f.sources).map((s) => ({ url: `${URL_BASE}/${s.file}`, format: s.format })),
+    })),
   }
 
   for (const face of faces) {
