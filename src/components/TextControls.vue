@@ -32,12 +32,9 @@
   // Die @font-face-Regeln werden dabei per FontFace-API selbst injiziert.
   // Details siehe @/utils/fonts.
   onMounted(async () => {
-    const basePath = import.meta.env.BASE_URL || '/'
-    const fonts = await loadCustomFonts(basePath)
+    const fonts = await loadCustomFonts()
     if (Object.keys(fonts).length > 0) {
       customFonts.value = fonts
-    } else {
-      console.error('Keine benutzerdefinierten Schriften gefunden (/fonts/fonts.json fehlt?).')
     }
   })
 

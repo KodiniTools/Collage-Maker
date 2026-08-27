@@ -89,11 +89,15 @@ main() {
   # Regeln daraus selbst.
   local FONTS_SRC="${FONTS_DIR:-/var/www/kodinitools.com/public/fonts}"
   if [[ -d "$FONTS_SRC" ]]; then
-    echo "==> Generiere Font-Manifest aus $FONTS_SRC (gebündelt nach public/) ..."
+    echo "==> Generiere Font-Manifest aus $FONTS_SRC (ins JS-Bundle) ..."
+    # Das Manifest wird in eine Quelldatei geschrieben, die die App fest
+    # importiert (src/generated/fontManifest.json). Beim Build landet es damit
+    # im gehashten JS-Bundle -> immun gegen Browser-/Server-Cache, kein
+    # Netzwerk-Request, keine Schreibrechte-Probleme in .../public/fonts/.
     # Fehler hier dürfen den Deploy NICHT abbrechen (z. B. leerer Ordner).
     if ! node scripts/generate-fonts.mjs \
       --dir "$FONTS_SRC" \
-      --json-out public/fonts.json \
+      --json-out src/generated/fontManifest.json \
       --css-out public/fonts.css \
       --url-base /fonts; then
       echo "!! Font-Generierung fehlgeschlagen – fahre mit Deploy fort." >&2
