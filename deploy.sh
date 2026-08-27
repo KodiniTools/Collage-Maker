@@ -75,19 +75,31 @@ main() {
   npm ci
 
   # ---- 2b. Custom-Fonts-Manifest generieren ------------------------------
-  # Scannt den Server-Font-Ordner und erzeugt fonts.css + fonts.json, damit
-  # ALLE dort liegenden Schriften im Text-Bereich der App auswählbar sind.
-  local FONTS_DIR="${FONTS_DIR:-/var/www/kodinitools.com/public/fonts}"
-  if [[ -d "$FONTS_DIR" ]]; then
-    echo "==> Generiere Font-Manifest aus $FONTS_DIR ..."
-    # Fehler hier dürfen den Deploy NICHT abbrechen (z. B. leerer Ordner oder
-    # fehlende Schreibrechte). Die App fällt sonst auf gebündelte/entdeckte
-    # Fonts zurück.
-    if ! FONTS_DIR="$FONTS_DIR" node scripts/generate-fonts.mjs; then
+  # Scannt den Server-Font-Ordner und erzeugt daraus das Font-Manifest.
+  #
+  # WICHTIG: Das Manifest wird in die App GEBÜNDELT geschrieben
+  #   public/fonts.json  ->  (Build)  ->  dist/  ->  /collagemaker/fonts.json
+  # Das Deploy-Verzeichnis wird per rsync sowieso beschrieben, ist also
+  # garantiert beschreibbar. So hängt die Schriftliste NICHT von Schreibrechten
+  # im Ordner .../public/fonts/ ab (dort scheiterte das Schreiben bisher
+  # vermutlich -> /fonts/fonts.json 404 -> nur "Supreme").
+  #
+  # Die woff2-URLs im Manifest zeigen weiterhin auf /fonts/... (dort liegen die
+  # Dateien, ausgeliefert unter /fonts/). Die App injiziert die @font-face-
+  # Regeln daraus selbst.
+  local FONTS_SRC="${FONTS_DIR:-/var/www/kodinitools.com/public/fonts}"
+  if [[ -d "$FONTS_SRC" ]]; then
+    echo "==> Generiere Font-Manifest aus $FONTS_SRC (gebündelt nach public/) ..."
+    # Fehler hier dürfen den Deploy NICHT abbrechen (z. B. leerer Ordner).
+    if ! node scripts/generate-fonts.mjs \
+      --dir "$FONTS_SRC" \
+      --json-out public/fonts.json \
+      --css-out public/fonts.css \
+      --url-base /fonts; then
       echo "!! Font-Generierung fehlgeschlagen – fahre mit Deploy fort." >&2
     fi
   else
-    echo "!! Font-Ordner $FONTS_DIR nicht gefunden – überspringe Font-Generierung." >&2
+    echo "!! Font-Ordner $FONTS_SRC nicht gefunden – überspringe Font-Generierung." >&2
   fi
 
   # ---- 3. Tests (optional) + Produktions-Build ---------------------------
