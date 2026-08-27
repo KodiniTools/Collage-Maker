@@ -3,19 +3,24 @@
  *
  * Ziel: ALLE benutzerdefinierten Schriften aus dem Server-Ordner
  *   /var/www/kodinitools.com/public/fonts   (ausgeliefert unter /fonts/)
- * zuverlässig bereitstellen – auch wenn kein vorab generiertes Manifest
- * existiert.
+ * zuverlässig bereitstellen.
  *
- * Zwei Wege, an die Font-Liste zu kommen:
- *   1. Manifest fonts.json (von scripts/generate-fonts.mjs erzeugt) – enthält
- *      Familien, Varianten und `faces` (Datei-URL, Gewicht, Stil).
- *   2. Fallback: Verzeichnis /fonts/ direkt auslesen (NGINX-Autoindex als
- *      JSON oder HTML) und die Familien aus den Dateinamen ableiten.
+ * Primärquelle ist das beim Deploy generierte Manifest, das FEST ins
+ * JS-Bundle importiert wird (src/generated/fontManifest.json). Da es Teil des
+ * gehashten Bundles ist, kann es von keinem Cache veraltet sein und braucht
+ * keinen Netzwerk-Request – das umgeht 404-, Cache- und Rechte-Probleme.
+ * scripts/generate-fonts.mjs überschreibt diese Datei beim Deploy aus dem
+ * Server-Font-Ordner.
  *
- * In beiden Fällen kann die App die @font-face-Regeln aus den `faces` selbst
- * injizieren (injectFontFaces) und ist damit nicht darauf angewiesen, dass
- * eine separate fonts.css geladen bzw. aktuell ist.
+ * Fallback (nur falls das Manifest leer ist): Verzeichnis /fonts/ direkt
+ * auslesen (NGINX-Autoindex als JSON oder HTML) und die Familien aus den
+ * Dateinamen ableiten.
+ *
+ * Die @font-face-Regeln werden aus den `faces` per FontFace-API selbst
+ * injiziert – unabhängig davon, ob eine separate fonts.css geladen ist.
  */
+
+import bundledManifest from '@/generated/fontManifest.json'
 
 export interface FontFaceDef {
   weight: number | string
@@ -236,21 +241,21 @@ export function injectFontFaces(manifest: FontManifest): void {
 }
 
 /**
- * Lädt das Font-Manifest aus den bevorzugten Quellen und injiziert die
- * @font-face-Regeln. Reihenfolge:
- *   1. /fonts/fonts.json           (generiertes Manifest im Server-Ordner)
- *   2. <base>/fonts.json           (gebündelter Fallback, z. B. Dev)
- *   3. /fonts/  Verzeichnis-Listing (falls Autoindex aktiv)
+ * Lädt das Font-Manifest und injiziert die @font-face-Regeln.
+ *
+ * Primär: das ins Bundle importierte Manifest (src/generated/fontManifest.json)
+ * – Cache-immun, kein Netzwerk-Request. Nur falls das (theoretisch) leer ist,
+ * wird das Verzeichnis /fonts/ direkt ausgelesen.
  */
-export async function loadCustomFonts(basePath: string): Promise<FontManifest> {
-  const manifest =
-    (await fetchFontManifest('/fonts/fonts.json')) ||
-    (await fetchFontManifest(basePath.replace(/\/+$/, '/') + 'fonts.json')) ||
-    (await discoverFontsFromDirectory('/fonts/'))
+export async function loadCustomFonts(): Promise<FontManifest> {
+  let manifest = bundledManifest as unknown as FontManifest
 
-  if (manifest && Object.keys(manifest).length > 0) {
-    injectFontFaces(manifest)
-    return manifest
+  if (!manifest || Object.keys(manifest).length === 0) {
+    manifest = (await discoverFontsFromDirectory('/fonts/')) || {}
   }
-  return {}
+
+  if (Object.keys(manifest).length > 0) {
+    injectFontFaces(manifest)
+  }
+  return manifest
 }
