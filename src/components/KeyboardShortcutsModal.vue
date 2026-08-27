@@ -30,7 +30,7 @@
       @click.self="close"
     >
       <div
-        class="relative w-full max-w-3xl max-h-[85vh] bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden flex flex-col"
+        class="relative w-full max-w-3xl max-h-[85vh] bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-surface-light rounded-xl shadow-2xl overflow-hidden flex flex-col"
       >
         <!-- Header -->
         <div
@@ -97,7 +97,7 @@
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
@@ -130,7 +130,7 @@
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
@@ -163,7 +163,7 @@
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
@@ -201,7 +201,7 @@
                     t(shortcut.descriptionKey)
                   }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
