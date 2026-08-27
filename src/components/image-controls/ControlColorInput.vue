@@ -26,7 +26,7 @@
 
 <template>
   <div>
-    <label class="block text-xs text-muted mb-1">{{ label }}</label>
+    <label class="block text-xs text-muted dark:text-muted-light mb-1">{{ label }}</label>
     <div class="flex gap-2">
       <input
         type="color"

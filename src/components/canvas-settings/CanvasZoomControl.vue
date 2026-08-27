@@ -31,7 +31,7 @@
       class="w-full"
       @input="api.updateZoom(Number(($event.target as HTMLInputElement).value))"
     />
-    <p class="text-xs text-muted mt-1">
+    <p class="text-xs text-muted dark:text-muted-light mt-1">
       {{ t('canvas.zoomHint') }}
     </p>
   </div>

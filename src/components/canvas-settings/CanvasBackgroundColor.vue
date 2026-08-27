@@ -29,7 +29,10 @@
         @input="api.updateBackgroundColor(($event.target as HTMLInputElement).value)"
       />
     </div>
-    <p v-if="collage.settings.backgroundImage.url" class="text-xs text-muted mt-1">
+    <p
+      v-if="collage.settings.backgroundImage.url"
+      class="text-xs text-muted dark:text-muted-light mt-1"
+    >
       {{ t('canvas.colorReplacesImage') }}
     </p>
   </div>

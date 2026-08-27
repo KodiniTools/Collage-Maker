@@ -21,7 +21,7 @@
 
     <div
       v-if="collage.texts.length === 0"
-      class="text-sm text-muted text-center py-6 border border-muted/30 dark:border-slate/30 rounded-lg"
+      class="text-sm text-muted dark:text-muted-light text-center py-6 border border-muted/30 dark:border-slate/30 rounded-lg"
     >
       {{ t('text.empty') }}
     </div>
@@ -49,7 +49,7 @@
             <p class="text-sm font-medium truncate">
               {{ text.text || t('text.empty') }}
             </p>
-            <p class="text-xs text-muted mt-1">
+            <p class="text-xs text-muted dark:text-muted-light mt-1">
               {{ text.fontFamily }} • {{ Math.round(text.fontSize) }}px
             </p>
           </div>

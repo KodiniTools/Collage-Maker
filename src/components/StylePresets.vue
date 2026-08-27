@@ -199,12 +199,12 @@
 <template>
   <div class="w-full">
     <h2 class="text-lg font-semibold mb-1">{{ t('stylePresets.title') }}</h2>
-    <p class="text-xs text-muted mb-3">{{ t('stylePresets.subtitle') }}</p>
+    <p class="text-xs text-muted dark:text-muted-light mb-3">{{ t('stylePresets.subtitle') }}</p>
 
     <!-- Hinweis: keine Bilder auf der Leinwand -->
     <div
       v-if="canvasImageCount === 0"
-      class="mb-3 p-2 bg-muted/10 dark:bg-navy/20 rounded-lg text-xs text-muted"
+      class="mb-3 p-2 bg-muted/10 dark:bg-navy/20 rounded-lg text-xs text-muted dark:text-muted-light"
     >
       {{ t('stylePresets.noImages') }}
     </div>

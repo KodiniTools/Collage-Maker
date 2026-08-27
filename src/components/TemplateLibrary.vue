@@ -208,7 +208,10 @@
 
           <!-- Templates Grid -->
           <div class="flex-1 overflow-y-auto p-3 sm:p-6">
-            <div v-if="filteredTemplates.length === 0" class="text-center py-8 sm:py-12 text-muted">
+            <div
+              v-if="filteredTemplates.length === 0"
+              class="text-center py-8 sm:py-12 text-muted dark:text-muted-light"
+            >
               {{ t('templates.noTemplates') }}
             </div>
 

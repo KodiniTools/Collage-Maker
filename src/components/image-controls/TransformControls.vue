@@ -37,7 +37,7 @@
     >
       <span class="text-sm font-medium">{{ t('imageControls.transform') }}</span>
       <svg
-        class="w-4 h-4 text-muted transition-transform"
+        class="w-4 h-4 text-muted dark:text-muted-light transition-transform"
         :class="{ 'rotate-180': expanded }"
         fill="none"
         stroke="currentColor"
@@ -55,7 +55,7 @@
             'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-md font-medium transition-colors',
             image.flipHorizontal
               ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
           ]"
           :title="t('imageControls.flipHorizontal')"
           :aria-label="t('imageControls.flipHorizontal')"
@@ -83,7 +83,7 @@
             'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-md font-medium transition-colors',
             image.flipVertical
               ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
           ]"
           :title="t('imageControls.flipVertical')"
           :aria-label="t('imageControls.flipVertical')"
@@ -138,13 +138,15 @@
       <!-- Freies Verzerren (Distort): Eckpunkte einzeln ziehen -->
       <div class="border-t border-muted/20 dark:border-slate/20 pt-3">
         <div class="flex items-center justify-between">
-          <label class="text-xs text-muted">{{ t('imageControls.distort') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{
+            t('imageControls.distort')
+          }}</label>
           <button
             :class="[
               'px-2.5 py-1 text-xs rounded transition-colors',
               image.distortEnabled
                 ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
             ]"
             :title="t('imageControls.distortHint')"
             :aria-pressed="image.distortEnabled"
@@ -155,7 +157,7 @@
             }}
           </button>
         </div>
-        <p v-if="image.distortEnabled" class="text-xs text-muted mt-2">
+        <p v-if="image.distortEnabled" class="text-xs text-muted dark:text-muted-light mt-2">
           {{ t('imageControls.distortHint') }}
         </p>
         <button
@@ -170,7 +172,9 @@
       <!-- Zuschneiden (Crop): Presets & freies Zuschneiden -->
       <div class="border-t border-muted/20 dark:border-slate/20 pt-3">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-xs text-muted">{{ t('imageControls.crop') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{
+            t('imageControls.crop')
+          }}</label>
           <button
             v-if="api.isCropped.value"
             class="text-xs text-accent hover:text-accent-dark transition-colors"
@@ -186,7 +190,7 @@
           <button
             v-for="preset in cropPresets"
             :key="preset.label"
-            class="px-1 py-1.5 text-xs rounded-md font-medium transition-colors bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted"
+            class="px-1 py-1.5 text-xs rounded-md font-medium transition-colors bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light"
             :title="t('imageControls.cropPresetHint', { ratio: preset.label })"
             @click="api.applyCropPreset(preset.ratio)"
           >

@@ -19,7 +19,7 @@
             'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
             api.collage.lockAspectRatio
               ? 'bg-accent/20 text-slate-dark dark:text-accent'
-              : 'bg-muted/10 dark:bg-navy/30 text-slate dark:text-muted',
+              : 'bg-muted/10 dark:bg-navy/30 text-slate dark:text-muted-light',
           ]"
           :title="t('imageControls.lockAspectRatio')"
           @click="api.toggleAspectRatio"
@@ -53,7 +53,7 @@
       </div>
       <div class="space-y-2">
         <div>
-          <label class="text-xs text-muted">{{ t('canvas.width') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{ t('canvas.width') }}</label>
           <input
             type="number"
             :value="Math.round(image.width)"
@@ -64,7 +64,7 @@
           />
         </div>
         <div>
-          <label class="text-xs text-muted">{{ t('canvas.height') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{ t('canvas.height') }}</label>
           <input
             type="number"
             :value="Math.round(image.height)"
@@ -75,7 +75,7 @@
           />
         </div>
       </div>
-      <p class="text-xs text-muted mt-1">
+      <p class="text-xs text-muted dark:text-muted-light mt-1">
         {{ t('imageControls.shiftHint') }}
       </p>
     </div>
@@ -85,7 +85,9 @@
       <label class="text-sm font-medium mb-2 block">{{ t('imageControls.position') }}</label>
       <div class="space-y-2">
         <div>
-          <label class="text-xs text-muted">{{ t('imageControls.positionX') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{
+            t('imageControls.positionX')
+          }}</label>
           <input
             type="number"
             :value="Math.round(image.x)"
@@ -94,7 +96,9 @@
           />
         </div>
         <div>
-          <label class="text-xs text-muted">{{ t('imageControls.positionY') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{
+            t('imageControls.positionY')
+          }}</label>
           <input
             type="number"
             :value="Math.round(image.y)"

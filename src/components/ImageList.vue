@@ -205,13 +205,16 @@
   <div class="w-full">
     <h2 class="text-lg font-semibold mb-3">{{ t('images.title') }} ({{ galleryImages.length }})</h2>
 
-    <div v-if="galleryImages.length === 0" class="text-center py-8 text-muted">
+    <div
+      v-if="galleryImages.length === 0"
+      class="text-center py-8 text-muted dark:text-muted-light"
+    >
       {{ t('images.empty') }}
     </div>
 
     <template v-else>
       <!-- Hint -->
-      <p class="text-[10px] text-muted/70 mb-2">
+      <p class="text-[10px] text-muted/70 dark:text-muted-light/70 mb-2">
         {{ t('gallery.hint') }}
       </p>
 
@@ -289,7 +292,7 @@
           <!-- File Info -->
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium truncate">{{ image.file.name }}</p>
-            <p class="text-xs text-muted">
+            <p class="text-xs text-muted dark:text-muted-light">
               {{ formatFileSize(image.file.size)
               }}<template v-if="dimensionsText(image.id)">
                 • {{ dimensionsText(image.id) }}</template
@@ -383,7 +386,7 @@
             </button>
           </div>
         </div>
-        <p class="text-[10px] text-muted mt-2">
+        <p class="text-[10px] text-muted dark:text-muted-light mt-2">
           {{ t('gallery.layoutHint') }}
         </p>
       </div>

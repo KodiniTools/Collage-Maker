@@ -295,7 +295,10 @@
   >
     <h2 class="text-lg font-semibold mb-4">{{ t('text.title') }}</h2>
 
-    <div v-if="!collage.selectedText" class="text-sm text-muted text-center py-4">
+    <div
+      v-if="!collage.selectedText"
+      class="text-sm text-muted dark:text-muted-light text-center py-4"
+    >
       {{ t('text.noSelection') }}
     </div>
 
@@ -514,7 +517,7 @@
 
           <!-- Shadow Color -->
           <div>
-            <label class="block text-xs text-muted mb-1">
+            <label class="block text-xs text-muted dark:text-muted-light mb-1">
               {{ t('text.shadowColor') }}
             </label>
             <div class="flex gap-2">
@@ -571,7 +574,7 @@
 
           <!-- Stroke Color -->
           <div>
-            <label class="block text-xs text-muted mb-1">
+            <label class="block text-xs text-muted dark:text-muted-light mb-1">
               {{ t('text.strokeColor') }}
             </label>
             <div class="flex gap-2">

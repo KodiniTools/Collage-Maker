@@ -48,7 +48,10 @@
         :alt="displayName"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
-      <div v-else class="w-full h-full flex items-center justify-center text-muted">
+      <div
+        v-else
+        class="w-full h-full flex items-center justify-center text-muted dark:text-muted-light"
+      >
         <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -78,7 +81,10 @@
           <h3 class="font-semibold text-sm truncate text-slate-900 dark:text-white">
             {{ displayName }}
           </h3>
-          <p v-if="displayDescription" class="text-xs text-muted mt-1 line-clamp-2">
+          <p
+            v-if="displayDescription"
+            class="text-xs text-muted dark:text-muted-light mt-1 line-clamp-2"
+          >
             {{ displayDescription }}
           </p>
         </div>
