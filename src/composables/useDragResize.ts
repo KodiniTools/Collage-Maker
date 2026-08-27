@@ -262,7 +262,7 @@ export function useDragResize(
   // Muss zur Darstellung im Renderer passen (gleiche Schrift/Metriken).
   function getTextBox(text: any, ctx: CanvasRenderingContext2D) {
     ctx.save()
-    ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+    ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px '${text.fontFamily}'`
     ctx.letterSpacing = `${text.letterSpacing}px`
     const lines: string[] = text.text.split('\n')
     const lineHeight = text.fontSize * 1.2
@@ -409,7 +409,7 @@ export function useDragResize(
         const context = ctx
 
         context.save()
-        context.font = `${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+        context.font = `${text.fontWeight} ${text.fontSize}px '${text.fontFamily}'`
         context.textAlign = text.textAlign
 
         const lines = text.text.split('\n')
