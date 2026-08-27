@@ -30,16 +30,35 @@
   const selectedFontFamily = ref<string>('Arial')
   const selectedFontVariant = ref<string>('Regular')
 
-  // Load custom fonts
+  // Load custom fonts.
+  //
+  // Primärquelle ist das Manifest im Server-Font-Ordner
+  //   /var/www/kodinitools.com/public/fonts  →  /fonts/fonts.json
+  // Es wird beim Deploy von scripts/generate-fonts.mjs erzeugt und enthält
+  // ALLE Schriften, die in diesem Ordner liegen. So genügt es, eine neue
+  // Schrift dort abzulegen (und das Skript auszuführen), damit sie hier im
+  // Text-Bereich automatisch auswählbar ist.
+  //
+  // Fallback ist die gebündelte fonts.json (z. B. für die lokale Entwicklung,
+  // wo /fonts/fonts.json nicht existiert).
   onMounted(async () => {
-    try {
-      const basePath = import.meta.env.BASE_URL || '/'
-      const response = await fetch(basePath + 'fonts.json')
-      const data = await response.json()
-      customFonts.value = data
-    } catch (error) {
-      console.error('Failed to load custom fonts:', error)
+    const basePath = import.meta.env.BASE_URL || '/'
+    const sources = ['/fonts/fonts.json', basePath + 'fonts.json']
+
+    for (const url of sources) {
+      try {
+        const response = await fetch(url)
+        if (!response.ok) continue
+        const data = await response.json()
+        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+          customFonts.value = data
+          return
+        }
+      } catch {
+        // Nächste Quelle versuchen.
+      }
     }
+    console.error('Failed to load custom fonts from', sources.join(' or '))
   })
 
   // Available variants for selected family
@@ -337,7 +356,9 @@
             class="text-xs text-muted hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="updateFontSize(48)"
-          >↺</button>
+          >
+            ↺
+          </button>
         </div>
         <input
           type="range"
@@ -361,7 +382,9 @@
             class="text-xs text-muted hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="updateLetterSpacing(0)"
-          >↺</button>
+          >
+            ↺
+          </button>
         </div>
         <input
           type="range"
@@ -478,7 +501,9 @@
                 class="text-xs text-muted hover:text-accent transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateShadowOffsetX(2)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -502,7 +527,9 @@
                 class="text-xs text-muted hover:text-accent transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateShadowOffsetY(2)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -526,7 +553,9 @@
                 class="text-xs text-muted hover:text-accent transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateShadowBlur(4)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"
@@ -592,7 +621,9 @@
                 class="text-xs text-muted hover:text-accent transition-colors"
                 :title="t('imageControls.resetValue')"
                 @click="updateStrokeWidth(2)"
-              >↺</button>
+              >
+                ↺
+              </button>
             </div>
             <input
               type="range"

@@ -74,6 +74,17 @@ main() {
   echo "==> Installiere Abhängigkeiten (npm ci) ..."
   npm ci
 
+  # ---- 2b. Custom-Fonts-Manifest generieren ------------------------------
+  # Scannt den Server-Font-Ordner und erzeugt fonts.css + fonts.json, damit
+  # ALLE dort liegenden Schriften im Text-Bereich der App auswählbar sind.
+  local FONTS_DIR="${FONTS_DIR:-/var/www/kodinitools.com/public/fonts}"
+  if [[ -d "$FONTS_DIR" ]]; then
+    echo "==> Generiere Font-Manifest aus $FONTS_DIR ..."
+    FONTS_DIR="$FONTS_DIR" node scripts/generate-fonts.mjs
+  else
+    echo "!! Font-Ordner $FONTS_DIR nicht gefunden – überspringe Font-Generierung." >&2
+  fi
+
   # ---- 3. Tests (optional) + Produktions-Build ---------------------------
   if [[ "$RUN_TESTS" != "0" ]]; then
     echo "==> Führe Tests aus (RUN_TESTS=0 zum Überspringen) ..."
