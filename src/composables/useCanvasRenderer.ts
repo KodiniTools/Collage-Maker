@@ -597,7 +597,7 @@ export function useCanvasRenderer(
       }
 
       // Text-Styling
-      context.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+      context.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px '${text.fontFamily}'`
       context.fillStyle = text.color
       context.textAlign = text.textAlign
       context.textBaseline = 'middle'

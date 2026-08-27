@@ -45,7 +45,7 @@
       const boxHeight = lines.length * lineHeight
       let boxWidth = text.fontSize * 4 // Fallback, falls kein Kontext verfügbar
       if (ctx) {
-        ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`
+        ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px '${text.fontFamily}'`
         ctx.letterSpacing = `${text.letterSpacing}px`
         boxWidth = Math.max(...lines.map((line) => ctx.measureText(line).width), 1)
       }

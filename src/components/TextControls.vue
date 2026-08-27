@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
+  import { ref } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
   import ControlSlider from './image-controls/ControlSlider.vue'
-  import { loadCustomFonts, type FontFamily } from '@/utils/fonts'
+  import { availableFonts } from '@/assets/fonts/fontList'
 
   const collage = useCollageStore()
   const { t } = useI18n()
@@ -20,141 +20,34 @@
     'Trebuchet MS',
   ]
 
-  // Custom fonts (Typen + Ladelogik in @/utils/fonts)
-  const customFonts = ref<Record<string, FontFamily>>({})
+  // Benutzerdefinierte Schriften: flache Liste aus src/assets/fonts.
+  // Jede woff2-Datei ist ein eigener Schrift-Name (z. B. "ClashDisplay Bold").
+  // fonts.css (in main.ts importiert) liefert die @font-face-Regeln; die
+  // woff2-Dateien werden von Vite gebündelt. Kein Server-Ordner/Fetch nötig.
   const selectedFontFamily = ref<string>('Arial')
-  const selectedFontVariant = ref<string>('Regular')
 
-  // Custom Fonts laden: liest ALLE Schriften aus dem Server-Ordner
-  //   /var/www/kodinitools.com/public/fonts  (ausgeliefert unter /fonts/)
-  // über das generierte Manifest /fonts/fonts.json, mit gebündeltem Fallback
-  // und – falls kein Manifest existiert – direktem Auslesen des Verzeichnisses.
-  // Die @font-face-Regeln werden dabei per FontFace-API selbst injiziert.
-  // Details siehe @/utils/fonts.
-  onMounted(async () => {
-    const fonts = await loadCustomFonts()
-    if (Object.keys(fonts).length > 0) {
-      customFonts.value = fonts
-    }
-  })
-
-  // Available variants for selected family
-  const availableVariants = computed(() => {
-    const family = customFonts.value[selectedFontFamily.value]
-    if (!family) return []
-
-    const variants = [...family.variants]
-
-    // Füge Italic-Varianten hinzu, wenn verfügbar
-    if (family.hasItalic) {
-      const italicVariants = family.variants.map((v) => `${v} Italic`)
-      variants.push(...italicVariants)
-    }
-
-    return variants
-  })
-
-  // Parse current font into family and variant
-  function parseFontFamily(fontString: string) {
-    // Check if it's a system font
-    if (systemFonts.includes(fontString)) {
-      return { family: fontString, variant: 'Regular' }
-    }
-
-    // Parse custom font (e.g., "Switzer" or "Clash Display")
-    const families = Object.keys(customFonts.value)
-    for (const family of families) {
-      if (fontString === family) {
-        return { family, variant: 'Regular' }
-      }
-    }
-
-    // Default
-    return { family: 'Arial', variant: 'Regular' }
-  }
-
-  // Watch for selected text changes
+  // Auswahl mit der aktuell gewählten Textebene synchronisieren.
   function syncFontSelection() {
     if (!collage.selectedText) return
-    const parsed = parseFontFamily(collage.selectedText.fontFamily)
-    selectedFontFamily.value = parsed.family
-    selectedFontVariant.value = parsed.variant
+    selectedFontFamily.value = collage.selectedText.fontFamily || 'Arial'
   }
 
-  // Update font family
-  function updateFontFamily(family: string) {
-    selectedFontFamily.value = family
-
-    // If custom font, set to Regular variant with weight 400
-    if (customFonts.value[family]) {
-      selectedFontVariant.value = 'Regular'
-      applyFont(family, 'Regular')
-    } else {
-      // System font
-      applyFont(family, 'Regular')
-    }
-  }
-
-  // Update font variant
-  function updateFontVariant(variant: string) {
-    selectedFontVariant.value = variant
-    applyFont(selectedFontFamily.value, variant)
-  }
-
-  // Check if variant is italic
-  function isItalicVariant(variant: string): boolean {
-    return variant.toLowerCase().includes('italic')
-  }
-
-  // Apply font to text
-  async function applyFont(family: string, variant: string) {
+  // Schriftart anwenden. Custom-Fonts werden vor dem Setzen geladen, damit sie
+  // sofort korrekt gerendert werden (Live-Canvas & Export).
+  async function updateFontFamily(family: string) {
     if (!collage.selectedText) return
+    selectedFontFamily.value = family
     collage.saveStateForUndo()
 
-    const weight = variantToWeight(variant)
-    const fontStyle: 'normal' | 'italic' = isItalicVariant(variant) ? 'italic' : 'normal'
-
-    // Für Custom Fonts: Explizit die spezifische Font-Variante laden
-    if (customFonts.value[family]) {
+    if (availableFonts.includes(family)) {
       try {
-        const styleString = fontStyle === 'italic' ? 'italic' : ''
-        console.log(`⏳ Loading font: ${styleString} ${weight} 48px "${family}"`)
-
-        // Font Loading API: Lade die spezifische Variante
-        await document.fonts.load(`${styleString} ${weight} 48px "${family}"`.trim())
-
-        console.log(`✅ Font loaded: ${family} ${variant} (${weight}, ${fontStyle})`)
-      } catch (error) {
-        console.warn(`⚠️ Could not preload font ${family} ${variant}:`, error)
+        await document.fonts.load(`48px "${family}"`)
+      } catch {
+        /* Font-Preload fehlgeschlagen – ignorieren, font-display: swap greift */
       }
     }
 
-    collage.updateText(collage.selectedText.id, {
-      fontFamily: family,
-      fontWeight: weight,
-      fontStyle: fontStyle,
-    })
-  }
-
-  // Map variant to CSS font-weight (numeric values 100-900)
-  function variantToWeight(variant: string): number {
-    // Entferne "Italic" aus dem Variant-Namen für die Weight-Bestimmung
-    const lowerVariant = variant
-      .toLowerCase()
-      .replace(/\s*italic\s*/g, '')
-      .trim()
-
-    if (lowerVariant.includes('thin')) return 100
-    if (lowerVariant.includes('extralight')) return 200
-    if (lowerVariant.includes('light')) return 300
-    if (lowerVariant.includes('medium')) return 500
-    if (lowerVariant.includes('semibold')) return 600
-    if (lowerVariant.includes('bold') && lowerVariant.includes('extra')) return 800
-    if (lowerVariant.includes('bold')) return 700
-    if (lowerVariant.includes('black')) return 900
-
-    // Default to Regular (400)
-    return 400
+    collage.updateText(collage.selectedText.id, { fontFamily: family })
   }
 
   function updateTextContent(value: string) {
@@ -303,25 +196,16 @@
               {{ font }}
             </option>
           </optgroup>
-          <optgroup v-if="Object.keys(customFonts).length > 0" label="Custom Fonts">
-            <option v-for="family in Object.keys(customFonts).sort()" :key="family" :value="family">
-              {{ family }}
+          <optgroup v-if="availableFonts.length > 0" label="Custom Fonts">
+            <option
+              v-for="font in availableFonts"
+              :key="font"
+              :value="font"
+              :style="{ fontFamily: `'${font}'` }"
+            >
+              {{ font }}
             </option>
           </optgroup>
-        </select>
-      </div>
-
-      <!-- Font Variant (only for custom fonts) -->
-      <div v-if="customFonts[selectedFontFamily] && availableVariants.length > 0">
-        <label class="block text-sm font-medium mb-2">{{ t('text.fontVariant') }}</label>
-        <select
-          v-model="selectedFontVariant"
-          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
-          @change="updateFontVariant(selectedFontVariant)"
-        >
-          <option v-for="variant in availableVariants" :key="variant" :value="variant">
-            {{ variant }}
-          </option>
         </select>
       </div>
 

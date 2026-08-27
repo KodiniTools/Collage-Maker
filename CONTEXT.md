@@ -103,15 +103,18 @@ Collage-Maker/
 │   ├── i18n.ts                       # i18n-Konfiguration
 │   └── style.css                     # Globale Styles
 │
+│   ├── assets/fonts/                 # Custom Fonts (woff2, IM Repo)
+│   │   ├── *.woff2                   # 132 Schriftschnitte
+│   │   ├── fonts.css                 # generierte @font-face (in main.ts importiert)
+│   │   └── fontList.ts               # generierte Liste `availableFonts`
+│
 ├── public/                           # Statische Assets
-│   ├── fonts.css                    # Custom Fonts (Fallback für Dev)
-│   ├── fonts.json                   # Font-Metadaten (Fallback für Dev)
 │   └── templates/
 │       └── default-templates.json   # Vordefinierte Templates
 │
 ├── scripts/
-│   └── generate-fonts.mjs           # Scannt den Server-Font-Ordner und
-│                                    # erzeugt fonts.css + fonts.json
+│   └── generate-fonts.mjs           # Scannt src/assets/fonts/*.woff2 und
+│                                    # erzeugt fonts.css + fontList.ts
 │
 ├── Konfigurationsdateien
 │   ├── vite.config.ts               # Vite-Build-Konfiguration
@@ -373,15 +376,16 @@ interface HistorySnapshot {
 ### Textfunktionen
 - Text hinzufügen/bearbeiten/löschen
 - Schriftart-Auswahl
-  - System-Schriften + **alle** benutzerdefinierten Schriften aus dem
-    Server-Ordner `/var/www/kodinitools.com/public/fonts`
-  - `scripts/generate-fonts.mjs` scannt diesen Ordner und erzeugt
-    `fonts.css` (@font-face) sowie `fonts.json` (Familien/Varianten für das
-    Auswahl-Dropdown). Läuft automatisch im `deploy.sh` bzw. manuell über
-    `npm run fonts:generate`
-  - `TextControls.vue` lädt das Manifest zur Laufzeit von `/fonts/fonts.json`
-    (Fallback: gebündelte `fonts.json`). Neue Schrift = Datei in den Ordner
-    legen + Skript ausführen → Schrift ist auswählbar
+  - System-Schriften + **alle** benutzerdefinierten Schriften (132 Schnitte)
+  - Die woff2-Dateien liegen **im Repo** unter `src/assets/fonts/` und werden
+    von Vite gebündelt (kein Server-Ordner, kein Runtime-Fetch, kein Cache-Problem)
+  - `scripts/generate-fonts.mjs` (`npm run fonts:generate`) scannt
+    `src/assets/fonts/*.woff2` und erzeugt `fonts.css` (@font-face je Datei)
+    sowie `fontList.ts` (Array `availableFonts`, Name = „Familie Schnitt")
+  - `fonts.css` wird in `src/main.ts` importiert; `TextControls.vue` nutzt
+    `availableFonts` für das Dropdown
+  - Neue Schrift: woff2 nach `src/assets/fonts/` legen, `npm run fonts:generate`
+    ausführen, `fonts.css`/`fontList.ts` committen
 - Schatten- und Kontur-Effekte
 - Textausrichtung und Zeichenabstand
 

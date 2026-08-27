@@ -74,37 +74,10 @@ main() {
   echo "==> Installiere Abhängigkeiten (npm ci) ..."
   npm ci
 
-  # ---- 2b. Custom-Fonts-Manifest generieren ------------------------------
-  # Scannt den Server-Font-Ordner und erzeugt daraus das Font-Manifest.
-  #
-  # WICHTIG: Das Manifest wird in die App GEBÜNDELT geschrieben
-  #   public/fonts.json  ->  (Build)  ->  dist/  ->  /collagemaker/fonts.json
-  # Das Deploy-Verzeichnis wird per rsync sowieso beschrieben, ist also
-  # garantiert beschreibbar. So hängt die Schriftliste NICHT von Schreibrechten
-  # im Ordner .../public/fonts/ ab (dort scheiterte das Schreiben bisher
-  # vermutlich -> /fonts/fonts.json 404 -> nur "Supreme").
-  #
-  # Die woff2-URLs im Manifest zeigen weiterhin auf /fonts/... (dort liegen die
-  # Dateien, ausgeliefert unter /fonts/). Die App injiziert die @font-face-
-  # Regeln daraus selbst.
-  local FONTS_SRC="${FONTS_DIR:-/var/www/kodinitools.com/public/fonts}"
-  if [[ -d "$FONTS_SRC" ]]; then
-    echo "==> Generiere Font-Manifest aus $FONTS_SRC (ins JS-Bundle) ..."
-    # Das Manifest wird in eine Quelldatei geschrieben, die die App fest
-    # importiert (src/generated/fontManifest.json). Beim Build landet es damit
-    # im gehashten JS-Bundle -> immun gegen Browser-/Server-Cache, kein
-    # Netzwerk-Request, keine Schreibrechte-Probleme in .../public/fonts/.
-    # Fehler hier dürfen den Deploy NICHT abbrechen (z. B. leerer Ordner).
-    if ! node scripts/generate-fonts.mjs \
-      --dir "$FONTS_SRC" \
-      --json-out src/generated/fontManifest.json \
-      --css-out public/fonts.css \
-      --url-base /fonts; then
-      echo "!! Font-Generierung fehlgeschlagen – fahre mit Deploy fort." >&2
-    fi
-  else
-    echo "!! Font-Ordner $FONTS_SRC nicht gefunden – überspringe Font-Generierung." >&2
-  fi
+  # Hinweis: Custom-Fonts liegen als woff2 im Repo (src/assets/fonts/) und
+  # werden über fonts.css (in main.ts importiert) gebündelt – kein Deploy-Schritt
+  # nötig. Neue Schriften: Datei ablegen + `npm run fonts:generate` ausführen
+  # (erzeugt fonts.css + fontList.ts), committen.
 
   # ---- 3. Tests (optional) + Produktions-Build ---------------------------
   if [[ "$RUN_TESTS" != "0" ]]; then
