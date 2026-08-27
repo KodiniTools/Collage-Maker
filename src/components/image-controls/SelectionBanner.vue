@@ -34,13 +34,13 @@
           </span>
         </div>
         <button
-          class="text-xs text-muted hover:text-slate-dark dark:hover:text-muted underline"
+          class="text-xs text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-muted underline"
           @click="api.deselectAll"
         >
           {{ t('imageControls.deselectAll') }}
         </button>
       </div>
-      <p class="text-xs text-muted mt-1">
+      <p class="text-xs text-muted dark:text-muted-light mt-1">
         {{ t('imageControls.multiSelectionHint') }}
       </p>
     </div>

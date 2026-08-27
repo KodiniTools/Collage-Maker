@@ -56,7 +56,7 @@
 
     <!-- Fit Mode -->
     <div class="mb-3">
-      <label class="block text-xs font-medium mb-1.5 text-muted">
+      <label class="block text-xs font-medium mb-1.5 text-muted dark:text-muted-light">
         {{ t('canvas.backgroundFit') }}
       </label>
       <select
@@ -83,7 +83,7 @@
       <!-- Opacity -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted">
+          <label class="text-xs font-medium text-muted dark:text-muted-light">
             {{ t('imageControls.opacity') }}:
             {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
           </label>
@@ -110,7 +110,7 @@
       <!-- Brightness -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted">
+          <label class="text-xs font-medium text-muted dark:text-muted-light">
             {{ t('imageControls.brightness') }}: {{ collage.settings.backgroundImage.brightness }}%
           </label>
           <button
@@ -136,7 +136,7 @@
       <!-- Contrast -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted">
+          <label class="text-xs font-medium text-muted dark:text-muted-light">
             {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
           </label>
           <button
@@ -162,7 +162,7 @@
       <!-- Saturation -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted">
+          <label class="text-xs font-medium text-muted dark:text-muted-light">
             {{ t('imageControls.saturation') }}: {{ collage.settings.backgroundImage.saturation }}%
           </label>
           <button
@@ -188,7 +188,7 @@
       <!-- Blur -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted">
+          <label class="text-xs font-medium text-muted dark:text-muted-light">
             {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
           </label>
           <button
@@ -212,7 +212,7 @@
       </div>
     </div>
 
-    <p class="text-xs text-muted mt-2">
+    <p class="text-xs text-muted dark:text-muted-light mt-2">
       {{ t('canvas.backgroundFitHint') }}
     </p>
   </div>

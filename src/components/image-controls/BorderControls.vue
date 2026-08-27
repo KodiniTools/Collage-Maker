@@ -19,7 +19,7 @@
           'px-3 py-1 text-xs rounded transition-colors',
           image.borderEnabled
             ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         @click="api.toggleBorder"
       >
@@ -46,7 +46,7 @@
 
       <!-- Rahmenstil -->
       <div>
-        <label class="block text-xs text-muted mb-1">
+        <label class="block text-xs text-muted dark:text-muted-light mb-1">
           {{ t('imageControls.borderStyle') }}
         </label>
         <select
@@ -71,7 +71,9 @@
       <!-- Rahmenschatten -->
       <div class="border-t border-muted/50 dark:border-slate pt-3 mt-3">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-xs text-muted">{{ t('imageControls.borderShadow') }}</label>
+          <label class="text-xs text-muted dark:text-muted-light">{{
+            t('imageControls.borderShadow')
+          }}</label>
           <button
             :class="[
               'px-2 py-1 text-xs rounded transition-colors',

@@ -163,13 +163,13 @@
             />
           </svg>
         </div>
-        <p class="text-sm text-muted dark:text-muted">
+        <p class="text-sm text-muted dark:text-muted-light">
           {{ isProcessing ? t('upload.processing') : t('upload.dragDrop') }}
         </p>
-        <p class="text-xs text-muted dark:text-muted">
+        <p class="text-xs text-muted dark:text-muted-light">
           {{ t('upload.formats') }}
         </p>
-        <p class="text-xs text-muted dark:text-muted opacity-70">
+        <p class="text-xs text-muted dark:text-muted-light opacity-70">
           {{ t('upload.pasteHint') }}
         </p>
       </div>

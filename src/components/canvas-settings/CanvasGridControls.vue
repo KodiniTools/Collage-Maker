@@ -18,7 +18,7 @@
           'px-3 py-1 text-xs rounded transition-colors',
           collage.settings.gridEnabled
             ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         :aria-pressed="collage.settings.gridEnabled"
         @click="api.toggleGrid"
@@ -29,7 +29,7 @@
 
     <!-- Rastergröße -->
     <div v-if="collage.settings.gridEnabled" class="mt-3">
-      <label class="block text-xs text-muted mb-1">
+      <label class="block text-xs text-muted dark:text-muted-light mb-1">
         {{ t('grid.size') }}: {{ collage.settings.gridSize }}px
       </label>
       <input
@@ -42,13 +42,13 @@
         :aria-label="t('grid.size')"
         @input="api.updateGridSize(Number(($event.target as HTMLInputElement).value))"
       />
-      <div class="flex justify-between text-xs text-muted mt-1">
+      <div class="flex justify-between text-xs text-muted dark:text-muted-light mt-1">
         <span>10px</span>
         <span>200px</span>
       </div>
     </div>
 
-    <p class="text-xs text-muted mt-3">
+    <p class="text-xs text-muted dark:text-muted-light mt-3">
       {{ t('grid.hint') }}
     </p>
   </div>

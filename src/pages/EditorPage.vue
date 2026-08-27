@@ -184,7 +184,7 @@
           </RouterLink>
           <div>
             <h1 class="text-lg sm:text-2xl font-bold">{{ t('app.title') }}</h1>
-            <p class="text-xs sm:text-sm text-muted dark:text-muted hidden sm:block">
+            <p class="text-xs sm:text-sm text-muted dark:text-muted-light hidden sm:block">
               {{ t('app.subtitle') }}
             </p>
           </div>
@@ -311,7 +311,7 @@
             :class="
               activeTool === tool.id
                 ? 'bg-accent/20 text-slate-dark dark:text-accent'
-                : 'text-muted hover:bg-muted/15 dark:hover:bg-navy/40'
+                : 'text-muted dark:text-muted-light hover:bg-muted/15 dark:hover:bg-navy/40'
             "
             :title="t(tool.label)"
             :aria-label="t(tool.label)"
@@ -366,7 +366,7 @@
                   :class="
                     inspectorTab === tab.id
                       ? 'bg-surface-light dark:bg-surface-dark shadow-sm text-slate-dark dark:text-white'
-                      : 'text-muted hover:text-slate-dark dark:hover:text-white'
+                      : 'text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-white'
                   "
                   :aria-pressed="inspectorTab === tab.id"
                   @click="inspectorTab = tab.id"

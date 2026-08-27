@@ -75,7 +75,7 @@
       </button>
     </div>
 
-    <div v-else class="text-center text-muted py-8">
+    <div v-else class="text-center text-muted dark:text-muted-light py-8">
       <p>{{ t('imageControls.noSelection') }}</p>
       <p class="text-xs mt-2">{{ t('imageControls.ctrlClickHint') }}</p>
     </div>

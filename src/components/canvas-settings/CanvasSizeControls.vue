@@ -18,7 +18,7 @@
           'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
           api.keepAspect.value
             ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         :title="t('canvas.keepAspectRatio')"
         :aria-pressed="api.keepAspect.value"
@@ -52,7 +52,7 @@
           'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
           api.scaleContent.value
             ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         :title="t('canvas.scaleContent')"
         :aria-pressed="api.scaleContent.value"
@@ -78,7 +78,7 @@
         </label>
         <button
           v-if="collage.settings.width !== api.DEFAULT_WIDTH"
-          class="text-xs text-muted hover:text-accent transition-colors"
+          class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
           :title="t('imageControls.resetValue')"
           @click="api.resetWidth"
         >
@@ -114,7 +114,7 @@
         </label>
         <button
           v-if="collage.settings.height !== api.DEFAULT_HEIGHT"
-          class="text-xs text-muted hover:text-accent transition-colors"
+          class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
           :title="t('imageControls.resetValue')"
           @click="api.resetHeight"
         >

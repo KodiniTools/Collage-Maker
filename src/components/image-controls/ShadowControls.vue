@@ -19,7 +19,7 @@
           'px-3 py-1 text-xs rounded transition-colors',
           image.shadowEnabled
             ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         @click="api.toggleShadow"
       >

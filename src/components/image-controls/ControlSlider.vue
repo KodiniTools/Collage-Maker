@@ -76,7 +76,11 @@
   <div>
     <label
       class="block"
-      :class="labelSize === 'sm' ? 'text-sm font-medium mb-2' : 'text-xs text-muted mb-1'"
+      :class="
+        labelSize === 'sm'
+          ? 'text-sm font-medium mb-2'
+          : 'text-xs text-muted dark:text-muted-light mb-1'
+      "
     >
       {{ label }}: {{ displayValue }}
     </label>
@@ -107,7 +111,7 @@
       <span class="w-5 flex-shrink-0 flex justify-center">
         <button
           v-if="showReset"
-          class="text-sm leading-none text-muted hover:text-accent transition-colors"
+          class="text-sm leading-none text-muted dark:text-muted-light hover:text-accent transition-colors"
           :title="resetTitle"
           @click="emit('reset')"
         >

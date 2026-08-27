@@ -18,7 +18,7 @@
           'px-3 py-1 text-xs rounded transition-colors',
           collage.settings.border.enabled
             ? 'bg-accent hover:bg-accent-dark text-slate-dark'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted',
+            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         :aria-pressed="collage.settings.border.enabled"
         @click="api.toggleCanvasBorder"
@@ -30,7 +30,7 @@
     <div v-if="collage.settings.border.enabled" class="space-y-3">
       <!-- Rahmenbreite -->
       <div>
-        <label class="block text-xs text-muted mb-1">
+        <label class="block text-xs text-muted dark:text-muted-light mb-1">
           {{ t('imageControls.borderWidth') }}: {{ collage.settings.border.width }}px
         </label>
         <input
@@ -46,7 +46,9 @@
 
       <!-- Rahmenstil -->
       <div>
-        <label class="block text-xs text-muted mb-1">{{ t('imageControls.borderStyle') }}</label>
+        <label class="block text-xs text-muted dark:text-muted-light mb-1">{{
+          t('imageControls.borderStyle')
+        }}</label>
         <select
           :value="collage.settings.border.style"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
@@ -61,7 +63,9 @@
 
       <!-- Rahmenfarbe -->
       <div>
-        <label class="block text-xs text-muted mb-1">{{ t('imageControls.borderColor') }}</label>
+        <label class="block text-xs text-muted dark:text-muted-light mb-1">{{
+          t('imageControls.borderColor')
+        }}</label>
         <div class="flex gap-2">
           <input
             type="color"

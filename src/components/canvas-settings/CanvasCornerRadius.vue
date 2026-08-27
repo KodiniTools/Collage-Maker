@@ -17,7 +17,7 @@
       </label>
       <button
         v-if="collage.settings.cornerRadius !== 0"
-        class="text-xs text-muted hover:text-accent transition-colors"
+        class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
         :title="t('imageControls.resetValue')"
         @click="api.updateCornerRadius(0)"
       >
