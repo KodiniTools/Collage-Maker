@@ -104,10 +104,14 @@ Collage-Maker/
 │   └── style.css                     # Globale Styles
 │
 ├── public/                           # Statische Assets
-│   ├── fonts.css                    # Custom Fonts (woff2)
-│   ├── fonts.json                   # Font-Metadaten
+│   ├── fonts.css                    # Custom Fonts (Fallback für Dev)
+│   ├── fonts.json                   # Font-Metadaten (Fallback für Dev)
 │   └── templates/
 │       └── default-templates.json   # Vordefinierte Templates
+│
+├── scripts/
+│   └── generate-fonts.mjs           # Scannt den Server-Font-Ordner und
+│                                    # erzeugt fonts.css + fonts.json
 │
 ├── Konfigurationsdateien
 │   ├── vite.config.ts               # Vite-Build-Konfiguration
@@ -369,6 +373,15 @@ interface HistorySnapshot {
 ### Textfunktionen
 - Text hinzufügen/bearbeiten/löschen
 - Schriftart-Auswahl
+  - System-Schriften + **alle** benutzerdefinierten Schriften aus dem
+    Server-Ordner `/var/www/kodinitools.com/public/fonts`
+  - `scripts/generate-fonts.mjs` scannt diesen Ordner und erzeugt
+    `fonts.css` (@font-face) sowie `fonts.json` (Familien/Varianten für das
+    Auswahl-Dropdown). Läuft automatisch im `deploy.sh` bzw. manuell über
+    `npm run fonts:generate`
+  - `TextControls.vue` lädt das Manifest zur Laufzeit von `/fonts/fonts.json`
+    (Fallback: gebündelte `fonts.json`). Neue Schrift = Datei in den Ordner
+    legen + Skript ausführen → Schrift ist auswählbar
 - Schatten- und Kontur-Effekte
 - Textausrichtung und Zeichenabstand
 
