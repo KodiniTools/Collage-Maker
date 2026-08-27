@@ -2,6 +2,7 @@
   import { ref, computed, onMounted } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
+  import ControlSlider from './image-controls/ControlSlider.vue'
 
   const collage = useCollageStore()
   const { t } = useI18n()
@@ -346,56 +347,32 @@
       </div>
 
       <!-- Font Size -->
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium">
-            {{ t('text.fontSize') }}: {{ Math.round(collage.selectedText.fontSize) }}px
-          </label>
-          <button
-            v-if="collage.selectedText.fontSize !== 48"
-            class="text-xs text-muted hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
-            @click="updateFontSize(48)"
-          >
-            ↺
-          </button>
-        </div>
-        <input
-          type="range"
-          :value="collage.selectedText.fontSize"
-          min="12"
-          max="2000"
-          step="2"
-          class="w-full"
-          @input="updateFontSize(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        :label="t('text.fontSize')"
+        :display-value="`${Math.round(collage.selectedText.fontSize)}px`"
+        :value="collage.selectedText.fontSize"
+        :min="12"
+        :max="2000"
+        :step="2"
+        :show-reset="collage.selectedText.fontSize !== 48"
+        :reset-title="t('imageControls.resetValue')"
+        @input="updateFontSize"
+        @reset="updateFontSize(48)"
+      />
 
       <!-- Letter Spacing -->
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium">
-            {{ t('text.letterSpacing') }}: {{ collage.selectedText.letterSpacing }}px
-          </label>
-          <button
-            v-if="collage.selectedText.letterSpacing !== 0"
-            class="text-xs text-muted hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
-            @click="updateLetterSpacing(0)"
-          >
-            ↺
-          </button>
-        </div>
-        <input
-          type="range"
-          :value="collage.selectedText.letterSpacing"
-          min="-5"
-          max="20"
-          step="1"
-          class="w-full"
-          @input="updateLetterSpacing(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        :label="t('text.letterSpacing')"
+        :display-value="`${collage.selectedText.letterSpacing}px`"
+        :value="collage.selectedText.letterSpacing"
+        :min="-5"
+        :max="20"
+        :step="1"
+        :show-reset="collage.selectedText.letterSpacing !== 0"
+        :reset-title="t('imageControls.resetValue')"
+        @input="updateLetterSpacing"
+        @reset="updateLetterSpacing(0)"
+      />
 
       <!-- Font Weight & Align -->
       <div class="flex gap-2">
@@ -491,82 +468,49 @@
 
         <div v-if="collage.selectedText.shadowEnabled" class="space-y-3">
           <!-- Shadow X Offset -->
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs text-muted">
-                {{ t('text.shadowOffsetX') }}: {{ collage.selectedText.shadowOffsetX }}px
-              </label>
-              <button
-                v-if="collage.selectedText.shadowOffsetX !== 2"
-                class="text-xs text-muted hover:text-accent transition-colors"
-                :title="t('imageControls.resetValue')"
-                @click="updateShadowOffsetX(2)"
-              >
-                ↺
-              </button>
-            </div>
-            <input
-              type="range"
-              :value="collage.selectedText.shadowOffsetX"
-              min="-20"
-              max="20"
-              step="1"
-              class="w-full"
-              @input="updateShadowOffsetX(Number(($event.target as HTMLInputElement).value))"
-            />
-          </div>
+          <ControlSlider
+            label-size="xs"
+            :label="t('text.shadowOffsetX')"
+            :display-value="`${collage.selectedText.shadowOffsetX}px`"
+            :value="collage.selectedText.shadowOffsetX"
+            :min="-20"
+            :max="20"
+            :step="1"
+            :show-reset="collage.selectedText.shadowOffsetX !== 2"
+            :reset-title="t('imageControls.resetValue')"
+            @input="updateShadowOffsetX"
+            @reset="updateShadowOffsetX(2)"
+          />
 
           <!-- Shadow Y Offset -->
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs text-muted">
-                {{ t('text.shadowOffsetY') }}: {{ collage.selectedText.shadowOffsetY }}px
-              </label>
-              <button
-                v-if="collage.selectedText.shadowOffsetY !== 2"
-                class="text-xs text-muted hover:text-accent transition-colors"
-                :title="t('imageControls.resetValue')"
-                @click="updateShadowOffsetY(2)"
-              >
-                ↺
-              </button>
-            </div>
-            <input
-              type="range"
-              :value="collage.selectedText.shadowOffsetY"
-              min="-20"
-              max="20"
-              step="1"
-              class="w-full"
-              @input="updateShadowOffsetY(Number(($event.target as HTMLInputElement).value))"
-            />
-          </div>
+          <ControlSlider
+            label-size="xs"
+            :label="t('text.shadowOffsetY')"
+            :display-value="`${collage.selectedText.shadowOffsetY}px`"
+            :value="collage.selectedText.shadowOffsetY"
+            :min="-20"
+            :max="20"
+            :step="1"
+            :show-reset="collage.selectedText.shadowOffsetY !== 2"
+            :reset-title="t('imageControls.resetValue')"
+            @input="updateShadowOffsetY"
+            @reset="updateShadowOffsetY(2)"
+          />
 
           <!-- Shadow Blur -->
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs text-muted">
-                {{ t('text.shadowBlur') }}: {{ collage.selectedText.shadowBlur }}px
-              </label>
-              <button
-                v-if="collage.selectedText.shadowBlur !== 4"
-                class="text-xs text-muted hover:text-accent transition-colors"
-                :title="t('imageControls.resetValue')"
-                @click="updateShadowBlur(4)"
-              >
-                ↺
-              </button>
-            </div>
-            <input
-              type="range"
-              :value="collage.selectedText.shadowBlur"
-              min="0"
-              max="30"
-              step="1"
-              class="w-full"
-              @input="updateShadowBlur(Number(($event.target as HTMLInputElement).value))"
-            />
-          </div>
+          <ControlSlider
+            label-size="xs"
+            :label="t('text.shadowBlur')"
+            :display-value="`${collage.selectedText.shadowBlur}px`"
+            :value="collage.selectedText.shadowBlur"
+            :min="0"
+            :max="30"
+            :step="1"
+            :show-reset="collage.selectedText.shadowBlur !== 4"
+            :reset-title="t('imageControls.resetValue')"
+            @input="updateShadowBlur"
+            @reset="updateShadowBlur(4)"
+          />
 
           <!-- Shadow Color -->
           <div>
@@ -611,30 +555,19 @@
 
         <div v-if="collage.selectedText.strokeEnabled" class="space-y-3">
           <!-- Stroke Width -->
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs text-muted">
-                {{ t('text.strokeWidth') }}: {{ collage.selectedText.strokeWidth }}px
-              </label>
-              <button
-                v-if="collage.selectedText.strokeWidth !== 2"
-                class="text-xs text-muted hover:text-accent transition-colors"
-                :title="t('imageControls.resetValue')"
-                @click="updateStrokeWidth(2)"
-              >
-                ↺
-              </button>
-            </div>
-            <input
-              type="range"
-              :value="collage.selectedText.strokeWidth"
-              min="1"
-              max="10"
-              step="1"
-              class="w-full"
-              @input="updateStrokeWidth(Number(($event.target as HTMLInputElement).value))"
-            />
-          </div>
+          <ControlSlider
+            label-size="xs"
+            :label="t('text.strokeWidth')"
+            :display-value="`${collage.selectedText.strokeWidth}px`"
+            :value="collage.selectedText.strokeWidth"
+            :min="1"
+            :max="10"
+            :step="1"
+            :show-reset="collage.selectedText.strokeWidth !== 2"
+            :reset-title="t('imageControls.resetValue')"
+            @input="updateStrokeWidth"
+            @reset="updateStrokeWidth(2)"
+          />
 
           <!-- Stroke Color -->
           <div>
