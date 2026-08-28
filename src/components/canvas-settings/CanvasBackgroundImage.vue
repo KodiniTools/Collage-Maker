@@ -21,7 +21,7 @@
       </label>
       <span
         v-if="collage.isBackgroundSelected"
-        class="text-xs px-2 py-0.5 bg-primary/20 text-primary rounded-full"
+        class="text-xs px-2 py-0.5 bg-primary/20 dark:bg-accent/20 text-primary dark:text-accent rounded-full"
       >
         {{ t('canvas.selected') }}
       </span>
@@ -78,7 +78,9 @@
       v-if="collage.isBackgroundSelected"
       class="space-y-3 bg-muted/10 dark:bg-navy/20 rounded-lg p-3"
     >
-      <p class="text-xs font-medium text-primary mb-2">{{ t('canvas.editBackground') }}</p>
+      <p class="text-xs font-medium text-primary dark:text-accent mb-2">
+        {{ t('canvas.editBackground') }}
+      </p>
 
       <!-- Opacity -->
       <div>

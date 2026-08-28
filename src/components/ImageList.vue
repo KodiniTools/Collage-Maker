@@ -306,7 +306,12 @@
             :aria-label="t('images.remove')"
             @click.stop="requestDelete(image)"
           >
-            <svg class="w-5 h-5 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-5 h-5 text-warm dark:text-warm-light"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -545,7 +550,12 @@
             <div
               class="shrink-0 w-10 h-10 rounded-full bg-warm/15 flex items-center justify-center"
             >
-              <svg class="w-6 h-6 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-6 h-6 text-warm dark:text-warm-light"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"

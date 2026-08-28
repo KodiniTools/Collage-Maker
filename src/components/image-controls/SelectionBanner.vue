@@ -34,7 +34,7 @@
           </span>
         </div>
         <button
-          class="text-xs text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-muted underline"
+          class="text-xs text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light underline"
           @click="api.deselectAll"
         >
           {{ t('imageControls.deselectAll') }}
