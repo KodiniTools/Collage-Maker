@@ -317,7 +317,13 @@ interface Template {
 
 ### Toast
 
-Benachrichtigungsmeldungen.
+Benachrichtigungsmeldungen. Erfolgs-/Aktions-Meldungen werden über
+`toastStore.notify(key, message)` als **subtile, abschaltbare** Toasts
+angezeigt: Sie tragen einen `dismissKey` (i18n-Schlüssel) und zeigen einen
+„Nicht mehr anzeigen"-Button. Abgeschaltete Schlüssel werden in
+`localStorage` (`collage-maker-dismissed-toasts`) gemerkt und künftig
+unterdrückt (`dismissForever` / `resetDismissed`). Fehler (`error`) und
+Rückgängig-Toasts bleiben immer sichtbar.
 
 ```typescript
 interface Toast {
@@ -325,6 +331,8 @@ interface Toast {
   message: string
   type: 'success' | 'error' | 'info'
   duration?: number             // Millisekunden
+  action?: ToastAction          // z. B. „Rückgängig"
+  dismissKey?: string           // Schlüssel für „Nicht mehr anzeigen"
 }
 ```
 

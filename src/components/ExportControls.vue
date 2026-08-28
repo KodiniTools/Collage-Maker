@@ -79,7 +79,7 @@
 
       if (exportFormat.value === 'pdf') {
         await exportToPdf({ canvas, quality: exportQuality.value, filename: finalName })
-        toast.success(t('toast.exportSuccess'))
+        toast.notify('toast.exportSuccess', t('toast.exportSuccess'))
         return
       }
 
@@ -105,7 +105,7 @@
         )
       })
 
-      toast.success(t('toast.exportSuccess'))
+      toast.notify('toast.exportSuccess', t('toast.exportSuccess'))
     } catch (error) {
       console.error('Export error:', error)
       toast.error(t('toast.exportError'))

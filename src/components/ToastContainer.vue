@@ -1,12 +1,18 @@
 <script setup lang="ts">
   import { useToastStore } from '@/stores/toast'
+  import { useI18n } from 'vue-i18n'
   import type { Toast } from '@/types'
 
   const toast = useToastStore()
+  const { t: tr } = useI18n()
 
   function runAction(t: Toast) {
     t.action?.handler()
     toast.removeToast(t.id)
+  }
+
+  function dismissForever(t: Toast) {
+    if (t.dismissKey) toast.dismissForever(t.dismissKey)
   }
 </script>
 
@@ -89,6 +95,16 @@
           @click.stop="runAction(t)"
         >
           {{ t.action.label }}
+        </button>
+
+        <!-- "Nicht mehr anzeigen" für abschaltbare Meldungen -->
+        <button
+          v-if="t.dismissKey"
+          class="ml-auto shrink-0 pl-2 text-[11px] leading-tight text-white/70 hover:text-white underline underline-offset-2 transition-colors"
+          :title="tr('toast.dontShowAgain')"
+          @click.stop="dismissForever(t)"
+        >
+          {{ tr('toast.dontShowAgain') }}
         </button>
       </div>
     </TransitionGroup>

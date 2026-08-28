@@ -95,7 +95,7 @@
           ? await copyImagesInMemory(validFiles)
           : await compressImages(validFiles)
         collage.addImages(processedFiles)
-        toast.success(t('toast.uploadSuccess', { count: validFiles.length }))
+        toast.notify('toast.uploadSuccess', t('toast.uploadSuccess', { count: validFiles.length }))
       } catch {
         toast.error(t('toast.uploadError'))
       } finally {
