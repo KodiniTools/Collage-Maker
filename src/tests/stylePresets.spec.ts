@@ -138,4 +138,19 @@ describe('applyStylePreset (vorgefertigte Effekt-Presets)', () => {
     collage.undo()
     expect(collage.images[0].borderRadius).toBe(0)
   })
+
+  it('kombiniert Geometrie- und Filter-Presets (orthogonal, kein Reset)', () => {
+    const collage = useCollageStore()
+    collage.images.push(makeImg('a', { isGalleryTemplate: false }))
+
+    // Geometrie-Preset (nur Ecken/Schatten)
+    collage.applyStylePreset({ borderRadius: 28, shadowEnabled: false })
+    // Filter-Preset (nur Bildlook) – lässt die Geometrie unangetastet
+    collage.applyStylePreset({ saturation: 0, contrast: 112 })
+
+    const a = collage.images[0]
+    expect(a.borderRadius).toBe(28) // Geometrie bleibt erhalten
+    expect(a.saturation).toBe(0) // Filter zusätzlich angewendet
+    expect(a.contrast).toBe(112)
+  })
 })
