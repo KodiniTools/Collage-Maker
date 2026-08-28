@@ -244,7 +244,7 @@
   },
   "stylePresets": {
     "title": "Effekte",
-    "subtitle": "Ein Klick wendet abgerundete Ecken, Rahmen und Schatten auf deine Bilder an.",
+    "subtitle": "Ein Klick wendet Ecken, Schatten und Bildlooks auf deine Bilder an.",
     "noImages": "Lade zuerst Bilder hoch, um Effekte anzuwenden.",
     "scopeAll": "Wird auf alle {count} Bilder der Leinwand angewendet",
     "scopeSelected": "Wird auf {count} ausgewählte Bilder angewendet",
@@ -253,9 +253,9 @@
     "circle": "Kreis",
     "shadow": "Schatten",
     "softCard": "Weiche Karte",
-    "frameWhite": "Weißer Rahmen",
-    "polaroid": "Polaroid",
-    "elegant": "Elegant"
+    "vintage": "Vintage",
+    "blackWhite": "Schwarz-Weiß",
+    "vivid": "Lebendig"
   },
   "frameGallery": {
     "title": "Bildrahmen Vorlagen",

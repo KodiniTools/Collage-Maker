@@ -244,7 +244,7 @@
   },
   "stylePresets": {
     "title": "Effects",
-    "subtitle": "One click applies rounded corners, borders and shadows to your images.",
+    "subtitle": "One click applies corners, shadows and image looks to your images.",
     "noImages": "Upload images first to apply effects.",
     "scopeAll": "Applied to all {count} images on the canvas",
     "scopeSelected": "Applied to {count} selected images",
@@ -253,9 +253,9 @@
     "circle": "Circle",
     "shadow": "Shadow",
     "softCard": "Soft Card",
-    "frameWhite": "White Frame",
-    "polaroid": "Polaroid",
-    "elegant": "Elegant"
+    "vintage": "Vintage",
+    "blackWhite": "Black & White",
+    "vivid": "Vivid"
   },
   "frameGallery": {
     "title": "Frame Templates",

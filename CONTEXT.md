@@ -399,8 +399,11 @@ interface HistorySnapshot {
 
 ### Bearbeitungsfunktionen
 - 14 verschiedene Layout-Presets
-- 8 Stil-Presets (Effekte): abgerundete Ecken, Rahmen & Schatten mit einem Klick
-  auf alle bzw. ausgewählte Bilder anwendbar (`StylePresets.vue` → `applyStylePreset`)
+- 8 Stil-Presets (Effekte): zwei orthogonale, kombinierbare Domänen –
+  Geometrie/Schatten (Abgerundet, Kreis, Schatten, Weiche Karte) und Bildlooks
+  (Vintage, Schwarz-Weiß, Lebendig). Rahmen sind NICHT hier, sondern in der
+  eigenen Sektion. Auf alle bzw. ausgewählte Bilder anwendbar
+  (`StylePresets.vue` → `applyStylePreset`)
 - Bildrahmen-Vorlagen (linke Sidebar-Sektion „frames"): moderne Rahmengalerie
   (`FrameGallery.vue` → `applyFrameTemplate`). Setzt NUR die Rahmen-Felder der
   ausgewählten (bzw. aller) Bilder – Bildschatten/Filter bleiben erhalten;

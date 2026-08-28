@@ -7,9 +7,12 @@
   const collage = useCollageStore()
   const { t } = useI18n()
 
-  // Ein Preset beschreibt einen kompletten Satz an Effekt-Feldern (abgerundete
-  // Ecken, Rahmen, Schatten). Der Store setzt beim Anwenden ALLE Felder, damit
-  // der Wechsel zwischen Presets deterministisch ist.
+  // Ein Preset belegt entweder die GEOMETRIE-Domäne (Ecken/Schatten) ODER die
+  // FILTER-Domäne (Bildlooks). Beide sind orthogonal: ein Filter-Look und ein
+  // Geometrie-Look lassen sich kombinieren, ohne einander zurückzusetzen. Nur
+  // „Original" setzt beides zurück.
+  // Hinweis: Rahmen (Border) liegen bewusst NICHT hier, sondern in der eigenen
+  // Sektion „Bildrahmen Vorlagen".
   type StyleEffects = Pick<
     CollageImage,
     | 'borderRadius'
@@ -27,55 +30,68 @@
     | 'borderShadowOffsetY'
     | 'borderShadowBlur'
     | 'borderShadowColor'
+    | 'brightness'
+    | 'contrast'
+    | 'highlights'
+    | 'shadows'
+    | 'saturation'
+    | 'warmth'
+    | 'sharpness'
   >
 
   interface StylePreset {
     id: string
     labelKey: string
-    effects: StyleEffects
+    effects: Partial<StyleEffects>
   }
 
-  // Basiszustand „ohne Effekte" – dient als Grundlage für jedes Preset, sodass
-  // jedes Preset wirklich alle Felder belegt (auch die deaktivierten).
-  const NONE: StyleEffects = {
+  // Geometrie/Schatten-Domäne neutral (Rahmen bleibt aus). Jedes Geometrie-
+  // Preset belegt diese Felder vollständig → deterministischer Wechsel.
+  const GEOMETRY_NONE: Partial<StyleEffects> = {
     borderRadius: 0,
     borderEnabled: false,
-    borderWidth: 4,
-    borderColor: '#000000',
-    borderStyle: 'solid',
     shadowEnabled: false,
     shadowOffsetX: 5,
     shadowOffsetY: 5,
     shadowBlur: 10,
     shadowColor: '#000000',
     borderShadowEnabled: false,
-    borderShadowOffsetX: 3,
-    borderShadowOffsetY: 3,
-    borderShadowBlur: 6,
-    borderShadowColor: '#000000',
+  }
+
+  // Filter-Domäne neutral. Jedes Filter-Preset belegt diese Felder vollständig.
+  const FILTER_NONE: Partial<StyleEffects> = {
+    brightness: 100,
+    contrast: 100,
+    highlights: 0,
+    shadows: 0,
+    saturation: 100,
+    warmth: 0,
+    sharpness: 0,
   }
 
   const presets: StylePreset[] = [
+    // „Original" setzt BEIDE Domänen zurück.
     {
       id: 'original',
       labelKey: 'stylePresets.original',
-      effects: { ...NONE },
+      effects: { ...GEOMETRY_NONE, ...FILTER_NONE },
     },
+    // Geometrie-Looks
     {
       id: 'rounded',
       labelKey: 'stylePresets.rounded',
-      effects: { ...NONE, borderRadius: 28 },
+      effects: { ...GEOMETRY_NONE, borderRadius: 28 },
     },
     {
       id: 'circle',
       labelKey: 'stylePresets.circle',
-      effects: { ...NONE, borderRadius: 9999 },
+      effects: { ...GEOMETRY_NONE, borderRadius: 9999 },
     },
     {
       id: 'shadow',
       labelKey: 'stylePresets.shadow',
       effects: {
-        ...NONE,
+        ...GEOMETRY_NONE,
         shadowEnabled: true,
         shadowOffsetX: 0,
         shadowOffsetY: 12,
@@ -87,7 +103,7 @@
       id: 'softCard',
       labelKey: 'stylePresets.softCard',
       effects: {
-        ...NONE,
+        ...GEOMETRY_NONE,
         borderRadius: 22,
         shadowEnabled: true,
         shadowOffsetX: 0,
@@ -96,55 +112,38 @@
         shadowColor: '#000000',
       },
     },
+    // Filter-Looks (kombinierbar mit den Geometrie-Looks)
     {
-      id: 'frameWhite',
-      labelKey: 'stylePresets.frameWhite',
+      id: 'vintage',
+      labelKey: 'stylePresets.vintage',
       effects: {
-        ...NONE,
-        borderRadius: 6,
-        borderEnabled: true,
-        borderWidth: 8,
-        borderColor: '#ffffff',
-        borderStyle: 'solid',
-        borderShadowEnabled: true,
-        borderShadowOffsetX: 0,
-        borderShadowOffsetY: 6,
-        borderShadowBlur: 16,
-        borderShadowColor: '#000000',
+        ...FILTER_NONE,
+        brightness: 104,
+        contrast: 108,
+        saturation: 62,
+        warmth: 38,
+        highlights: -10,
       },
     },
     {
-      id: 'polaroid',
-      labelKey: 'stylePresets.polaroid',
+      id: 'blackWhite',
+      labelKey: 'stylePresets.blackWhite',
       effects: {
-        ...NONE,
-        borderRadius: 4,
-        borderEnabled: true,
-        borderWidth: 14,
-        borderColor: '#ffffff',
-        borderStyle: 'solid',
-        borderShadowEnabled: true,
-        borderShadowOffsetX: 4,
-        borderShadowOffsetY: 6,
-        borderShadowBlur: 14,
-        borderShadowColor: '#000000',
+        ...FILTER_NONE,
+        saturation: 0,
+        contrast: 112,
+        brightness: 102,
       },
     },
     {
-      id: 'elegant',
-      labelKey: 'stylePresets.elegant',
+      id: 'vivid',
+      labelKey: 'stylePresets.vivid',
       effects: {
-        ...NONE,
-        borderRadius: 16,
-        borderEnabled: true,
-        borderWidth: 3,
-        borderColor: '#1f2937',
-        borderStyle: 'solid',
-        shadowEnabled: true,
-        shadowOffsetX: 0,
-        shadowOffsetY: 8,
-        shadowBlur: 20,
-        shadowColor: '#000000',
+        ...FILTER_NONE,
+        saturation: 148,
+        contrast: 116,
+        brightness: 103,
+        sharpness: 20,
       },
     },
   ]
@@ -164,28 +163,31 @@
 
   // Erzeugt eine CSS-Vorschau der Kachel, die den Preset-Effekt nachahmt.
   // Die Canvas-Werte werden für die kleine Vorschau herunterskaliert.
-  function previewStyle(effects: StyleEffects): Record<string, string> {
+  function previewStyle(effects: Partial<StyleEffects>): Record<string, string> {
     const style: Record<string, string> = {}
 
     // Abgerundete Ecken (Kreis = 50 %)
-    style.borderRadius = effects.borderRadius >= 9999 ? '50%' : `${effects.borderRadius / 3}px`
+    const radius = effects.borderRadius ?? 0
+    style.borderRadius = radius >= 9999 ? '50%' : `${radius / 3}px`
 
-    // Rahmen (Breite herunterskaliert)
-    if (effects.borderEnabled) {
-      const w = Math.max(1, Math.round(effects.borderWidth / 3))
-      style.border = `${w}px ${effects.borderStyle} ${effects.borderColor}`
+    // Bild- bzw. Rahmenschatten (herunterskaliert)
+    if (effects.shadowEnabled) {
+      style.boxShadow = `${(effects.shadowOffsetX ?? 0) / 2}px ${(effects.shadowOffsetY ?? 0) / 2}px ${
+        (effects.shadowBlur ?? 0) / 2
+      }px ${effects.shadowColor ?? '#000000'}66`
     }
 
-    // Schatten (Bild- oder Rahmenschatten, herunterskaliert)
-    if (effects.borderShadowEnabled) {
-      style.boxShadow = `${effects.borderShadowOffsetX / 2}px ${effects.borderShadowOffsetY / 2}px ${
-        effects.borderShadowBlur / 2
-      }px ${effects.borderShadowColor}66`
-    } else if (effects.shadowEnabled) {
-      style.boxShadow = `${effects.shadowOffsetX / 2}px ${effects.shadowOffsetY / 2}px ${
-        effects.shadowBlur / 2
-      }px ${effects.shadowColor}66`
-    }
+    // Bildfilter als CSS-Filter für die Vorschau annähern.
+    const brightness = effects.brightness ?? 100
+    const contrast = effects.contrast ?? 100
+    const saturation = effects.saturation ?? 100
+    const warmth = effects.warmth ?? 0
+    const filters: string[] = []
+    if (brightness !== 100) filters.push(`brightness(${brightness / 100})`)
+    if (contrast !== 100) filters.push(`contrast(${contrast / 100})`)
+    if (saturation !== 100) filters.push(`saturate(${saturation / 100})`)
+    if (warmth > 0) filters.push(`sepia(${Math.min(1, warmth / 100)})`)
+    if (filters.length > 0) style.filter = filters.join(' ')
 
     return style
   }
@@ -242,7 +244,7 @@
           class="flex items-center justify-center w-full h-12 rounded-md bg-gradient-to-br from-muted/20 to-muted/5 dark:from-navy/40 dark:to-navy/10"
         >
           <span
-            class="block w-9 h-9 bg-gradient-to-br from-accent/80 to-accent-dark/80"
+            class="block w-9 h-9 bg-gradient-to-br from-sky-400 via-amber-300 to-rose-400"
             :style="previewStyle(preset.effects)"
           />
         </span>
