@@ -59,6 +59,9 @@
       images: collage.images.filter((img) => img.isGalleryTemplate !== true),
       texts: collage.texts,
       transparent: exportFormat.value === 'png-transparent',
+      // Nur JPEG hat keinen Alpha-Kanal; alle anderen Formate (PNG, WebP, PDF)
+      // behalten abgerundete Ecken transparent, wie im Live-Editor.
+      supportsAlpha: exportFormat.value !== 'jpeg',
       border: collage.settings.border,
       cornerRadius: collage.settings.cornerRadius,
     }
