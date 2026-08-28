@@ -257,6 +257,25 @@
     "polaroid": "Polaroid",
     "elegant": "Elegant"
   },
+  "frameGallery": {
+    "title": "Bildrahmen Vorlagen",
+    "subtitle": "Ein Klick übernimmt einen Rahmen für deine ausgewählten Bilder.",
+    "noImages": "Lade zuerst Bilder hoch, um Rahmen anzuwenden.",
+    "scopeAll": "Wird auf alle {count} Bilder der Leinwand angewendet",
+    "scopeSelected": "Wird auf {count} ausgewählte Bilder angewendet",
+    "none": "Kein Rahmen",
+    "thinBlack": "Dünn Schwarz",
+    "thinWhite": "Dünn Weiß",
+    "boldBlack": "Kräftig Schwarz",
+    "whiteRounded": "Weiß gerundet",
+    "polaroid": "Polaroid",
+    "goldElegant": "Gold elegant",
+    "doubleDark": "Doppellinie",
+    "dashed": "Gestrichelt",
+    "shadowFloat": "Schwebend",
+    "thickRounded": "Dick gerundet",
+    "circle": "Kreis"
+  },
   "canvas": {
     "size": "Canvas-Größe",
     "width": "Breite",
@@ -608,6 +627,7 @@
     "backgroundRemoved": "Hintergrundbild entfernt",
     "textAdded": "Text hinzugefügt",
     "textDeleted": "Text gelöscht",
+    "frameApplied": "Rahmen angewendet",
     "undo": "Rückgängig",
     "dontShowAgain": "Nicht mehr anzeigen"
   },

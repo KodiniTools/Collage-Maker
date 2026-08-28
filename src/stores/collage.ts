@@ -386,6 +386,21 @@ export const useCollageStore = defineStore('collage', () => {
     if (targets.length > 0) notify('toast.presetApplied')
   }
 
+  // Rahmen-Vorlage anwenden: setzt NUR die Rahmen-Felder (Border + Rahmen-
+  // schatten + Eckenradius) der Zielbilder und lässt Bildschatten/Filter
+  // unangetastet (Object.assign merged). Wirkungsbereich: ausgewählte
+  // Canvas-Bilder, sonst alle. Zeigt einen Toast mit „Rückgängig".
+  function applyFrameTemplate(effects: Partial<CollageImage>) {
+    const hasSelection = selectedImageIds.value.length > 0
+    const targets = hasSelection
+      ? images.value.filter((img) => selectedImageIds.value.includes(img.id))
+      : images.value.filter((img) => img.isGalleryTemplate !== true)
+    if (targets.length === 0) return
+    saveStateForUndo()
+    targets.forEach((img) => Object.assign(img, effects))
+    showUndoToast('toast.frameApplied')
+  }
+
   // ========== Galerie-Auswahl Funktionen ==========
 
   // Galerie-Bild zur Auswahl hinzufügen/entfernen
@@ -1302,6 +1317,7 @@ export const useCollageStore = defineStore('collage', () => {
     updateImage,
     updateSelectedImages,
     applyStylePreset,
+    applyFrameTemplate,
     selectImage,
     toggleImageSelection,
     selectAllCanvasImages,
