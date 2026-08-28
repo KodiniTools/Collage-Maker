@@ -595,7 +595,21 @@
     "imageDeleted": "Image deleted",
     "imagesDeleted": "{count} images deleted",
     "templateApplied": "Template applied",
-    "undo": "Undo"
+    "galleryAddedToCanvas": "{count} image(s) added to collage",
+    "imageDuplicated": "{count} image(s) duplicated",
+    "presetApplied": "Style applied",
+    "layoutApplied": "Layout applied",
+    "collageCleared": "Collage cleared",
+    "broughtToFront": "Brought to front",
+    "sentToBack": "Sent to back",
+    "aligned": "Aligned",
+    "distributed": "Distributed evenly",
+    "backgroundSet": "Background image set",
+    "backgroundRemoved": "Background image removed",
+    "textAdded": "Text added",
+    "textDeleted": "Text deleted",
+    "undo": "Undo",
+    "dontShowAgain": "Don't show again"
   },
   "autoSave": {
     "restoreTitle": "Previous Work Found",

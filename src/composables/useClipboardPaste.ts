@@ -33,7 +33,7 @@ export function useClipboardPaste() {
     try {
       const compressed = await compressImages(imageFiles)
       collage.addImages(compressed)
-      toast.success(t('toast.pasteSuccess', { count: imageFiles.length }))
+      toast.notify('toast.pasteSuccess', t('toast.pasteSuccess', { count: imageFiles.length }))
     } catch {
       toast.error(t('toast.uploadError'))
     }

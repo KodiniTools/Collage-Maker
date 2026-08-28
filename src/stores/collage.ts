@@ -287,6 +287,12 @@ export const useCollageStore = defineStore('collage', () => {
     })
   }
 
+  // Subtile, abschaltbare Benachrichtigung für erfolgreiche Aktionen. Der
+  // i18n-Schlüssel dient zugleich als stabiler "Nicht mehr anzeigen"-Schlüssel.
+  function notify(messageKey: string, params?: Record<string, unknown>) {
+    useToastStore().notify(messageKey, i18n.global.t(messageKey, params ?? {}))
+  }
+
   // Einzelnes Bild löschen und einen „Rückgängig"-Toast anzeigen.
   // Für sofortige Löschungen (rotes ✕ auf Canvas und in der Vorschauleiste),
   // damit kein Bestätigungsdialog nötig ist, das Löschen aber sicher bleibt.
@@ -377,6 +383,7 @@ export const useCollageStore = defineStore('collage', () => {
       ? images.value.filter((img) => selectedImageIds.value.includes(img.id))
       : images.value.filter((img) => img.isGalleryTemplate !== true)
     targets.forEach((img) => Object.assign(img, effects))
+    if (targets.length > 0) notify('toast.presetApplied')
   }
 
   // ========== Galerie-Auswahl Funktionen ==========
@@ -477,6 +484,8 @@ export const useCollageStore = defineStore('collage', () => {
     if (settings.value.layout !== 'freestyle') {
       applyLayout(settings.value.layout, true)
     }
+
+    if (newIds.length > 0) notify('toast.galleryAddedToCanvas', { count: newIds.length })
   }
 
   // Gehört ein Bild zu einem Galerie-Template? Verknüpfung primär über die
@@ -552,9 +561,13 @@ export const useCollageStore = defineStore('collage', () => {
   function applyLayout(layout: LayoutType, skipUndo = false) {
     if (!skipUndo) saveStateForUndo()
     settings.value.layout = layout
-    if (layout === 'freestyle') return
-    const canvasImages = images.value.filter((img) => img.isGalleryTemplate !== true)
-    computeLayout(layout, canvasImages, settings.value.width, settings.value.height)
+    if (layout !== 'freestyle') {
+      const canvasImages = images.value.filter((img) => img.isGalleryTemplate !== true)
+      computeLayout(layout, canvasImages, settings.value.width, settings.value.height)
+    }
+    // Nur bei nutzerausgelöster Layout-Wahl benachrichtigen (nicht bei internen
+    // Neuberechnungen mit skipUndo).
+    if (!skipUndo) notify('toast.layoutApplied')
   }
 
   function clearCollage() {
@@ -578,6 +591,7 @@ export const useCollageStore = defineStore('collage', () => {
       saturation: 100,
       blur: 0,
     }
+    notify('toast.collageCleared')
   }
 
   function updateSettings(updates: Partial<CollageSettings>) {
@@ -739,6 +753,7 @@ export const useCollageStore = defineStore('collage', () => {
       saturation: 100,
       blur: 0,
     }
+    notify('toast.backgroundSet')
   }
 
   // Hintergrundbild entfernen
@@ -746,6 +761,7 @@ export const useCollageStore = defineStore('collage', () => {
     if (!skipUndo) saveStateForUndo()
     settings.value.backgroundImage.url = null
     isBackgroundSelected.value = false
+    if (!skipUndo) notify('toast.backgroundRemoved')
   }
 
   // Hintergrundbild-Anpassungsmodus ändern
@@ -870,6 +886,7 @@ export const useCollageStore = defineStore('collage', () => {
     // Neue Bilder auswählen
     if (newIds.length > 0) {
       selectedImageIds.value = newIds
+      notify('toast.imageDuplicated', { count: newIds.length })
     }
   }
 
@@ -882,6 +899,7 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageIds.value.forEach((id, index) => {
       updateImage(id, { zIndex: maxZ + 1 + index })
     })
+    notify('toast.broughtToFront')
   }
 
   // Canvas-Bilder anhand einer sortierten ID-Liste neu stapeln.
@@ -903,6 +921,7 @@ export const useCollageStore = defineStore('collage', () => {
     selectedImageIds.value.forEach((id, index) => {
       updateImage(id, { zIndex: minZ - 1 - index })
     })
+    notify('toast.sentToBack')
   }
 
   // Ausgewählte Bilder an der gemeinsamen Bounding-Box ausrichten
@@ -941,6 +960,7 @@ export const useCollageStore = defineStore('collage', () => {
           break
       }
     })
+    notify('toast.aligned')
   }
 
   // Ausgewählte Bilder gleichmäßig verteilen (gleiche Abstände zwischen den Kanten).
@@ -973,6 +993,7 @@ export const useCollageStore = defineStore('collage', () => {
         cursor += img.height + gap
       })
     }
+    notify('toast.distributed')
   }
 
   // Ausgewählte Bilder um Grad drehen
@@ -1051,6 +1072,7 @@ export const useCollageStore = defineStore('collage', () => {
     texts.value.push(newText)
     selectedTextId.value = newText.id
     selectedImageIds.value = []
+    notify('toast.textAdded')
   }
 
   function removeText(id: string) {
@@ -1062,6 +1084,7 @@ export const useCollageStore = defineStore('collage', () => {
     if (selectedTextId.value === id) {
       selectedTextId.value = null
     }
+    notify('toast.textDeleted')
   }
 
   function updateText(id: string, updates: Partial<CollageText>) {
@@ -1096,6 +1119,7 @@ export const useCollageStore = defineStore('collage', () => {
       0
     )
     updateText(id, { zIndex: maxZ + 1 })
+    notify('toast.broughtToFront')
   }
 
   // Text hinter alle Bilder und Texte senden
@@ -1107,6 +1131,7 @@ export const useCollageStore = defineStore('collage', () => {
       0
     )
     updateText(id, { zIndex: minZ - 1 })
+    notify('toast.sentToBack')
   }
 
   // Template-Methoden (NEU für Vorlagenbibliothek)

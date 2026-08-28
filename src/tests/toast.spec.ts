@@ -4,6 +4,7 @@ import { useToastStore } from '@/stores/toast'
 
 describe('useToastStore', () => {
   beforeEach(() => {
+    localStorage.clear()
     setActivePinia(createPinia())
     vi.useFakeTimers()
   })
@@ -91,6 +92,61 @@ describe('useToastStore', () => {
       store.error('Second', 0)
       store.info('Third', 0)
       expect(store.toasts.map((t) => t.message)).toEqual(['First', 'Second', 'Third'])
+    })
+  })
+
+  describe('notify + dismissForever', () => {
+    it('notify() sets a dismissKey on the toast', () => {
+      const store = useToastStore()
+      store.notify('key.a', 'Message A')
+      expect(store.toasts).toHaveLength(1)
+      expect(store.toasts[0].dismissKey).toBe('key.a')
+    })
+
+    it('dismissForever() suppresses future notifications with that key', () => {
+      const store = useToastStore()
+      store.dismissForever('key.a')
+      const id = store.notify('key.a', 'Message A')
+      expect(id).toBeNull()
+      expect(store.toasts).toHaveLength(0)
+    })
+
+    it('dismissForever() removes active toasts with that key', () => {
+      const store = useToastStore()
+      store.notify('key.a', 'A', 'info', 0)
+      store.notify('key.b', 'B', 'info', 0)
+      store.dismissForever('key.a')
+      expect(store.toasts.map((t) => t.message)).toEqual(['B'])
+    })
+
+    it('does not affect other keys', () => {
+      const store = useToastStore()
+      store.dismissForever('key.a')
+      store.notify('key.b', 'B')
+      expect(store.toasts).toHaveLength(1)
+    })
+
+    it('persists dismissed keys to localStorage', () => {
+      const store = useToastStore()
+      store.dismissForever('key.a')
+      const raw = localStorage.getItem('collage-maker-dismissed-toasts')
+      expect(JSON.parse(raw as string)).toContain('key.a')
+    })
+
+    it('loads dismissed keys from localStorage on init', () => {
+      localStorage.setItem('collage-maker-dismissed-toasts', JSON.stringify(['key.a']))
+      setActivePinia(createPinia())
+      const store = useToastStore()
+      expect(store.isDismissed('key.a')).toBe(true)
+      expect(store.notify('key.a', 'A')).toBeNull()
+    })
+
+    it('resetDismissed() re-enables all notifications', () => {
+      const store = useToastStore()
+      store.dismissForever('key.a')
+      store.resetDismissed()
+      expect(store.isDismissed('key.a')).toBe(false)
+      expect(store.notify('key.a', 'A')).not.toBeNull()
     })
   })
 })

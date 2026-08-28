@@ -95,7 +95,7 @@
         return
       }
 
-      toast.success(t('templates.saveSuccess'))
+      toast.notify('templates.saveSuccess', t('templates.saveSuccess'))
       showSaveDialog.value = false
       templateName.value = ''
       templateDescription.value = ''

@@ -171,4 +171,8 @@ export interface Toast {
   type: 'success' | 'error' | 'info'
   duration?: number
   action?: ToastAction
+  // Stabiler Schlüssel für abschaltbare Meldungen ("Nicht mehr anzeigen").
+  // Ist er gesetzt, zeigt der Toast einen Ausblenden-Button; der Schlüssel
+  // wird dauerhaft gemerkt und künftige Meldungen damit unterdrückt.
+  dismissKey?: string
 }
