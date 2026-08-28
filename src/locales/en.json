@@ -257,6 +257,25 @@
     "polaroid": "Polaroid",
     "elegant": "Elegant"
   },
+  "frameGallery": {
+    "title": "Frame Templates",
+    "subtitle": "One click applies a frame to your selected images.",
+    "noImages": "Upload images first to apply frames.",
+    "scopeAll": "Applied to all {count} images on the canvas",
+    "scopeSelected": "Applied to {count} selected images",
+    "none": "No Frame",
+    "thinBlack": "Thin Black",
+    "thinWhite": "Thin White",
+    "boldBlack": "Bold Black",
+    "whiteRounded": "White Rounded",
+    "polaroid": "Polaroid",
+    "goldElegant": "Gold Elegant",
+    "doubleDark": "Double Line",
+    "dashed": "Dashed",
+    "shadowFloat": "Floating",
+    "thickRounded": "Thick Rounded",
+    "circle": "Circle"
+  },
   "canvas": {
     "size": "Canvas Size",
     "width": "Width",
@@ -608,6 +627,7 @@
     "backgroundRemoved": "Background image removed",
     "textAdded": "Text added",
     "textDeleted": "Text deleted",
+    "frameApplied": "Frame applied",
     "undo": "Undo",
     "dontShowAgain": "Don't show again"
   },
