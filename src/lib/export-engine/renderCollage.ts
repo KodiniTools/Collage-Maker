@@ -20,6 +20,11 @@ export interface RenderOptions {
   transparent: boolean
   border?: CanvasBorderSettings
   cornerRadius?: number
+  // Ob das Zielformat Transparenz unterstützt. Bei true bleiben abgerundete
+  // Ecken transparent (gerundet, wie im Live-Editor). Bei false (z. B. JPEG,
+  // das kein Alpha kann) werden die Ecken mit der Hintergrundfarbe gefüllt,
+  // damit sie nicht schwarz erscheinen. Standard: true.
+  supportsAlpha?: boolean
 }
 
 export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasElement> {
@@ -33,10 +38,12 @@ export async function renderCollage(options: RenderOptions): Promise<HTMLCanvasE
   // Abgerundete Ecken: alle Inhalte auf einen abgerundeten Pfad clippen.
   const radius = clampCornerRadius(options.cornerRadius ?? 0, options.width, options.height)
 
-  // Bei nicht-transparenten Formaten (JPEG/WebP/PDF/normales PNG) die Ecken
-  // vor dem Clipping mit der Hintergrundfarbe füllen, damit sie nicht
-  // transparent (→ bei JPEG schwarz) erscheinen. png-transparent bleibt offen.
-  if (radius > 0 && !options.transparent) {
+  // Nur bei Formaten OHNE Alpha-Kanal (z. B. JPEG) die Ecken vor dem Clipping
+  // mit der Hintergrundfarbe füllen, damit sie nicht schwarz werden.
+  // Alpha-fähige Formate (PNG, WebP, PDF) behalten transparente – also
+  // sichtbar abgerundete – Ecken, konsistent mit dem Live-Editor.
+  const supportsAlpha = options.supportsAlpha ?? true
+  if (radius > 0 && !supportsAlpha) {
     ctx.fillStyle = options.backgroundColor
     ctx.fillRect(0, 0, options.width, options.height)
   }
