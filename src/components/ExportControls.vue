@@ -251,7 +251,7 @@
 
     <button
       :disabled="collage.images.length === 0"
-      class="w-full px-4 py-2 border border-warm text-warm hover:bg-warm/10 dark:hover:bg-warm/5 disabled:opacity-50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
+      class="w-full px-4 py-2 border border-warm dark:border-warm-light text-warm dark:text-warm-light hover:bg-warm/10 dark:hover:bg-warm/5 disabled:opacity-50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm focus:ring-offset-2 dark:focus:ring-offset-surface-dark"
       aria-label="Clear all images"
       @click="collage.clearCollage"
     >
@@ -311,7 +311,7 @@
         @click.self="closePreview"
       >
         <div
-          class="relative max-w-[90vw] max-h-[90vh] bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden"
+          class="relative max-w-[90vw] max-h-[90vh] bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-surface-light rounded-xl shadow-2xl overflow-hidden"
         >
           <!-- Header -->
           <div

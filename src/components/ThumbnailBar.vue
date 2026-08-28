@@ -90,7 +90,7 @@
           {{ t('thumbnailBar.selected', { count: collage.selectedImageIds.length }) }}
         </span>
         <button
-          class="text-xs text-primary hover:text-primary-dark transition-colors whitespace-nowrap"
+          class="text-xs text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-light transition-colors whitespace-nowrap"
           @click="collage.deselectAllImages()"
         >
           {{ t('thumbnailBar.deselectAll') }}
