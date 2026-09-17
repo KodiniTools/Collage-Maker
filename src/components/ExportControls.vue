@@ -3,7 +3,7 @@
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
-  import { renderCollage, exportToPdf } from '@/lib/export-engine'
+  import { renderCollage, exportToPdf, printCanvas } from '@/lib/export-engine'
 
   const collage = useCollageStore()
   const toast = useToastStore()
@@ -12,6 +12,7 @@
   const exportFormat = ref<'png' | 'png-transparent' | 'jpeg' | 'webp' | 'pdf'>('png')
   const exportQuality = ref(0.95)
   const isExporting = ref(false)
+  const isPrinting = ref(false)
   const isGeneratingPreview = ref(false)
   const showPreviewModal = ref(false)
   const previewDataUrl = ref<string | null>(null)
@@ -139,6 +140,26 @@
     }
   }
 
+  async function printCollage() {
+    if (isPrinting.value) return
+    isPrinting.value = true
+    try {
+      // Druck zeigt die Collage wie im Editor: Hintergrund wird immer mitgedruckt,
+      // abgerundete Ecken bleiben transparent (weißes Papier).
+      const canvas = await renderCollage({
+        ...buildRenderOptions(),
+        transparent: false,
+        supportsAlpha: true,
+      })
+      await printCanvas(canvas, { title: 'Collage' })
+    } catch (error) {
+      console.error('Print error:', error)
+      toast.error(t('toast.printError'))
+    } finally {
+      isPrinting.value = false
+    }
+  }
+
   function closePreview() {
     showPreviewModal.value = false
     previewDataUrl.value = null
@@ -250,6 +271,46 @@
         ></path>
       </svg>
       <span>{{ t('export.download') }}</span>
+    </button>
+
+    <button
+      :disabled="collage.images.length === 0 || isPrinting"
+      class="w-full px-4 py-3 border-2 border-accent text-accent hover:bg-accent hover:text-slate-dark disabled:border-muted/50 disabled:text-muted/50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
+      aria-label="Print collage"
+      @click="printCollage"
+    >
+      <!-- loading spinner -->
+      <svg v-if="isPrinting" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      <!-- printer icon -->
+      <svg
+        v-else
+        class="w-5 h-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+        />
+      </svg>
+      <span>{{ t('export.print') }}</span>
     </button>
 
     <button
