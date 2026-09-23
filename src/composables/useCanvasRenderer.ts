@@ -2,6 +2,7 @@ import { watch, nextTick, onMounted } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
+import { computeFitRect } from '@/lib/export-engine/drawBackground'
 import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
 import {
   applyImageTransform,
@@ -89,22 +90,11 @@ export function useCanvasRenderer(
     // Transparenz anwenden
     context.globalAlpha = bgSettings.opacity
 
-    if (fit === 'cover') {
-      // Cover: Bild füllt Canvas komplett aus (kann beschnitten werden)
-      const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight)
-      const scaledWidth = imgWidth * scale
-      const scaledHeight = imgHeight * scale
-      const x = (canvasWidth - scaledWidth) / 2
-      const y = (canvasHeight - scaledHeight) / 2
-      context.drawImage(img, x, y, scaledWidth, scaledHeight)
-    } else if (fit === 'contain') {
-      // Contain: Ganzes Bild sichtbar (kann Leerräume haben)
-      const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight)
-      const scaledWidth = imgWidth * scale
-      const scaledHeight = imgHeight * scale
-      const x = (canvasWidth - scaledWidth) / 2
-      const y = (canvasHeight - scaledHeight) / 2
-      context.drawImage(img, x, y, scaledWidth, scaledHeight)
+    if (fit === 'cover' || fit === 'contain') {
+      // Cover: füllt Canvas komplett aus (kann beschnitten werden)
+      // Contain: ganzes Bild sichtbar (kann Leerräume haben)
+      const r = computeFitRect(fit, canvasWidth, canvasHeight, imgWidth, imgHeight)
+      context.drawImage(img, r.x, r.y, r.width, r.height)
     } else if (fit === 'stretch') {
       // Stretch: Bild wird auf Canvas-Größe gestreckt
       context.drawImage(img, 0, 0, canvasWidth, canvasHeight)

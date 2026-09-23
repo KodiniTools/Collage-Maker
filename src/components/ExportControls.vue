@@ -4,6 +4,7 @@
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
   import { renderCollage, exportToPdf, printCanvas } from '@/lib/export-engine'
+  import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
   const collage = useCollageStore()
   const toast = useToastStore()
@@ -214,21 +215,7 @@
       @click="generatePreview"
     >
       <!-- loading spinner -->
-      <svg v-if="isGeneratingPreview" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <LoadingSpinner v-if="isGeneratingPreview" class="w-5 h-5" />
       <!-- eye icon -->
       <svg
         v-else
@@ -255,21 +242,7 @@
       @click="startExport"
     >
       <!-- loading spinner -->
-      <svg v-if="isExporting" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <LoadingSpinner v-if="isExporting" class="w-5 h-5" />
       <span>{{ t('export.download') }}</span>
     </button>
 
@@ -280,21 +253,7 @@
       @click="printCollage"
     >
       <!-- loading spinner -->
-      <svg v-if="isPrinting" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <LoadingSpinner v-if="isPrinting" class="w-5 h-5" />
       <!-- printer icon -->
       <svg
         v-else
@@ -329,12 +288,18 @@
         class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
         @click.self="cancelFilename"
       >
-        <div class="w-full max-w-sm bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-muted/10 dark:border-white/10">
+        <div
+          class="w-full max-w-sm bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-muted/10 dark:border-white/10"
+        >
           <div class="px-5 py-4 border-b border-muted/20 dark:border-white/10">
-            <h3 class="text-base font-semibold text-slate-900 dark:text-white">{{ t('export.filenameDialogTitle') }}</h3>
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white">
+              {{ t('export.filenameDialogTitle') }}
+            </h3>
           </div>
           <div class="px-5 py-4 space-y-3">
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">{{ t('export.filenameLabel') }}</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">{{
+              t('export.filenameLabel')
+            }}</label>
             <div class="flex items-center gap-0">
               <input
                 ref="filenameInput"
@@ -344,12 +309,16 @@
                 @keydown.enter="confirmFilename"
                 @keydown.esc="cancelFilename"
               />
-              <span class="px-3 py-2 bg-slate-100 dark:bg-slate-600 border border-l-0 border-muted/50 dark:border-slate-600 rounded-r-lg text-sm text-slate-500 dark:text-slate-300 select-none">
+              <span
+                class="px-3 py-2 bg-slate-100 dark:bg-slate-600 border border-l-0 border-muted/50 dark:border-slate-600 rounded-r-lg text-sm text-slate-500 dark:text-slate-300 select-none"
+              >
                 .{{ getFileExtension() }}
               </span>
             </div>
           </div>
-          <div class="flex gap-2 px-5 py-4 border-t border-muted/20 dark:border-white/10 bg-slate-50 dark:bg-slate-700/50">
+          <div
+            class="flex gap-2 px-5 py-4 border-t border-muted/20 dark:border-white/10 bg-slate-50 dark:bg-slate-700/50"
+          >
             <button
               class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate-500 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 font-medium rounded-lg transition-colors text-sm"
               @click="cancelFilename"
