@@ -49,7 +49,7 @@ Diese Datei dokumentiert den technischen Kontext des Projekts für Entwickler un
 Collage-Maker/
 │
 ├── src/                              # Hauptquellcode
-│   ├── components/                   # 19 Vue-Komponenten
+│   ├── components/                   # Vue-Komponenten (+ Sektionen in canvas-settings/, image-controls/)
 │   │   ├── CanvasSettings.vue       # Leinwand-Dimensionen, Hintergrund, Zoom & Hilfsraster (Sektionen in canvas-settings/)
 │   │   ├── CollageCanvas.vue        # Haupt-Canvas-Rendering (Auto-Fit, Pan)
 │   │   ├── ExportControls.vue       # PNG/JPEG/WEBP/PDF Export, Vorschau & Drucken
@@ -57,17 +57,14 @@ Collage-Maker/
 │   │   ├── ImageList.vue            # Galerie-Thumbnail-Liste
 │   │   ├── ImageUploader.vue        # Drag & Drop Upload
 │   │   ├── KeyboardShortcutsModal.vue # Tastenkürzel-Dialog
-│   │   ├── LanguageToggle.vue       # DE/EN Sprachumschalter
 │   │   ├── LayoutSelector.vue       # Layout-Vorlagen-Auswahl
 │   │   ├── TextControls.vue         # Textbearbeitung
 │   │   ├── TextList.vue             # Textelemente-Verwaltung
-│   │   ├── ThemeToggle.vue          # Dark/Light Mode
 │   │   ├── ThumbnailBar.vue         # Bildvorschau-Leiste
 │   │   ├── TemplateCard.vue         # Template-Karte
 │   │   ├── TemplateLibrary.vue      # Template-Auswahldialog
 │   │   ├── ToastContainer.vue       # Benachrichtigungen
-│   │   ├── LandingPage.vue          # Legacy Landing Page
-│   │   └── FaqSection.vue           # FAQ-Anzeige
+│   │   └── LoadingSpinner.vue       # Lade-Icon
 │   │
 │   ├── composables/                  # Vue Composition Functions
 │   │   ├── useKeyboardShortcuts.ts   # 30+ Tastenkürzel
@@ -444,10 +441,10 @@ interface HistorySnapshot {
 ### Internationalisierung
 - Deutsch (de) und Englisch (en)
 - 520+ Übersetzungsstrings
-- Sprachumschalter in der UI
+- Sprachumschaltung über die globale Website-Navigation (Event `locale-changed`)
 
 ### Theming
-- Dark/Light Mode Toggle
+- Dark/Light Mode über die globale Website-Navigation (`data-theme` auf `<html>`)
 - Custom Tailwind Theme-Farben
 - CSS-Klassen-basierter Dark Mode
 
