@@ -33,12 +33,12 @@ function buildRoundedPath(
   ctx.closePath()
 }
 
-export function drawCollageImage(
-  ctx: CanvasRenderingContext2D,
-  img: CollageImage,
-  htmlImg: HTMLImageElement
-): void {
-  ctx.save()
+/**
+ * Setzt Position, Rotation, Spiegelung, Scherung und Deckkraft des Bildes.
+ * Danach liegt der Ursprung in der Bildmitte. Kein save/restore – das
+ * übernimmt der Aufrufer.
+ */
+export function applyImageTransform(ctx: CanvasRenderingContext2D, img: CollageImage): void {
   ctx.translate(img.x + img.width / 2, img.y + img.height / 2)
   ctx.rotate((img.rotation * Math.PI) / 180)
 
@@ -53,23 +53,42 @@ export function drawCollageImage(
   }
 
   ctx.globalAlpha = img.opacity
+}
 
-  // Freies Verzerren (Distort): gefilterte Quelle in das Viereck warpen. Rahmen,
-  // runde Ecken und Schatten entfallen dabei (identisch zur Live-Ansicht).
-  if (img.distortEnabled && hasDistortion(img.cornerOffsets)) {
-    const params = readFilterParams(img)
-    const source = createFilteredImageSource(htmlImg, img.width, img.height, params, img.crop)
-    const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
-    const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
-    const corners = computeLocalCorners(img.width, img.height, img.cornerOffsets)
-    drawWarpedImage(ctx, source, sw, sh, corners, DISTORT_SUBDIVISIONS)
-    ctx.restore()
-    return
-  }
+/** Zeichnet die gefilterte Bildquelle in das verzerrte Viereck (Distort). */
+export function drawDistortedImage(
+  ctx: CanvasRenderingContext2D,
+  img: CollageImage,
+  htmlImg: HTMLImageElement,
+  corners: ReturnType<typeof computeLocalCorners>,
+  subdivisions: number
+): void {
+  const params = readFilterParams(img)
+  const source = createFilteredImageSource(htmlImg, img.width, img.height, params, img.crop)
+  const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
+  const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
+  drawWarpedImage(ctx, source, sw, sh, corners, subdivisions)
+}
 
+/** Effektiver Eckenradius eines Bildes (auf halbe Breite/Höhe begrenzt). */
+export function getImageCornerRadius(img: CollageImage): number {
+  return Math.min(img.borderRadius, img.width / 2, img.height / 2)
+}
+
+/**
+ * Zeichnet ein (nicht verzerrtes) Bild inkl. Schatten, runder Ecken, Filtern
+ * und Rahmen. Erwartet den per {@link applyImageTransform} gesetzten Kontext.
+ * Der Clip-Pfad (bei runden Ecken) bleibt bewusst aktiv; save/restore liegt
+ * beim Aufrufer. Gemeinsam genutzt von Live-Ansicht und Export.
+ */
+export function drawImageContent(
+  ctx: CanvasRenderingContext2D,
+  img: CollageImage,
+  htmlImg: HTMLImageElement
+): void {
   const x = -img.width / 2
   const y = -img.height / 2
-  const radius = Math.min(img.borderRadius, img.width / 2, img.height / 2)
+  const radius = getImageCornerRadius(img)
 
   // Schatten + abgerundete Ecken: Pfad-Schatten zuerst
   if (radius > 0 && img.shadowEnabled) {
@@ -173,6 +192,24 @@ export function drawCollageImage(
     ctx.shadowOffsetY = 0
     ctx.shadowBlur = 0
     ctx.shadowColor = 'transparent'
+  }
+}
+
+export function drawCollageImage(
+  ctx: CanvasRenderingContext2D,
+  img: CollageImage,
+  htmlImg: HTMLImageElement
+): void {
+  ctx.save()
+  applyImageTransform(ctx, img)
+
+  // Freies Verzerren (Distort): gefilterte Quelle in das Viereck warpen. Rahmen,
+  // runde Ecken und Schatten entfallen dabei (identisch zur Live-Ansicht).
+  if (img.distortEnabled && hasDistortion(img.cornerOffsets)) {
+    const corners = computeLocalCorners(img.width, img.height, img.cornerOffsets)
+    drawDistortedImage(ctx, img, htmlImg, corners, DISTORT_SUBDIVISIONS)
+  } else {
+    drawImageContent(ctx, img, htmlImg)
   }
 
   ctx.restore()
