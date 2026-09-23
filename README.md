@@ -87,8 +87,6 @@ location /collagen/ {
 vue-collage-maker/
 ├── src/
 │   ├── components/       # Vue Komponenten
-│   │   ├── ThemeToggle.vue
-│   │   ├── LanguageToggle.vue
 │   │   ├── ImageUploader.vue
 │   │   ├── CollageCanvas.vue
 │   │   ├── LayoutSelector.vue
