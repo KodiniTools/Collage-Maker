@@ -1,5 +1,21 @@
 import { COMPRESS_MAX_DIMENSION_PX, COMPRESS_JPEG_QUALITY } from '@/config/constants'
 
+/**
+ * Skaliert Abmessungen proportional so, dass die längere Seite maxSize nicht
+ * überschreitet. Kleinere Bilder bleiben unverändert (kein Hochskalieren).
+ */
+export function fitWithin(
+  width: number,
+  height: number,
+  maxSize: number
+): { width: number; height: number } {
+  if (width <= maxSize && height <= maxSize) return { width, height }
+  if (width > height) {
+    return { width: maxSize, height: Math.round((height / width) * maxSize) }
+  }
+  return { width: Math.round((width / height) * maxSize), height: maxSize }
+}
+
 export async function compressImage(file: File): Promise<File> {
   // For small files (under 2MB), create an in-memory copy to avoid ERR_UPLOAD_FILE_CHANGED.
   // Blob URLs from disk-referenced File objects can break if the file changes on disk.
@@ -34,16 +50,11 @@ export async function compressImage(file: File): Promise<File> {
       }
 
       // Calculate new dimensions
-      let newWidth = width
-      let newHeight = height
-
-      if (width > height && width > COMPRESS_MAX_DIMENSION_PX) {
-        newWidth = COMPRESS_MAX_DIMENSION_PX
-        newHeight = Math.round((height / width) * COMPRESS_MAX_DIMENSION_PX)
-      } else if (height > COMPRESS_MAX_DIMENSION_PX) {
-        newHeight = COMPRESS_MAX_DIMENSION_PX
-        newWidth = Math.round((width / height) * COMPRESS_MAX_DIMENSION_PX)
-      }
+      const { width: newWidth, height: newHeight } = fitWithin(
+        width,
+        height,
+        COMPRESS_MAX_DIMENSION_PX
+      )
 
       // Create canvas and draw resized image
       const canvas = document.createElement('canvas')
@@ -154,18 +165,7 @@ export async function urlToCompressedDataUrl(
 
     img.onload = () => {
       try {
-        let width = img.naturalWidth
-        let height = img.naturalHeight
-
-        if (width > maxSize || height > maxSize) {
-          if (width > height) {
-            height = Math.round((height / width) * maxSize)
-            width = maxSize
-          } else {
-            width = Math.round((width / height) * maxSize)
-            height = maxSize
-          }
-        }
+        const { width, height } = fitWithin(img.naturalWidth, img.naturalHeight, maxSize)
 
         const canvas = document.createElement('canvas')
         canvas.width = width

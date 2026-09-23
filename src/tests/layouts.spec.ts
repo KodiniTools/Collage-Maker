@@ -1,46 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { fitImage, computeLayout } from '@/lib/layouts'
 import type { CollageImage } from '@/types'
+import { makeImg as baseMakeImg } from './helpers/makeImg'
 
 function makeImg(id: string, width = 200, height = 150): CollageImage {
-  return {
-    id,
-    file: new File([], 'test.jpg'),
-    url: `blob:${id}`,
-    x: 0,
-    y: 0,
-    width,
-    height,
-    rotation: 0,
-    zIndex: 0,
-    opacity: 1,
-    borderRadius: 0,
-    borderEnabled: false,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderStyle: 'solid',
-    borderShadowEnabled: false,
-    borderShadowOffsetX: 0,
-    borderShadowOffsetY: 0,
-    borderShadowBlur: 0,
-    borderShadowColor: '#000',
-    shadowEnabled: false,
-    shadowOffsetX: 0,
-    shadowOffsetY: 0,
-    shadowBlur: 0,
-    shadowColor: '#000',
-    brightness: 100,
-    contrast: 100,
-    highlights: 0,
-    shadows: 0,
-    saturation: 100,
-    warmth: 0,
-    sharpness: 0,
-    flipHorizontal: false,
-    flipVertical: false,
-    skewX: 0,
-    skewY: 0,
-  }
+  return baseMakeImg(id, { width, height })
 }
 
 function makeImgs(count: number): CollageImage[] {

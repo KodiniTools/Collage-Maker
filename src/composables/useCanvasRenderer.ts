@@ -2,15 +2,14 @@ import { watch, nextTick, onMounted } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
+import { computeFitRect } from '@/lib/export-engine/drawBackground'
 import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
-import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
 import {
-  createFilteredImageSource,
-  readFilterParams,
-  renderFilteredImage,
-  hasAnyFilter,
-} from '@/lib/applyImageFilters'
-import { hasCrop } from '@/lib/cropImage'
+  applyImageTransform,
+  drawDistortedImage,
+  drawImageContent,
+} from '@/lib/export-engine/drawCollageImage'
+import { computeLocalCorners, hasDistortion } from '@/lib/warpImage'
 
 // Gitterauflösung für das freie Verzerren (Distort). Höher = genauer, langsamer.
 const DISTORT_SUBDIVISIONS = 12
@@ -91,22 +90,11 @@ export function useCanvasRenderer(
     // Transparenz anwenden
     context.globalAlpha = bgSettings.opacity
 
-    if (fit === 'cover') {
-      // Cover: Bild füllt Canvas komplett aus (kann beschnitten werden)
-      const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight)
-      const scaledWidth = imgWidth * scale
-      const scaledHeight = imgHeight * scale
-      const x = (canvasWidth - scaledWidth) / 2
-      const y = (canvasHeight - scaledHeight) / 2
-      context.drawImage(img, x, y, scaledWidth, scaledHeight)
-    } else if (fit === 'contain') {
-      // Contain: Ganzes Bild sichtbar (kann Leerräume haben)
-      const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight)
-      const scaledWidth = imgWidth * scale
-      const scaledHeight = imgHeight * scale
-      const x = (canvasWidth - scaledWidth) / 2
-      const y = (canvasHeight - scaledHeight) / 2
-      context.drawImage(img, x, y, scaledWidth, scaledHeight)
+    if (fit === 'cover' || fit === 'contain') {
+      // Cover: füllt Canvas komplett aus (kann beschnitten werden)
+      // Contain: ganzes Bild sichtbar (kann Leerräume haben)
+      const r = computeFitRect(fit, canvasWidth, canvasHeight, imgWidth, imgHeight)
+      context.drawImage(img, r.x, r.y, r.width, r.height)
     } else if (fit === 'stretch') {
       // Stretch: Bild wird auf Canvas-Größe gestreckt
       context.drawImage(img, 0, 0, canvasWidth, canvasHeight)
@@ -253,32 +241,7 @@ export function useCanvasRenderer(
       }
 
       context.save()
-      context.translate(img.x + img.width / 2, img.y + img.height / 2)
-      context.rotate((img.rotation * Math.PI) / 180)
-
-      // Spiegelung (um die Bildmitte) & Neigung/Scherung
-      const flipH = img.flipHorizontal ? -1 : 1
-      const flipV = img.flipVertical ? -1 : 1
-      if (flipH !== 1 || flipV !== 1) context.scale(flipH, flipV)
-      const skewX = img.skewX ?? 0
-      const skewY = img.skewY ?? 0
-      if (skewX !== 0 || skewY !== 0) {
-        context.transform(
-          1,
-          Math.tan((skewY * Math.PI) / 180),
-          Math.tan((skewX * Math.PI) / 180),
-          1,
-          0,
-          0
-        )
-      }
-
-      // Deckkraft anwenden
-      context.globalAlpha = img.opacity
-
-      const x = -img.width / 2
-      const y = -img.height / 2
-      const radius = Math.min(img.borderRadius, img.width / 2, img.height / 2)
+      applyImageTransform(context, img)
 
       // Freies Verzerren (Distort): Bild wird als gefilterte Quelle in ein
       // beliebiges Viereck gewarpt. Rahmen/runde Ecken/Schatten entfallen dabei.
@@ -288,184 +251,11 @@ export function useCanvasRenderer(
         : null
 
       if (distorted && localCorners) {
-        const params = readFilterParams(img)
-        const source = createFilteredImageSource(htmlImg, img.width, img.height, params, img.crop)
-        const sw = source === htmlImg ? htmlImg.naturalWidth : (source as HTMLCanvasElement).width
-        const sh = source === htmlImg ? htmlImg.naturalHeight : (source as HTMLCanvasElement).height
-        drawWarpedImage(context, source, sw, sh, localCorners, DISTORT_SUBDIVISIONS)
-      }
-
-      // Wenn abgerundete Ecken + Schatten: Erst Schatten-Form zeichnen, dann Bild mit Clipping
-      if (!distorted && radius > 0 && img.shadowEnabled) {
-        // Schatten auf abgerundete Form anwenden
-        context.shadowOffsetX = img.shadowOffsetX
-        context.shadowOffsetY = img.shadowOffsetY
-        context.shadowBlur = img.shadowBlur
-        context.shadowColor = img.shadowColor
-
-        // Gefüllten Pfad für Schatten zeichnen
-        context.beginPath()
-        context.moveTo(x + radius, y)
-        context.lineTo(x + img.width - radius, y)
-        context.arcTo(x + img.width, y, x + img.width, y + radius, radius)
-        context.lineTo(x + img.width, y + img.height - radius)
-        context.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
-        context.lineTo(x + radius, y + img.height)
-        context.arcTo(x, y + img.height, x, y + img.height - radius, radius)
-        context.lineTo(x, y + radius)
-        context.arcTo(x, y, x + radius, y, radius)
-        context.closePath()
-        context.fillStyle = '#000000' // Farbe egal, wird vom Bild überdeckt
-        context.fill()
-
-        // Schatten zurücksetzen vor dem eigentlichen Bild
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 0
-        context.shadowColor = 'transparent'
-      } else if (!distorted && img.shadowEnabled) {
-        // Normaler Schatten ohne abgerundete Ecken
-        context.shadowOffsetX = img.shadowOffsetX
-        context.shadowOffsetY = img.shadowOffsetY
-        context.shadowBlur = img.shadowBlur
-        context.shadowColor = img.shadowColor
-      }
-
-      // Clip-Pfad mit abgerundeten Ecken erstellen
-      if (!distorted && radius > 0) {
-        context.beginPath()
-        context.moveTo(x + radius, y)
-        context.lineTo(x + img.width - radius, y)
-        context.arcTo(x + img.width, y, x + img.width, y + radius, radius)
-        context.lineTo(x + img.width, y + img.height - radius)
-        context.arcTo(x + img.width, y + img.height, x + img.width - radius, y + img.height, radius)
-        context.lineTo(x + radius, y + img.height)
-        context.arcTo(x, y + img.height, x, y + img.height - radius, radius)
-        context.lineTo(x, y + radius)
-        context.arcTo(x, y, x + radius, y, radius)
-        context.closePath()
-        context.clip()
-      }
-
-      // Bildbearbeitungs-Filter rein pixelbasiert anwenden (Helligkeit,
-      // Kontrast und Sättigung eingeschlossen – kein CSS-`filter` mehr, damit
-      // Live-Ansicht und Export exakt dieselbe Pixelmanipulation nutzen).
-      // Im Distort wurde das Bild bereits gewarpt gezeichnet → hier überspringen.
-      if (!distorted) {
-        const params = readFilterParams(img)
-        if (hasAnyFilter(params) || hasCrop(img.crop)) {
-          const processed = renderFilteredImage(htmlImg, img.width, img.height, params, img.crop)
-          context.drawImage(processed, x, y, img.width, img.height)
-        } else {
-          context.drawImage(htmlImg, x, y, img.width, img.height)
-        }
-      }
-
-      // Schatten für normale Bilder (ohne abgerundete Ecken) zurücksetzen
-      if (!distorted && img.shadowEnabled && radius === 0) {
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 0
-        context.shadowColor = 'transparent'
-      }
-
-      // Border zeichnen (falls aktiviert; im Distort ausgeblendet)
-      if (!distorted && img.borderEnabled) {
-        // Border-Shadow anwenden (falls aktiviert) oder Bildschatten beibehalten
-        if (img.borderShadowEnabled) {
-          context.shadowOffsetX = img.borderShadowOffsetX
-          context.shadowOffsetY = img.borderShadowOffsetY
-          context.shadowBlur = img.borderShadowBlur
-          context.shadowColor = img.borderShadowColor
-        } else if (img.shadowEnabled) {
-          // Bildschatten auf Border anwenden
-          context.shadowOffsetX = img.shadowOffsetX
-          context.shadowOffsetY = img.shadowOffsetY
-          context.shadowBlur = img.shadowBlur
-          context.shadowColor = img.shadowColor
-        }
-
-        context.beginPath()
-        if (radius > 0) {
-          context.moveTo(x + radius, y)
-          context.lineTo(x + img.width - radius, y)
-          context.arcTo(x + img.width, y, x + img.width, y + radius, radius)
-          context.lineTo(x + img.width, y + img.height - radius)
-          context.arcTo(
-            x + img.width,
-            y + img.height,
-            x + img.width - radius,
-            y + img.height,
-            radius
-          )
-          context.lineTo(x + radius, y + img.height)
-          context.arcTo(x, y + img.height, x, y + img.height - radius, radius)
-          context.lineTo(x, y + radius)
-          context.arcTo(x, y, x + radius, y, radius)
-          context.closePath()
-        } else {
-          context.rect(x, y, img.width, img.height)
-        }
-
-        context.strokeStyle = img.borderColor
-        context.lineWidth = img.borderWidth
-
-        // Border-Stil anwenden
-        if (img.borderStyle === 'dashed') {
-          context.setLineDash([10, 5])
-        } else if (img.borderStyle === 'dotted') {
-          context.setLineDash([2, 3])
-        } else if (img.borderStyle === 'double') {
-          context.setLineDash([])
-          context.lineWidth = img.borderWidth / 3
-          context.stroke()
-          const offset = img.borderWidth * 0.66
-          context.beginPath()
-          if (radius > 0) {
-            const innerRadius = Math.max(0, radius - offset)
-            context.moveTo(x + innerRadius + offset, y + offset)
-            context.lineTo(x + img.width - innerRadius - offset, y + offset)
-            context.arcTo(
-              x + img.width - offset,
-              y + offset,
-              x + img.width - offset,
-              y + innerRadius + offset,
-              innerRadius
-            )
-            context.lineTo(x + img.width - offset, y + img.height - innerRadius - offset)
-            context.arcTo(
-              x + img.width - offset,
-              y + img.height - offset,
-              x + img.width - innerRadius - offset,
-              y + img.height - offset,
-              innerRadius
-            )
-            context.lineTo(x + innerRadius + offset, y + img.height - offset)
-            context.arcTo(
-              x + offset,
-              y + img.height - offset,
-              x + offset,
-              y + img.height - innerRadius - offset,
-              innerRadius
-            )
-            context.lineTo(x + offset, y + innerRadius + offset)
-            context.arcTo(x + offset, y + offset, x + innerRadius + offset, y + offset, innerRadius)
-            context.closePath()
-          } else {
-            context.rect(x + offset, y + offset, img.width - offset * 2, img.height - offset * 2)
-          }
-        } else {
-          context.setLineDash([])
-        }
-
-        context.stroke()
-        context.setLineDash([])
-
-        // Schatten zurücksetzen (Bild- oder Border-Shadow)
-        context.shadowOffsetX = 0
-        context.shadowOffsetY = 0
-        context.shadowBlur = 0
-        context.shadowColor = 'transparent'
+        drawDistortedImage(context, img, htmlImg, localCorners, DISTORT_SUBDIVISIONS)
+      } else {
+        // Schatten, runde Ecken (Clip bleibt für die UI-Overlays aktiv),
+        // Filter und Rahmen – identisch zum Export.
+        drawImageContent(context, img, htmlImg)
       }
 
       // Löschbutton zeichnen: innen in der oberen rechten Ecke, damit er nie

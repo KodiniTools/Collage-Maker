@@ -2,47 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCollageStore } from '@/stores/collage'
 import type { CollageImage, CollageText } from '@/types'
+import { makeImg as baseMakeImg } from './helpers/makeImg'
 
 function makeImg(id: string, overrides: Partial<CollageImage> = {}): CollageImage {
-  return {
-    id,
-    file: new File([], 'test.jpg'),
-    url: `blob:${id}`,
-    x: 100,
-    y: 200,
-    width: 300,
-    height: 150,
-    rotation: 0,
-    zIndex: 0,
-    opacity: 1,
-    borderRadius: 0,
-    borderEnabled: false,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderStyle: 'solid',
-    borderShadowEnabled: false,
-    borderShadowOffsetX: 0,
-    borderShadowOffsetY: 0,
-    borderShadowBlur: 0,
-    borderShadowColor: '#000',
-    shadowEnabled: false,
-    shadowOffsetX: 0,
-    shadowOffsetY: 0,
-    shadowBlur: 0,
-    shadowColor: '#000',
-    brightness: 100,
-    contrast: 100,
-    highlights: 0,
-    shadows: 0,
-    saturation: 100,
-    warmth: 0,
-    sharpness: 0,
-    flipHorizontal: false,
-    flipVertical: false,
-    skewX: 0,
-    skewY: 0,
-    ...overrides,
-  }
+  return baseMakeImg(id, { x: 100, y: 200, width: 300, height: 150, ...overrides })
 }
 
 function makeText(id: string, overrides: Partial<CollageText> = {}): CollageText {

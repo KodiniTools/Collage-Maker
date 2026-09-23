@@ -6,6 +6,7 @@ import {
   AUTOSAVE_MAX_IMAGE_PX,
   AUTOSAVE_JPEG_QUALITY,
 } from '@/config/constants'
+import { fitWithin } from '@/utils/imageCompression'
 
 const STORAGE_KEY = 'collage-maker-autosave'
 
@@ -52,23 +53,18 @@ export function useAutoSave() {
   const saveTimeout = ref<number | null>(null)
   const saveError = ref<string | null>(null)
 
-  // Komprimiert und konvertiert ein Bild zu Base64
+  // Komprimiert und konvertiert ein Bild (Blob- oder Data-URL) zu einer
+  // JPEG-Data-URL. Data-URLs werden ebenfalls neu komprimiert.
   async function compressAndConvert(
-    blobUrl: string,
+    sourceUrl: string,
     maxSize: number = AUTOSAVE_MAX_IMAGE_PX
   ): Promise<string> {
-    // Wenn es bereits eine Data-URL ist
-    if (blobUrl.startsWith('data:')) {
-      // Trotzdem komprimieren
-      return await compressDataUrl(blobUrl, maxSize)
-    }
-
     return new Promise((resolve, reject) => {
       const img = new Image()
 
-      // WICHTIG: crossOrigin NICHT bei blob: URLs setzen!
-      // blob: URLs sind lokal und brauchen kein CORS
-      if (!blobUrl.startsWith('blob:')) {
+      // WICHTIG: crossOrigin NICHT bei blob:/data: URLs setzen!
+      // Diese URLs sind lokal und brauchen kein CORS
+      if (!sourceUrl.startsWith('blob:') && !sourceUrl.startsWith('data:')) {
         img.crossOrigin = 'anonymous'
       }
 
@@ -76,20 +72,8 @@ export function useAutoSave() {
         try {
           const canvas = document.createElement('canvas')
 
-          // Berechne neue Dimensionen unter Beibehaltung des Seitenverhältnisses
-          let width = img.naturalWidth
-          let height = img.naturalHeight
-
-          if (width > maxSize || height > maxSize) {
-            if (width > height) {
-              height = Math.round((height / width) * maxSize)
-              width = maxSize
-            } else {
-              width = Math.round((width / height) * maxSize)
-              height = maxSize
-            }
-          }
-
+          // Neue Dimensionen unter Beibehaltung des Seitenverhältnisses
+          const { width, height } = fitWithin(img.naturalWidth, img.naturalHeight, maxSize)
           canvas.width = width
           canvas.height = height
 
@@ -102,61 +86,67 @@ export function useAutoSave() {
           ctx.drawImage(img, 0, 0, width, height)
 
           // Als JPEG mit reduzierter Qualität speichern
-          const dataUrl = canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY)
-          resolve(dataUrl)
+          resolve(canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY))
         } catch (e) {
           reject(e)
         }
       }
 
       img.onerror = (e) => {
-        console.error('Image load error for URL:', blobUrl.substring(0, 50), e)
+        if (!sourceUrl.startsWith('data:')) {
+          console.error('Image load error for URL:', sourceUrl.substring(0, 50), e)
+        }
         reject(new Error('Image load failed'))
       }
-      img.src = blobUrl
+      img.src = sourceUrl
     })
   }
 
-  // Komprimiert eine bereits existierende Data-URL
-  async function compressDataUrl(dataUrl: string, maxSize: number): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      img.onload = () => {
-        try {
-          const canvas = document.createElement('canvas')
+  // Komprimiert alle Canvas-/Galerie-Bilder; fehlerhafte Bilder werden übersprungen
+  async function buildSavedImages(maxSize?: number): Promise<SavedImage[]> {
+    const savedImages: SavedImage[] = []
+    for (const img of collage.images) {
+      try {
+        // Skip images with missing or revoked URLs
+        if (!img.url) continue
 
-          let width = img.naturalWidth
-          let height = img.naturalHeight
-
-          if (width > maxSize || height > maxSize) {
-            if (width > height) {
-              height = Math.round((height / width) * maxSize)
-              width = maxSize
-            } else {
-              width = Math.round((width / height) * maxSize)
-              height = maxSize
-            }
-          }
-
-          canvas.width = width
-          canvas.height = height
-
-          const ctx = canvas.getContext('2d')
-          if (!ctx) {
-            reject(new Error('Could not get canvas context'))
-            return
-          }
-
-          ctx.drawImage(img, 0, 0, width, height)
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY)
-          resolve(compressedDataUrl)
-        } catch (e) {
-          reject(e)
+        const dataUrl = await compressAndConvert(img.url, maxSize)
+        if (dataUrl) {
+          const { file: _file, url: _url, ...rest } = img
+          savedImages.push({ ...rest, dataUrl })
         }
+      } catch (e) {
+        console.warn(`Failed to convert image ${img.id}:`, e)
       }
-      img.onerror = () => reject(new Error('Image load failed'))
-      img.src = dataUrl
-    })
+    }
+    return savedImages
+  }
+
+  // Komprimiert das Hintergrundbild (kleineres Thumbnail); null bei Fehler/ohne Bild
+  async function buildBackgroundDataUrl(maxSize: number): Promise<string | null> {
+    if (!collage.settings.backgroundImage.url) return null
+    try {
+      return await compressAndConvert(collage.settings.backgroundImage.url, maxSize)
+    } catch (e) {
+      console.warn('Failed to convert background image:', e)
+      return null
+    }
+  }
+
+  function buildState(images: SavedImage[], backgroundDataUrl: string | null): SavedState {
+    return {
+      version: 1,
+      timestamp: Date.now(),
+      images,
+      texts: JSON.parse(JSON.stringify(collage.texts)),
+      settings: {
+        ...JSON.parse(JSON.stringify(collage.settings)),
+        backgroundImage: {
+          ...collage.settings.backgroundImage,
+          url: backgroundDataUrl,
+        },
+      },
+    }
   }
 
   // Speichert den aktuellen Zustand in LocalStorage
@@ -174,53 +164,10 @@ export function useAutoSave() {
         return
       }
 
-      // Konvertiere und komprimiere alle Bild-URLs
-      const savedImages: SavedImage[] = []
-
-      for (const img of collage.images) {
-        try {
-          // Skip images with missing or revoked URLs
-          if (!img.url) continue
-
-          const dataUrl = await compressAndConvert(img.url)
-          if (dataUrl) {
-            const { file, url, ...rest } = img
-            savedImages.push({
-              ...rest,
-              dataUrl,
-            })
-          }
-        } catch (e) {
-          console.warn(`Failed to convert image ${img.id}:`, e)
-        }
-      }
-
-      // Hintergrundbild auch komprimieren (kleineres Thumbnail)
-      let backgroundDataUrl: string | null = null
-      if (collage.settings.backgroundImage.url) {
-        try {
-          backgroundDataUrl = await compressAndConvert(
-            collage.settings.backgroundImage.url,
-            300 // Kleineres Thumbnail für Hintergrund
-          )
-        } catch (e) {
-          console.warn('Failed to convert background image:', e)
-        }
-      }
-
-      const state: SavedState = {
-        version: 1,
-        timestamp: Date.now(),
-        images: savedImages,
-        texts: JSON.parse(JSON.stringify(collage.texts)),
-        settings: {
-          ...JSON.parse(JSON.stringify(collage.settings)),
-          backgroundImage: {
-            ...collage.settings.backgroundImage,
-            url: backgroundDataUrl,
-          },
-        },
-      }
+      // Konvertiere und komprimiere alle Bild-URLs; Hintergrund als kleineres Thumbnail
+      const savedImages = await buildSavedImages()
+      const backgroundDataUrl = await buildBackgroundDataUrl(300)
+      const state = buildState(savedImages, backgroundDataUrl)
 
       // Speichern nur wenn Bilder oder Texte vorhanden
       if (state.images.length > 0 || state.texts.length > 0) {
@@ -263,45 +210,9 @@ export function useAutoSave() {
   // Speichert mit noch kleineren Bildern wenn Quota überschritten
   async function saveStateWithSmallerImages(maxSize: number) {
     try {
-      const savedImages: SavedImage[] = []
-
-      for (const img of collage.images) {
-        try {
-          const dataUrl = await compressAndConvert(img.url, maxSize)
-          if (dataUrl) {
-            const { file, url, ...rest } = img
-            savedImages.push({
-              ...rest,
-              dataUrl,
-            })
-          }
-        } catch (e) {
-          console.warn(`Failed to convert image ${img.id}:`, e)
-        }
-      }
-
-      let backgroundDataUrl: string | null = null
-      if (collage.settings.backgroundImage.url) {
-        try {
-          backgroundDataUrl = await compressAndConvert(collage.settings.backgroundImage.url, 150)
-        } catch (e) {
-          console.warn('Failed to convert background image:', e)
-        }
-      }
-
-      const state: SavedState = {
-        version: 1,
-        timestamp: Date.now(),
-        images: savedImages,
-        texts: JSON.parse(JSON.stringify(collage.texts)),
-        settings: {
-          ...JSON.parse(JSON.stringify(collage.settings)),
-          backgroundImage: {
-            ...collage.settings.backgroundImage,
-            url: backgroundDataUrl,
-          },
-        },
-      }
+      const savedImages = await buildSavedImages(maxSize)
+      const backgroundDataUrl = await buildBackgroundDataUrl(150)
+      const state = buildState(savedImages, backgroundDataUrl)
 
       if (state.images.length > 0 || state.texts.length > 0) {
         const jsonString = JSON.stringify(state)

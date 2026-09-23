@@ -1,5 +1,23 @@
 import type { BackgroundImageSettings } from '@/types'
 
+/**
+ * Zentrierte Zielfläche für ein Bild: 'cover' füllt die Fläche komplett aus
+ * (kann beschneiden), 'contain' zeigt das ganze Bild (kann Leerräume lassen).
+ */
+export function computeFitRect(
+  fit: 'cover' | 'contain',
+  areaWidth: number,
+  areaHeight: number,
+  imgWidth: number,
+  imgHeight: number
+): { x: number; y: number; width: number; height: number } {
+  const pick = fit === 'cover' ? Math.max : Math.min
+  const scale = pick(areaWidth / imgWidth, areaHeight / imgHeight)
+  const width = imgWidth * scale
+  const height = imgHeight * scale
+  return { x: (areaWidth - width) / 2, y: (areaHeight - height) / 2, width, height }
+}
+
 export async function drawBackground(
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
@@ -39,20 +57,9 @@ export async function drawBackground(
 
   ctx.globalAlpha = bgSettings.opacity
 
-  if (bgSettings.fit === 'cover') {
-    const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight)
-    const scaledWidth = imgWidth * scale
-    const scaledHeight = imgHeight * scale
-    const x = (canvasWidth - scaledWidth) / 2
-    const y = (canvasHeight - scaledHeight) / 2
-    ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
-  } else if (bgSettings.fit === 'contain') {
-    const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight)
-    const scaledWidth = imgWidth * scale
-    const scaledHeight = imgHeight * scale
-    const x = (canvasWidth - scaledWidth) / 2
-    const y = (canvasHeight - scaledHeight) / 2
-    ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
+  if (bgSettings.fit === 'cover' || bgSettings.fit === 'contain') {
+    const r = computeFitRect(bgSettings.fit, canvasWidth, canvasHeight, imgWidth, imgHeight)
+    ctx.drawImage(img, r.x, r.y, r.width, r.height)
   } else if (bgSettings.fit === 'tile') {
     ctx.filter = 'none'
     const pattern = ctx.createPattern(img, 'repeat')
