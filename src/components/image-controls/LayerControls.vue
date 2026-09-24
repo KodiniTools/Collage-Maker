@@ -12,14 +12,14 @@
     <label class="block text-sm font-medium mb-2">{{ t('imageControls.layer') }}</label>
     <div class="grid grid-cols-2 gap-2">
       <button
-        class="px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
+        class="px-3 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-md text-sm"
         :title="t('imageControls.toFront')"
         @click="api.bringToFront"
       >
         {{ t('imageControls.toFront') }}
       </button>
       <button
-        class="px-3 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-md text-sm"
+        class="px-3 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-md text-sm"
         :title="t('imageControls.toBack')"
         @click="api.sendToBack"
       >

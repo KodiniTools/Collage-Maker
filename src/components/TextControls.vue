@@ -247,7 +247,7 @@
                 ? collage.selectedText.fontWeight >= 700
                 : collage.selectedText.fontWeight === 'bold'
             )
-              ? 'bg-accent text-slate-dark'
+              ? 'bg-accent text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/50',
           ]"
           @click="toggleFontWeight"
@@ -259,7 +259,7 @@
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'left'
-              ? 'bg-accent text-slate-dark'
+              ? 'bg-accent text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/50',
           ]"
           @click="updateTextAlign('left')"
@@ -271,7 +271,7 @@
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'center'
-              ? 'bg-accent text-slate-dark'
+              ? 'bg-accent text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/50',
           ]"
           @click="updateTextAlign('center')"
@@ -283,7 +283,7 @@
           :class="[
             'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
             collage.selectedText.textAlign === 'right'
-              ? 'bg-accent text-slate-dark'
+              ? 'bg-accent text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/50',
           ]"
           @click="updateTextAlign('right')"

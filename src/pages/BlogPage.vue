@@ -248,7 +248,7 @@
             </RouterLink>
             <RouterLink
               to="/editor"
-              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-light text-slate-dark font-medium rounded-lg transition-colors"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-light text-accent-ink font-medium rounded-lg transition-colors"
             >
               {{ t('nav.editor') }}
             </RouterLink>
@@ -273,7 +273,7 @@
         </p>
         <RouterLink
           to="/editor"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-slate-dark font-semibold rounded-xl transition-colors shadow-lg"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-accent-ink font-semibold rounded-xl transition-colors shadow-lg"
         >
           {{ hero.cta }} →
         </RouterLink>
@@ -341,7 +341,7 @@
           </p>
           <RouterLink
             to="/editor"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-slate-dark font-semibold rounded-xl transition-colors shadow-lg"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-accent-ink font-semibold rounded-xl transition-colors shadow-lg"
           >
             {{ isDE ? 'Collage erstellen →' : 'Create Collage →' }}
           </RouterLink>

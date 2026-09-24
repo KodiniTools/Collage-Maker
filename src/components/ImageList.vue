@@ -349,7 +349,7 @@
           <!-- Set as Background Button (only when 1 image selected) -->
           <button
             v-if="selectedCount === 1"
-            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-slate-dark transition-colors flex items-center justify-center gap-2"
+            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-accent-ink transition-colors flex items-center justify-center gap-2"
             @click="setSelectedAsBackground"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -513,14 +513,14 @@
                   }}
                 </button>
                 <button
-                  class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-slate-dark transition-colors"
+                  class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-accent-ink transition-colors"
                   @click="addToCanvasAndClose"
                 >
                   {{ t('gallery.addThisToCanvas') }}
                 </button>
               </div>
               <button
-                class="w-full px-4 py-2 text-sm font-medium rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-slate-dark transition-colors flex items-center justify-center gap-2"
+                class="w-full px-4 py-2 text-sm font-medium rounded-lg border-2 border-accent text-slate-dark dark:text-accent hover:bg-accent hover:text-accent-ink dark:hover:text-accent-ink transition-colors flex items-center justify-center gap-2"
                 @click="setAsBackgroundAndClose"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

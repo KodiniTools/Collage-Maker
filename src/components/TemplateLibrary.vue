@@ -167,7 +167,7 @@
                 :class="[
                   'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'all'
-                    ? 'bg-accent text-slate-dark'
+                    ? 'bg-accent text-accent-ink'
                     : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
                 ]"
                 @click="activeTab = 'all'"
@@ -178,7 +178,7 @@
                 :class="[
                   'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'predefined'
-                    ? 'bg-accent text-slate-dark'
+                    ? 'bg-accent text-accent-ink'
                     : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
                 ]"
                 @click="activeTab = 'predefined'"
@@ -189,7 +189,7 @@
                 :class="[
                   'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'user'
-                    ? 'bg-accent text-slate-dark'
+                    ? 'bg-accent text-accent-ink'
                     : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
                 ]"
                 @click="activeTab = 'user'"
@@ -199,7 +199,7 @@
             </div>
 
             <button
-              class="px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors text-sm sm:text-base w-full sm:w-auto"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium transition-colors text-sm sm:text-base w-full sm:w-auto"
               @click="openSaveDialog"
             >
               {{ t('templates.saveAsCurrent') }}
@@ -281,7 +281,7 @@
                   {{ t('common.cancel') }}
                 </button>
                 <button
-                  class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark rounded-lg font-medium transition-colors"
+                  class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium transition-colors"
                   @click="saveCurrentAsTemplate"
                 >
                   {{ t('common.save') }}

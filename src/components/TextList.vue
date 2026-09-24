@@ -11,7 +11,7 @@
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-lg font-semibold">{{ t('text.title') }}</h2>
       <button
-        class="px-3 py-1.5 bg-accent hover:bg-accent-dark text-slate-dark text-sm font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark"
+        class="px-3 py-1.5 bg-accent hover:bg-accent-dark text-accent-ink text-sm font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark"
         aria-label="Add new text"
         @click="collage.addText()"
       >

@@ -248,7 +248,7 @@
           </p>
           <RouterLink
             to="/editor"
-            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-light text-slate-dark font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-light text-accent-ink font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
