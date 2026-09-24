@@ -17,7 +17,7 @@
         :class="[
           'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
           api.keepAspect.value
-            ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
             : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         :title="t('canvas.keepAspectRatio')"
@@ -51,7 +51,7 @@
         :class="[
           'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
           api.scaleContent.value
-            ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
             : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         :title="t('canvas.scaleContent')"

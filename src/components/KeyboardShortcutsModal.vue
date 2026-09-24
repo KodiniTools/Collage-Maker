@@ -231,7 +231,7 @@
               {{ t('shortcuts.pressToOpen') }}
             </span>
             <button
-              class="px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors"
+              class="px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink font-medium rounded-lg transition-colors"
               @click="close"
             >
               {{ t('shortcuts.close') }}

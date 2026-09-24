@@ -54,7 +54,7 @@
           :class="[
             'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-md font-medium transition-colors',
             image.flipHorizontal
-              ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+              ? 'bg-accent hover:bg-accent-dark text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
           ]"
           :title="t('imageControls.flipHorizontal')"
@@ -82,7 +82,7 @@
           :class="[
             'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-md font-medium transition-colors',
             image.flipVertical
-              ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+              ? 'bg-accent hover:bg-accent-dark text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
           ]"
           :title="t('imageControls.flipVertical')"
@@ -145,7 +145,7 @@
             :class="[
               'px-2.5 py-1 text-xs rounded transition-colors',
               image.distortEnabled
-                ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+                ? 'bg-accent hover:bg-accent-dark text-accent-ink'
                 : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
             ]"
             :title="t('imageControls.distortHint')"

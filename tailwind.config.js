@@ -16,6 +16,8 @@ export default {
           DEFAULT: '#c9984d',
           light: '#f8e1a9',
           dark: '#a67d35',
+          // Text auf Gold-Flächen (7,1:1 auf accent, 4,9:1 auf accent-dark)
+          ink: '#091428',
         },
         warm: {
           DEFAULT: '#A28680',

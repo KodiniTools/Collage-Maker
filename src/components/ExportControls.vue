@@ -210,7 +210,7 @@
 
     <button
       :disabled="collage.images.length === 0 || isGeneratingPreview"
-      class="w-full px-4 py-3 border-2 border-accent text-accent hover:bg-accent hover:text-slate-dark disabled:border-muted/50 disabled:text-muted/50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
+      class="w-full px-4 py-3 border-2 border-accent text-slate-dark dark:text-accent hover:bg-accent hover:text-accent-ink dark:hover:text-accent-ink disabled:border-muted/50 disabled:text-muted/50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
       aria-label="Preview collage"
       @click="generatePreview"
     >
@@ -237,7 +237,7 @@
 
     <button
       :disabled="collage.images.length === 0 || isExporting"
-      class="w-full px-4 py-3 bg-accent hover:bg-accent-dark disabled:bg-muted/50 text-slate-dark font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
+      class="w-full px-4 py-3 bg-accent hover:bg-accent-dark disabled:bg-muted/50 text-accent-ink font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
       aria-label="Download collage"
       @click="startExport"
     >
@@ -248,7 +248,7 @@
 
     <button
       :disabled="collage.images.length === 0 || isPrinting"
-      class="w-full px-4 py-3 border-2 border-accent text-accent hover:bg-accent hover:text-slate-dark disabled:border-muted/50 disabled:text-muted/50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
+      class="w-full px-4 py-3 border-2 border-accent text-slate-dark dark:text-accent hover:bg-accent hover:text-accent-ink dark:hover:text-accent-ink disabled:border-muted/50 disabled:text-muted/50 font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-surface-dark flex items-center justify-center gap-2"
       aria-label="Print collage"
       @click="printCollage"
     >
@@ -326,7 +326,7 @@
               {{ t('export.filenameCancel') }}
             </button>
             <button
-              class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors text-sm"
+              class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink font-medium rounded-lg transition-colors text-sm"
               @click="confirmFilename"
             >
               {{ t('export.filenameConfirm') }}
@@ -400,7 +400,7 @@
                 {{ t('export.close') }}
               </button>
               <button
-                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-slate-dark font-medium rounded-lg transition-colors text-sm"
+                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-accent-ink font-medium rounded-lg transition-colors text-sm"
                 @click="closePreviewAndExport"
               >
                 {{ t('export.download') }}

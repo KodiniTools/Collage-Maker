@@ -128,7 +128,7 @@
           :class="[
             'p-3 rounded-full transition-colors',
             isDragging
-              ? 'bg-accent text-slate-dark'
+              ? 'bg-accent text-accent-ink'
               : 'bg-muted/20 dark:bg-navy/30 text-muted dark:text-muted-light',
           ]"
         >
@@ -167,7 +167,7 @@
       <button
         type="button"
         :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-accent text-slate-dark hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-accent text-accent-ink hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
         @click="fileInput!.click()"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">

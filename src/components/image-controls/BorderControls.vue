@@ -18,7 +18,7 @@
         :class="[
           'px-3 py-1 text-xs rounded transition-colors',
           image.borderEnabled
-            ? 'bg-accent hover:bg-accent-dark text-slate-dark'
+            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
             : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
         ]"
         @click="api.toggleBorder"
