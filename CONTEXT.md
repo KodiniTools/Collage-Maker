@@ -71,7 +71,15 @@ Collage-Maker/
 │   │   └── useAutoSave.ts            # Auto-Save mit Kompression
 │   │
 │   ├── stores/                       # Pinia State Stores
-│   │   ├── collage.ts               # Haupt-Collage-State (1058 Zeilen)
+│   │   ├── collage.ts               # Haupt-Collage-State (Kern: Zustand, Undo, Auswahl, Layout)
+│   │   ├── collage/                 # Teilbereiche des Collage-Stores
+│   │   │   ├── context.ts           # Gemeinsamer Kontext für die Teil-Composables
+│   │   │   ├── defaults.ts          # Standardwerte (Einstellungen, Bild, Hintergrund)
+│   │   │   ├── useGallery.ts        # Galerie-Auswahl & -Verwaltung
+│   │   │   ├── useArrange.ts        # Duplizieren, Ebenen, Ausrichten, Verschieben
+│   │   │   ├── useTexts.ts          # Text-Aktionen
+│   │   │   ├── useCanvasResize.ts   # Leinwandgröße & Inhaltsanpassung
+│   │   │   └── useTemplateIO.ts     # Vorlagen speichern/laden
 │   │   ├── templates.ts             # Template-Verwaltung
 │   │   ├── settings.ts              # Theme & Locale
 │   │   ├── history.ts               # Undo/Redo (50 Einträge)
