@@ -105,15 +105,12 @@
     "bottomCta": {
       "title": "Bereit loszulegen?",
       "subtitle": "Erstelle jetzt deine erste Collage - kostenlos und ohne Registrierung."
-    },
-    "footer": "Bilder-Collage-Macher - Kostenlos und ohne Werbung"
+    }
   },
   "editor": {
     "donate": "Spenden mit PayPal",
     "tools": "Werkzeuge",
     "settings": "Einstellungen",
-    "expandSidebar": "Seitenleiste ausklappen",
-    "collapseSidebar": "Seitenleiste einklappen",
     "tabSelection": "Auswahl",
     "tabCanvas": "Leinwand",
     "tabExport": "Export",
@@ -308,12 +305,10 @@
     "title": "Bilder",
     "empty": "Keine Bilder hochgeladen",
     "remove": "Entfernen",
-    "selected": "Ausgewählt",
-    "dragToCanvas": "Ziehen Sie das Bild auf das Canvas, um es hinzuzufügen"
+    "selected": "Ausgewählt"
   },
   "thumbnailBar": {
     "title": "Bilder auf Canvas",
-    "clickToSelect": "Klicken zum Auswählen",
     "imageAlt": "Bild {index}",
     "remove": "Bild entfernen",
     "selected": "{count} ausgewählt",
@@ -476,7 +471,6 @@
     "noSelection": "Kein Text ausgewählt",
     "content": "Textinhalt",
     "fontFamily": "Schriftart",
-    "fontVariant": "Schriftvariante",
     "fontSize": "Schriftgröße",
     "letterSpacing": "Buchstabenabstand",
     "fontWeight": "Schriftstärke",
@@ -510,7 +504,6 @@
     "namePlaceholder": "z.B. Meine Geburtstagscollage",
     "descriptionPlaceholder": "Optional: Beschreibung der Vorlage",
     "nameRequired": "Bitte geben Sie einen Namen für die Vorlage ein",
-    "confirmLoad": "Möchten Sie diese Vorlage laden? Ihre aktuelle Arbeit geht verloren.",
     "confirmDelete": "Möchten Sie diese Vorlage wirklich löschen?",
     "saveSuccess": "Vorlage gespeichert",
     "saveError": "Vorlage konnte nicht gespeichert werden – der Speicher ist voll. Bitte reduzieren Sie die Anzahl oder Größe der Bilder.",
