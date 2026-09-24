@@ -108,7 +108,7 @@
     }
   }
 
-  function handleImageClick(imageId: string, event: MouseEvent) {
+  function handleImageClick(imageId: string, event: MouseEvent | KeyboardEvent) {
     if (event.ctrlKey || event.metaKey) {
       // Mehrfachauswahl mit Ctrl/Cmd-Klick
       collage.toggleGallerySelection(imageId)
@@ -237,7 +237,7 @@
           @dragstart="handleDragStart($event, image.id)"
           @click="handleImageClick(image.id, $event)"
           @dblclick="handleDoubleClick(image)"
-          @keydown.enter="handleImageClick(image.id, $event as any)"
+          @keydown.enter="handleImageClick(image.id, $event)"
           @touchstart.passive="onItemTouchStart($event, image.id)"
           @touchmove.passive="onItemTouchMove($event)"
           @touchend="onItemTouchEnd"

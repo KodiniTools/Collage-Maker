@@ -52,7 +52,11 @@
         <select
           :value="image.borderStyle"
           class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
-          @change="api.updateBorderStyle(($event.target as HTMLSelectElement).value as any)"
+          @change="
+            api.updateBorderStyle(
+              ($event.target as HTMLSelectElement).value as CollageImage['borderStyle']
+            )
+          "
         >
           <option value="solid">{{ t('imageControls.borderStyleSolid') }}</option>
           <option value="dashed">{{ t('imageControls.borderStyleDashed') }}</option>

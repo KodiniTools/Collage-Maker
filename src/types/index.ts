@@ -176,3 +176,27 @@ export interface Toast {
   // wird dauerhaft gemerkt und künftige Meldungen damit unterdrückt.
   dismissKey?: string
 }
+
+/**
+ * Bild in einer gespeicherten Vorlage: ohne File-Objekt, Bildinhalt als
+ * Data-URL. Ältere/vordefinierte Vorlagen können unvollständig sein.
+ */
+export type TemplateImage = Partial<CollageImage> & { dataUrl?: string }
+
+/** Leinwand-Einstellungen einer Vorlage; vordefinierte Vorlagen enthalten nur einen Teil. */
+export type TemplateSettings = Partial<
+  Omit<CollageSettings, 'border' | 'backgroundImage' | 'layout'>
+> & {
+  // Aus JSON geladen, daher nicht auf LayoutType eingeschränkt
+  layout?: string
+  border?: Partial<CanvasBorderSettings>
+  backgroundImage?: Partial<BackgroundImageSettings>
+}
+
+/** Collage-Inhalt einer Vorlage, wie er beim Laden erwartet wird (alle Felder optional). */
+export interface TemplateCollageState {
+  settings?: TemplateSettings
+  layout?: string
+  images?: TemplateImage[]
+  texts?: CollageText[]
+}

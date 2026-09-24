@@ -3,7 +3,7 @@ import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import type { GuideLine } from './useAlignmentGuides'
 import { computeLocalCorners, hasDistortion } from '@/lib/warpImage'
-import type { CornerOffsets } from '@/types'
+import type { CollageImage, CollageText, CornerOffsets } from '@/types'
 
 type Corner = 'nw' | 'ne' | 'se' | 'sw'
 
@@ -97,7 +97,11 @@ export function useDragResize(
   // zentrierte Koordinatensystem des Bildes um – inkl. Rotation, Spiegelung und
   // Neigung/Scherung. Muss zur Zeichenreihenfolge im Renderer passen:
   // translate → rotate → scale(flip) → skew.
-  function toLocalImagePoint(x: number, y: number, img: any): { localX: number; localY: number } {
+  function toLocalImagePoint(
+    x: number,
+    y: number,
+    img: CollageImage
+  ): { localX: number; localY: number } {
     const centerX = img.x + img.width / 2
     const centerY = img.y + img.height / 2
 
@@ -127,7 +131,12 @@ export function useDragResize(
     return { localX, localY }
   }
 
-  function getResizeHandle(x: number, y: number, img: any, touchMode = false): string | null {
+  function getResizeHandle(
+    x: number,
+    y: number,
+    img: CollageImage,
+    touchMode = false
+  ): string | null {
     // Trefferradius an den Anzeige-Zoom koppeln (konstante Bildschirmgröße),
     // damit Handles auf großen Leinwänden nicht winzig zu treffen sind.
     const fit = autoFitScale.value || 1
@@ -164,7 +173,7 @@ export function useDragResize(
   // ─── Freies Verzerren (Distort) ────────────────────────────────────────────
 
   // Basis-Eckposition (unverzerrt) im lokalen Bildsystem.
-  function baseCorner(img: any, corner: Corner): { x: number; y: number } {
+  function baseCorner(img: CollageImage, corner: Corner): { x: number; y: number } {
     const hw = img.width / 2
     const hh = img.height / 2
     switch (corner) {
@@ -180,7 +189,7 @@ export function useDragResize(
   }
 
   // Vollständiges Offsets-Objekt aus dem aktuellen Bild (fehlende Ecken = 0).
-  function currentOffsets(img: any): CornerOffsets {
+  function currentOffsets(img: CollageImage): CornerOffsets {
     const o = img.cornerOffsets
     return {
       nw: { x: o?.nw.x ?? 0, y: o?.nw.y ?? 0 },
@@ -191,7 +200,12 @@ export function useDragResize(
   }
 
   // Prüft, ob ein Distort-Eckpunkt getroffen wurde (lokale, verzerrte Ecken).
-  function getDistortHandle(x: number, y: number, img: any, touchMode = false): Corner | null {
+  function getDistortHandle(
+    x: number,
+    y: number,
+    img: CollageImage,
+    touchMode = false
+  ): Corner | null {
     const { localX, localY } = toLocalImagePoint(x, y, img)
     const c = computeLocalCorners(img.width, img.height, img.cornerOffsets)
     const fit = autoFitScale.value || 1
@@ -209,7 +223,7 @@ export function useDragResize(
   }
 
   // Punkt-in-Viereck-Test im lokalen System (für Auswahl verzerrter Bilder).
-  function isPointInDistortedImage(x: number, y: number, img: any): boolean {
+  function isPointInDistortedImage(x: number, y: number, img: CollageImage): boolean {
     const { localX, localY } = toLocalImagePoint(x, y, img)
     const c = computeLocalCorners(img.width, img.height, img.cornerOffsets)
     const pts = [c.nw, c.ne, c.se, c.sw]
@@ -227,14 +241,19 @@ export function useDragResize(
   }
 
   // Trefferzone eines Bildes (verzerrt: Viereck, sonst achsenparallele Box).
-  function isPointInImage(x: number, y: number, img: any): boolean {
+  function isPointInImage(x: number, y: number, img: CollageImage): boolean {
     if (img.distortEnabled && hasDistortion(img.cornerOffsets)) {
       return isPointInDistortedImage(x, y, img)
     }
     return x >= img.x && x <= img.x + img.width && y >= img.y && y <= img.y + img.height
   }
 
-  function isDeleteButtonClicked(x: number, y: number, img: any, touchMode = false): boolean {
+  function isDeleteButtonClicked(
+    x: number,
+    y: number,
+    img: CollageImage,
+    touchMode = false
+  ): boolean {
     const fit = autoFitScale.value || 1
     // Muss zur Zeichnung passen: 14 * ui, innen in der oberen rechten Ecke.
     const drawSize = 14 / fit
@@ -260,7 +279,7 @@ export function useDragResize(
 
   // Bounding-Box eines Textes in dessen lokalem (unrotiertem) Koordinatensystem.
   // Muss zur Darstellung im Renderer passen (gleiche Schrift/Metriken).
-  function getTextBox(text: any, ctx: CanvasRenderingContext2D) {
+  function getTextBox(text: CollageText, ctx: CanvasRenderingContext2D) {
     ctx.save()
     ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px '${text.fontFamily}'`
     ctx.letterSpacing = `${text.letterSpacing}px`
@@ -286,7 +305,7 @@ export function useDragResize(
   function getTextResizeHandle(
     x: number,
     y: number,
-    text: any,
+    text: CollageText,
     ctx: CanvasRenderingContext2D,
     touchMode = false
   ): string | null {

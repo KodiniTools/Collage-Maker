@@ -8,6 +8,8 @@ import type {
   BackgroundImageFit,
   BackgroundImageSettings,
   CanvasBorderSettings,
+  TemplateCollageState,
+  TemplateImage,
 } from '@/types'
 import { computeLayout } from '@/lib/layouts'
 import { useHistoryStore } from '@/stores/history'
@@ -1210,7 +1212,7 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
-  function loadFromTemplate(template: any) {
+  function loadFromTemplate(template: { collageState?: TemplateCollageState }) {
     // Snapshot sichern, damit das Anwenden einer Vorlage rückgängig gemacht
     // werden kann (Strg+Z / „Rückgängig"-Toast) und keine Arbeit verloren geht.
     saveStateForUndo()
@@ -1231,7 +1233,7 @@ export const useCollageStore = defineStore('collage', () => {
       settings.value.width = ts.width ?? 700
       settings.value.height = ts.height ?? 740
       settings.value.backgroundColor = ts.backgroundColor ?? '#ffffff'
-      settings.value.layout = ts.layout ?? 'freestyle'
+      settings.value.layout = (ts.layout as LayoutType | undefined) ?? 'freestyle'
       settings.value.gridEnabled = ts.gridEnabled ?? false
       settings.value.gridSize = ts.gridSize ?? 50
 
@@ -1271,7 +1273,7 @@ export const useCollageStore = defineStore('collage', () => {
       selectedImageIds.value = []
       selectedTextId.value = null
       isBackgroundSelected.value = false
-      images.value = templateImages.map((img: Partial<CollageImage> & { dataUrl?: string }) => {
+      images.value = templateImages.map((img: TemplateImage) => {
         const { dataUrl, ...rest } = img
         return {
           ...rest,
