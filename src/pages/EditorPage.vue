@@ -468,34 +468,6 @@
       </div>
     </main>
 
-    <!-- Donate Section -->
-    <section class="border-t border-muted/30 dark:border-slate/30 py-8">
-      <div class="container mx-auto px-4 text-center">
-        <form
-          action="https://www.paypal.com/donate"
-          method="post"
-          target="_top"
-          class="inline-block"
-        >
-          <input type="hidden" name="hosted_button_id" value="8RGLGQ2BFMHU6" />
-          <button
-            type="submit"
-            class="px-4 py-2 sm:px-8 sm:py-3 bg-warm hover:bg-warm-dark text-surface-light font-semibold rounded-lg shadow-lg transition-colors duration-150 flex items-center gap-2 mx-auto text-sm sm:text-base"
-          >
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.028.15a.805.805 0 0 1-.794.68H8.032c-.3 0-.54-.266-.475-.558l1.918-12.157-.002-.01.162-1.026a.805.805 0 0 1 .794-.68h2.535c3.238 0 5.774-1.314 6.514-5.12.132-.68.168-1.32.112-1.918a4.695 4.695 0 0 0-.544-1.736C20.183 3.505 21.538 5.978 20.067 8.478z"
-              />
-              <path
-                d="M18.814 1.444c-.3-.354-.664-.64-1.08-.854C16.714.09 15.483 0 13.953 0H7.95a.804.804 0 0 0-.794.68L4.97 16.806c-.07.448.26.85.715.85h5.214l1.31-8.307-.04.257a.805.805 0 0 1 .794-.68h1.656c3.238 0 5.774-1.314 6.514-5.12.13-.68.168-1.32.112-1.918-.056-.448-.172-.863-.344-1.236a4.647 4.647 0 0 0-.087-.208z"
-              />
-            </svg>
-            <span>{{ t('editor.donate') }}</span>
-          </button>
-        </form>
-      </div>
-    </section>
-
     <!-- Template Library Modal -->
     <TemplateLibrary ref="templateLibraryRef" v-model:is-open="showTemplates" />
 

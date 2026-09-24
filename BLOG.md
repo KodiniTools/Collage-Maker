@@ -713,10 +713,6 @@ Der Collage-Maker ist **Open Source** unter der MIT-Lizenz. Sie können:
 - Zur Entwicklung beitragen
 - Das Tool selbst hosten
 
-### Unterstützung
-
-Wenn Ihnen der Collage-Maker gefällt, können Sie die Entwicklung über PayPal unterstützen. Dies ist komplett freiwillig und das Tool bleibt in jedem Fall kostenlos.
-
 ---
 
 ## 12. Tipps für beste Ergebnisse
