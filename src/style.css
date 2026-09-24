@@ -8,7 +8,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -20,7 +21,7 @@ body {
   font-family: 'Supreme', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5F4D6 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f5f4d6 100%);
   background-attachment: fixed;
 }
 
@@ -30,7 +31,7 @@ html.dark body {
 
 @layer utilities {
   .bg-page-gradient {
-    background: linear-gradient(180deg, #FFFFFF 0%, #F5F4D6 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #f5f4d6 100%);
     background-attachment: fixed;
   }
   .dark .bg-page-gradient {
@@ -41,29 +42,32 @@ html.dark body {
 /* Global SSI partials (nav/footer outside #app) */
 /* Remove own background so page bg gradient shows through — except cookie banner */
 /* Direct wrapper elements (nav, footer): normal specificity */
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]) {
+body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']) {
   background-color: transparent !important;
 }
 /* All inner descendants: :where() gives ZERO specificity so restore rules always win */
-:where(body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"])) :where(*:not(.cookie-banner):not(.cookie-consent):not([class*="cookie"])) {
+:where(
+    body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie'])
+  )
+  :where(*:not(.cookie-banner):not(.cookie-consent):not([class*='cookie'])) {
   background-color: transparent !important;
 }
 
 /* Restore solid background for dropdown/submenu elements in SSI navigation */
-body > :not(#app):not(script) [class*="drop"],
-body > :not(#app):not(script) [class*="sub-menu"],
-body > :not(#app):not(script) [class*="submenu"],
-body > :not(#app):not(script) [class*="popup"],
-body > :not(#app):not(script) [class*="popover"],
-body > :not(#app):not(script) [class*="megamenu"] {
+body > :not(#app):not(script) [class*='drop'],
+body > :not(#app):not(script) [class*='sub-menu'],
+body > :not(#app):not(script) [class*='submenu'],
+body > :not(#app):not(script) [class*='popup'],
+body > :not(#app):not(script) [class*='popover'],
+body > :not(#app):not(script) [class*='megamenu'] {
   background-color: #ffffff !important;
 }
-html.dark body > :not(#app):not(script) [class*="drop"],
-html.dark body > :not(#app):not(script) [class*="sub-menu"],
-html.dark body > :not(#app):not(script) [class*="submenu"],
-html.dark body > :not(#app):not(script) [class*="popup"],
-html.dark body > :not(#app):not(script) [class*="popover"],
-html.dark body > :not(#app):not(script) [class*="megamenu"] {
+html.dark body > :not(#app):not(script) [class*='drop'],
+html.dark body > :not(#app):not(script) [class*='sub-menu'],
+html.dark body > :not(#app):not(script) [class*='submenu'],
+html.dark body > :not(#app):not(script) [class*='popup'],
+html.dark body > :not(#app):not(script) [class*='popover'],
+html.dark body > :not(#app):not(script) [class*='megamenu'] {
   background-color: #091428 !important;
 }
 
@@ -87,17 +91,17 @@ body > :not(#app):not(script) button svg rect,
 body > :not(#app):not(script) [aria-expanded] svg line,
 body > :not(#app):not(script) [aria-expanded] svg path,
 body > :not(#app):not(script) [aria-expanded] svg rect,
-body > :not(#app):not(script) [role="button"] svg line,
-body > :not(#app):not(script) [role="button"] svg path,
-body > :not(#app):not(script) [role="button"] svg rect {
+body > :not(#app):not(script) [role='button'] svg line,
+body > :not(#app):not(script) [role='button'] svg path,
+body > :not(#app):not(script) [role='button'] svg rect {
   stroke: currentColor !important;
   fill: currentColor !important;
 }
 /* 4. Bootstrap toggler-icon (background-image SVG) — force contrast via CSS filter */
-body > :not(#app):not(script) [class*="toggler-icon"] {
+body > :not(#app):not(script) [class*='toggler-icon'] {
   filter: brightness(0) saturate(100%) !important;
 }
-html.dark body > :not(#app):not(script) [class*="toggler-icon"] {
+html.dark body > :not(#app):not(script) [class*='toggler-icon'] {
   filter: brightness(0) saturate(100%) invert(1) !important;
 }
 
@@ -117,39 +121,95 @@ html.dark body > :not(#app):not(script) [class*="toggler-icon"] {
 /* Cookie Banner: always in foreground, above nav (z-index:100) and dropdowns (z-index:200) */
 .cookie-banner,
 .cookie-consent,
-[class*="cookie-banner"],
-[class*="cookie-consent"],
-[id*="cookie-banner"],
-[id*="cookie-consent"] {
+[class*='cookie-banner'],
+[class*='cookie-consent'],
+[id*='cookie-banner'],
+[id*='cookie-consent'] {
   z-index: 10000 !important;
   position: fixed !important;
 }
 
 /* Light mode: dark text on light gradient background — exclude cookie banner */
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]),
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) *:not([class*="cookie"]):not([id*="cookie"]) {
+body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  ),
+body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  *:not([class*='cookie']):not([id*='cookie']) {
   color: #003971 !important;
 }
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]),
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]) * {
+body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:not([class*='cookie']):not([id*='cookie']),
+body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:not([class*='cookie']):not([id*='cookie'])
+  * {
   color: #014f99 !important;
 }
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]),
-body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]) * {
+body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:hover:not([class*='cookie']):not([id*='cookie']),
+body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:hover:not([class*='cookie']):not([id*='cookie'])
+  * {
   color: #c9984d !important;
 }
 
 /* Dark mode: light text on dark background — exclude cookie banner */
-html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]),
-html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) *:not([class*="cookie"]):not([id*="cookie"]) {
+html.dark
+  body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  ),
+html.dark
+  body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  *:not([class*='cookie']):not([id*='cookie']) {
   color: #f9f2d5 !important;
 }
-html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]),
-html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:not([class*="cookie"]):not([id*="cookie"]) * {
+html.dark
+  body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:not([class*='cookie']):not([id*='cookie']),
+html.dark
+  body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:not([class*='cookie']):not([id*='cookie'])
+  * {
   color: #f8e1a9 !important;
 }
-html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]),
-html.dark body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*="cookie"]):not([id*="cookie"]) a:hover:not([class*="cookie"]):not([id*="cookie"]) * {
+html.dark
+  body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:hover:not([class*='cookie']):not([id*='cookie']),
+html.dark
+  body
+  > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([class*='cookie']):not(
+    [id*='cookie']
+  )
+  a:hover:not([class*='cookie']):not([id*='cookie'])
+  * {
   color: #c9984d !important;
 }
 
@@ -226,4 +286,3 @@ html.dark #app input[type='range']::-moz-range-thumb {
     height: 18px;
   }
 }
-

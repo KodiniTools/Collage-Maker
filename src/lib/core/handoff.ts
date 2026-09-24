@@ -200,7 +200,7 @@ export function handoffImageToFile(image: HandoffImage): Promise<File> {
       const file = new File([blob], fileName, { type: mimeType })
 
       resolve(file)
-    } catch (e) {
+    } catch {
       reject(new Error(`Failed to convert handoff image to File: ${image.name}`))
     }
   })

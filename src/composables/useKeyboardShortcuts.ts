@@ -361,15 +361,24 @@ export function useKeyboardShortcuts() {
 
   function formatKey(key: string): string {
     switch (key) {
-      case 'ArrowUp': return '↑'
-      case 'ArrowDown': return '↓'
-      case 'ArrowLeft': return '←'
-      case 'ArrowRight': return '→'
-      case 'Delete': return 'Del'
-      case 'Backspace': return '⌫'
-      case 'Escape': return 'Esc'
-      case ' ': return 'Space'
-      default: return key.toUpperCase()
+      case 'ArrowUp':
+        return '↑'
+      case 'ArrowDown':
+        return '↓'
+      case 'ArrowLeft':
+        return '←'
+      case 'ArrowRight':
+        return '→'
+      case 'Delete':
+        return 'Del'
+      case 'Backspace':
+        return '⌫'
+      case 'Escape':
+        return 'Esc'
+      case ' ':
+        return 'Space'
+      default:
+        return key.toUpperCase()
     }
   }
 

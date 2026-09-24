@@ -82,10 +82,7 @@
         {{ t('thumbnailBar.title') }} ({{ canvasImages.length }})
       </span>
 
-      <div
-        v-if="collage.selectedImageIds.length > 0"
-        class="shrink-0 flex items-center gap-2"
-      >
+      <div v-if="collage.selectedImageIds.length > 0" class="shrink-0 flex items-center gap-2">
         <span class="text-xs text-muted dark:text-muted-light whitespace-nowrap">
           {{ t('thumbnailBar.selected', { count: collage.selectedImageIds.length }) }}
         </span>

@@ -9,7 +9,11 @@ export interface PdfOptions {
 // Pixel → mm bei 96 DPI (Standard-Bildschirmauflösung)
 const PX_TO_MM = 25.4 / 96
 
-export async function exportToPdf({ canvas, filename, quality: _quality = 0.95 }: PdfOptions): Promise<void> {
+export async function exportToPdf({
+  canvas,
+  filename,
+  quality: _quality = 0.95,
+}: PdfOptions): Promise<void> {
   const widthPx = canvas.width
   const heightPx = canvas.height
   const widthMm = widthPx * PX_TO_MM

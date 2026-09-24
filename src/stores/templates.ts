@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type { CollageText, TemplateImage } from '@/types'
 
 export interface Template {
   id: string
@@ -19,8 +20,8 @@ export interface Template {
       gridSize: number
     }
     layout: string
-    images: any[]
-    texts: any[]
+    images: TemplateImage[]
+    texts: CollageText[]
   }
 }
 

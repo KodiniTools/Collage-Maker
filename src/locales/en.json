@@ -105,15 +105,12 @@
     "bottomCta": {
       "title": "Ready to Get Started?",
       "subtitle": "Create your first collage now - free and without registration."
-    },
-    "footer": "Image Collage Maker - Free and Ad-Free"
+    }
   },
   "editor": {
     "donate": "Donate with PayPal",
     "tools": "Tools",
     "settings": "Settings",
-    "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar",
     "tabSelection": "Selection",
     "tabCanvas": "Canvas",
     "tabExport": "Export",
@@ -308,12 +305,10 @@
     "title": "Images",
     "empty": "No images uploaded",
     "remove": "Remove",
-    "selected": "Selected",
-    "dragToCanvas": "Drag the image to the canvas to add it"
+    "selected": "Selected"
   },
   "thumbnailBar": {
     "title": "Images on canvas",
-    "clickToSelect": "Click to select",
     "imageAlt": "Image {index}",
     "remove": "Remove image",
     "selected": "{count} selected",
@@ -476,7 +471,6 @@
     "noSelection": "No text selected",
     "content": "Text Content",
     "fontFamily": "Font Family",
-    "fontVariant": "Font Variant",
     "fontSize": "Font Size",
     "letterSpacing": "Letter Spacing",
     "fontWeight": "Font Weight",
@@ -510,7 +504,6 @@
     "namePlaceholder": "e.g. My Birthday Collage",
     "descriptionPlaceholder": "Optional: Template description",
     "nameRequired": "Please enter a name for the template",
-    "confirmLoad": "Do you want to load this template? Your current work will be lost.",
     "confirmDelete": "Do you really want to delete this template?",
     "saveSuccess": "Template saved",
     "saveError": "Could not save template – storage is full. Please reduce the number or size of images.",
