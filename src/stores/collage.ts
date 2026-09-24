@@ -8,15 +8,23 @@ import type {
   BackgroundImageFit,
   BackgroundImageSettings,
   CanvasBorderSettings,
-  TemplateCollageState,
-  TemplateImage,
 } from '@/types'
 import { computeLayout } from '@/lib/layouts'
 import { useHistoryStore } from '@/stores/history'
 import { useToastStore } from '@/stores/toast'
-import { UNDO_DEBOUNCE_MS, TEMPLATE_MAX_IMAGE_PX, TEMPLATE_JPEG_QUALITY } from '@/config/constants'
-import { urlToCompressedDataUrl } from '@/utils/imageCompression'
+import { UNDO_DEBOUNCE_MS } from '@/config/constants'
 import { i18n } from '@/i18n'
+import type { CollageContext } from './collage/context'
+import {
+  createDefaultBackgroundImage,
+  createDefaultSettings,
+  createImageDefaults,
+} from './collage/defaults'
+import { useGallery } from './collage/useGallery'
+import { useArrange } from './collage/useArrange'
+import { useTexts } from './collage/useTexts'
+import { useCanvasResize } from './collage/useCanvasResize'
+import { useTemplateIO } from './collage/useTemplateIO'
 
 export const useCollageStore = defineStore('collage', () => {
   const images = ref<CollageImage[]>([])
@@ -30,30 +38,7 @@ export const useCollageStore = defineStore('collage', () => {
   const canvasZoom = ref(1) // Zoom-Level für Canvas-Anzeige (1 = 100%)
   const isBackgroundSelected = ref(false) // Ist das Hintergrundbild ausgewählt?
 
-  const settings = ref<CollageSettings>({
-    width: 700,
-    height: 740,
-    backgroundColor: '#ffffff',
-    backgroundImage: {
-      url: null,
-      fit: 'cover',
-      opacity: 1,
-      brightness: 100,
-      contrast: 100,
-      saturation: 100,
-      blur: 0,
-    },
-    layout: 'grid-3x3',
-    gridEnabled: false,
-    gridSize: 50,
-    border: {
-      enabled: false,
-      width: 12,
-      color: '#000000',
-      style: 'solid',
-    },
-    cornerRadius: 0,
-  })
+  const settings = ref<CollageSettings>(createDefaultSettings())
 
   // History Store für Undo/Redo
   const historyStore = useHistoryStore()
@@ -197,36 +182,7 @@ export const useCollageStore = defineStore('collage', () => {
         y: 50,
         width: 200,
         height: 200,
-        rotation: 0,
-        opacity: 1,
-        borderRadius: 0,
-        borderEnabled: false,
-        borderWidth: 4,
-        borderColor: '#000000',
-        borderStyle: 'solid' as const,
-        borderShadowEnabled: false,
-        borderShadowOffsetX: 3,
-        borderShadowOffsetY: 3,
-        borderShadowBlur: 6,
-        borderShadowColor: '#000000',
-        shadowEnabled: false,
-        shadowOffsetX: 5,
-        shadowOffsetY: 5,
-        shadowBlur: 10,
-        shadowColor: '#000000',
-        // Bildbearbeitungs-Filter (Standard = keine Anpassung)
-        brightness: 100,
-        contrast: 100,
-        highlights: 0,
-        shadows: 0,
-        saturation: 100,
-        warmth: 0,
-        sharpness: 0,
-        // Transformation (Standard = keine Spiegelung/Neigung)
-        flipHorizontal: false,
-        flipVertical: false,
-        skewX: 0,
-        skewY: 0,
+        ...createImageDefaults(),
       }
 
       // Füge Galerie-Template hinzu (für wiederholte Verwendung)
@@ -248,9 +204,7 @@ export const useCollageStore = defineStore('collage', () => {
     })
 
     // Layout sofort anwenden (mit Standard-Dimensionen, wird nach img.onload nochmal korrigiert)
-    if (settings.value.layout !== 'freestyle') {
-      applyLayout(settings.value.layout, true)
-    }
+    reapplyLayout()
   }
 
   function removeImage(id: string, skipUndo = false) {
@@ -378,12 +332,15 @@ export const useCollageStore = defineStore('collage', () => {
   // zuverlässig die Effekte des vorherigen (z. B. Polaroid → Abgerundet
   // blendet den weißen Rahmen wieder aus). Die eigentliche Bildbearbeitung
   // (Filter, Position, Rotation) bleibt unangetastet.
-  function applyStylePreset(effects: Partial<CollageImage>) {
-    saveStateForUndo()
-    const hasSelection = selectedImageIds.value.length > 0
-    const targets = hasSelection
+  function effectTargets(): CollageImage[] {
+    return selectedImageIds.value.length > 0
       ? images.value.filter((img) => selectedImageIds.value.includes(img.id))
       : images.value.filter((img) => img.isGalleryTemplate !== true)
+  }
+
+  function applyStylePreset(effects: Partial<CollageImage>) {
+    saveStateForUndo()
+    const targets = effectTargets()
     targets.forEach((img) => Object.assign(img, effects))
     if (targets.length > 0) notify('toast.presetApplied')
   }
@@ -393,184 +350,11 @@ export const useCollageStore = defineStore('collage', () => {
   // unangetastet (Object.assign merged). Wirkungsbereich: ausgewählte
   // Canvas-Bilder, sonst alle. Zeigt einen Toast mit „Rückgängig".
   function applyFrameTemplate(effects: Partial<CollageImage>) {
-    const hasSelection = selectedImageIds.value.length > 0
-    const targets = hasSelection
-      ? images.value.filter((img) => selectedImageIds.value.includes(img.id))
-      : images.value.filter((img) => img.isGalleryTemplate !== true)
+    const targets = effectTargets()
     if (targets.length === 0) return
     saveStateForUndo()
     targets.forEach((img) => Object.assign(img, effects))
     showUndoToast('toast.frameApplied')
-  }
-
-  // ========== Galerie-Auswahl Funktionen ==========
-
-  // Galerie-Bild zur Auswahl hinzufügen/entfernen
-  function toggleGallerySelection(id: string) {
-    const index = selectedGalleryIds.value.indexOf(id)
-    if (index !== -1) {
-      selectedGalleryIds.value.splice(index, 1)
-    } else {
-      selectedGalleryIds.value.push(id)
-    }
-  }
-
-  // Alle Galerie-Bilder auswählen
-  function selectAllGalleryImages() {
-    const galleryImages = images.value.filter((img) => img.isGalleryTemplate === true)
-    selectedGalleryIds.value = galleryImages.map((img) => img.id)
-  }
-
-  // Alle Galerie-Bilder abwählen
-  function deselectAllGalleryImages() {
-    selectedGalleryIds.value = []
-  }
-
-  // Prüfen, ob ein Galerie-Bild ausgewählt ist
-  function isGalleryImageSelected(id: string): boolean {
-    return selectedGalleryIds.value.includes(id)
-  }
-
-  // Ausgewählte Galerie-Bilder zum Canvas hinzufügen
-  function addSelectedGalleryToCanvas() {
-    saveStateForUndo()
-    const selectedGalleryImages = images.value.filter(
-      (img) => img.isGalleryTemplate === true && selectedGalleryIds.value.includes(img.id)
-    )
-
-    if (selectedGalleryImages.length === 0) return
-
-    const newIds: string[] = []
-
-    selectedGalleryImages.forEach((sourceImage, index) => {
-      const newId = crypto.randomUUID()
-      const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
-
-      // Erstelle Canvas-Instanz mit Versatz für jedes Bild
-      images.value.push({
-        id: newId,
-        file: sourceImage.file,
-        url: sourceImage.url,
-        x: 50 + index * 20,
-        y: 50 + index * 20,
-        width: sourceImage.width,
-        height: sourceImage.height,
-        rotation: 0,
-        zIndex: maxZ + 1 + index,
-        opacity: 1,
-        borderRadius: 0,
-        borderEnabled: false,
-        borderWidth: 4,
-        borderColor: '#000000',
-        borderStyle: 'solid',
-        borderShadowEnabled: false,
-        borderShadowOffsetX: 3,
-        borderShadowOffsetY: 3,
-        borderShadowBlur: 6,
-        borderShadowColor: '#000000',
-        shadowEnabled: false,
-        shadowOffsetX: 5,
-        shadowOffsetY: 5,
-        shadowBlur: 10,
-        shadowColor: '#000000',
-        brightness: 100,
-        contrast: 100,
-        highlights: 0,
-        shadows: 0,
-        saturation: 100,
-        warmth: 0,
-        sharpness: 0,
-        flipHorizontal: false,
-        flipVertical: false,
-        skewX: 0,
-        skewY: 0,
-        isGalleryTemplate: false,
-        sourceId: sourceImage.id,
-      })
-
-      newIds.push(newId)
-    })
-
-    // Galerie-Auswahl zurücksetzen
-    selectedGalleryIds.value = []
-
-    // Neue Canvas-Bilder auswählen
-    selectedImageIds.value = newIds
-
-    // Layout anwenden wenn nicht Freestyle
-    if (settings.value.layout !== 'freestyle') {
-      applyLayout(settings.value.layout, true)
-    }
-
-    if (newIds.length > 0) notify('toast.galleryAddedToCanvas', { count: newIds.length })
-  }
-
-  // Gehört ein Bild zu einem Galerie-Template? Verknüpfung primär über die
-  // stabile sourceId (übersteht Speichern/Wiederherstellen), mit Fallback auf
-  // die geteilte URL (gleiche Sitzung, alte Speicherstände ohne sourceId).
-  function isRelatedToGalleryImage(img: CollageImage, galleryImage: CollageImage): boolean {
-    return (
-      img.id === galleryImage.id ||
-      img.sourceId === galleryImage.id ||
-      (!!img.url && img.url === galleryImage.url)
-    )
-  }
-
-  // Anzahl der Canvas-Instanzen eines Galerie-Bildes (keine Templates)
-  function countGalleryImageInstances(galleryId: string): number {
-    const galleryImage = images.value.find((img) => img.id === galleryId)
-    if (!galleryImage) return 0
-    return images.value.filter(
-      (img) => img.isGalleryTemplate !== true && isRelatedToGalleryImage(img, galleryImage)
-    ).length
-  }
-
-  // Einzelnes Galerie-Bild entfernen (Template + alle Canvas-Instanzen)
-  function removeGalleryImage(galleryId: string) {
-    saveStateForUndo()
-    const galleryImage = images.value.find((img) => img.id === galleryId)
-    if (!galleryImage) return
-
-    // Template und alle zugehörigen Canvas-Instanzen entfernen
-    const relatedIds = images.value
-      .filter((img) => isRelatedToGalleryImage(img, galleryImage))
-      .map((img) => img.id)
-    relatedIds.forEach((id) => removeImage(id, true))
-
-    // Aus der Galerie-Auswahl entfernen
-    const selIndex = selectedGalleryIds.value.indexOf(galleryId)
-    if (selIndex !== -1) {
-      selectedGalleryIds.value.splice(selIndex, 1)
-    }
-
-    // Layout neu anwenden, damit verbleibende Bilder nachrücken
-    if (settings.value.layout !== 'freestyle') {
-      applyLayout(settings.value.layout, true)
-    }
-  }
-
-  // Ausgewählte Galerie-Bilder entfernen (Template + alle Canvas-Instanzen)
-  function removeSelectedGalleryImages() {
-    saveStateForUndo()
-    const idsToRemove = [...selectedGalleryIds.value]
-
-    idsToRemove.forEach((galleryId) => {
-      const galleryImage = images.value.find((img) => img.id === galleryId)
-      if (galleryImage) {
-        // Finde Template + alle zugehörigen Canvas-Instanzen
-        const relatedIds = images.value
-          .filter((img) => isRelatedToGalleryImage(img, galleryImage))
-          .map((img) => img.id)
-        relatedIds.forEach((id) => removeImage(id, true))
-      }
-    })
-
-    selectedGalleryIds.value = []
-
-    // Layout neu anwenden, damit verbleibende Bilder nachrücken
-    if (settings.value.layout !== 'freestyle') {
-      applyLayout(settings.value.layout, true)
-    }
   }
 
   // ========== Layout Funktionen ==========
@@ -599,15 +383,7 @@ export const useCollageStore = defineStore('collage', () => {
     selectedTextId.value = null
     isBackgroundSelected.value = false
     // Hintergrundbild auch zurücksetzen
-    settings.value.backgroundImage = {
-      url: null,
-      fit: 'cover',
-      opacity: 1,
-      brightness: 100,
-      contrast: 100,
-      saturation: 100,
-      blur: 0,
-    }
+    settings.value.backgroundImage = createDefaultBackgroundImage()
     notify('toast.collageCleared')
   }
 
@@ -615,160 +391,13 @@ export const useCollageStore = defineStore('collage', () => {
     Object.assign(settings.value, updates)
   }
 
-  // Canvasgröße ändern und dabei die platzierten Bilder UND Texte proportional
-  // mitskalieren (Option "Inhalte mitskalieren"). Galerie-Templates bleiben
-  // unberührt (sie liegen nicht auf dem Canvas).
-  function resizeCanvas(newWidth: number, newHeight: number) {
-    // Ungültige Zielgrößen ignorieren (z. B. leeres/„0"-Eingabefeld),
-    // sonst würden Inhalte auf 0 kollabieren.
-    if (
-      !Number.isFinite(newWidth) ||
-      !Number.isFinite(newHeight) ||
-      newWidth <= 0 ||
-      newHeight <= 0
-    ) {
-      return
-    }
-
-    const oldWidth = settings.value.width
-    const oldHeight = settings.value.height
-
-    if (oldWidth > 0 && oldHeight > 0) {
-      const ratioX = newWidth / oldWidth
-      const ratioY = newHeight / oldHeight
-
-      if (ratioX !== 1 || ratioY !== 1) {
-        images.value.forEach((img) => {
-          if (img.isGalleryTemplate === true) return
-          img.x *= ratioX
-          img.y *= ratioY
-          img.width *= ratioX
-          img.height *= ratioY
-        })
-
-        // Schriftgröße über das geometrische Mittel skalieren: identisch zur
-        // Breiten-/Höhenskalierung bei gleichmäßigem Resize und exakt
-        // teleskopierend über Zwischenschritte (fontSize bleibt Float).
-        const fontRatio = Math.sqrt(ratioX * ratioY)
-        texts.value.forEach((txt) => {
-          txt.x *= ratioX
-          txt.y *= ratioY
-          txt.fontSize *= fontRatio
-        })
-      }
-    }
-
-    settings.value.width = newWidth
-    settings.value.height = newHeight
-  }
-
-  // Canvasgröße ändern und dabei die gesamte Komposition (alle Canvas-Bilder
-  // UND Texte) als EINEN Block behandeln: Sie wird mit EINEM einheitlichen
-  // Faktor skaliert (Seitenverhältnisse bleiben erhalten → keine Verzerrung)
-  // und anschließend im Canvas zentriert. Verwendet, wenn "Inhalte
-  // mitskalieren" AUS ist.
-  //
-  // Dadurch bleiben beim Verkleinern (v. a. der Höhe) alle Bilder im Sichtfeld,
-  // die Ränder wirken auf allen vier Seiten ausgewogen (oben=unten, links=
-  // rechts) und schrumpfen mit. Galerie-Templates bleiben unberührt.
-  //
-  // Skalierungsfaktor = Änderung der tatsächlich geänderten Achse (bei reiner
-  // Höhenänderung ratioY, bei reiner Breitenänderung ratioX). So passt der
-  // Inhalt exakt auf die geänderte Achse und die Operation ist umkehrbar
-  // (Slider runter + rauf ⇒ wieder Ausgangszustand). Ändern sich beide Achsen
-  // gleichzeitig ungleichmäßig, dient das geometrische Mittel als Kompromiss.
-  function repositionContent(newWidth: number, newHeight: number) {
-    // Ungültige Zielgrößen ignorieren (z. B. leeres/„0"-Eingabefeld).
-    if (
-      !Number.isFinite(newWidth) ||
-      !Number.isFinite(newHeight) ||
-      newWidth <= 0 ||
-      newHeight <= 0
-    ) {
-      return
-    }
-
-    const oldWidth = settings.value.width
-    const oldHeight = settings.value.height
-
-    if (oldWidth > 0 && oldHeight > 0) {
-      const ratioX = newWidth / oldWidth
-      const ratioY = newHeight / oldHeight
-
-      if (ratioX !== 1 || ratioY !== 1) {
-        // Einheitlicher Skalierungsfaktor (verzerrungsfrei).
-        let scale: number
-        if (ratioX === 1) scale = ratioY
-        else if (ratioY === 1) scale = ratioX
-        else scale = Math.sqrt(ratioX * ratioY)
-
-        // Bounding-Box der Komposition bestimmen (Bilder mit ihrer Fläche,
-        // Texte als Punkt – sie haben im Modell keine Ausdehnung). Galerie-
-        // Templates zählen nicht zur Canvas-Komposition.
-        const contentImages = images.value.filter((img) => img.isGalleryTemplate !== true)
-
-        let minX = Infinity
-        let minY = Infinity
-        let maxX = -Infinity
-        let maxY = -Infinity
-
-        contentImages.forEach((img) => {
-          minX = Math.min(minX, img.x)
-          minY = Math.min(minY, img.y)
-          maxX = Math.max(maxX, img.x + img.width)
-          maxY = Math.max(maxY, img.y + img.height)
-        })
-        texts.value.forEach((txt) => {
-          minX = Math.min(minX, txt.x)
-          minY = Math.min(minY, txt.y)
-          maxX = Math.max(maxX, txt.x)
-          maxY = Math.max(maxY, txt.y)
-        })
-
-        // Nur transformieren, wenn es überhaupt Inhalt gibt.
-        if (Number.isFinite(minX) && Number.isFinite(minY)) {
-          const bboxCenterX = (minX + maxX) / 2
-          const bboxCenterY = (minY + maxY) / 2
-          const targetCenterX = newWidth / 2
-          const targetCenterY = newHeight / 2
-
-          // Jeden Punkt um das Bounding-Box-Zentrum skalieren und das Zentrum
-          // auf die Canvas-Mitte legen (zentrieren).
-          contentImages.forEach((img) => {
-            const cx = img.x + img.width / 2
-            const cy = img.y + img.height / 2
-            const newCx = targetCenterX + (cx - bboxCenterX) * scale
-            const newCy = targetCenterY + (cy - bboxCenterY) * scale
-            img.width *= scale
-            img.height *= scale
-            img.x = newCx - img.width / 2
-            img.y = newCy - img.height / 2
-          })
-
-          texts.value.forEach((txt) => {
-            txt.x = targetCenterX + (txt.x - bboxCenterX) * scale
-            txt.y = targetCenterY + (txt.y - bboxCenterY) * scale
-            txt.fontSize *= scale
-          })
-        }
-      }
-    }
-
-    settings.value.width = newWidth
-    settings.value.height = newHeight
-  }
-
   // Hintergrundbild setzen (von einem Galerie-Bild)
   function setBackgroundImage(imageUrl: string) {
     saveStateForUndo()
     settings.value.backgroundImage = {
+      ...createDefaultBackgroundImage(),
       url: imageUrl,
       fit: settings.value.backgroundImage.fit,
-      opacity: 1,
-      brightness: 100,
-      contrast: 100,
-      saturation: 100,
-      blur: 0,
     }
     notify('toast.backgroundSet')
   }
@@ -819,289 +448,9 @@ export const useCollageStore = defineStore('collage', () => {
     canvasZoom.value = 1
   }
 
-  function duplicateImageToPosition(sourceId: string, x: number, y: number) {
-    saveStateForUndo()
-    const sourceImage = images.value.find((img) => img.id === sourceId)
-    if (!sourceImage) return
-
-    const newId = crypto.randomUUID()
-    const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
-
-    // Erstelle eine Canvas-Instanz (kein Template) an der neuen Position
-    images.value.push({
-      id: newId,
-      file: sourceImage.file,
-      url: sourceImage.url, // Verwende dieselbe URL (keine Duplikation des Blobs nötig)
-      x: x,
-      y: y,
-      width: sourceImage.width,
-      height: sourceImage.height,
-      rotation: 0,
-      zIndex: maxZ + 1,
-      opacity: 1,
-      borderRadius: 0,
-      borderEnabled: false,
-      borderWidth: 4,
-      borderColor: '#000000',
-      borderStyle: 'solid',
-      borderShadowEnabled: false,
-      borderShadowOffsetX: 3,
-      borderShadowOffsetY: 3,
-      borderShadowBlur: 6,
-      borderShadowColor: '#000000',
-      shadowEnabled: false,
-      shadowOffsetX: 5,
-      shadowOffsetY: 5,
-      shadowBlur: 10,
-      shadowColor: '#000000',
-      // Bildbearbeitungs-Filter (Standard = keine Anpassung)
-      brightness: 100,
-      contrast: 100,
-      highlights: 0,
-      shadows: 0,
-      saturation: 100,
-      warmth: 0,
-      sharpness: 0,
-      // Transformation (Standard = keine Spiegelung/Neigung)
-      flipHorizontal: false,
-      flipVertical: false,
-      skewX: 0,
-      skewY: 0,
-      // Als Canvas-Instanz markieren (kein Galerie-Template)
-      isGalleryTemplate: false,
-      // Verknüpfung zum Galerie-Template beibehalten (Instanz oder Template als Quelle)
-      sourceId: sourceImage.sourceId ?? sourceImage.id,
-    })
-
-    // Selektiere das neue Bild (ersetzt vorherige Auswahl)
-    selectedImageIds.value = [newId]
-  }
-
-  // Ausgewählte Bilder duplizieren (für Ctrl+D)
-  function duplicateSelectedImages() {
-    saveStateForUndo()
-    const imagesToDuplicate = [...selectedImages.value]
-    const newIds: string[] = []
-
-    imagesToDuplicate.forEach((sourceImage) => {
-      const newId = crypto.randomUUID()
-      const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
-
-      // Erstelle Kopie mit Versatz
-      images.value.push({
-        ...sourceImage,
-        id: newId,
-        x: sourceImage.x + 20,
-        y: sourceImage.y + 20,
-        zIndex: maxZ + 1,
-        isGalleryTemplate: false,
-      })
-
-      newIds.push(newId)
-    })
-
-    // Neue Bilder auswählen
-    if (newIds.length > 0) {
-      selectedImageIds.value = newIds
-      notify('toast.imageDuplicated', { count: newIds.length })
-    }
-  }
-
-  // Ausgewählte Bilder nach vorne bringen
-  function bringSelectedToFront() {
-    if (selectedImageIds.value.length === 0) return
-    saveStateForUndo()
-
-    const maxZ = Math.max(...images.value.map((img) => img.zIndex), 0)
-    selectedImageIds.value.forEach((id, index) => {
-      updateImage(id, { zIndex: maxZ + 1 + index })
-    })
-    notify('toast.broughtToFront')
-  }
-
-  // Canvas-Bilder anhand einer sortierten ID-Liste neu stapeln.
-  // orderedIds ist von hinten (Index 0 = unterste Ebene) nach vorne sortiert.
-  function reorderCanvasImages(orderedIds: string[]) {
-    if (orderedIds.length === 0) return
-    saveStateForUndo()
-    orderedIds.forEach((id, index) => {
-      updateImage(id, { zIndex: index })
-    })
-  }
-
-  // Ausgewählte Bilder nach hinten senden
-  function sendSelectedToBack() {
-    if (selectedImageIds.value.length === 0) return
-    saveStateForUndo()
-
-    const minZ = Math.min(...images.value.map((img) => img.zIndex), 0)
-    selectedImageIds.value.forEach((id, index) => {
-      updateImage(id, { zIndex: minZ - 1 - index })
-    })
-    notify('toast.sentToBack')
-  }
-
-  // Ausgewählte Bilder an der gemeinsamen Bounding-Box ausrichten
-  type AlignMode = 'left' | 'center-h' | 'right' | 'top' | 'middle-v' | 'bottom'
-  function alignSelectedImages(mode: AlignMode) {
-    const imgs = selectedImages.value
-    if (imgs.length < 2) return
-    saveStateForUndo()
-
-    const minX = Math.min(...imgs.map((i) => i.x))
-    const minY = Math.min(...imgs.map((i) => i.y))
-    const maxRight = Math.max(...imgs.map((i) => i.x + i.width))
-    const maxBottom = Math.max(...imgs.map((i) => i.y + i.height))
-    const centerX = (minX + maxRight) / 2
-    const centerY = (minY + maxBottom) / 2
-
-    imgs.forEach((img) => {
-      switch (mode) {
-        case 'left':
-          updateImage(img.id, { x: minX })
-          break
-        case 'center-h':
-          updateImage(img.id, { x: centerX - img.width / 2 })
-          break
-        case 'right':
-          updateImage(img.id, { x: maxRight - img.width })
-          break
-        case 'top':
-          updateImage(img.id, { y: minY })
-          break
-        case 'middle-v':
-          updateImage(img.id, { y: centerY - img.height / 2 })
-          break
-        case 'bottom':
-          updateImage(img.id, { y: maxBottom - img.height })
-          break
-      }
-    })
-    notify('toast.aligned')
-  }
-
-  // Ausgewählte Bilder gleichmäßig verteilen (gleiche Abstände zwischen den Kanten).
-  // Benötigt mindestens 3 Bilder; erstes und letztes bleiben an ihrer Position.
-  function distributeSelectedImages(axis: 'horizontal' | 'vertical') {
-    const imgs = [...selectedImages.value]
-    if (imgs.length < 3) return
-    saveStateForUndo()
-
-    if (axis === 'horizontal') {
-      imgs.sort((a, b) => a.x - b.x)
-      const minLeft = imgs[0].x
-      const maxRight = Math.max(...imgs.map((i) => i.x + i.width))
-      const totalWidth = imgs.reduce((sum, i) => sum + i.width, 0)
-      const gap = (maxRight - minLeft - totalWidth) / (imgs.length - 1)
-      let cursor = minLeft
-      imgs.forEach((img) => {
-        updateImage(img.id, { x: cursor })
-        cursor += img.width + gap
-      })
-    } else {
-      imgs.sort((a, b) => a.y - b.y)
-      const minTop = imgs[0].y
-      const maxBottom = Math.max(...imgs.map((i) => i.y + i.height))
-      const totalHeight = imgs.reduce((sum, i) => sum + i.height, 0)
-      const gap = (maxBottom - minTop - totalHeight) / (imgs.length - 1)
-      let cursor = minTop
-      imgs.forEach((img) => {
-        updateImage(img.id, { y: cursor })
-        cursor += img.height + gap
-      })
-    }
-    notify('toast.distributed')
-  }
-
-  // Ausgewählte Bilder um Grad drehen
-  function rotateSelectedImages(degrees: number) {
-    saveStateForUndo()
-    selectedImageIds.value.forEach((id) => {
-      const img = images.value.find((i) => i.id === id)
-      if (img) {
-        updateImage(id, { rotation: (img.rotation + degrees) % 360 })
-      }
-    })
-  }
-
-  // Ausgewählte Bilder verschieben
-  function moveSelectedImages(dx: number, dy: number) {
-    saveStateForUndoDebounced()
-    selectedImageIds.value.forEach((id) => {
-      const img = images.value.find((i) => i.id === id)
-      if (img) {
-        updateImage(id, { x: img.x + dx, y: img.y + dy })
-      }
-    })
-  }
-
-  // Ausgewählten Text verschieben
-  function moveSelectedText(dx: number, dy: number) {
-    saveStateForUndoDebounced()
-    if (selectedTextId.value) {
-      const txt = texts.value.find((t) => t.id === selectedTextId.value)
-      if (txt) {
-        updateText(selectedTextId.value, { x: txt.x + dx, y: txt.y + dy })
-      }
-    }
-  }
-
   // Grid umschalten
   function toggleGrid() {
     settings.value.gridEnabled = !settings.value.gridEnabled
-  }
-
-  // Text-Funktionen
-  function addText(text: string = 'Neuer Text') {
-    saveStateForUndo()
-    const maxZ = Math.max(
-      ...images.value.map((img) => img.zIndex),
-      ...texts.value.map((txt) => txt.zIndex),
-      0
-    )
-
-    const newText: CollageText = {
-      id: crypto.randomUUID(),
-      text,
-      x: settings.value.width / 2 - 100,
-      y: settings.value.height / 2,
-      fontSize: 48,
-      fontFamily: 'Arial',
-      color: '#000000',
-      rotation: 0,
-      zIndex: maxZ + 1,
-      fontWeight: 400,
-      fontStyle: 'normal',
-      textAlign: 'center',
-      shadowEnabled: false,
-      shadowOffsetX: 2,
-      shadowOffsetY: 2,
-      shadowBlur: 4,
-      shadowColor: '#000000',
-      // Textumrandung (Stroke) Defaults
-      strokeEnabled: false,
-      strokeColor: '#ffffff',
-      strokeWidth: 2,
-      // Buchstabenabstand Default
-      letterSpacing: 0,
-    }
-
-    texts.value.push(newText)
-    selectedTextId.value = newText.id
-    selectedImageIds.value = []
-    notify('toast.textAdded')
-  }
-
-  function removeText(id: string) {
-    saveStateForUndo()
-    const index = texts.value.findIndex((txt) => txt.id === id)
-    if (index !== -1) {
-      texts.value.splice(index, 1)
-    }
-    if (selectedTextId.value === id) {
-      selectedTextId.value = null
-    }
-    notify('toast.textDeleted')
   }
 
   function updateText(id: string, updates: Partial<CollageText>) {
@@ -1111,189 +460,39 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
-  function selectText(id: string | null) {
-    selectedTextId.value = id
-    if (id !== null) {
-      selectedImageIds.value = []
+  function reapplyLayout() {
+    if (settings.value.layout !== 'freestyle') {
+      applyLayout(settings.value.layout, true)
     }
   }
 
-  // Ausgewählten Text um Grad drehen
-  function rotateText(id: string, degrees: number) {
-    saveStateForUndo()
-    const txt = texts.value.find((t) => t.id === id)
-    if (txt) {
-      updateText(id, { rotation: (txt.rotation + degrees) % 360 })
-    }
+  // ========== Teilbereiche ==========
+
+  const ctx: CollageContext = {
+    images,
+    texts,
+    settings,
+    selectedImageIds,
+    selectedGalleryIds,
+    selectedTextId,
+    isBackgroundSelected,
+    selectedImages,
+    saveStateForUndo,
+    saveStateForUndoDebounced,
+    notify,
+    showUndoToast,
+    updateImage,
+    updateText,
+    removeImage,
+    applyLayout,
+    reapplyLayout,
   }
 
-  // Text über alle Bilder und Texte nach vorne bringen
-  function bringTextToFront(id: string) {
-    saveStateForUndo()
-    const maxZ = Math.max(
-      ...images.value.map((img) => img.zIndex),
-      ...texts.value.map((t) => t.zIndex),
-      0
-    )
-    updateText(id, { zIndex: maxZ + 1 })
-    notify('toast.broughtToFront')
-  }
-
-  // Text hinter alle Bilder und Texte senden
-  function sendTextToBack(id: string) {
-    saveStateForUndo()
-    const minZ = Math.min(
-      ...images.value.map((img) => img.zIndex),
-      ...texts.value.map((t) => t.zIndex),
-      0
-    )
-    updateText(id, { zIndex: minZ - 1 })
-    notify('toast.sentToBack')
-  }
-
-  // Template-Methoden (NEU für Vorlagenbibliothek)
-  async function saveAsTemplate(
-    name: string,
-    description: string,
-    options?: { maxImagePx?: number; quality?: number }
-  ) {
-    const maxImagePx = options?.maxImagePx ?? TEMPLATE_MAX_IMAGE_PX
-    const jpegQuality = options?.quality ?? TEMPLATE_JPEG_QUALITY
-    // Screenshot des aktuellen Canvas erstellen (als Thumbnail)
-    const canvas = document.querySelector('canvas')
-    let thumbnail = ''
-    if (canvas) {
-      try {
-        thumbnail = canvas.toDataURL('image/jpeg', 0.3)
-      } catch (error) {
-        console.warn('Could not create thumbnail:', error)
-      }
-    }
-
-    // Bilder dauerhaft einbetten: Blob-URLs und File-Objekte überleben den
-    // localStorage nicht. Deshalb jedes Bild als komprimierte Data-URL ablegen.
-    // Pro eindeutiger URL nur einmal komprimieren (Galerie-Template + Canvas-
-    // Instanzen teilen sich dieselbe URL).
-    const dataUrlByUrl = new Map<string, string>()
-    for (const img of images.value) {
-      if (img.url && !dataUrlByUrl.has(img.url)) {
-        try {
-          dataUrlByUrl.set(img.url, await urlToCompressedDataUrl(img.url, maxImagePx, jpegQuality))
-        } catch (error) {
-          console.warn('Could not embed template image:', error)
-        }
-      }
-    }
-
-    const embeddedImages = images.value.map((img) => {
-      // file/url werden nicht persistiert; das Bild wird beim Laden aus dataUrl
-      // rekonstruiert.
-
-      const { file: _file, url: _url, ...rest } = img
-      return {
-        ...rest,
-        dataUrl: dataUrlByUrl.get(img.url) ?? '',
-      }
-    })
-
-    return {
-      id: `template-user-${Date.now()}`,
-      name,
-      description,
-      thumbnail,
-      category: 'user' as const,
-      createdAt: Date.now(),
-      collageState: {
-        settings: { ...settings.value },
-        layout: settings.value.layout,
-        images: embeddedImages,
-        texts: texts.value.map((txt) => ({ ...txt })),
-      },
-    }
-  }
-
-  function loadFromTemplate(template: { collageState?: TemplateCollageState }) {
-    // Snapshot sichern, damit das Anwenden einer Vorlage rückgängig gemacht
-    // werden kann (Strg+Z / „Rückgängig"-Toast) und keine Arbeit verloren geht.
-    saveStateForUndo()
-
-    const state = template.collageState ?? {}
-    const templateImages = Array.isArray(state.images) ? state.images : []
-    const templateTexts = Array.isArray(state.texts) ? state.texts : []
-    // Enthält die Vorlage eigene Bilder/Texte (gespeicherte Collage) oder ist
-    // sie ein reines Leinwand-Preset (vordefinierte Vorlagen: Größe/Layout/
-    // Hintergrund, aber kein Inhalt)?
-    const templateHasContent = templateImages.length > 0 || templateTexts.length > 0
-
-    // Lade Template-Einstellungen
-    if (template.collageState && template.collageState.settings) {
-      const ts = template.collageState.settings
-
-      // Aktualisiere Settings einzeln, um Reaktivität zu erhalten
-      settings.value.width = ts.width ?? 700
-      settings.value.height = ts.height ?? 740
-      settings.value.backgroundColor = ts.backgroundColor ?? '#ffffff'
-      settings.value.layout = (ts.layout as LayoutType | undefined) ?? 'freestyle'
-      settings.value.gridEnabled = ts.gridEnabled ?? false
-      settings.value.gridSize = ts.gridSize ?? 50
-
-      // Canvas-Rahmen mit Defaults
-      settings.value.border = {
-        enabled: ts.border?.enabled ?? false,
-        width: ts.border?.width ?? 12,
-        color: ts.border?.color ?? '#000000',
-        style: ts.border?.style ?? 'solid',
-      }
-      settings.value.cornerRadius = ts.cornerRadius ?? 0
-
-      // BackgroundImage mit Defaults
-      if (ts.backgroundImage) {
-        settings.value.backgroundImage.url = ts.backgroundImage.url ?? null
-        settings.value.backgroundImage.fit = ts.backgroundImage.fit ?? 'cover'
-        settings.value.backgroundImage.opacity = ts.backgroundImage.opacity ?? 1
-        settings.value.backgroundImage.brightness = ts.backgroundImage.brightness ?? 100
-        settings.value.backgroundImage.contrast = ts.backgroundImage.contrast ?? 100
-        settings.value.backgroundImage.saturation = ts.backgroundImage.saturation ?? 100
-        settings.value.backgroundImage.blur = ts.backgroundImage.blur ?? 0
-      } else {
-        // Reset backgroundImage zu Defaults
-        settings.value.backgroundImage.url = null
-        settings.value.backgroundImage.fit = 'cover'
-        settings.value.backgroundImage.opacity = 1
-        settings.value.backgroundImage.brightness = 100
-        settings.value.backgroundImage.contrast = 100
-        settings.value.backgroundImage.saturation = 100
-        settings.value.backgroundImage.blur = 0
-      }
-    }
-
-    if (templateHasContent) {
-      // Vollständige Collage-Vorlage: aktuellen Inhalt durch den der Vorlage
-      // ersetzen. Dank des Undo-Snapshots oben ist auch das rückgängig-fähig.
-      selectedImageIds.value = []
-      selectedTextId.value = null
-      isBackgroundSelected.value = false
-      images.value = templateImages.map((img: TemplateImage) => {
-        const { dataUrl, ...rest } = img
-        return {
-          ...rest,
-          // Eingebettete Data-URL als Bildquelle nutzen (überlebt Reload);
-          // Fallback auf eine ggf. vorhandene url.
-          url: dataUrl || rest.url || '',
-          // File-Referenz kann nicht persistiert werden.
-          file: rest.file ?? (null as unknown as File),
-        }
-      }) as CollageImage[]
-      texts.value = templateTexts.map((txt: CollageText) => ({ ...txt })) as CollageText[]
-    } else {
-      // Reines Leinwand-Preset: hochgeladene Bilder und Texte BEHALTEN, damit
-      // die Arbeit ohne Verlust weitergeht. Nur das Layout auf die vorhandenen
-      // Bilder neu anwenden (skipUndo, Snapshot wurde bereits erstellt).
-      if (settings.value.layout !== 'freestyle') {
-        applyLayout(settings.value.layout, true)
-      }
-    }
-  }
+  const gallery = useGallery(ctx)
+  const arrange = useArrange(ctx)
+  const textActions = useTexts(ctx)
+  const canvasResize = useCanvasResize(ctx)
+  const templateIO = useTemplateIO(ctx)
 
   return {
     images,
@@ -1327,28 +526,28 @@ export const useCollageStore = defineStore('collage', () => {
     isImageSelected,
     // Galerie-Auswahl
     selectedGalleryIds,
-    toggleGallerySelection,
-    selectAllGalleryImages,
-    deselectAllGalleryImages,
-    isGalleryImageSelected,
-    addSelectedGalleryToCanvas,
-    removeSelectedGalleryImages,
-    removeGalleryImage,
-    countGalleryImageInstances,
+    toggleGallerySelection: gallery.toggleGallerySelection,
+    selectAllGalleryImages: gallery.selectAllGalleryImages,
+    deselectAllGalleryImages: gallery.deselectAllGalleryImages,
+    isGalleryImageSelected: gallery.isGalleryImageSelected,
+    addSelectedGalleryToCanvas: gallery.addSelectedGalleryToCanvas,
+    removeSelectedGalleryImages: gallery.removeSelectedGalleryImages,
+    removeGalleryImage: gallery.removeGalleryImage,
+    countGalleryImageInstances: gallery.countGalleryImageInstances,
     // Text-Funktionen
-    addText,
-    removeText,
+    addText: textActions.addText,
+    removeText: textActions.removeText,
     updateText,
-    selectText,
-    rotateText,
-    bringTextToFront,
-    sendTextToBack,
+    selectText: textActions.selectText,
+    rotateText: textActions.rotateText,
+    bringTextToFront: textActions.bringTextToFront,
+    sendTextToBack: textActions.sendTextToBack,
     // Layout & Einstellungen
     applyLayout,
     clearCollage,
     updateSettings,
-    resizeCanvas,
-    repositionContent,
+    resizeCanvas: canvasResize.resizeCanvas,
+    repositionContent: canvasResize.repositionContent,
     // Hintergrundbild
     isBackgroundSelected,
     setBackgroundImage,
@@ -1360,19 +559,19 @@ export const useCollageStore = defineStore('collage', () => {
     setLockAspectRatio,
     setCanvasZoom,
     resetCanvasView,
-    duplicateImageToPosition,
-    duplicateSelectedImages,
-    bringSelectedToFront,
-    sendSelectedToBack,
-    reorderCanvasImages,
-    alignSelectedImages,
-    distributeSelectedImages,
-    rotateSelectedImages,
-    moveSelectedImages,
-    moveSelectedText,
+    duplicateImageToPosition: arrange.duplicateImageToPosition,
+    duplicateSelectedImages: arrange.duplicateSelectedImages,
+    bringSelectedToFront: arrange.bringSelectedToFront,
+    sendSelectedToBack: arrange.sendSelectedToBack,
+    reorderCanvasImages: arrange.reorderCanvasImages,
+    alignSelectedImages: arrange.alignSelectedImages,
+    distributeSelectedImages: arrange.distributeSelectedImages,
+    rotateSelectedImages: arrange.rotateSelectedImages,
+    moveSelectedImages: arrange.moveSelectedImages,
+    moveSelectedText: arrange.moveSelectedText,
     toggleGrid,
-    saveAsTemplate,
-    loadFromTemplate,
+    saveAsTemplate: templateIO.saveAsTemplate,
+    loadFromTemplate: templateIO.loadFromTemplate,
     // Undo/Redo
     undo,
     redo,
