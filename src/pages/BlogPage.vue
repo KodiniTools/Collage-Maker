@@ -231,10 +231,7 @@
           </RouterLink>
 
           <div class="flex items-center gap-2 sm:gap-6">
-            <RouterLink
-              to="/blog"
-              class="text-sm sm:text-base text-accent font-semibold"
-            >
+            <RouterLink to="/blog" class="text-sm sm:text-base text-accent font-semibold">
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
@@ -287,7 +284,9 @@
         <div
           class="bg-white/60 dark:bg-navy/40 border border-muted/20 dark:border-white/10 rounded-2xl p-6"
         >
-          <h2 class="text-sm font-semibold uppercase tracking-widest text-muted dark:text-muted-light mb-4">
+          <h2
+            class="text-sm font-semibold uppercase tracking-widest text-muted dark:text-muted-light mb-4"
+          >
             {{ hero.toc }}
           </h2>
           <ol class="space-y-1">

@@ -34,7 +34,7 @@ export const useHistoryStore = defineStore('history', () => {
     return {
       // Entferne File-Objekte aus dem Snapshot (nicht serialisierbar)
       images: images.map((img) => {
-        const { file, ...rest } = img
+        const { file: _file, ...rest } = img
         return rest
       }),
       texts: JSON.parse(JSON.stringify(texts)),

@@ -165,9 +165,19 @@ describe('computeLayout', () => {
 
     it('does not throw with 1 image for any layout type', () => {
       const layouts = [
-        'grid-2x2', 'grid-3x3', 'grid-2x3', 'magazine', 'spotlight',
-        'hero', 'sidebar', 'mosaic', 'diagonal', 'panorama', 'focus',
-        'triptych', 'masonry',
+        'grid-2x2',
+        'grid-3x3',
+        'grid-2x3',
+        'magazine',
+        'spotlight',
+        'hero',
+        'sidebar',
+        'mosaic',
+        'diagonal',
+        'panorama',
+        'focus',
+        'triptych',
+        'masonry',
       ] as const
       for (const layout of layouts) {
         expect(() => computeLayout(layout, makeImgs(1), W, H)).not.toThrow()

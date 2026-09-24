@@ -1,11 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { relinkGalleryInstances, type SavedImage } from '@/composables/useAutoSave'
 
-function savedImg(
-  id: string,
-  dataUrl: string,
-  overrides: Partial<SavedImage> = {}
-): SavedImage {
+function savedImg(id: string, dataUrl: string, overrides: Partial<SavedImage> = {}): SavedImage {
   // Nur die für die Migration relevanten Felder sind hier von Bedeutung.
   return {
     id,

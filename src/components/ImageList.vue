@@ -30,9 +30,7 @@
   // Anzahl der betroffenen Canvas-Instanzen (für den Hinweis im Dialog)
   const deleteInstanceCount = computed(() => {
     if (deleteMode.value === 'single') {
-      return imageToDelete.value
-        ? collage.countGalleryImageInstances(imageToDelete.value.id)
-        : 0
+      return imageToDelete.value ? collage.countGalleryImageInstances(imageToDelete.value.id) : 0
     }
     return selectedGalleryIds.value.reduce(
       (sum, id) => sum + collage.countGalleryImageInstances(id),
@@ -421,7 +419,9 @@
           <div
             class="flex items-center justify-between p-3 sm:p-4 border-b border-muted/20 dark:border-white/10"
           >
-            <h3 class="text-base sm:text-lg font-semibold truncate pr-4 text-slate-900 dark:text-white">
+            <h3
+              class="text-base sm:text-lg font-semibold truncate pr-4 text-slate-900 dark:text-white"
+            >
               {{ t('gallery.preview') }}
             </h3>
             <button
@@ -456,7 +456,9 @@
               <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                 {{ t('gallery.previewTitle') }}
               </p>
-              <p class="font-medium truncate text-slate-800 dark:text-slate-100">{{ previewImage.file.name }}</p>
+              <p class="font-medium truncate text-slate-800 dark:text-slate-100">
+                {{ previewImage.file.name }}
+              </p>
             </div>
 
             <!-- Details Grid -->
@@ -476,7 +478,9 @@
                 <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewSize') }}
                 </p>
-                <p class="font-semibold text-slate-800 dark:text-slate-100">{{ formatFileSize(previewImage.file.size) }}</p>
+                <p class="font-semibold text-slate-800 dark:text-slate-100">
+                  {{ formatFileSize(previewImage.file.size) }}
+                </p>
               </div>
 
               <!-- Dimensions -->
