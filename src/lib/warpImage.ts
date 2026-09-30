@@ -1,4 +1,4 @@
-import type { CornerOffsets, Point } from '@/types'
+import type { CornerOffsets, Point, ShapeQuad } from '@/types'
 
 /**
  * Freies Verzerren (Distort / Eckpunkt-Pinning) für Canvas 2D.
@@ -106,7 +106,7 @@ export function computeTriangleAffine(
 }
 
 /** Bilineare Interpolation der 4 Zielecken bei (u,v) ∈ [0,1]². */
-function bilerp(corners: QuadCorners, u: number, v: number): Point {
+export function bilerp(corners: QuadCorners, u: number, v: number): Point {
   const topX = corners.nw.x + (corners.ne.x - corners.nw.x) * u
   const topY = corners.nw.y + (corners.ne.y - corners.nw.y) * u
   const botX = corners.sw.x + (corners.se.x - corners.sw.x) * u
@@ -211,4 +211,137 @@ export function drawWarpedImage(
       drawTexturedTriangle(ctx, source, sw, sh, s00, s11, s01, d00, d11, d01, expandPx)
     }
   }
+}
+
+// ─── Verzerrung übernehmen ───────────────────────────────────────────────────
+
+const CORNER_KEYS = ['nw', 'ne', 'se', 'sw'] as const
+
+/** Umriss des unverzerrten Bildes (normiert). */
+export const UNIT_SHAPE: ShapeQuad = {
+  nw: { x: 0, y: 0 },
+  ne: { x: 1, y: 0 },
+  se: { x: 1, y: 1 },
+  sw: { x: 0, y: 1 },
+}
+
+export interface BakeLayout {
+  /** Zielecken im lokalen (zentrierten) Bildsystem */
+  corners: QuadCorners
+  /** Bounding-Box der Zielecken im lokalen Bildsystem */
+  minX: number
+  minY: number
+  width: number
+  height: number
+  /** Neuer Umriss, normiert auf die Bounding-Box */
+  shapeQuad: ShapeQuad
+}
+
+/**
+ * Geometrie für das Anwenden ("Backen") einer Verzerrung: neue Bildbox und
+ * Umrissform. Eine bereits vorhandene Umrissform wird mitverzerrt, damit
+ * mehrfaches Anwenden formtreu bleibt.
+ */
+export function computeBakeLayout(
+  width: number,
+  height: number,
+  offsets: CornerOffsets | undefined,
+  shapeQuad?: ShapeQuad
+): BakeLayout {
+  const corners = computeLocalCorners(width, height, offsets)
+  const xs = CORNER_KEYS.map((k) => corners[k].x)
+  const ys = CORNER_KEYS.map((k) => corners[k].y)
+  const minX = Math.min(...xs)
+  const minY = Math.min(...ys)
+  const bw = Math.max(1e-6, Math.max(...xs) - minX)
+  const bh = Math.max(1e-6, Math.max(...ys) - minY)
+
+  const base = shapeQuad ?? UNIT_SHAPE
+  const out = {} as ShapeQuad
+  for (const k of CORNER_KEYS) {
+    const p = bilerp(corners, base[k].x, base[k].y)
+    out[k] = { x: (p.x - minX) / bw, y: (p.y - minY) / bh }
+  }
+  return { corners, minX, minY, width: bw, height: bh, shapeQuad: out }
+}
+
+/** Umrisspunkte einer Box (x, y, w, h) aus normierter Form (Reihenfolge nw, ne, se, sw). */
+export function shapePoints(
+  shape: ShapeQuad,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+): Point[] {
+  return CORNER_KEYS.map((k) => ({ x: x + shape[k].x * width, y: y + shape[k].y * height }))
+}
+
+/**
+ * Polygon um `d` nach innen versetzen (Kanten parallel verschieben, Nachbar-
+ * kanten schneiden). Für nicht schneidbare (parallele) Kanten wird der
+ * Eckpunkt entlang der Winkelhalbierenden-Näherung Richtung Schwerpunkt geschoben.
+ */
+export function insetPolygon(pts: Point[], d: number): Point[] {
+  const n = pts.length
+  if (n < 3 || d === 0) return pts.map((p) => ({ ...p }))
+  // Orientierung: positive Fläche = im Uhrzeigersinn (Canvas-y nach unten)
+  let area = 0
+  for (let i = 0; i < n; i++) {
+    const a = pts[i]
+    const b = pts[(i + 1) % n]
+    area += a.x * b.y - b.x * a.y
+  }
+  const sign = area >= 0 ? 1 : -1
+
+  // Nach innen verschobene Kanten als (Punkt, Richtung)
+  const lines = pts.map((a, i) => {
+    const b = pts[(i + 1) % n]
+    const dx = b.x - a.x
+    const dy = b.y - a.y
+    const len = Math.hypot(dx, dy) || 1
+    // Innen-Normale (für Uhrzeigersinn in y-unten-System: (-dy, dx))
+    const nx = (-dy / len) * sign
+    const ny = (dx / len) * sign
+    return { p: { x: a.x + nx * d, y: a.y + ny * d }, dx, dy }
+  })
+
+  const cx = pts.reduce((s, p) => s + p.x, 0) / n
+  const cy = pts.reduce((s, p) => s + p.y, 0) / n
+  return pts.map((orig, i) => {
+    const l1 = lines[(i - 1 + n) % n]
+    const l2 = lines[i]
+    const den = l1.dx * l2.dy - l1.dy * l2.dx
+    if (Math.abs(den) < 1e-9) {
+      const len = Math.hypot(cx - orig.x, cy - orig.y) || 1
+      return { x: orig.x + ((cx - orig.x) / len) * d, y: orig.y + ((cy - orig.y) / len) * d }
+    }
+    const t = ((l2.p.x - l1.p.x) * l2.dy - (l2.p.y - l1.p.y) * l2.dx) / den
+    return { x: l1.p.x + l1.dx * t, y: l1.p.y + l1.dy * t }
+  })
+}
+
+/**
+ * Pfad eines Polygons mit abgerundeten Ecken. Der Radius wird je Ecke auf die
+ * halbe Länge der kürzeren angrenzenden Kante begrenzt.
+ */
+export function tracePolygonPath(ctx: CanvasRenderingContext2D, pts: Point[], radius = 0): void {
+  const n = pts.length
+  ctx.beginPath()
+  if (n < 3) return
+  const start = { x: (pts[n - 1].x + pts[0].x) / 2, y: (pts[n - 1].y + pts[0].y) / 2 }
+  ctx.moveTo(start.x, start.y)
+  for (let i = 0; i < n; i++) {
+    const prev = pts[(i - 1 + n) % n]
+    const cur = pts[i]
+    const next = pts[(i + 1) % n]
+    const maxR =
+      Math.min(
+        Math.hypot(cur.x - prev.x, cur.y - prev.y),
+        Math.hypot(next.x - cur.x, next.y - cur.y)
+      ) / 2
+    const r = Math.max(0, Math.min(radius, maxR))
+    if (r > 0) ctx.arcTo(cur.x, cur.y, next.x, next.y, r)
+    else ctx.lineTo(cur.x, cur.y)
+  }
+  ctx.closePath()
 }

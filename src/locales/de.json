@@ -413,6 +413,9 @@
     "distortOn": "An",
     "distortOff": "Aus",
     "distortReset": "Verzerrung zurücksetzen",
+    "distortResetShort": "Zurücksetzen",
+    "distortApply": "Übernehmen",
+    "distortApplyHint": "Verzerrung ins Bild übernehmen – danach wirken Rahmen, Schatten und runde Ecken wieder",
     "distortHint": "Eckpunkte einzeln ziehen, um das Bild frei zu verformen.",
     "crop": "Zuschneiden",
     "cropFree": "Frei",
@@ -623,7 +626,9 @@
     "textDeleted": "Text gelöscht",
     "frameApplied": "Rahmen angewendet",
     "undo": "Rückgängig",
-    "dontShowAgain": "Nicht mehr anzeigen"
+    "dontShowAgain": "Nicht mehr anzeigen",
+    "distortApplied": "Verzerrung übernommen",
+    "distortFailed": "Verzerrung konnte nicht übernommen werden"
   },
   "autoSave": {
     "restoreTitle": "Vorherige Arbeit gefunden",

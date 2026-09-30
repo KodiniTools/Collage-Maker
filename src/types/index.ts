@@ -16,6 +16,13 @@ export interface CornerOffsets {
 }
 
 /**
+ * Umrissform eines Bildes nach "Verzerrung übernehmen": die 4 Ecken des
+ * verzerrten Vierecks, normiert auf die Bildbox (0..1). Schatten, runde Ecken
+ * und Rahmen folgen dieser Form statt dem Rechteck.
+ */
+export type ShapeQuad = CornerOffsets
+
+/**
  * Zuschnitt-Rechteck (Crop) in normierten Quell-Koordinaten (0..1, bezogen auf
  * das Originalbild). Ein Rechteck von {0,0,1,1} entspricht dem ungeschnittenen
  * Bild. Kleinere Werte zeigen nur den entsprechenden Ausschnitt.
@@ -71,6 +78,8 @@ export interface CollageImage {
   distortEnabled?: boolean
   // Eck-Versätze im lokalen Bildsystem (Default: alle 0 → unverzerrtes Rechteck)
   cornerOffsets?: CornerOffsets
+  // Umriss einer übernommenen Verzerrung (normiert); fehlt = Rechteck
+  shapeQuad?: ShapeQuad
   // Zuschnitt (Crop): normierter Ausschnitt der Bildquelle. Fehlt der Wert oder
   // ist er {0,0,1,1}, wird das gesamte Bild angezeigt.
   crop?: CropRect

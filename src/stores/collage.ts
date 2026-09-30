@@ -76,6 +76,14 @@ export const useCollageStore = defineStore('collage', () => {
     }
   }
 
+  // Datei-Objekte zu Bild-URLs, die aktuell evtl. kein Bild mehr nutzt (z. B.
+  // die Quelle vor "Verzerrung übernehmen"). Undo/Redo-Snapshots enthalten
+  // keine Files; so erhalten wiederhergestellte Bilder ihr File zurück.
+  const retainedFiles = new Map<string, File>()
+  function retainFile(url: string, file: File | null | undefined) {
+    if (url && file) retainedFiles.set(url, file)
+  }
+
   // Stellt den Zustand aus einem Snapshot wieder her
   function restoreFromSnapshot(snapshot: {
     images: Omit<CollageImage, 'file'>[]
@@ -88,7 +96,7 @@ export const useCollageStore = defineStore('collage', () => {
       const existingImg = images.value.find((img) => img.url === snapshotImg.url)
       return {
         ...snapshotImg,
-        file: existingImg?.file || (null as unknown as File),
+        file: existingImg?.file || retainedFiles.get(snapshotImg.url) || (null as unknown as File),
       } as CollageImage
     })
 
@@ -515,6 +523,7 @@ export const useCollageStore = defineStore('collage', () => {
     removeImageWithUndoToast,
     showUndoToast,
     removeSelectedImages,
+    retainFile,
     updateImage,
     updateSelectedImages,
     applyStylePreset,

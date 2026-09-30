@@ -149,7 +149,7 @@
                 : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
             ]"
             :title="t('imageControls.distortHint')"
-            :aria-pressed="image.distortEnabled"
+            :aria-pressed="!!image.distortEnabled"
             @click="api.toggleDistort"
           >
             {{
@@ -157,16 +157,25 @@
             }}
           </button>
         </div>
-        <p v-if="image.distortEnabled" class="text-xs text-muted dark:text-muted-light mt-2">
-          {{ t('imageControls.distortHint') }}
-        </p>
-        <button
-          v-if="image.distortEnabled && image.cornerOffsets"
-          class="mt-2 text-xs text-accent hover:text-accent-dark transition-colors"
-          @click="api.resetDistort"
-        >
-          ↺ {{ t('imageControls.distortReset') }}
-        </button>
+        <div v-if="image.distortEnabled" class="grid grid-cols-2 gap-1.5 mt-2">
+          <button
+            class="flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-md font-medium transition-colors bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light disabled:opacity-40 disabled:cursor-not-allowed"
+            :disabled="!image.cornerOffsets || api.isApplyingDistort.value"
+            :title="t('imageControls.distortReset')"
+            @click="api.resetDistort"
+          >
+            ↺ {{ t('imageControls.distortResetShort') }}
+          </button>
+          <button
+            class="flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-md font-medium transition-colors bg-accent hover:bg-accent-dark text-accent-ink disabled:opacity-40 disabled:cursor-not-allowed"
+            :disabled="!api.canApplyDistort.value || api.isApplyingDistort.value"
+            :aria-busy="api.isApplyingDistort.value"
+            :title="t('imageControls.distortApplyHint')"
+            @click="api.applyDistort"
+          >
+            ✓ {{ t('imageControls.distortApply') }}
+          </button>
+        </div>
       </div>
 
       <!-- Zuschneiden (Crop): Presets & freies Zuschneiden -->

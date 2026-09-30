@@ -154,7 +154,8 @@ export async function copyImagesInMemory(files: File[]): Promise<File[]> {
 export async function urlToCompressedDataUrl(
   url: string,
   maxSize: number,
-  quality: number
+  quality: number,
+  keepAlpha = false
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -180,7 +181,8 @@ export async function urlToCompressedDataUrl(
         ctx.imageSmoothingEnabled = true
         ctx.imageSmoothingQuality = 'high'
         ctx.drawImage(img, 0, 0, width, height)
-        resolve(canvas.toDataURL('image/jpeg', quality))
+        // PNG, wenn Transparenz erhalten bleiben muss (z. B. übernommene Verzerrung)
+        resolve(keepAlpha ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', quality))
       } catch (e) {
         reject(e)
       }
