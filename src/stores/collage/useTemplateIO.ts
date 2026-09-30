@@ -34,7 +34,10 @@ export function useTemplateIO(ctx: CollageContext) {
     for (const img of images.value) {
       if (img.url && !dataUrlByUrl.has(img.url)) {
         try {
-          dataUrlByUrl.set(img.url, await urlToCompressedDataUrl(img.url, maxImagePx, jpegQuality))
+          dataUrlByUrl.set(
+            img.url,
+            await urlToCompressedDataUrl(img.url, maxImagePx, jpegQuality, !!img.shapeQuad)
+          )
         } catch (error) {
           console.warn('Could not embed template image:', error)
         }

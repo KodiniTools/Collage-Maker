@@ -45,6 +45,7 @@ export type ImageEffectDefaults = Omit<
   | 'zIndex'
   | 'distortEnabled'
   | 'cornerOffsets'
+  | 'shapeQuad'
   | 'crop'
   | 'isGalleryTemplate'
   | 'sourceId'

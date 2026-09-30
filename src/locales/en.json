@@ -413,6 +413,9 @@
     "distortOn": "On",
     "distortOff": "Off",
     "distortReset": "Reset distortion",
+    "distortResetShort": "Reset",
+    "distortApply": "Apply",
+    "distortApplyHint": "Apply the distortion to the image – border, shadow and rounded corners work again afterwards",
     "distortHint": "Drag each corner point individually to freely deform the image.",
     "crop": "Crop",
     "cropFree": "Free",
@@ -623,7 +626,9 @@
     "textDeleted": "Text deleted",
     "frameApplied": "Frame applied",
     "undo": "Undo",
-    "dontShowAgain": "Don't show again"
+    "dontShowAgain": "Don't show again",
+    "distortApplied": "Distortion applied",
+    "distortFailed": "Could not apply the distortion"
   },
   "autoSave": {
     "restoreTitle": "Previous Work Found",

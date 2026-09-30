@@ -108,7 +108,6 @@ exports[`drawCollageImage > zeichnet runde Ecken mit Schatten und Doppelrahmen 1
   "lineWidth=2",
   "stroke()",
   "beginPath()",
-  "beginPath()",
   "moveTo(-38,-46.04)",
   "lineTo(38,-46.04)",
   "arcTo(46.04,-46.04,46.04,-38,8.04)",

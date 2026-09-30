@@ -2,6 +2,20 @@ import { computed, ref, watch } from 'vue'
 import { useCollageStore } from '@/stores/collage'
 import type { CollageImage, CropRect } from '@/types'
 import { FULL_CROP, clampCrop, hasCrop } from '@/lib/cropImage'
+import { hasDistortion } from '@/lib/warpImage'
+import { bakeDistortedImage, canvasToPngBlob } from '@/lib/bakeDistortion'
+import { useToastStore } from '@/stores/toast'
+import { i18n } from '@/i18n'
+
+/** Lädt eine Bild-URL als HTMLImageElement. */
+function loadHtmlImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const el = new Image()
+    el.onload = () => resolve(el)
+    el.onerror = () => reject(new Error('Bild konnte nicht geladen werden'))
+    el.src = url
+  })
+}
 
 /**
  * Kapselt die gesamte Logik der Bildsteuerung (ImageControls).
@@ -246,6 +260,64 @@ export function useImageControls() {
   function resetDistort() {
     saveUndoImmediate()
     applyToSelected({ cornerOffsets: undefined })
+  }
+
+  // Mindestens ein ausgewähltes Bild ist sichtbar verzerrt
+  const canApplyDistort = computed(() =>
+    selectedImages.value.some((img) => img.distortEnabled && hasDistortion(img.cornerOffsets))
+  )
+  const isApplyingDistort = ref(false)
+
+  /**
+   * Verzerrung übernehmen: backt Verzerrung (und Zuschnitt) jedes ausgewählten,
+   * verzerrten Bildes in eine neue PNG-Quelle, beendet den Verzerr-Modus und
+   * merkt sich den Umriss. Danach wirken Schatten, runde Ecken und Rahmen
+   * wieder – entlang der verzerrten Form. Ein Undo-Schritt für alle Bilder.
+   * @returns Anzahl erfolgreich übernommener Bilder
+   */
+  async function applyDistort(): Promise<number> {
+    if (isApplyingDistort.value) return 0
+    const targets = selectedImages.value.filter(
+      (img) => img.distortEnabled && hasDistortion(img.cornerOffsets)
+    )
+    if (targets.length === 0) return 0
+
+    isApplyingDistort.value = true
+    saveUndoImmediate()
+    let applied = 0
+    try {
+      for (const img of targets) {
+        try {
+          const htmlImg = await loadHtmlImage(img.url)
+          const { canvas, placement } = bakeDistortedImage(img, htmlImg)
+          const blob = await canvasToPngBlob(canvas)
+          const baseName = (img.file?.name ?? `image-${img.id}`).replace(/\.[^.]+$/, '')
+          const file = new File([blob], `${baseName}-verzerrt.png`, { type: 'image/png' })
+          const url = URL.createObjectURL(blob)
+          // Alte Quelle NICHT freigeben: Undo und Galerie-Vorlage nutzen sie weiter
+          collage.retainFile(img.url, img.file)
+          collage.retainFile(url, file)
+          collage.updateImage(img.id, {
+            file,
+            url,
+            ...placement,
+            crop: undefined,
+            distortEnabled: false,
+            cornerOffsets: undefined,
+          })
+          applied++
+        } catch (e) {
+          console.error('Verzerrung übernehmen fehlgeschlagen:', e)
+        }
+      }
+    } finally {
+      isApplyingDistort.value = false
+    }
+
+    const toast = useToastStore()
+    if (applied > 0) toast.success(i18n.global.t('toast.distortApplied'))
+    else toast.error(i18n.global.t('toast.distortFailed'))
+    return applied
   }
 
   // ========== Zuschneiden (Crop) ==========
@@ -546,6 +618,9 @@ export function useImageControls() {
     updateSkewY,
     toggleDistort,
     resetDistort,
+    canApplyDistort,
+    isApplyingDistort,
+    applyDistort,
     cropInsets,
     isCropped,
     applyCropPreset,

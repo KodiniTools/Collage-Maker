@@ -54,10 +54,12 @@ export function useAutoSave() {
   const saveError = ref<string | null>(null)
 
   // Komprimiert und konvertiert ein Bild (Blob- oder Data-URL) zu einer
-  // JPEG-Data-URL. Data-URLs werden ebenfalls neu komprimiert.
+  // JPEG-Data-URL. Data-URLs werden ebenfalls neu komprimiert. Mit keepAlpha
+  // wird PNG erzeugt (Transparenz, z. B. nach "Verzerrung übernehmen").
   async function compressAndConvert(
     sourceUrl: string,
-    maxSize: number = AUTOSAVE_MAX_IMAGE_PX
+    maxSize: number = AUTOSAVE_MAX_IMAGE_PX,
+    keepAlpha = false
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image()
@@ -85,8 +87,12 @@ export function useAutoSave() {
 
           ctx.drawImage(img, 0, 0, width, height)
 
-          // Als JPEG mit reduzierter Qualität speichern
-          resolve(canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY))
+          // Als JPEG mit reduzierter Qualität speichern (PNG, wenn Transparenz nötig)
+          resolve(
+            keepAlpha
+              ? canvas.toDataURL('image/png')
+              : canvas.toDataURL('image/jpeg', AUTOSAVE_JPEG_QUALITY)
+          )
         } catch (e) {
           reject(e)
         }
@@ -110,7 +116,7 @@ export function useAutoSave() {
         // Skip images with missing or revoked URLs
         if (!img.url) continue
 
-        const dataUrl = await compressAndConvert(img.url, maxSize)
+        const dataUrl = await compressAndConvert(img.url, maxSize, !!img.shapeQuad)
         if (dataUrl) {
           const { file: _file, url: _url, ...rest } = img
           savedImages.push({ ...rest, dataUrl })
@@ -311,8 +317,11 @@ export function useAutoSave() {
           const blob = await response.blob()
           const url = URL.createObjectURL(blob)
 
-          // Erstelle File-Objekt (für Kompatibilität)
-          const file = new File([blob], `restored-${savedImg.id}.jpg`, { type: 'image/jpeg' })
+          // Erstelle File-Objekt (für Kompatibilität); PNG bei transparenten Bildern
+          const isPng = blob.type === 'image/png'
+          const file = new File([blob], `restored-${savedImg.id}.${isPng ? 'png' : 'jpg'}`, {
+            type: isPng ? 'image/png' : 'image/jpeg',
+          })
 
           // Füge Bild zum Store hinzu
           const restoredImage: CollageImage = {
@@ -354,6 +363,7 @@ export function useAutoSave() {
             skewY: savedImg.skewY ?? 0,
             distortEnabled: savedImg.distortEnabled ?? false,
             cornerOffsets: savedImg.cornerOffsets ?? undefined,
+            shapeQuad: savedImg.shapeQuad ?? undefined,
             crop: savedImg.crop ?? undefined,
             isGalleryTemplate: savedImg.isGalleryTemplate,
             sourceId: savedImg.sourceId,

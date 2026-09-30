@@ -1,5 +1,12 @@
 import type { CollageImage } from '@/types'
-import { drawWarpedImage, computeLocalCorners, hasDistortion } from '@/lib/warpImage'
+import {
+  drawWarpedImage,
+  computeLocalCorners,
+  hasDistortion,
+  insetPolygon,
+  shapePoints,
+  tracePolygonPath,
+} from '@/lib/warpImage'
 import {
   createFilteredImageSource,
   readFilterParams,
@@ -31,6 +38,37 @@ function buildRoundedPath(
   ctx.lineTo(x, y + radius)
   ctx.arcTo(x, y, x + radius, y, radius)
   ctx.closePath()
+}
+
+/**
+ * Pfad der Bildform in der Box (x, y, w, h): Umriss einer übernommenen
+ * Verzerrung (shapeQuad), sonst (abgerundetes) Rechteck. `inset` verkleinert
+ * die Form nach innen (für den inneren Strich des Doppelrahmens).
+ */
+function traceImageShape(
+  ctx: CanvasRenderingContext2D,
+  img: CollageImage,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+  inset = 0
+): void {
+  if (img.shapeQuad) {
+    const pts = shapePoints(img.shapeQuad, x, y, width, height)
+    tracePolygonPath(ctx, inset ? insetPolygon(pts, inset) : pts, Math.max(0, radius - inset))
+    return
+  }
+  const r = Math.max(0, radius - inset)
+  const w = width - inset * 2
+  const h = height - inset * 2
+  if (r > 0) {
+    buildRoundedPath(ctx, x + inset, y + inset, w, h, r)
+  } else {
+    ctx.beginPath()
+    ctx.rect(x + inset, y + inset, w, h)
+  }
 }
 
 /**
@@ -89,14 +127,16 @@ export function drawImageContent(
   const x = -img.width / 2
   const y = -img.height / 2
   const radius = getImageCornerRadius(img)
+  // Pfad-basiert zeichnen bei runden Ecken oder Umriss einer übernommenen Verzerrung
+  const usesPath = radius > 0 || !!img.shapeQuad
 
-  // Schatten + abgerundete Ecken: Pfad-Schatten zuerst
-  if (radius > 0 && img.shadowEnabled) {
+  // Schatten + Form-Pfad: Pfad-Schatten zuerst
+  if (usesPath && img.shadowEnabled) {
     ctx.shadowOffsetX = img.shadowOffsetX
     ctx.shadowOffsetY = img.shadowOffsetY
     ctx.shadowBlur = img.shadowBlur
     ctx.shadowColor = img.shadowColor
-    buildRoundedPath(ctx, x, y, img.width, img.height, radius)
+    traceImageShape(ctx, img, x, y, img.width, img.height, radius)
     ctx.fillStyle = '#000000'
     ctx.fill()
     ctx.shadowOffsetX = 0
@@ -111,8 +151,8 @@ export function drawImageContent(
   }
 
   // Clip-Pfad
-  if (radius > 0) {
-    buildRoundedPath(ctx, x, y, img.width, img.height, radius)
+  if (usesPath) {
+    traceImageShape(ctx, img, x, y, img.width, img.height, radius)
     ctx.clip()
   }
 
@@ -127,8 +167,8 @@ export function drawImageContent(
     ctx.drawImage(htmlImg, x, y, img.width, img.height)
   }
 
-  // Schatten zurücksetzen (für Bilder ohne rounded corners)
-  if (img.shadowEnabled && radius === 0) {
+  // Schatten zurücksetzen (für Bilder ohne Form-Pfad)
+  if (img.shadowEnabled && !usesPath) {
     ctx.shadowOffsetX = 0
     ctx.shadowOffsetY = 0
     ctx.shadowBlur = 0
@@ -149,12 +189,7 @@ export function drawImageContent(
       ctx.shadowColor = img.shadowColor
     }
 
-    if (radius > 0) {
-      buildRoundedPath(ctx, x, y, img.width, img.height, radius)
-    } else {
-      ctx.beginPath()
-      ctx.rect(x, y, img.width, img.height)
-    }
+    traceImageShape(ctx, img, x, y, img.width, img.height, radius)
 
     ctx.strokeStyle = img.borderColor
     ctx.lineWidth = img.borderWidth
@@ -168,20 +203,7 @@ export function drawImageContent(
       ctx.lineWidth = img.borderWidth / 3
       ctx.stroke()
       const offset = img.borderWidth * 0.66
-      ctx.beginPath()
-      if (radius > 0) {
-        const innerRadius = Math.max(0, radius - offset)
-        buildRoundedPath(
-          ctx,
-          x + offset,
-          y + offset,
-          img.width - offset * 2,
-          img.height - offset * 2,
-          innerRadius
-        )
-      } else {
-        ctx.rect(x + offset, y + offset, img.width - offset * 2, img.height - offset * 2)
-      }
+      traceImageShape(ctx, img, x, y, img.width, img.height, radius, offset)
     } else {
       ctx.setLineDash([])
     }
