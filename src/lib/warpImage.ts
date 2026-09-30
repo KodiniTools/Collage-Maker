@@ -157,6 +157,22 @@ function drawTexturedTriangle(
 }
 
 /**
+ * Aufblähung der Dreiecke in GERÄTE-Pixeln (kaschiert Nähte). 1,5 px ist der
+ * kleinste Wert, der in Chromium bei Zoom 0,5–2 keine halbtransparenten
+ * Linien mehr hinterlässt; ein fester Wert in lokalen Einheiten (früher 0,5)
+ * wird bei verkleinerter Anzeige bzw. kleinem Export-Maßstab zu schmal.
+ */
+export const SEAM_EXPAND_DEVICE_PX = 1.5
+
+/** Mittlere lineare Skalierung der aktuellen ctx-Matrix (Fallback 1). */
+export function currentDeviceScale(ctx: CanvasRenderingContext2D): number {
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null
+  if (!m) return 1
+  const s = Math.sqrt(Math.abs(m.a * m.d - m.b * m.c))
+  return Number.isFinite(s) && s > 1e-6 ? s : 1
+}
+
+/**
  * Zeichnet `source` verzerrt in das durch `corners` (lokale Koordinaten des
  * aktuellen ctx) definierte Viereck. Der ctx darf bereits transformiert sein
  * (translate/rotate/scale) – die Ecken werden in genau diesem System interpretiert.
@@ -167,10 +183,12 @@ export function drawWarpedImage(
   sw: number,
   sh: number,
   corners: QuadCorners,
-  subdivisions = 10
+  subdivisions = 10,
+  seamPx = SEAM_EXPAND_DEVICE_PX
 ): void {
   const n = Math.max(1, Math.floor(subdivisions))
-  const expandPx = 0.5
+  // Nähte in Geräte-Pixeln bemessen, unabhängig von Zoom/Export-Maßstab
+  const expandPx = seamPx / currentDeviceScale(ctx)
 
   for (let j = 0; j < n; j++) {
     for (let i = 0; i < n; i++) {
