@@ -354,6 +354,7 @@
     "deleteConfirmTitle": "Bild löschen?",
     "deleteConfirmMessage": "Dieses Bild wird endgültig aus der Galerie entfernt.",
     "deleteConfirmOnCanvas": "Es befindet sich noch {count}× auf dem Canvas und wird auch von dort und aus der Vorschauleiste entfernt.",
+    "deleteConfirmBackground": "Das Hintergrundbild der Leinwand stammt daraus und wird mit entfernt.",
     "deleteConfirmConfirm": "Löschen",
     "deleteConfirmCancel": "Abbrechen",
     "deleteSelectedConfirmTitle": "{count} Bilder löschen?",

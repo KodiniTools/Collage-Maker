@@ -46,7 +46,13 @@ export function useCanvasRenderer(
   }
 
   async function drawBackgroundImage(): Promise<void> {
-    if (!canvas.value || !ctx || !collage.settings.backgroundImage.url) return
+    if (!canvas.value || !ctx) return
+    if (!collage.settings.backgroundImage.url) {
+      // Kein Hintergrund mehr: Cache verwerfen, damit kein gelöschtes Bild nachwirkt
+      backgroundImageElement = null
+      loadedBackgroundUrl = null
+      return
+    }
 
     const context = ctx
     const bgSettings = collage.settings.backgroundImage

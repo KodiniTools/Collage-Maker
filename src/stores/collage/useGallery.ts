@@ -90,8 +90,24 @@ export function useGallery(ctx: CollageContext) {
     ).length
   }
 
-  // Template und alle zugehörigen Canvas-Instanzen entfernen (ohne Undo)
+  // Dient ein Galerie-Bild aktuell als Hintergrundbild der Leinwand? Der
+  // Hintergrund übernimmt beim Setzen die Blob-URL des Galerie-Bilds; nach
+  // einer Wiederherstellung hat er eine eigene URL und hängt nicht mehr daran.
+  function isGalleryImageBackground(galleryId: string): boolean {
+    const galleryImage = images.value.find((img) => img.id === galleryId)
+    const backgroundUrl = ctx.settings.value.backgroundImage.url
+    return !!galleryImage && !!backgroundUrl && backgroundUrl === galleryImage.url
+  }
+
+  // Template und alle zugehörigen Canvas-Instanzen entfernen (ohne Undo).
+  // Ein Hintergrundbild aus diesem Galerie-Bild fällt mit: removeImage widerruft
+  // die geteilte Blob-URL, danach wäre der Hintergrund nur noch im Renderer-Cache
+  // sichtbar, aber in Vorschau, Export und Auto-Save verloren.
   function removeWithInstances(galleryImage: CollageImage) {
+    if (ctx.settings.value.backgroundImage.url === galleryImage.url) {
+      ctx.settings.value.backgroundImage.url = null
+      ctx.isBackgroundSelected.value = false
+    }
     const relatedIds = images.value
       .filter((img) => isRelatedToGalleryImage(img, galleryImage))
       .map((img) => img.id)
@@ -138,6 +154,7 @@ export function useGallery(ctx: CollageContext) {
     isGalleryImageSelected,
     addSelectedGalleryToCanvas,
     countGalleryImageInstances,
+    isGalleryImageBackground,
     removeGalleryImage,
     removeSelectedGalleryImages,
   }

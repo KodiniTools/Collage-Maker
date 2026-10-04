@@ -354,6 +354,7 @@
     "deleteConfirmTitle": "Delete image?",
     "deleteConfirmMessage": "This image will be permanently removed from the gallery.",
     "deleteConfirmOnCanvas": "It is still used {count}× on the canvas and will also be removed from there and from the preview bar.",
+    "deleteConfirmBackground": "The canvas background image comes from it and will be removed as well.",
     "deleteConfirmConfirm": "Delete",
     "deleteConfirmCancel": "Cancel",
     "deleteSelectedConfirmTitle": "Delete {count} images?",
