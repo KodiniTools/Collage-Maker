@@ -13,6 +13,10 @@
       "description": "Antworten rund um den kostenlosen Bilder-Collage-Macher: Datenschutz, unterstützte Formate, Layouts, Export und Bedienung."
     },
     "blog": {
+      "title": "Blog – Tipps für Foto-Collagen | KodiniTools",
+      "description": "Anleitungen, Tipps und Ideen für beeindruckende Foto-Collagen mit dem kostenlosen KodiniTools Collage-Macher."
+    },
+    "guide": {
       "title": "Anleitung – Der komplette Guide zum Collage-Maker | KodiniTools",
       "description": "Alle Funktionen des kostenlosen KodiniTools Collage-Machers Schritt für Schritt: Bilder hochladen, Layouts, Bildbearbeitung, Text, Export und Vorlagen."
     }
@@ -29,13 +33,18 @@
     "guide": "Anleitung",
     "blog": "Blog"
   },
+  "blogPage": {
+    "tag": "Blog",
+    "title": "Aus dem Blog",
+    "subtitle": "Anleitungen und Tipps zum Collage-Maker auf kodinitools.com – die Beiträge öffnen in einem neuen Tab.",
+    "readMore": "Artikel lesen",
+    "minutes": "Min.",
+    "cta": {
+      "title": "Jetzt loslegen",
+      "subtitle": "Kostenlos, ohne Anmeldung – direkt im Browser."
+    }
+  },
   "landing": {
-    "blog": {
-      "title": "Aus dem Blog",
-      "subtitle": "Anleitungen und Tipps zum Collage-Maker auf kodinitools.com.",
-      "readMore": "Artikel lesen",
-      "minutes": "Min."
-    },
     "hero": {
       "title": "Erstelle beeindruckende Foto-Collagen",
       "subtitle": "Kostenlos, direkt im Browser, ohne Upload auf Server. Deine Bilder bleiben privat auf deinem Gerät."

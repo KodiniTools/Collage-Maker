@@ -63,7 +63,7 @@
               {{ t('nav.guide') }}
             </RouterLink>
             <RouterLink
-              :to="{ path: '/', hash: '#blog' }"
+              to="/artikel"
               class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
             >
               {{ t('nav.blog') }}

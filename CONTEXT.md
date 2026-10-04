@@ -17,7 +17,7 @@ Diese Datei dokumentiert den technischen Kontext des Projekts für Entwickler un
 | Technologie | Version | Beschreibung |
 |-------------|---------|--------------|
 | Pinia | 2.1.7 | Zentrales State Management |
-| Vue Router | 4.6.4 | Client-seitiges Routing (4 Seiten) |
+| Vue Router | 4.6.4 | Client-seitiges Routing (5 Seiten) |
 
 ### Styling & UI
 | Technologie | Version | Beschreibung |
@@ -87,12 +87,13 @@ Collage-Maker/
 │   │
 │   ├── pages/                        # Seiten-Komponenten (Router Views)
 │   │   ├── EditorPage.vue           # Haupt-Editor (Collapsible Sidebars)
-│   │   ├── LandingPage.vue          # Startseite (inkl. Abschnitt „Blog“, Anker #blog)
+│   │   ├── LandingPage.vue          # Startseite
 │   │   ├── FaqPage.vue              # FAQ-Seite
-│   │   └── BlogPage.vue             # Anleitung/Guide (Route /blog, Tab „Anleitung“)
+│   │   ├── GuidePage.vue            # Anleitung/Guide (Route /blog, Tab „Anleitung“)
+│   │   └── BlogPage.vue             # Blog-Beiträge von kodinitools.com/blog (Route /artikel, Tab „Blog“)
 │   │
 │   ├── data/
-│   │   └── blogArticles.ts          # Blog-Beiträge (kodinitools.com/blog) für die Landing-Page
+│   │   └── blogArticles.ts          # Blog-Beiträge (URL, Bild, Titel je Sprache) für BlogPage.vue
 │   │
 │   ├── lib/
 │   │   └── blogCards.ts             # Blog-Karten: Datum/Sprache (reine Funktionen)
@@ -108,7 +109,7 @@ Collage-Maker/
 │   │   └── en.json                  # Englisch (520 Zeilen)
 │   │
 │   ├── router/                       # Vue Router
-│   │   └── index.ts                 # 4 Routen-Definitionen + Anker-Scrolling (/#blog)
+│   │   └── index.ts                 # 5 Routen-Definitionen
 │   │
 │   ├── App.vue                       # Root-Komponente
 │   ├── main.ts                       # Einstiegspunkt

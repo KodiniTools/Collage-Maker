@@ -15,7 +15,7 @@ export const SITE_NAME = 'KodiniTools'
 export const OG_IMAGE = `${SITE_URL}/public/mstile-310x310.png`
 
 // Von der Vue-Router-Meta genutzte Schlüssel -> i18n-Pfad `seo.<key>`.
-export type SeoKey = 'landing' | 'editor' | 'faq' | 'blog'
+export type SeoKey = 'landing' | 'editor' | 'faq' | 'guide' | 'blog'
 
 const OG_LOCALES: Record<string, string> = {
   de: 'de_DE',

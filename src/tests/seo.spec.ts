@@ -17,6 +17,7 @@ describe('SEO helpers', () => {
   it('builds canonical URLs for sub-routes', () => {
     expect(canonicalUrl('/editor')).toBe('https://kodinitools.com/collagemaker/editor')
     expect(canonicalUrl('/faq')).toBe('https://kodinitools.com/collagemaker/faq')
+    expect(canonicalUrl('/artikel')).toBe('https://kodinitools.com/collagemaker/artikel')
   })
 
   it('strips query, hash and trailing slashes from the canonical URL', () => {
