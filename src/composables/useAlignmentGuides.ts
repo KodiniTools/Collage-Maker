@@ -1,5 +1,7 @@
 import { ref } from 'vue'
 import { useCollageStore } from '@/stores/collage'
+import { useSettingsStore } from '@/stores/settings'
+import { themeColorsV2 } from '@/design-system/tokens-v2'
 import { SNAP_THRESHOLD } from '@/config/constants'
 
 export interface GuideLine {
@@ -13,6 +15,7 @@ export { SNAP_THRESHOLD }
 
 export function useAlignmentGuides() {
   const collage = useCollageStore()
+  const settings = useSettingsStore()
   const activeGuides = ref<GuideLine[]>([])
 
   // Smart Guides: Erkennt Ausrichtungen und berechnet Snap-Positionen
@@ -234,7 +237,7 @@ export function useAlignmentGuides() {
     context.save()
 
     // Guide-Linien-Stil
-    context.strokeStyle = '#f97316' // Orange
+    context.strokeStyle = themeColorsV2(settings.theme).warning
     context.lineWidth = 1
     context.setLineDash([4, 4])
 

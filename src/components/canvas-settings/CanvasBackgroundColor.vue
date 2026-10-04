@@ -18,21 +18,18 @@
       <input
         type="color"
         :value="collage.settings.backgroundColor"
-        class="w-16 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
+        class="w-16 h-10 rounded-sm border border-line-strong cursor-pointer"
         @input="api.updateBackgroundColor(($event.target as HTMLInputElement).value)"
       />
       <input
         type="text"
         :value="collage.settings.backgroundColor"
         placeholder="#ffffff"
-        class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
+        class="flex-1 px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm font-mono"
         @input="api.updateBackgroundColor(($event.target as HTMLInputElement).value)"
       />
     </div>
-    <p
-      v-if="collage.settings.backgroundImage.url"
-      class="text-xs text-muted dark:text-muted-light mt-1"
-    >
+    <p v-if="collage.settings.backgroundImage.url" class="text-xs text-ink-2 mt-1">
       {{ t('canvas.colorReplacesImage') }}
     </p>
   </div>

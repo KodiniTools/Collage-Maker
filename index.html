@@ -15,9 +15,22 @@
       name="robots"
       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
-    <meta name="theme-color" content="#f9f2d5" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#142640" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f5f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1324" media="(prefers-color-scheme: dark)" />
     <link rel="canonical" href="https://kodinitools.com/collagemaker/" />
+    <!-- Theme vor dem ersten Paint setzen (Tokens: Dark auf :root, Light über data-theme),
+         damit Light-Nutzer keinen dunklen Flash sehen. Der Settings-Store übernimmt danach. -->
+    <script>
+      try {
+        var storedTheme = localStorage.getItem('theme')
+        document.documentElement.setAttribute(
+          'data-theme',
+          storedTheme === 'dark' ? 'dark' : 'light'
+        )
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
+    </script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -71,9 +84,6 @@
     <meta name="msapplication-TileColor" content="#142640" />
     <meta name="msapplication-TileImage" content="/public/mstile-150x150.png" />
     <meta name="msapplication-config" content="/collagemaker/browserconfig.xml" />
-
-    <!-- Schriften -->
-    <link rel="stylesheet" href="/fonts.css" />
 
     <!-- Structured Data (schema.org WebApplication) -->
     <script type="application/ld+json">

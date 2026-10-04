@@ -69,20 +69,18 @@ export const useSettingsStore = defineStore('settings', () => {
   let themeObserver: MutationObserver | null = null
   let ignoreMutation = false
 
-  // Theme watcher - sync both class="dark" (Tailwind) and data-theme (global nav CSS)
+  // Theme watcher: html[data-theme] schaltet die Design-Tokens (--ds-*) und die
+  // globale SSI-Navigation, body.light-theme hält Parität zum Playlist Generator,
+  // html.dark bleibt als Altbestand für externe Skripte erhalten.
   watch(
     theme,
     (newTheme) => {
       localStorage.setItem('theme', newTheme)
       // Suppress MutationObserver while we set the attribute ourselves
       ignoreMutation = true
-      if (newTheme === 'dark') {
-        document.documentElement.classList.add('dark')
-        document.documentElement.setAttribute('data-theme', 'dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-        document.documentElement.setAttribute('data-theme', 'light')
-      }
+      document.documentElement.classList.toggle('dark', newTheme === 'dark')
+      document.documentElement.setAttribute('data-theme', newTheme)
+      document.body.classList.toggle('light-theme', newTheme === 'light')
       ignoreMutation = false
       // Sync SSI nav theme icons (moon/sun emoji)
       document.querySelectorAll('.global-nav-theme-icon').forEach((icon) => {

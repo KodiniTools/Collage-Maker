@@ -1,6 +1,8 @@
 import { watch, nextTick, onMounted } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { useCollageStore } from '@/stores/collage'
+import { useSettingsStore } from '@/stores/settings'
+import { themeColorsV2 } from '@/design-system/tokens-v2'
 import { drawCanvasBorder } from '@/lib/export-engine/drawCanvasBorder'
 import { computeFitRect } from '@/lib/export-engine/drawBackground'
 import { roundedRectPath, clampCornerRadius } from '@/lib/export-engine/roundedRect'
@@ -20,7 +22,12 @@ export function useCanvasRenderer(
   autoFitScale?: ComputedRef<number>
 ) {
   const collage = useCollageStore()
+  const settings = useSettingsStore()
   let ctx: CanvasRenderingContext2D | null = null
+
+  // Overlay-Farben (Auswahl, Handles, Löschen, Häkchen) aus den Design-Tokens des
+  // aktiven Themes, damit die Leinwand dieselbe Palette wie die UI nutzt.
+  const overlay = () => themeColorsV2(settings.theme)
   const loadedImages = new Map<string, HTMLImageElement>()
   let backgroundImageElement: HTMLImageElement | null = null
   let loadedBackgroundUrl: string | null = null
@@ -114,7 +121,7 @@ export function useCanvasRenderer(
     // Auswahlrahmen zeichnen, wenn Hintergrundbild ausgewählt ist
     if (collage.isBackgroundSelected) {
       context.save()
-      context.strokeStyle = '#3b82f6' // Primärfarbe
+      context.strokeStyle = overlay().accent
       context.lineWidth = 3
       context.setLineDash([8, 4])
       context.strokeRect(4, 4, canvasWidth - 8, canvasHeight - 8)
@@ -264,8 +271,8 @@ export function useCanvasRenderer(
       const deleteButtonX = img.width / 2 - deleteButtonSize / 2 - 2 * ui
       const deleteButtonY = -img.height / 2 + deleteButtonSize / 2 + 2 * ui
 
-      // Roter Kreis für Löschbutton
-      context.fillStyle = '#ef4444'
+      // Löschbutton: Statusfarbe Danger, weißes X
+      context.fillStyle = overlay().danger
       context.strokeStyle = '#ffffff'
       context.lineWidth = 1.5 * ui
       context.beginPath()
@@ -290,8 +297,8 @@ export function useCanvasRenderer(
       const isPrimarySelected = collage.selectedImageId === img.id
 
       if (isSelected) {
-        // Primär ausgewähltes Bild: Blau, sekundäre: Cyan
-        context.strokeStyle = isPrimarySelected ? '#3b82f6' : '#06b6d4'
+        // Primär ausgewähltes Bild: Akzent, sekundäre: Info
+        context.strokeStyle = isPrimarySelected ? overlay().accent : overlay().info
         context.lineWidth = (isPrimarySelected ? 2 : 1.5) * ui
         if (distorted && localCorners) {
           // Auswahlrahmen folgt dem verzerrten Viereck
@@ -326,7 +333,7 @@ export function useCanvasRenderer(
 
           // Zeichne Handles mit weißem Rand für bessere Sichtbarkeit
           context.fillStyle = '#ffffff'
-          context.strokeStyle = '#2563eb'
+          context.strokeStyle = overlay().accent
           context.lineWidth = 1.5 * ui
           handles.forEach((handle) => {
             context.fillRect(
@@ -350,8 +357,8 @@ export function useCanvasRenderer(
           const checkX = -img.width / 2 + 6 * ui
           const checkY = -img.height / 2 + 6 * ui
 
-          // Grüner Kreis mit Häkchen
-          context.fillStyle = '#22c55e'
+          // Häkchen in der Statusfarbe Success
+          context.fillStyle = overlay().success
           context.beginPath()
           context.arc(checkX, checkY, checkSize / 2, 0, Math.PI * 2)
           context.fill()
@@ -436,7 +443,7 @@ export function useCanvasRenderer(
         if (text.textAlign === 'center') offsetX = -boxWidth / 2
         else if (text.textAlign === 'right') offsetX = -boxWidth
 
-        context.strokeStyle = '#3b82f6'
+        context.strokeStyle = overlay().accent
         context.lineWidth = 2 * ui
         context.strokeRect(offsetX - 5, -boxHeight / 2 - 5, boxWidth + 10, boxHeight + 10)
 
@@ -449,7 +456,7 @@ export function useCanvasRenderer(
           { hx: offsetX - 5, hy: boxHeight / 2 + 5 },
         ]
         context.fillStyle = '#ffffff'
-        context.strokeStyle = '#2563eb'
+        context.strokeStyle = overlay().accent
         context.lineWidth = 1.5 * ui
         corners.forEach((c) => {
           context.fillRect(c.hx - handleSize / 2, c.hy - handleSize / 2, handleSize, handleSize)
@@ -505,6 +512,14 @@ export function useCanvasRenderer(
       nextTick(() => renderCanvas())
     },
     { deep: true }
+  )
+
+  // Theme-Wechsel: Overlay-Farben folgen den Tokens, deshalb neu zeichnen
+  watch(
+    () => settings.theme,
+    () => {
+      nextTick(() => renderCanvas())
+    }
   )
 
   // Cleanup watch for removed images

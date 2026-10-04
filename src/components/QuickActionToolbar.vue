@@ -2,6 +2,7 @@
   import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useCollageStore } from '@/stores/collage'
+  import { UiIconButton } from '@/components/ui'
 
   // Floating Quick-Action-Toolbar: erscheint direkt am ausgewählten Bild/Text
   // und bietet die häufigsten Aktionen (Löschen, Drehen, Ebene vor/zurück) an,
@@ -216,7 +217,7 @@
     <div
       v-if="position"
       ref="toolbarRef"
-      class="quick-action-toolbar absolute z-30 flex items-center gap-0.5 bg-slate-dark/90 dark:bg-surface-darker/95 backdrop-blur-sm text-surface-light rounded-lg shadow-xl px-1 py-1"
+      class="quick-action-toolbar absolute z-30 flex items-center gap-0.5 bg-surface-1 border border-line text-ink rounded-md shadow-overlay px-1 py-1"
       :style="{
         left: `${position.left}px`,
         top: `${position.top}px`,
@@ -229,79 +230,57 @@
       @dblclick.stop
     >
       <!-- Nach hinten -->
-      <button
-        type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 transition-colors"
-        :title="t('quickActions.sendToBack')"
-        :aria-label="t('quickActions.sendToBack')"
-        @click="onSendBackward"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <UiIconButton :label="t('quickActions.sendToBack')" size="sm" @click="onSendBackward">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
             d="M4 8l4-4m0 0l4 4m-4-4v12M20 16l-4 4m0 0l-4-4m4 4V8"
           />
         </svg>
-      </button>
+      </UiIconButton>
       <!-- Nach vorne -->
-      <button
-        type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 transition-colors"
-        :title="t('quickActions.bringToFront')"
-        :aria-label="t('quickActions.bringToFront')"
-        @click="onBringForward"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <UiIconButton :label="t('quickActions.bringToFront')" size="sm" @click="onBringForward">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
             d="M12 4l8 4-8 4-8-4 8-4zM4 12l8 4 8-4M4 16l8 4 8-4"
           />
         </svg>
-      </button>
+      </UiIconButton>
 
-      <span class="w-px h-5 bg-white/20 mx-0.5" aria-hidden="true"></span>
+      <span class="w-px h-5 mx-0.5 bg-line" aria-hidden="true"></span>
 
       <!-- Drehen -->
-      <button
-        type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 transition-colors"
-        :title="t('quickActions.rotate')"
-        :aria-label="t('quickActions.rotate')"
-        @click="onRotate"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <UiIconButton :label="t('quickActions.rotate')" size="sm" @click="onRotate">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
           />
         </svg>
-      </button>
+      </UiIconButton>
 
-      <span class="w-px h-5 bg-white/20 mx-0.5" aria-hidden="true"></span>
+      <span class="w-px h-5 mx-0.5 bg-line" aria-hidden="true"></span>
 
-      <!-- Löschen -->
-      <button
-        type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-red-500/80 transition-colors"
-        :title="t('quickActions.delete')"
-        :aria-label="t('quickActions.delete')"
-        @click="onDelete"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Löschen: destruktiv, deshalb nur das Icon in Rot -->
+      <UiIconButton :label="t('quickActions.delete')" size="sm" @click="onDelete">
+        <svg
+          class="text-danger"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          stroke-width="1.75"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
           />
         </svg>
-      </button>
+      </UiIconButton>
 
       <!-- Kleiner Zeiger zum Objekt -->
       <span
@@ -317,15 +296,15 @@
   .qat-fade-enter-active,
   .qat-fade-leave-active {
     transition:
-      opacity 0.15s ease,
-      transform 0.15s ease;
+      opacity var(--ds-duration) var(--ds-ease),
+      transform var(--ds-duration) var(--ds-ease);
   }
   .qat-fade-enter-from,
   .qat-fade-leave-to {
     opacity: 0;
   }
 
-  /* Kleiner dreieckiger Zeiger, der zum Objekt weist. */
+  /* Kleiner dreieckiger Zeiger in Rahmenfarbe, der zum Objekt weist. */
   .qat-arrow {
     position: absolute;
     left: 50%;
@@ -337,16 +316,10 @@
   }
   .qat-arrow-down {
     top: 100%;
-    border-top: 6px solid rgb(20 38 64 / 0.9);
+    border-top: 6px solid var(--ds-border-strong);
   }
   .qat-arrow-up {
     bottom: 100%;
-    border-bottom: 6px solid rgb(20 38 64 / 0.9);
-  }
-  :global(.dark) .qat-arrow-down {
-    border-top-color: var(--qat-dark-bg, rgb(15 23 42 / 0.95));
-  }
-  :global(.dark) .qat-arrow-up {
-    border-bottom-color: var(--qat-dark-bg, rgb(15 23 42 / 0.95));
+    border-bottom: 6px solid var(--ds-border-strong);
   }
 </style>

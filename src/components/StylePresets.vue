@@ -2,6 +2,7 @@
   import { computed } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
+  import { UiCallout, UiPanel } from '@/components/ui'
   import type { CollageImage } from '@/types'
 
   const collage = useCollageStore()
@@ -199,31 +200,22 @@
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="text-lg font-semibold mb-1">{{ t('stylePresets.title') }}</h2>
-    <p class="text-xs text-muted dark:text-muted-light mb-3">{{ t('stylePresets.subtitle') }}</p>
+  <UiPanel :title="t('stylePresets.title')">
+    <p class="text-xs text-ink-2 mb-3">{{ t('stylePresets.subtitle') }}</p>
 
     <!-- Hinweis: keine Bilder auf der Leinwand -->
-    <div
-      v-if="canvasImageCount === 0"
-      class="mb-3 p-2 bg-muted/10 dark:bg-navy/20 rounded-lg text-xs text-muted dark:text-muted-light"
-    >
+    <UiCallout v-if="canvasImageCount === 0" type="info" class="mb-3">
       {{ t('stylePresets.noImages') }}
-    </div>
+    </UiCallout>
 
     <!-- Wirkungsbereich: Auswahl vs. alle Bilder -->
-    <div
-      v-else
-      class="mb-3 p-2 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/30 text-xs"
-    >
-      <p class="font-medium text-accent-dark dark:text-accent">
-        {{
-          selectedCount > 0
-            ? t('stylePresets.scopeSelected', { count: selectedCount })
-            : t('stylePresets.scopeAll', { count: canvasImageCount })
-        }}
-      </p>
-    </div>
+    <UiCallout v-else type="success" class="mb-3">
+      {{
+        selectedCount > 0
+          ? t('stylePresets.scopeSelected', { count: selectedCount })
+          : t('stylePresets.scopeAll', { count: canvasImageCount })
+      }}
+    </UiCallout>
 
     <div
       class="grid grid-cols-2 gap-2 max-h-[440px] overflow-y-auto pr-1"
@@ -235,21 +227,22 @@
         :key="preset.id"
         type="button"
         :disabled="canvasImageCount === 0"
-        class="group flex flex-col items-center gap-2 p-3 rounded-lg border-2 border-muted/50 dark:border-slate hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-muted/50"
+        class="group flex flex-col items-center gap-2 p-3 rounded-md border border-line-strong hover:border-accent focus-visible:outline-none focus-visible:shadow-focus transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-line"
         :title="t(preset.labelKey)"
         @click="applyPreset(preset)"
       >
         <!-- Vorschaufeld mit einem Miniatur-„Bild", das den Effekt zeigt -->
-        <span
-          class="flex items-center justify-center w-full h-12 rounded-md bg-gradient-to-br from-muted/20 to-muted/5 dark:from-navy/40 dark:to-navy/10"
-        >
+        <span class="flex items-center justify-center w-full h-12 rounded-sm bg-surface-2">
           <span
-            class="block w-9 h-9 bg-gradient-to-br from-sky-400 via-amber-300 to-rose-400"
-            :style="previewStyle(preset.effects)"
+            class="block w-9 h-9"
+            :style="[
+              { background: 'linear-gradient(135deg, #38bdf8, #fcd34d, #fb7185)' },
+              previewStyle(preset.effects),
+            ]"
           />
         </span>
         <span class="text-xs font-medium text-center leading-tight">{{ t(preset.labelKey) }}</span>
       </button>
     </div>
-  </div>
+  </UiPanel>
 </template>

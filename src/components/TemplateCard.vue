@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { UiButton, UiIconButton } from '@/components/ui'
   import type { Template } from '@/stores/templates'
 
   interface Props {
@@ -35,23 +36,17 @@
 
 <template>
   <div
-    class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 overflow-hidden hover:shadow-lg transition-shadow duration-150 cursor-pointer group"
+    class="bg-surface-1 rounded-md border border-line overflow-hidden transition-colors cursor-pointer group"
   >
     <!-- Thumbnail -->
-    <div
-      class="relative aspect-video bg-muted/10 dark:bg-navy/30 overflow-hidden"
-      @click="emit('load', template)"
-    >
+    <div class="relative aspect-video bg-surface-2 overflow-hidden" @click="emit('load', template)">
       <img
         v-if="template.thumbnail"
         :src="template.thumbnail"
         :alt="displayName"
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        class="w-full h-full object-cover transition-transform duration-slow"
       />
-      <div
-        v-else
-        class="w-full h-full flex items-center justify-center text-muted dark:text-muted-light"
-      >
+      <div v-else class="w-full h-full flex items-center justify-center text-ink-2">
         <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -64,13 +59,11 @@
 
       <!-- Overlay on hover -->
       <div
-        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-150 flex items-center justify-center opacity-0 group-hover:opacity-100"
+        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100"
       >
-        <button
-          class="px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium"
-        >
+        <UiButton variant="primary" tabindex="-1">
           {{ t('templates.useTemplate') }}
-        </button>
+        </UiButton>
       </div>
     </div>
 
@@ -78,48 +71,45 @@
     <div class="p-4">
       <div class="flex items-start justify-between gap-2">
         <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-sm truncate text-slate-900 dark:text-white">
+          <h3 class="font-semibold text-sm truncate text-ink">
             {{ displayName }}
           </h3>
-          <p
-            v-if="displayDescription"
-            class="text-xs text-muted dark:text-muted-light mt-1 line-clamp-2"
-          >
+          <p v-if="displayDescription" class="text-xs text-ink-2 mt-1 line-clamp-2">
             {{ displayDescription }}
           </p>
         </div>
 
         <!-- Delete button for user templates -->
-        <button
+        <UiIconButton
           v-if="canDelete"
-          class="p-1.5 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors flex-shrink-0"
-          :title="t('templates.deleteTemplate')"
+          :label="t('templates.deleteTemplate')"
+          size="sm"
           @click.stop="emit('delete', template.id)"
         >
           <svg
-            class="w-4 h-4 text-warm dark:text-warm-light"
+            class="text-danger"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            stroke-width="1.75"
           >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              stroke-width="2"
               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
             />
           </svg>
-        </button>
+        </UiIconButton>
       </div>
 
       <!-- Category badge -->
       <div class="mt-2">
         <span
-          class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+          class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium"
           :class="
             template.category === 'predefined'
-              ? 'bg-accent/20 text-slate-dark dark:bg-accent/10 dark:text-accent'
-              : 'bg-warm/20 text-warm-dark dark:bg-warm/10 dark:text-warm-light'
+              ? 'bg-accent-soft text-ink'
+              : 'bg-surface-2 text-danger'
           "
         >
           {{

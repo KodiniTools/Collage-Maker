@@ -2,6 +2,7 @@
   import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useCollageStore } from '@/stores/collage'
+  import { UiButton } from '@/components/ui'
 
   const { t } = useI18n()
   const collage = useCollageStore()
@@ -74,24 +75,21 @@
 <template>
   <div
     v-if="canvasImages.length > 0"
-    class="bg-surface-light dark:bg-surface-dark border-b border-muted/30 dark:border-slate/30 py-1.5 px-2 sm:py-2 sm:px-3"
+    class="bg-surface-1 border-b border-line py-1.5 px-2 sm:py-2 sm:px-3"
   >
     <!-- Header: Label + Auswahl-Info (scrollt nicht mit den Thumbnails) -->
     <div class="flex items-center justify-between gap-2 mb-1.5">
-      <span class="text-xs text-muted dark:text-muted-light font-medium truncate">
+      <span class="text-xs text-ink-2 font-medium truncate">
         {{ t('thumbnailBar.title') }} ({{ canvasImages.length }})
       </span>
 
       <div v-if="collage.selectedImageIds.length > 0" class="shrink-0 flex items-center gap-2">
-        <span class="text-xs text-muted dark:text-muted-light whitespace-nowrap">
+        <span class="text-xs text-ink-2 whitespace-nowrap">
           {{ t('thumbnailBar.selected', { count: collage.selectedImageIds.length }) }}
         </span>
-        <button
-          class="text-xs text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-light transition-colors whitespace-nowrap"
-          @click="collage.deselectAllImages()"
-        >
+        <UiButton variant="ghost" size="sm" @click="collage.deselectAllImages()">
           {{ t('thumbnailBar.deselectAll') }}
-        </button>
+        </UiButton>
       </div>
     </div>
 
@@ -102,14 +100,13 @@
         v-for="(img, index) in canvasImages"
         :key="img.id"
         draggable="true"
-        class="relative group shrink-0 cursor-grab active:cursor-grabbing rounded transition-all duration-150"
+        class="relative group shrink-0 cursor-grab active:cursor-grabbing rounded-sm transition-all"
         :class="{
-          'ring-2 ring-primary ring-offset-2 ring-offset-surface-light dark:ring-offset-surface-dark':
-            collage.isImageSelected(img.id),
-          'hover:ring-2 hover:ring-muted/50':
+          'ring-2 ring-accent ring-offset-2 ring-offset-surface-1': collage.isImageSelected(img.id),
+          'hover:ring-2 hover:ring-line-strong':
             !collage.isImageSelected(img.id) && dragOverIndex !== index,
           'opacity-40': dragIndex === index,
-          'ring-2 ring-accent ring-offset-2 ring-offset-surface-light dark:ring-offset-surface-dark':
+          'ring-2 ring-info ring-offset-2 ring-offset-surface-1':
             dragOverIndex === index && dragIndex !== index,
         }"
         :title="t('thumbnailBar.reorderHint')"
@@ -123,7 +120,7 @@
         <img
           :src="img.url"
           :alt="t('thumbnailBar.imageAlt', { index: index + 1 })"
-          class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded pointer-events-none"
+          class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded-sm pointer-events-none"
           :style="{
             transform: `rotate(${img.rotation}deg)`,
             opacity: img.opacity,
@@ -132,7 +129,7 @@
 
         <!-- Ebenen-Badge (1 = hinterste Ebene) -->
         <span
-          class="absolute -top-1 -left-1 w-4 h-4 bg-slate-dark dark:bg-muted-light text-surface-light dark:text-slate-dark text-[10px] font-bold rounded-full flex items-center justify-center ring-1 ring-surface-light dark:ring-surface-dark"
+          class="absolute -top-1 -left-1 w-4 h-4 bg-surface-2 text-ink text-xs font-bold rounded-full flex items-center justify-center ring-1 ring-surface-1"
           :title="t('thumbnailBar.layerNumber', { n: index + 1 })"
         >
           {{ index + 1 }}
@@ -141,7 +138,7 @@
         <!-- Selection Checkmark -->
         <div
           v-if="collage.isImageSelected(img.id)"
-          class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-surface-light rounded-full flex items-center justify-center ring-1 ring-surface-light dark:ring-surface-dark"
+          class="absolute -top-1 -right-1 w-4 h-4 bg-accent text-on-accent rounded-full flex items-center justify-center ring-1 ring-surface-1"
         >
           <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -155,7 +152,7 @@
 
         <!-- Remove Button (on hover) -->
         <button
-          class="absolute -bottom-1 -right-1 w-4 h-4 bg-warm hover:bg-warm-dark text-surface-light rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex ring-1 ring-surface-light dark:ring-surface-dark"
+          class="absolute -bottom-1 -right-1 w-4 h-4 bg-surface-2 hover:bg-surface-3 text-danger rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex ring-1 ring-surface-1"
           :title="t('thumbnailBar.remove')"
           @click="handleRemove(img.id, $event)"
         >
@@ -172,7 +169,7 @@
     </div>
 
     <!-- Hint: Mehrfachauswahl + Umsortieren -->
-    <p class="text-[10px] text-muted/70 dark:text-muted-light/70 mt-1">
+    <p class="text-xs text-ink-3 mt-1">
       {{ t('thumbnailBar.hint') }} • {{ t('thumbnailBar.reorderHint') }}
     </p>
   </div>
@@ -194,11 +191,11 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5);
+    background-color: var(--ds-border-strong);
     border-radius: 2px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(156, 163, 175, 0.7);
+    background-color: var(--ds-text-3);
   }
 </style>

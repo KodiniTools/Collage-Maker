@@ -9,6 +9,7 @@
    * und spiegelt denselben Rohwert wie der Slider.
    */
   import { computed } from 'vue'
+  import ResetButton from '@/components/ResetButton.vue'
 
   const props = withDefaults(
     defineProps<{
@@ -76,11 +77,7 @@
   <div>
     <label
       class="block"
-      :class="
-        labelSize === 'sm'
-          ? 'text-sm font-medium mb-2'
-          : 'text-xs text-muted dark:text-muted-light mb-1'
-      "
+      :class="labelSize === 'sm' ? 'text-sm font-medium mb-2' : 'text-xs text-ink-2 mb-1'"
     >
       {{ label }}: {{ displayValue }}
     </label>
@@ -102,21 +99,14 @@
         :min="min"
         :max="max"
         :step="step"
-        class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+        class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-line-strong rounded-sm bg-surface-1 focus-visible:outline-none focus-visible:shadow-focus"
         :aria-label="label"
         @input="onNumberInput"
       />
       <!-- Reset-Platz dauerhaft reserviert, damit der Spinner beim Ein-/
            Ausblenden des Buttons nicht seitlich springt -->
-      <span class="w-5 flex-shrink-0 flex justify-center">
-        <button
-          v-if="showReset"
-          class="text-sm leading-none text-muted dark:text-muted-light hover:text-accent transition-colors"
-          :title="resetTitle"
-          @click="emit('reset')"
-        >
-          ↺
-        </button>
+      <span class="w-7 flex-shrink-0 flex justify-center">
+        <ResetButton v-if="showReset" :label="resetTitle" @click="emit('reset')" />
       </span>
     </div>
   </div>

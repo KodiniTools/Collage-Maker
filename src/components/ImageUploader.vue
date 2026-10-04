@@ -3,6 +3,7 @@
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
+  import { UiButton, UiPanel } from '@/components/ui'
   import { compressImages, copyImagesInMemory } from '@/utils/imageCompression'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
@@ -107,17 +108,15 @@
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="text-lg font-semibold mb-3">{{ t('upload.title') }}</h2>
-
+  <UiPanel :title="t('upload.title')">
     <!-- Drop zone — no @click handler, buttons below are the only triggers -->
     <div
       :aria-label="t('upload.dragDrop')"
       :class="[
-        'border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-150',
+        'border border-dashed rounded-md p-6 text-center transition-colors',
         isDragging
-          ? 'border-accent bg-accent/10 dark:bg-accent/5'
-          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5',
+          ? 'border-accent bg-accent-soft'
+          : 'border-line-strong hover:border-accent hover:bg-surface-2',
       ]"
       @drop.prevent="handleDrop"
       @dragover.prevent="isDragging = true"
@@ -127,9 +126,7 @@
         <div
           :class="[
             'p-3 rounded-full transition-colors',
-            isDragging
-              ? 'bg-accent text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/30 text-muted dark:text-muted-light',
+            isDragging ? 'bg-accent text-on-accent' : 'bg-surface-2 text-ink-2',
           ]"
         >
           <!-- Loading spinner -->
@@ -141,7 +138,7 @@
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            stroke-width="2"
+            stroke-width="1.75"
           >
             <path
               stroke-linecap="round"
@@ -150,48 +147,42 @@
             />
           </svg>
         </div>
-        <p class="text-sm text-muted dark:text-muted-light">
+        <p class="text-sm text-ink-2">
           {{ isProcessing ? t('upload.processing') : t('upload.dragDrop') }}
         </p>
-        <p class="text-xs text-muted dark:text-muted-light">
+        <p class="text-xs text-ink-2">
           {{ t('upload.formats') }}
         </p>
-        <p class="text-xs text-muted dark:text-muted-light opacity-70">
+        <p class="text-xs text-ink-3">
           {{ t('upload.pasteHint') }}
         </p>
       </div>
     </div>
 
     <!-- Two separate buttons below the drop zone -->
-    <div class="flex gap-2 mt-3">
-      <button
-        type="button"
-        :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-accent text-accent-ink hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-        @click="fileInput!.click()"
-      >
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4-4 4 4 4-8 4 8" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 20h16" />
-        </svg>
+    <div class="flex flex-col gap-2 mt-3">
+      <UiButton variant="primary" block :disabled="isProcessing" @click="fileInput!.click()">
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4-4 4 4 4-8 4 8" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 20h16" />
+          </svg>
+        </template>
         {{ t('upload.button') }}
-      </button>
+      </UiButton>
 
-      <button
-        type="button"
-        :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-muted dark:border-slate text-text dark:text-text-dark hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-        @click="folderInput!.click()"
-      >
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
-          />
-        </svg>
+      <UiButton variant="secondary" block :disabled="isProcessing" @click="folderInput!.click()">
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
+            />
+          </svg>
+        </template>
         {{ t('upload.buttonFolder') }}
-      </button>
+      </UiButton>
     </div>
 
     <!-- Originalauflösung beibehalten -->
@@ -204,9 +195,9 @@
         type="checkbox"
         class="mt-0.5 w-4 h-4 accent-accent shrink-0 cursor-pointer"
       />
-      <span class="text-xs text-muted dark:text-muted-light">
+      <span class="text-xs text-ink-2">
         {{ t('upload.keepOriginal') }}
-        <span class="block text-[10px] opacity-70">{{ t('upload.keepOriginalHint') }}</span>
+        <span class="block text-xs text-ink-3">{{ t('upload.keepOriginalHint') }}</span>
       </span>
     </label>
 
@@ -230,5 +221,5 @@
       class="hidden"
       @change="handleFileSelect"
     />
-  </div>
+  </UiPanel>
 </template>

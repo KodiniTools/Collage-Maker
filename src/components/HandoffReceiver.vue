@@ -55,12 +55,12 @@
         </div>
 
         <div class="handoff-actions">
-          <button class="btn-accept" @click="handleAccept">
+          <UiButton variant="primary" size="sm" @click="handleAccept">
             {{ t('handoff.accept') }}
-          </button>
-          <button class="btn-dismiss" @click="handleDismiss">
+          </UiButton>
+          <UiButton variant="ghost" size="sm" @click="handleDismiss">
             {{ t('handoff.dismiss') }}
-          </button>
+          </UiButton>
         </div>
       </div>
     </div>
@@ -70,6 +70,7 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { UiButton } from '@/components/ui'
   import {
     checkHandoff,
     consumeHandoff,
@@ -123,15 +124,11 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1050;
-    padding: var(--space-2, 10px) var(--space-3, 14px);
-    background: linear-gradient(
-      135deg,
-      color-mix(in oklab, var(--accent, #014f99) 15%, var(--panel, #fff)),
-      color-mix(in oklab, var(--secondary, #c9984d) 8%, var(--panel, #fff))
-    );
-    border-bottom: 1px solid var(--glass-border, rgba(0, 0, 0, 0.1));
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+    z-index: var(--ds-z-dialog);
+    padding: var(--ds-space-2) var(--ds-space-3);
+    background: var(--ds-surface-1);
+    border-bottom: var(--ds-border-width) solid var(--ds-border);
+    box-shadow: var(--ds-shadow-overlay);
   }
 
   .handoff-inner {
@@ -139,7 +136,7 @@
     margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: var(--space-3, 14px);
+    gap: var(--ds-space-3);
     flex-wrap: wrap;
   }
 
@@ -149,9 +146,9 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    border-radius: var(--radius-md, 12px);
-    background: color-mix(in oklab, var(--accent, #014f99) 12%, transparent);
-    color: var(--accent, #014f99);
+    border-radius: var(--ds-radius-md);
+    background: var(--ds-accent-soft);
+    color: var(--ds-accent);
     flex-shrink: 0;
   }
 
@@ -165,12 +162,12 @@
 
   .handoff-text strong {
     font-size: 0.9rem;
-    color: var(--text, #0c0c10);
+    color: var(--ds-text);
   }
 
   .handoff-source {
     font-size: 0.8rem;
-    color: var(--muted, #5e5f69);
+    color: var(--ds-text-2);
   }
 
   .handoff-thumbs {
@@ -182,9 +179,9 @@
   .handoff-thumb {
     width: 36px;
     height: 36px;
-    border-radius: var(--radius-sm, 8px);
+    border-radius: var(--ds-radius-sm);
     overflow: hidden;
-    border: 1px solid var(--glass-border, rgba(0, 0, 0, 0.1));
+    border: var(--ds-border-width) solid var(--ds-border);
   }
 
   .handoff-thumb img {
@@ -195,57 +192,28 @@
 
   .handoff-more {
     font-size: 0.8rem;
-    color: var(--muted, #5e5f69);
+    color: var(--ds-text-2);
     font-weight: 600;
     padding-left: 4px;
   }
 
   .handoff-actions {
     display: flex;
-    gap: var(--space-2, 10px);
+    gap: var(--ds-space-2);
     flex-shrink: 0;
-  }
-
-  .btn-accept {
-    padding: 6px 16px;
-    border-radius: var(--radius-md, 12px);
-    background: var(--accent, #014f99);
-    color: var(--accent-text, #f5f4d6);
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .btn-accept:hover {
-    background: var(--accent-hover, #003971);
-    transform: translateY(-1px);
-  }
-
-  .btn-dismiss {
-    padding: 6px 12px;
-    border-radius: var(--radius-md, 12px);
-    background: transparent;
-    color: var(--muted, #5e5f69);
-    font-size: 0.85rem;
-    transition: all 0.2s;
-  }
-
-  .btn-dismiss:hover {
-    background: color-mix(in oklab, var(--text, #0c0c10) 8%, transparent);
-    color: var(--text, #0c0c10);
   }
 
   /* Transition */
   .handoff-banner-enter-active {
     transition:
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.3s;
+      transform var(--ds-duration-slow) var(--ds-ease),
+      opacity var(--ds-duration-slow) var(--ds-ease);
   }
 
   .handoff-banner-leave-active {
     transition:
-      transform 0.25s ease,
-      opacity 0.25s ease;
+      transform var(--ds-duration-slow) var(--ds-ease),
+      opacity var(--ds-duration-slow) var(--ds-ease);
   }
 
   .handoff-banner-enter-from {
@@ -261,7 +229,7 @@
   /* Responsive */
   @media (max-width: 640px) {
     .handoff-inner {
-      gap: var(--space-2, 10px);
+      gap: var(--ds-space-2);
     }
 
     .handoff-thumbs {

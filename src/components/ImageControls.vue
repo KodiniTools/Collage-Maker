@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import { useImageControls } from '@/composables/useImageControls'
+  import { UiButton, UiEmptyState, UiPanel } from '@/components/ui'
   import SelectionBanner from './image-controls/SelectionBanner.vue'
   import SizePositionControls from './image-controls/SizePositionControls.vue'
   import AdjustControls from './image-controls/AdjustControls.vue'
@@ -16,11 +17,7 @@
 </script>
 
 <template>
-  <div
-    class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-  >
-    <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
-
+  <UiPanel :title="t('imageControls.title')">
     <!-- Auswahl vorhanden -->
     <div v-if="api.selectedCount.value > 0" class="space-y-4">
       <!-- Mehrfachauswahl-Banner + Auswahl-Buttons -->
@@ -54,30 +51,25 @@
       <!-- Ebenen (Z-Index) -->
       <LayerControls :api="api" />
 
-      <!-- Zurücksetzen -->
-      <button
-        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
-        @click="api.resetImageChanges"
-      >
-        {{ t('imageControls.resetChanges') }}
-      </button>
-
-      <!-- Löschen -->
-      <button
-        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
-        @click="api.deleteImage"
-      >
-        {{
-          api.isMultiSelection.value
-            ? t('imageControls.deleteMultiple', { count: api.selectedCount.value })
-            : t('imageControls.delete')
-        }}
-      </button>
+      <!-- Zurücksetzen & Löschen: destruktiv, deshalb textbasiert -->
+      <div class="flex flex-col gap-1 border-t border-line pt-4">
+        <UiButton variant="danger" block @click="api.resetImageChanges">
+          {{ t('imageControls.resetChanges') }}
+        </UiButton>
+        <UiButton variant="danger" block @click="api.deleteImage">
+          {{
+            api.isMultiSelection.value
+              ? t('imageControls.deleteMultiple', { count: api.selectedCount.value })
+              : t('imageControls.delete')
+          }}
+        </UiButton>
+      </div>
     </div>
 
-    <div v-else class="text-center text-muted dark:text-muted-light py-8">
-      <p>{{ t('imageControls.noSelection') }}</p>
-      <p class="text-xs mt-2">{{ t('imageControls.ctrlClickHint') }}</p>
-    </div>
-  </div>
+    <UiEmptyState
+      v-else
+      :title="t('imageControls.noSelection')"
+      :text="t('imageControls.ctrlClickHint')"
+    />
+  </UiPanel>
 </template>

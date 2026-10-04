@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { UiButton } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
   const props = defineProps<{ api: CanvasSettingsApi }>()
@@ -10,19 +11,17 @@
 
 <template>
   <!-- Zoom Control -->
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-2">
-      <label class="block text-sm font-medium">
+      <label for="canvas-zoom" class="block text-sm font-medium">
         {{ t('canvas.zoom') }}: {{ Math.round(collage.canvasZoom * 100) }}%
       </label>
-      <button
-        class="text-xs px-2 py-1 bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded transition-colors"
-        @click="api.resetView"
-      >
+      <UiButton variant="secondary" size="sm" @click="api.resetView">
         {{ t('canvas.resetView') }}
-      </button>
+      </UiButton>
     </div>
     <input
+      id="canvas-zoom"
       type="range"
       :value="collage.canvasZoom"
       min="0.25"
@@ -31,7 +30,7 @@
       class="w-full"
       @input="api.updateZoom(Number(($event.target as HTMLInputElement).value))"
     />
-    <p class="text-xs text-muted dark:text-muted-light mt-1">
+    <p class="text-xs text-ink-2 mt-1">
       {{ t('canvas.zoomHint') }}
     </p>
   </div>

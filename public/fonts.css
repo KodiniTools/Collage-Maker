@@ -1,8 +1,0 @@
-/* Custom Font for Collage Maker */
-
-@font-face {
-  font-family: 'Supreme';
-  font-weight: 400;
-  src: url('/fonts/Supreme-Regular.woff2') format('woff2');
-  font-display: swap;
-}

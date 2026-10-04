@@ -2,6 +2,7 @@
   import { computed } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
+  import { UiCallout, UiPanel } from '@/components/ui'
   import type { CollageImage } from '@/types'
 
   const collage = useCollageStore()
@@ -209,31 +210,22 @@
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="text-lg font-semibold mb-1">{{ t('frameGallery.title') }}</h2>
-    <p class="text-xs text-muted dark:text-muted-light mb-3">{{ t('frameGallery.subtitle') }}</p>
+  <UiPanel :title="t('frameGallery.title')">
+    <p class="text-xs text-ink-2 mb-3">{{ t('frameGallery.subtitle') }}</p>
 
     <!-- Hinweis: keine Bilder auf der Leinwand -->
-    <div
-      v-if="canvasImageCount === 0"
-      class="mb-3 p-2 bg-muted/10 dark:bg-navy/20 rounded-lg text-xs text-muted dark:text-muted-light"
-    >
+    <UiCallout v-if="canvasImageCount === 0" type="info" class="mb-3">
       {{ t('frameGallery.noImages') }}
-    </div>
+    </UiCallout>
 
     <!-- Wirkungsbereich: Auswahl vs. alle Bilder -->
-    <div
-      v-else
-      class="mb-3 p-2 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/30 text-xs"
-    >
-      <p class="font-medium text-accent-dark dark:text-accent">
-        {{
-          selectedCount > 0
-            ? t('frameGallery.scopeSelected', { count: selectedCount })
-            : t('frameGallery.scopeAll', { count: canvasImageCount })
-        }}
-      </p>
-    </div>
+    <UiCallout v-else type="success" class="mb-3">
+      {{
+        selectedCount > 0
+          ? t('frameGallery.scopeSelected', { count: selectedCount })
+          : t('frameGallery.scopeAll', { count: canvasImageCount })
+      }}
+    </UiCallout>
 
     <div
       class="grid grid-cols-2 gap-2 max-h-[440px] overflow-y-auto pr-1"
@@ -245,21 +237,22 @@
         :key="frame.id"
         type="button"
         :disabled="canvasImageCount === 0"
-        class="group flex flex-col items-center gap-2 p-3 rounded-lg border-2 border-muted/50 dark:border-slate hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-muted/50"
+        class="group flex flex-col items-center gap-2 p-3 rounded-md border border-line-strong hover:border-accent focus-visible:outline-none focus-visible:shadow-focus transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-line"
         :title="t(frame.labelKey)"
         @click="applyFrame(frame)"
       >
         <!-- Vorschaufeld mit einem Miniatur-„Foto", das den Rahmen zeigt -->
-        <span
-          class="flex items-center justify-center w-full h-14 rounded-md bg-gradient-to-br from-muted/15 to-muted/5 dark:from-navy/40 dark:to-navy/10"
-        >
+        <span class="flex items-center justify-center w-full h-14 rounded-sm bg-surface-2">
           <span
-            class="block w-10 h-10 bg-gradient-to-br from-slate/70 via-accent/60 to-warm/70"
-            :style="previewStyle(frame.effects)"
+            class="block w-10 h-10"
+            :style="[
+              { background: 'linear-gradient(135deg, #38bdf8, #fcd34d, #fb7185)' },
+              previewStyle(frame.effects),
+            ]"
           />
         </span>
         <span class="text-xs font-medium text-center leading-tight">{{ t(frame.labelKey) }}</span>
       </button>
     </div>
-  </div>
+  </UiPanel>
 </template>

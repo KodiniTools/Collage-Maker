@@ -7,6 +7,7 @@
   import { useCanvasRenderer } from '@/composables/useCanvasRenderer'
   import { useDragResize } from '@/composables/useDragResize'
   import QuickActionToolbar from '@/components/QuickActionToolbar.vue'
+  import { UiButton, UiIconButton } from '@/components/ui'
 
   const { t } = useI18n()
   const collage = useCollageStore()
@@ -103,7 +104,7 @@
 <template>
   <div
     ref="container"
-    class="group w-full bg-muted/10 dark:bg-navy/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
+    class="group w-full bg-surface-2 rounded-md p-4 relative flex items-center justify-center transition-all duration-slow"
     :style="{
       height: 'calc(100vh - 12rem)',
       overflow: 'hidden',
@@ -113,43 +114,43 @@
          auf Zeigegeräten erst bei Mouse-Over (oder Tastaturfokus) eingeblendet -->
     <div
       v-if="hasCanvasImages"
-      class="zoom-control absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-slate-dark/85 dark:bg-surface-darker/90 backdrop-blur-sm text-surface-light rounded-lg shadow-lg px-1 py-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100"
+      class="zoom-control absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-surface-1 border border-line text-ink rounded-md shadow-overlay px-1 py-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
     >
-      <button
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      <UiIconButton
+        :label="t('shortcuts.zoomOut')"
+        size="sm"
         :disabled="collage.canvasZoom <= 0.25"
-        :title="t('shortcuts.zoomOut')"
-        :aria-label="t('shortcuts.zoomOut')"
         @click="zoomBy(-ZOOM_STEP)"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M20 12H4" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M20 12H4" />
         </svg>
-      </button>
-      <button
-        class="min-w-[3.25rem] h-8 px-1 flex items-center justify-center rounded-md text-xs font-semibold hover:bg-white/15 transition-colors"
+      </UiIconButton>
+      <UiButton
+        variant="ghost"
+        size="sm"
+        class="min-w-[3.25rem] tabular-nums"
         :title="t('shortcuts.resetZoom')"
         :aria-label="t('shortcuts.resetZoom')"
         @click="collage.resetCanvasView()"
       >
         {{ Math.round(collage.canvasZoom * 100) }}%
-      </button>
-      <button
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      </UiButton>
+      <UiIconButton
+        :label="t('shortcuts.zoomIn')"
+        size="sm"
         :disabled="collage.canvasZoom >= 4"
-        :title="t('shortcuts.zoomIn')"
-        :aria-label="t('shortcuts.zoomIn')"
         @click="zoomBy(ZOOM_STEP)"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M12 4v16m8-8H4" />
         </svg>
-      </button>
+      </UiIconButton>
     </div>
     <!-- Pan hint when zoomed -->
     <div
       v-if="collage.canvasZoom > 1"
-      class="absolute top-2 left-2 z-10 bg-slate-dark/80 text-surface-light text-xs px-2 py-1 rounded pointer-events-none"
+      class="absolute top-2 left-2 z-10 bg-surface-1 border border-line text-ink-2 text-xs px-2 py-1 rounded-sm pointer-events-none"
     >
       <span class="hidden sm:inline">Space + Drag / Arrows to pan</span>
       <span class="sm:hidden">2 Finger zum Verschieben</span>
@@ -165,7 +166,7 @@
         ref="canvas"
         tabindex="-1"
         data-collage-canvas
-        class="shadow-lg outline-none transition-transform duration-200"
+        class="outline-none transition-transform"
         :style="{
           transform: `scale(${autoFitScale})`,
           transformOrigin: 'center center',
@@ -202,32 +203,28 @@
     <Transition name="preview-fade">
       <div
         v-if="previewUrl"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        class="fixed inset-0 z-backdrop flex items-center justify-center bg-black/50"
         @click.self="closePreview"
         @keydown.esc="closePreview"
       >
         <div class="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
           <!-- Close button -->
-          <button
-            class="absolute -top-4 -right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 text-white transition-colors shadow-lg"
-            aria-label="Vorschau schliessen"
+          <UiIconButton
+            :label="t('common.close')"
+            variant="secondary"
+            round
+            class="absolute -top-4 -right-4 z-10"
             @click="closePreview"
           >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </UiIconButton>
           <!-- Image -->
           <img
             :src="previewUrl"
-            class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl"
-            alt="Bildvorschau"
+            class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-overlay"
+            :alt="t('gallery.preview')"
           />
         </div>
       </div>

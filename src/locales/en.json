@@ -493,6 +493,9 @@
     "letterSpacing": "Letter Spacing",
     "fontWeight": "Font Weight",
     "textAlign": "Text Alignment",
+    "alignLeft": "Left",
+    "alignCenter": "Center",
+    "alignRight": "Right",
     "color": "Text Color",
     "shadow": "Text Shadow",
     "shadowOn": "On",
@@ -566,7 +569,8 @@
   },
   "common": {
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
