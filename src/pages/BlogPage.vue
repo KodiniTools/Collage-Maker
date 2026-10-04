@@ -223,15 +223,21 @@
       <header
         class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md container mx-auto px-4 pt-6"
       >
-        <nav class="flex items-center justify-between">
+        <nav class="flex flex-wrap items-center justify-between gap-y-2">
           <RouterLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <span class="text-xl font-bold text-slate-dark dark:text-surface-light">{{
               t('app.title')
             }}</span>
           </RouterLink>
 
-          <div class="flex items-center gap-2 sm:gap-6">
+          <div class="flex items-center gap-2 sm:gap-6 ml-auto">
             <RouterLink to="/blog" class="text-sm sm:text-base text-accent font-semibold">
+              {{ t('nav.guide') }}
+            </RouterLink>
+            <RouterLink
+              :to="{ path: '/', hash: '#blog' }"
+              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+            >
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink

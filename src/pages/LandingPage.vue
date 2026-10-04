@@ -1,8 +1,16 @@
 <script setup lang="ts">
+  import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
+  import { getBlogArticlesNewestFirst } from '@/data/blogArticles'
+  import { buildBlogCards } from '@/lib/blogCards'
 
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
+
+  // Blog cards (kodinitools.com/blog) in the active language, newest post first
+  const blogCards = computed(() =>
+    buildBlogCards(getBlogArticlesNewestFirst(), String(locale.value), t('landing.blog.minutes'))
+  )
 
   const heroFeatures = ['layouts', 'editing', 'privacy']
 
@@ -42,7 +50,7 @@
       <header
         class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md container mx-auto px-4 pt-6"
       >
-        <nav class="flex items-center justify-between">
+        <nav class="flex flex-wrap items-center justify-between gap-y-2">
           <!-- Logo -->
           <div class="flex items-center gap-3">
             <span class="text-xl font-bold text-slate-dark dark:text-surface-light">{{
@@ -51,9 +59,15 @@
           </div>
 
           <!-- Nav Links + Controls -->
-          <div class="flex items-center gap-3 sm:gap-6">
+          <div class="flex items-center gap-3 sm:gap-6 ml-auto">
             <RouterLink
               to="/blog"
+              class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+            >
+              {{ t('nav.guide') }}
+            </RouterLink>
+            <RouterLink
+              :to="{ path: '/', hash: '#blog' }"
               class="text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
             >
               {{ t('nav.blog') }}
@@ -232,6 +246,87 @@
               {{ t('landing.howItWorks.step3.description') }}
             </p>
           </div>
+        </div>
+      </section>
+
+      <!-- Blog Section: posts about the collage maker on kodinitools.com (src/data/blogArticles.ts) -->
+      <section
+        id="blog"
+        class="container mx-auto px-4 py-10 sm:py-20 border-t border-muted/20 dark:border-slate/30 scroll-mt-24"
+      >
+        <h2
+          class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-slate-dark dark:text-surface-light mb-4"
+        >
+          {{ t('landing.blog.title') }}
+        </h2>
+        <p class="text-center text-muted dark:text-muted-light mb-8 sm:mb-12 max-w-2xl mx-auto">
+          {{ t('landing.blog.subtitle') }}
+        </p>
+
+        <div
+          class="grid gap-4 sm:gap-6 mx-auto"
+          :class="blogCards.length > 1 ? 'md:grid-cols-2 max-w-4xl' : 'max-w-xl'"
+        >
+          <a
+            v-for="article in blogCards"
+            :key="article.id"
+            :href="article.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col overflow-hidden bg-white dark:bg-navy rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-muted/10 dark:border-slate/30"
+          >
+            <div
+              class="aspect-video overflow-hidden bg-surface dark:bg-surface-darker border-b border-muted/10 dark:border-slate/30"
+            >
+              <img
+                :src="article.image"
+                alt=""
+                width="640"
+                height="360"
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div class="flex flex-col flex-1 gap-3 p-5 sm:p-6 text-left">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span
+                  class="px-2.5 py-0.5 text-xs font-semibold tracking-wider uppercase rounded-full bg-accent text-accent-ink"
+                >
+                  {{ article.tag }}
+                </span>
+                <span class="text-sm text-muted dark:text-muted-light">{{ article.meta }}</span>
+              </div>
+              <h3
+                class="text-lg sm:text-xl font-bold text-slate-dark dark:text-surface-light leading-snug"
+              >
+                {{ article.title }}
+              </h3>
+              <p
+                class="flex-1 text-sm sm:text-base text-muted dark:text-muted-light leading-relaxed"
+              >
+                {{ article.description }}
+              </p>
+              <span
+                class="inline-flex items-center gap-1 text-sm font-semibold text-slate-dark dark:text-accent-light"
+              >
+                {{ t('landing.blog.readMore') }}
+                <svg
+                  class="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </span>
+            </div>
+          </a>
         </div>
       </section>
 

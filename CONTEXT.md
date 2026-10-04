@@ -17,7 +17,7 @@ Diese Datei dokumentiert den technischen Kontext des Projekts für Entwickler un
 | Technologie | Version | Beschreibung |
 |-------------|---------|--------------|
 | Pinia | 2.1.7 | Zentrales State Management |
-| Vue Router | 4.6.4 | Client-seitiges Routing (3 Seiten) |
+| Vue Router | 4.6.4 | Client-seitiges Routing (4 Seiten) |
 
 ### Styling & UI
 | Technologie | Version | Beschreibung |
@@ -87,8 +87,15 @@ Collage-Maker/
 │   │
 │   ├── pages/                        # Seiten-Komponenten (Router Views)
 │   │   ├── EditorPage.vue           # Haupt-Editor (Collapsible Sidebars)
-│   │   ├── LandingPage.vue          # Startseite
-│   │   └── FaqPage.vue              # FAQ-Seite
+│   │   ├── LandingPage.vue          # Startseite (inkl. Abschnitt „Blog“, Anker #blog)
+│   │   ├── FaqPage.vue              # FAQ-Seite
+│   │   └── BlogPage.vue             # Anleitung/Guide (Route /blog, Tab „Anleitung“)
+│   │
+│   ├── data/
+│   │   └── blogArticles.ts          # Blog-Beiträge (kodinitools.com/blog) für die Landing-Page
+│   │
+│   ├── lib/
+│   │   └── blogCards.ts             # Blog-Karten: Datum/Sprache (reine Funktionen)
 │   │
 │   ├── types/                        # TypeScript-Definitionen
 │   │   └── index.ts                 # Alle App-Typen
@@ -101,7 +108,7 @@ Collage-Maker/
 │   │   └── en.json                  # Englisch (520 Zeilen)
 │   │
 │   ├── router/                       # Vue Router
-│   │   └── index.ts                 # 3 Routen-Definitionen
+│   │   └── index.ts                 # 4 Routen-Definitionen + Anker-Scrolling (/#blog)
 │   │
 │   ├── App.vue                       # Root-Komponente
 │   ├── main.ts                       # Einstiegspunkt
