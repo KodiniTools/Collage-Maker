@@ -57,9 +57,7 @@
       <!-- Hero Section -->
       <section class="container mx-auto px-4 pt-8 pb-8 sm:pt-16 sm:pb-12">
         <div class="text-center max-w-4xl mx-auto mb-8 sm:mb-16">
-          <h1
-            class="text-3xl sm:text-4xl md:text-6xl font-bold text-ink mb-4 sm:mb-6 leading-tight"
-          >
+          <h1 class="text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-4 sm:mb-6">
             {{ t('landing.hero.title') }}
           </h1>
 
@@ -76,7 +74,7 @@
             ></video>
           </div>
 
-          <p class="text-base sm:text-lg md:text-xl text-ink-2 mb-6 sm:mb-10 max-w-2xl mx-auto">
+          <p class="text-lg text-ink-2 mb-6 sm:mb-10 max-w-2xl mx-auto">
             {{ t('landing.hero.subtitle') }}
           </p>
 
@@ -108,7 +106,7 @@
             <h3 class="text-xl font-bold text-ink mb-2">
               {{ t(`landing.heroFeatures.${feature}.title`) }}
             </h3>
-            <p class="text-ink-2 leading-relaxed">
+            <p class="text-ink-2">
               {{ t(`landing.heroFeatures.${feature}.description`) }}
             </p>
           </div>
@@ -117,7 +115,7 @@
 
       <!-- All Features Section -->
       <section class="container mx-auto px-4 py-10 sm:py-20">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-ink mb-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-ink mb-4">
           {{ t('landing.allFeatures.title') }}
         </h2>
         <p class="text-center text-ink-2 mb-8 sm:mb-12 max-w-2xl mx-auto">
@@ -135,7 +133,7 @@
             <h3 class="text-lg font-semibold text-ink mb-2">
               {{ t(`landing.allFeatures.items.${feature}.title`) }}
             </h3>
-            <p class="text-sm text-ink-2 leading-relaxed">
+            <p class="text-sm text-ink-2">
               {{ t(`landing.allFeatures.items.${feature}.description`) }}
             </p>
           </div>
@@ -144,7 +142,7 @@
 
       <!-- How It Works Section -->
       <section class="container mx-auto px-4 py-10 sm:py-20 border-t border-line">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-ink mb-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-ink mb-4">
           {{ t('landing.howItWorks.title') }}
         </h2>
         <p class="text-center text-ink-2 mb-8 sm:mb-12 max-w-2xl mx-auto">

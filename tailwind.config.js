@@ -78,10 +78,33 @@ export default {
     transitionTimingFunction: {
       DEFAULT: 'var(--ds-ease)',
     },
+    // Typografie: sieben Stufen 12 / 13 / 14 / 16 / 20 / 24 / 32 mit den
+    // Token-Namen (text-md statt text-base), Zeilenhöhe hängt an der Stufe.
+    fontFamily: {
+      sans: 'var(--ds-font-sans)',
+      mono: 'var(--ds-font-mono)',
+    },
+    fontSize: {
+      xs: ['var(--ds-text-xs)', { lineHeight: 'var(--ds-leading)' }],
+      sm: ['var(--ds-text-sm)', { lineHeight: 'var(--ds-leading)' }],
+      md: ['var(--ds-text-md)', { lineHeight: 'var(--ds-leading)' }],
+      lg: ['var(--ds-text-lg)', { lineHeight: 'var(--ds-leading)' }],
+      xl: ['var(--ds-text-xl)', { lineHeight: 'var(--ds-leading-tight)' }],
+      '2xl': ['var(--ds-text-2xl)', { lineHeight: 'var(--ds-leading-tight)' }],
+      '3xl': ['var(--ds-text-3xl)', { lineHeight: 'var(--ds-leading-tight)' }],
+    },
+    fontWeight: {
+      normal: 'var(--ds-weight-regular)',
+      medium: 'var(--ds-weight-medium)',
+      semibold: 'var(--ds-weight-semibold)',
+      bold: 'var(--ds-weight-bold)',
+    },
+    lineHeight: {
+      none: '1',
+      tight: 'var(--ds-leading-tight)',
+      normal: 'var(--ds-leading)',
+    },
     extend: {
-      fontFamily: {
-        sans: ['Supreme', 'sans-serif'],
-      },
       zIndex: {
         topbar: 'var(--ds-z-topbar)',
         backdrop: 'var(--ds-z-backdrop)',

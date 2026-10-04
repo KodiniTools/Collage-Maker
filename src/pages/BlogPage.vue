@@ -30,22 +30,22 @@
           <div class="flex items-center gap-2 sm:gap-6 ml-auto">
             <RouterLink
               to="/blog"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.guide') }}
             </RouterLink>
-            <RouterLink to="/artikel" class="text-sm sm:text-base text-ink font-semibold">
+            <RouterLink to="/artikel" class="text-sm sm:text-lg text-ink font-semibold">
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
               to="/faq"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.faq') }}
             </RouterLink>
             <RouterLink
               to="/"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.home') }}
             </RouterLink>
@@ -63,10 +63,10 @@
         >
           {{ t('blogPage.tag') }}
         </span>
-        <h1 class="text-3xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
+        <h1 class="text-3xl sm:text-3xl font-bold text-ink mb-4 leading-tight">
           {{ t('blogPage.title') }}
         </h1>
-        <p class="text-ink-2 max-w-2xl mx-auto text-base sm:text-lg">
+        <p class="text-ink-2 max-w-2xl mx-auto text-lg">
           {{ t('blogPage.subtitle') }}
         </p>
       </section>
@@ -104,10 +104,10 @@
                 </span>
                 <span class="text-sm text-ink-2">{{ article.meta }}</span>
               </div>
-              <h2 class="text-lg sm:text-xl font-bold text-ink leading-snug">
+              <h2 class="text-lg sm:text-xl font-bold text-ink leading-tight">
                 {{ article.title }}
               </h2>
-              <p class="flex-1 text-sm sm:text-base text-ink-2 leading-relaxed">
+              <p class="flex-1 text-sm sm:text-lg text-ink-2">
                 {{ article.description }}
               </p>
               <span class="inline-flex items-center gap-1 text-sm font-semibold text-ink">

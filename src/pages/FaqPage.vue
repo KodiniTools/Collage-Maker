@@ -51,19 +51,19 @@
           <div class="flex items-center gap-2 sm:gap-6 ml-auto">
             <RouterLink
               to="/blog"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.guide') }}
             </RouterLink>
             <RouterLink
               to="/artikel"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
               to="/"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.home') }}
             </RouterLink>
@@ -76,10 +76,10 @@
 
       <!-- Hero Section -->
       <section class="container mx-auto px-4 pt-8 sm:pt-16 pb-8 sm:pb-12 text-center">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ink mb-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-4">
           {{ t('faqPage.title') }}
         </h1>
-        <p class="text-base sm:text-lg text-ink-2 max-w-2xl mx-auto">
+        <p class="text-lg text-ink-2 max-w-2xl mx-auto">
           {{ t('faqPage.subtitle') }}
         </p>
       </section>
@@ -103,9 +103,7 @@
                   class="w-full px-4 py-3 sm:px-6 sm:py-5 text-left hover:bg-surface-2 transition-colors flex items-center justify-between gap-3 sm:gap-4"
                   @click="toggleQuestion(item.index)"
                 >
-                  <span class="font-semibold text-base sm:text-lg text-ink">{{
-                    item.question
-                  }}</span>
+                  <span class="font-semibold text-lg text-ink">{{ item.question }}</span>
                   <svg
                     class="w-5 h-5 flex-shrink-0 transition-transform text-ink"
                     :class="{ 'rotate-180': openIndex === item.index }"
@@ -132,7 +130,7 @@
                 >
                   <div v-show="openIndex === item.index" class="overflow-hidden">
                     <div
-                      class="px-4 py-3 sm:px-6 sm:py-5 text-ink leading-relaxed border-t border-line text-sm sm:text-base"
+                      class="px-4 py-3 sm:px-6 sm:py-5 text-ink border-t border-line text-sm sm:text-lg"
                     >
                       {{ item.answer }}
                     </div>

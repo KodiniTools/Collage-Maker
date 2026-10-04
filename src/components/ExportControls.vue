@@ -329,7 +329,7 @@
           <div
             class="flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-3 border-b border-line"
           >
-            <h3 class="text-base sm:text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
+            <h3 class="text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
             <UiIconButton :label="t('export.close')" size="sm" @click="closePreview">
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

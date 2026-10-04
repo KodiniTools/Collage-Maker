@@ -28,17 +28,19 @@ damit es keinen Dark-Flash gibt. Standard ist Light.
 Tailwind bleibt als Utility-Schicht für Layout. Farben, Radien, Schatten und Dauern kommen aus den
 Tokens (`tailwind.config.js`), es gibt keine `dark:`-Varianten mehr:
 
-| Rolle                        | Klasse                                                                    | Variable                                  |
-| ---------------------------- | ------------------------------------------------------------------------- | ----------------------------------------- |
-| Seite, Panel, Eingabe, Hover | `bg-surface-0` … `bg-surface-3`                                           | `--ds-surface-0…3`                        |
-| Rahmen, Feldrahmen           | `border-line`, `border-line-strong` (auch nur `border`)                   | `--ds-border`, `--ds-border-strong`       |
-| Text 1–3                     | `text-ink`, `text-ink-2`, `text-ink-3`                                    | `--ds-text`, `--ds-text-2`, `--ds-text-3` |
-| Primäraktion                 | `bg-accent hover:bg-accent-hover text-on-accent`                          | `--ds-accent*`, `--ds-on-accent`          |
-| Auswahl, aktive Fläche       | `bg-accent-soft border-accent`                                            | `--ds-accent-soft`                        |
-| Link, Status                 | `text-link`, `text-success`, `text-warning`, `text-danger`, `text-info`   | `--ds-link`, `--ds-success` … `--ds-info` |
-| Radien                       | `rounded-sm` (6) · `rounded-md` (10) · `rounded-lg` (16) · `rounded-full` | `--ds-radius-*`                           |
-| Schatten                     | `shadow-overlay` (nur Dialog, Toast, Toolbar) · `shadow-focus`            | `--ds-shadow-overlay`, `--ds-focus-ring`  |
-| Motion                       | `transition-colors` (150 ms) · `duration-slow` (250 ms)                   | `--ds-duration*`, `--ds-ease`             |
+| Rolle                        | Klasse                                                                                                          | Variable                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Seite, Panel, Eingabe, Hover | `bg-surface-0` … `bg-surface-3`                                                                                 | `--ds-surface-0…3`                        |
+| Rahmen, Feldrahmen           | `border-line`, `border-line-strong` (auch nur `border`)                                                         | `--ds-border`, `--ds-border-strong`       |
+| Text 1–3                     | `text-ink`, `text-ink-2`, `text-ink-3`                                                                          | `--ds-text`, `--ds-text-2`, `--ds-text-3` |
+| Primäraktion                 | `bg-accent hover:bg-accent-hover text-on-accent`                                                                | `--ds-accent*`, `--ds-on-accent`          |
+| Auswahl, aktive Fläche       | `bg-accent-soft border-accent`                                                                                  | `--ds-accent-soft`                        |
+| Link, Status                 | `text-link`, `text-success`, `text-warning`, `text-danger`, `text-info`                                         | `--ds-link`, `--ds-success` … `--ds-info` |
+| Radien                       | `rounded-sm` (6) · `rounded-md` (10) · `rounded-lg` (16) · `rounded-full`                                       | `--ds-radius-*`                           |
+| Schatten                     | `shadow-overlay` (nur Dialog, Toast, Toolbar) · `shadow-focus`                                                  | `--ds-shadow-overlay`, `--ds-focus-ring`  |
+| Motion                       | `transition-colors` (150 ms) · `duration-slow` (250 ms)                                                         | `--ds-duration*`, `--ds-ease`             |
+| Schriftgrade                 | `text-xs` 12 · `text-sm` 13 · `text-md` 14 · `text-lg` 16 · `text-xl` 20 · `text-2xl` 24 · `text-3xl` 32 (Hero) | `--ds-text-xs…3xl`, `--ds-leading*`       |
+| Schrift, Gewichte            | `font-sans`, `font-mono`, `font-medium` 500 · `font-semibold` 600 · `font-bold` 700                             | `--ds-font-*`, `--ds-weight-*`            |
 
 Regeln wie im Playlist Generator: Gold ist Vollfläche nur für die Primäraktion, Fokus und aktive
 Zustände. Ein Rahmen (1 px), drei Radien, Schatten nur für Overlays. Hover ändert Farbe, nie Größe.

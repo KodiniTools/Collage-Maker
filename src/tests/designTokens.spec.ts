@@ -74,6 +74,36 @@ describe('Design-Tokens in Vue-Komponenten', () => {
   it('nutzen keine undefinierten Farbklassen (text-text, text-text-dark)', () => {
     expect(findInVueFiles(/\btext-text(?:-dark)?\b/)).toEqual([])
   })
+
+  it('bleiben in der Token-Skala text-xs … text-3xl (kein text-base, keine Pixelwerte)', () => {
+    expect(
+      findInVueFiles(
+        /\btext-(?:base|[4-9]xl)\b|\btext-\[[^\]]+\]|\bleading-(?:relaxed|snug|loose)\b/
+      )
+    ).toEqual([])
+  })
+})
+
+describe('Typografie-Brücke', () => {
+  const tailwindConfig = readFileSync(join(SRC_DIR, '..', 'tailwind.config.js'), 'utf8')
+  const styleCss = readFileSync(join(SRC_DIR, 'style.css'), 'utf8')
+
+  it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'])(
+    'text-%s kommt aus dem gleichnamigen Token',
+    (step) => {
+      expect(tailwindConfig).toMatch(new RegExp(`'?${step}'?: \\['var\\(--ds-text-${step}\\)'`))
+    }
+  )
+
+  it('bindet Schriftfamilie, Gewichte und Zeilenhöhen an Tokens', () => {
+    expect(tailwindConfig).toContain("sans: 'var(--ds-font-sans)'")
+    expect(tailwindConfig).toContain("semibold: 'var(--ds-weight-semibold)'")
+    expect(tailwindConfig).toContain("tight: 'var(--ds-leading-tight)'")
+  })
+
+  it('setzt die Grundgröße des Body wie der Playlist Generator auf --ds-text-lg', () => {
+    expect(styleCss).toMatch(/body \{[^}]*font-size: var\(--ds-text-lg\)/)
+  })
 })
 
 describe('UI-Schrift Supreme', () => {

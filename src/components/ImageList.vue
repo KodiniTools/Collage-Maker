@@ -275,7 +275,7 @@
             <!-- Selection number badge -->
             <span
               v-if="collage.isGalleryImageSelected(image.id)"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-accent text-on-accent text-[10px] font-bold rounded-full flex items-center justify-center"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-accent text-on-accent text-xs font-bold rounded-full flex items-center justify-center"
             >
               {{ collage.selectedGalleryIds.indexOf(image.id) + 1 }}
             </span>
@@ -380,7 +380,7 @@
         >
           <!-- Header -->
           <div class="flex items-center justify-between gap-3 p-3 sm:p-4 border-b border-line">
-            <h3 class="text-base sm:text-lg font-semibold truncate text-ink">
+            <h3 class="text-lg font-semibold truncate text-ink">
               {{ t('gallery.preview') }}
             </h3>
             <UiIconButton :label="t('common.close')" size="sm" @click="closePreview">

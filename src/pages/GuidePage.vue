@@ -224,24 +224,24 @@
           </RouterLink>
 
           <div class="flex items-center gap-2 sm:gap-6 ml-auto">
-            <RouterLink to="/blog" class="text-sm sm:text-base text-ink font-semibold">
+            <RouterLink to="/blog" class="text-sm sm:text-lg text-ink font-semibold">
               {{ t('nav.guide') }}
             </RouterLink>
             <RouterLink
               to="/artikel"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
               to="/faq"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.faq') }}
             </RouterLink>
             <RouterLink
               to="/"
-              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
+              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.home') }}
             </RouterLink>
@@ -259,10 +259,10 @@
         >
           {{ hero.tag }}
         </span>
-        <h1 class="text-3xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
+        <h1 class="text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-4">
           {{ hero.title }}
         </h1>
-        <p class="text-ink-2 max-w-2xl mx-auto mb-8 text-base sm:text-lg">
+        <p class="text-ink-2 max-w-2xl mx-auto mb-8 text-lg">
           {{ hero.subtitle }}
         </p>
         <UiButton to="/editor" variant="primary" size="lg">{{ hero.cta }} →</UiButton>
@@ -299,11 +299,7 @@
             v-html="section.title"
           ></h2>
           <ul class="space-y-3">
-            <li
-              v-for="(para, i) in section.content"
-              :key="i"
-              class="flex gap-3 text-ink leading-relaxed"
-            >
+            <li v-for="(para, i) in section.content" :key="i" class="flex gap-3 text-ink">
               <span class="mt-1.5 w-1.5 h-1.5 flex-shrink-0 rounded-full bg-accent"></span>
               <span v-html="para"></span>
             </li>

@@ -129,7 +129,7 @@
 
         <!-- Ebenen-Badge (1 = hinterste Ebene) -->
         <span
-          class="absolute -top-1 -left-1 w-4 h-4 bg-surface-2 text-ink text-[10px] font-bold rounded-full flex items-center justify-center ring-1 ring-surface-1"
+          class="absolute -top-1 -left-1 w-4 h-4 bg-surface-2 text-ink text-xs font-bold rounded-full flex items-center justify-center ring-1 ring-surface-1"
           :title="t('thumbnailBar.layerNumber', { n: index + 1 })"
         >
           {{ index + 1 }}
@@ -169,7 +169,7 @@
     </div>
 
     <!-- Hint: Mehrfachauswahl + Umsortieren -->
-    <p class="text-[10px] text-ink-3 mt-1">
+    <p class="text-xs text-ink-3 mt-1">
       {{ t('thumbnailBar.hint') }} • {{ t('thumbnailBar.reorderHint') }}
     </p>
   </div>

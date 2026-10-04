@@ -66,6 +66,8 @@ body {
 /* === Body === */
 body {
   font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-lg);
+  line-height: var(--ds-leading);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--ds-surface-0);

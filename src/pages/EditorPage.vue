@@ -180,7 +180,7 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
       <div class="container mx-auto px-2 py-2 sm:px-4 sm:py-4 flex items-center justify-between">
-        <div class="flex items-center gap-2 sm:gap-4">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
           <!-- Back to Landing Button -->
           <RouterLink
             to="/"
@@ -196,14 +196,14 @@
               />
             </svg>
           </RouterLink>
-          <div>
-            <h1 class="text-lg sm:text-2xl font-bold">{{ t('app.title') }}</h1>
-            <p class="text-xs sm:text-sm text-ink-2 hidden sm:block">
+          <div class="min-w-0">
+            <h1 class="text-lg sm:text-2xl font-bold truncate">{{ t('app.title') }}</h1>
+            <p class="text-sm text-ink-2 hidden sm:block">
               {{ t('app.subtitle') }}
             </p>
           </div>
         </div>
-        <div class="flex items-center gap-1 sm:gap-3">
+        <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
           <!-- Undo/Redo Buttons -->
           <div class="flex items-center gap-1 mr-1 sm:mr-2">
             <UiIconButton
@@ -234,13 +234,9 @@
             </UiIconButton>
           </div>
 
-          <UiButton
-            variant="secondary"
-            :title="t('templates.saveAsCurrent')"
-            :aria-label="t('templates.saveAsCurrent')"
-            @click="openSaveTemplate"
-          >
-            <template #icon>
+          <!-- Vorlagen: unter sm nur Icons, ab sm Buttons mit Text -->
+          <div class="contents sm:hidden">
+            <UiIconButton :label="t('templates.saveAsCurrent')" @click="openSaveTemplate">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                 <path
                   stroke-linecap="round"
@@ -248,16 +244,8 @@
                   d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
                 />
               </svg>
-            </template>
-            <span class="hidden sm:inline">{{ t('templates.saveAsCurrent') }}</span>
-          </UiButton>
-          <UiButton
-            variant="secondary"
-            :title="t('templates.library')"
-            :aria-label="t('templates.library')"
-            @click="showTemplates = true"
-          >
-            <template #icon>
+            </UiIconButton>
+            <UiIconButton :label="t('templates.library')" @click="showTemplates = true">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                 <path
                   stroke-linecap="round"
@@ -265,9 +253,34 @@
                   d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
                 />
               </svg>
-            </template>
-            <span class="hidden sm:inline">{{ t('templates.library') }}</span>
-          </UiButton>
+            </UiIconButton>
+          </div>
+          <div class="hidden sm:contents">
+            <UiButton variant="secondary" @click="openSaveTemplate">
+              <template #icon>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
+                  />
+                </svg>
+              </template>
+              {{ t('templates.saveAsCurrent') }}
+            </UiButton>
+            <UiButton variant="secondary" @click="showTemplates = true">
+              <template #icon>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
+                  />
+                </svg>
+              </template>
+              {{ t('templates.library') }}
+            </UiButton>
+          </div>
           <UiIconButton :label="t('shortcuts.title')" @click="showShortcutsModal = true">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
               <path
