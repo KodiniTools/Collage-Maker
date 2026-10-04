@@ -4,6 +4,17 @@ import EditorPage from '@/pages/EditorPage.vue'
 import FaqPage from '@/pages/FaqPage.vue'
 import BlogPage from '@/pages/BlogPage.vue'
 
+// Offset for in-page anchors (/#blog, guide sections): the target's
+// `scroll-margin-top` (Tailwind scroll-mt-*) keeps it clear of the sticky
+// navigation, so the CSS stays the single source of truth.
+const DEFAULT_HASH_OFFSET = 96 // = scroll-mt-24
+function hashScrollOffset(hash: string): number {
+  const el = document.getElementById(hash.slice(1))
+  if (!el) return DEFAULT_HASH_OFFSET
+  const margin = parseFloat(getComputedStyle(el).scrollMarginTop)
+  return Number.isFinite(margin) && margin > 0 ? margin : DEFAULT_HASH_OFFSET
+}
+
 const routes = [
   {
     path: '/',
@@ -34,12 +45,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory('/collagemaker/'),
   routes,
-  scrollBehavior(_to, _from, savedPosition) {
+  scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) {
       return savedPosition
-    } else {
-      return { top: 0 }
     }
+    if (to.hash) {
+      return { el: to.hash, top: hashScrollOffset(to.hash), behavior: 'smooth' }
+    }
+    return { top: 0 }
   },
 })
 
