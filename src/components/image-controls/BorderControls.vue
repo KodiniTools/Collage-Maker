@@ -1,5 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { computed } from 'vue'
+  import { UiButton, UiSelect } from '@/components/ui'
   import type { CollageImage } from '@/types'
   import type { ImageControlsApi } from '@/composables/useImageControls'
   import ControlSlider from './ControlSlider.vue'
@@ -8,25 +10,29 @@
   const props = defineProps<{ image: CollageImage; api: ImageControlsApi }>()
   const { t } = useI18n()
   const { api } = props
+
+  const borderStyleOptions = computed(() => [
+    { value: 'solid', label: t('imageControls.borderStyleSolid') },
+    { value: 'dashed', label: t('imageControls.borderStyleDashed') },
+    { value: 'dotted', label: t('imageControls.borderStyleDotted') },
+    { value: 'double', label: t('imageControls.borderStyleDouble') },
+  ])
 </script>
 
 <template>
   <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
-      <label class="text-sm font-medium">{{ t('imageControls.border') }}</label>
-      <button
-        :class="[
-          'px-3 py-1 text-xs rounded-sm transition-colors',
-          image.borderEnabled
-            ? 'bg-accent hover:bg-accent-hover text-on-accent'
-            : 'bg-surface-2 hover:bg-surface-3 text-ink',
-        ]"
+      <span class="text-sm font-medium">{{ t('imageControls.border') }}</span>
+      <UiButton
+        size="sm"
+        :variant="image.borderEnabled ? 'primary' : 'secondary'"
+        :aria-pressed="image.borderEnabled"
         @click="api.toggleBorder"
       >
         {{
           image.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled')
         }}
-      </button>
+      </UiButton>
     </div>
 
     <div v-if="image.borderEnabled" class="space-y-3">
@@ -45,25 +51,13 @@
       />
 
       <!-- Rahmenstil -->
-      <div>
-        <label class="block text-xs text-ink-2 mb-1">
-          {{ t('imageControls.borderStyle') }}
-        </label>
-        <select
-          :value="image.borderStyle"
-          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm"
-          @change="
-            api.updateBorderStyle(
-              ($event.target as HTMLSelectElement).value as CollageImage['borderStyle']
-            )
-          "
-        >
-          <option value="solid">{{ t('imageControls.borderStyleSolid') }}</option>
-          <option value="dashed">{{ t('imageControls.borderStyleDashed') }}</option>
-          <option value="dotted">{{ t('imageControls.borderStyleDotted') }}</option>
-          <option value="double">{{ t('imageControls.borderStyleDouble') }}</option>
-        </select>
-      </div>
+      <UiSelect
+        :model-value="image.borderStyle"
+        :options="borderStyleOptions"
+        :label="t('imageControls.borderStyle')"
+        size="sm"
+        @update:model-value="(v) => api.updateBorderStyle(v as CollageImage['borderStyle'])"
+      />
 
       <!-- Rahmenfarbe -->
       <ControlColorInput
@@ -75,14 +69,11 @@
       <!-- Rahmenschatten -->
       <div class="border-t border-line-strong pt-3 mt-3">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-xs text-ink-2">{{ t('imageControls.borderShadow') }}</label>
-          <button
-            :class="[
-              'px-2 py-1 text-xs rounded-sm transition-colors',
-              image.borderShadowEnabled
-                ? 'bg-accent hover:bg-accent-hover text-on-accent'
-                : 'bg-surface-2 hover:bg-surface-3 text-ink',
-            ]"
+          <span class="text-xs text-ink-2">{{ t('imageControls.borderShadow') }}</span>
+          <UiButton
+            size="sm"
+            :variant="image.borderShadowEnabled ? 'primary' : 'secondary'"
+            :aria-pressed="image.borderShadowEnabled"
             @click="api.toggleBorderShadow"
           >
             {{
@@ -90,7 +81,7 @@
                 ? t('imageControls.borderShadowEnabled')
                 : t('imageControls.borderShadowDisabled')
             }}
-          </button>
+          </UiButton>
         </div>
 
         <div v-if="image.borderShadowEnabled" class="space-y-2">

@@ -1,9 +1,18 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
   import ControlSlider from './image-controls/ControlSlider.vue'
   import { availableFonts } from '@/assets/fonts/fontList'
+  import {
+    UiButton,
+    UiEmptyState,
+    UiIconButton,
+    UiPanel,
+    UiSegmentedControl,
+  } from '@/components/ui'
+
+  type TextAlign = 'left' | 'center' | 'right'
 
   const collage = useCollageStore()
   const { t } = useI18n()
@@ -74,24 +83,33 @@
     collage.updateText(collage.selectedText.id, { color: value })
   }
 
+  const isBold = computed(() => {
+    const weight = collage.selectedText?.fontWeight
+    return typeof weight === 'number' ? weight >= 700 : weight === 'bold'
+  })
+
   function toggleFontWeight() {
     if (!collage.selectedText) return
     collage.saveStateForUndo()
-    const currentWeight =
-      typeof collage.selectedText.fontWeight === 'number'
-        ? collage.selectedText.fontWeight
-        : collage.selectedText.fontWeight === 'bold'
-          ? 700
-          : 400
-    const newWeight = currentWeight >= 700 ? 400 : 700
-    collage.updateText(collage.selectedText.id, { fontWeight: newWeight })
+    collage.updateText(collage.selectedText.id, { fontWeight: isBold.value ? 400 : 700 })
   }
 
-  function updateTextAlign(value: 'left' | 'center' | 'right') {
+  function updateTextAlign(value: TextAlign) {
     if (!collage.selectedText) return
     collage.saveStateForUndo()
     collage.updateText(collage.selectedText.id, { textAlign: value })
   }
+
+  // UiSegmentedControl arbeitet mit string; der Proxy schreibt direkt in den Store.
+  const alignOptions = computed(() => [
+    { value: 'left', label: t('text.alignLeft') },
+    { value: 'center', label: t('text.alignCenter') },
+    { value: 'right', label: t('text.alignRight') },
+  ])
+  const alignModel = computed({
+    get: () => (collage.selectedText?.textAlign ?? 'center') as string,
+    set: (value) => updateTextAlign(value as TextAlign),
+  })
 
   function toggleShadow() {
     if (!collage.selectedText) return
@@ -159,31 +177,33 @@
 </script>
 
 <template>
-  <div class="w-full bg-surface-1 rounded-md border border-line p-4">
-    <h2 class="text-lg font-semibold mb-4">{{ t('text.title') }}</h2>
-
-    <div v-if="!collage.selectedText" class="text-sm text-ink-2 text-center py-4">
-      {{ t('text.noSelection') }}
-    </div>
+  <UiPanel :title="t('text.title')">
+    <UiEmptyState v-if="!collage.selectedText" :title="t('text.noSelection')" />
 
     <div v-else class="space-y-4">
       <!-- Text Content -->
       <div>
-        <label class="block text-sm font-medium mb-2">{{ t('text.content') }}</label>
+        <label for="text-content" class="block text-sm font-medium mb-2">
+          {{ t('text.content') }}
+        </label>
         <textarea
+          id="text-content"
           :value="collage.selectedText.text"
           rows="3"
-          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 resize-none"
+          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm resize-none focus-visible:outline-none focus-visible:shadow-focus"
           @input="updateTextContent(($event.target as HTMLTextAreaElement).value)"
         />
       </div>
 
-      <!-- Font Family -->
+      <!-- Font Family: natives Select wegen <optgroup> -->
       <div>
-        <label class="block text-sm font-medium mb-2">{{ t('text.fontFamily') }}</label>
+        <label for="text-font" class="block text-sm font-medium mb-2">
+          {{ t('text.fontFamily') }}
+        </label>
         <select
+          id="text-font"
           v-model="selectedFontFamily"
-          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
+          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm focus-visible:outline-none focus-visible:shadow-focus"
           @change="updateFontFamily(selectedFontFamily)"
         >
           <optgroup label="System Fonts">
@@ -233,73 +253,40 @@
       />
 
       <!-- Font Weight & Align -->
-      <div class="flex gap-2">
-        <button
-          :class="[
-            'flex-1 px-3 py-2 rounded-sm text-sm font-medium transition-colors',
-            (
-              typeof collage.selectedText.fontWeight === 'number'
-                ? collage.selectedText.fontWeight >= 700
-                : collage.selectedText.fontWeight === 'bold'
-            )
-              ? 'bg-accent text-on-accent'
-              : 'bg-surface-2',
-          ]"
+      <div class="flex items-center gap-2">
+        <UiIconButton
+          :label="t('text.fontWeight')"
+          variant="secondary"
+          :pressed="isBold"
           @click="toggleFontWeight"
         >
           <strong>B</strong>
-        </button>
-
-        <button
-          :class="[
-            'flex-1 px-3 py-2 rounded-sm text-sm transition-colors',
-            collage.selectedText.textAlign === 'left' ? 'bg-accent text-on-accent' : 'bg-surface-2',
-          ]"
-          @click="updateTextAlign('left')"
-        >
-          ←
-        </button>
-
-        <button
-          :class="[
-            'flex-1 px-3 py-2 rounded-sm text-sm transition-colors',
-            collage.selectedText.textAlign === 'center'
-              ? 'bg-accent text-on-accent'
-              : 'bg-surface-2',
-          ]"
-          @click="updateTextAlign('center')"
-        >
-          ↔
-        </button>
-
-        <button
-          :class="[
-            'flex-1 px-3 py-2 rounded-sm text-sm transition-colors',
-            collage.selectedText.textAlign === 'right'
-              ? 'bg-accent text-on-accent'
-              : 'bg-surface-2',
-          ]"
-          @click="updateTextAlign('right')"
-        >
-          →
-        </button>
+        </UiIconButton>
+        <UiSegmentedControl
+          v-model="alignModel"
+          class="text-align-control"
+          :options="alignOptions"
+          :label="t('text.textAlign')"
+        />
       </div>
 
       <!-- Text Color -->
       <div>
-        <label class="block text-sm font-medium mb-2">{{ t('text.color') }}</label>
+        <label for="text-color" class="block text-sm font-medium mb-2">{{ t('text.color') }}</label>
         <div class="flex gap-2">
           <input
+            id="text-color"
             type="color"
             :value="collage.selectedText.color"
-            class="w-16 h-10 rounded-sm border border-line-strong cursor-pointer"
+            class="w-16 h-9 rounded-sm border border-line-strong cursor-pointer"
             @input="updateColor(($event.target as HTMLInputElement).value)"
           />
           <input
             type="text"
             :value="collage.selectedText.color"
             placeholder="#000000"
-            class="flex-1 px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm font-mono"
+            :aria-label="t('text.color')"
+            class="flex-1 px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm font-mono focus-visible:outline-none focus-visible:shadow-focus"
             @input="updateColor(($event.target as HTMLInputElement).value)"
           />
         </div>
@@ -308,22 +295,18 @@
       <!-- Shadow Controls -->
       <div class="border-t border-line pt-4">
         <div class="flex items-center justify-between mb-3">
-          <label class="text-sm font-medium">{{ t('text.shadow') }}</label>
-          <button
-            :class="[
-              'px-3 py-1 text-xs rounded-sm font-medium transition-colors',
-              collage.selectedText.shadowEnabled
-                ? 'bg-accent text-on-accent'
-                : 'bg-surface-2 text-ink hover:bg-surface-3',
-            ]"
+          <span class="text-sm font-medium">{{ t('text.shadow') }}</span>
+          <UiButton
+            size="sm"
+            :variant="collage.selectedText.shadowEnabled ? 'primary' : 'secondary'"
+            :aria-pressed="collage.selectedText.shadowEnabled"
             @click="toggleShadow"
           >
             {{ collage.selectedText.shadowEnabled ? t('text.shadowOn') : t('text.shadowOff') }}
-          </button>
+          </UiButton>
         </div>
 
         <div v-if="collage.selectedText.shadowEnabled" class="space-y-3">
-          <!-- Shadow X Offset -->
           <ControlSlider
             label-size="xs"
             :label="t('text.shadowOffsetX')"
@@ -337,8 +320,6 @@
             @input="updateShadowOffsetX"
             @reset="updateShadowOffsetX(2)"
           />
-
-          <!-- Shadow Y Offset -->
           <ControlSlider
             label-size="xs"
             :label="t('text.shadowOffsetY')"
@@ -352,8 +333,6 @@
             @input="updateShadowOffsetY"
             @reset="updateShadowOffsetY(2)"
           />
-
-          <!-- Shadow Blur -->
           <ControlSlider
             label-size="xs"
             :label="t('text.shadowBlur')"
@@ -370,21 +349,23 @@
 
           <!-- Shadow Color -->
           <div>
-            <label class="block text-xs text-ink-2 mb-1">
+            <label for="text-shadow-color" class="block text-xs text-ink-2 mb-1">
               {{ t('text.shadowColor') }}
             </label>
             <div class="flex gap-2">
               <input
+                id="text-shadow-color"
                 type="color"
                 :value="collage.selectedText.shadowColor"
-                class="w-12 h-8 rounded-sm border border-line-strong cursor-pointer"
+                class="w-12 h-7 rounded-sm border border-line-strong cursor-pointer"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
               />
               <input
                 type="text"
                 :value="collage.selectedText.shadowColor"
                 placeholder="#000000"
-                class="flex-1 px-2 py-1 border border-line-strong rounded-sm bg-surface-1 text-xs font-mono"
+                :aria-label="t('text.shadowColor')"
+                class="flex-1 px-2 py-1 border border-line-strong rounded-sm bg-surface-1 text-xs font-mono focus-visible:outline-none focus-visible:shadow-focus"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
               />
             </div>
@@ -395,22 +376,18 @@
       <!-- Stroke (Textumrandung) Controls -->
       <div class="border-t border-line pt-4">
         <div class="flex items-center justify-between mb-3">
-          <label class="text-sm font-medium">{{ t('text.stroke') }}</label>
-          <button
-            :class="[
-              'px-3 py-1 text-xs rounded-sm font-medium transition-colors',
-              collage.selectedText.strokeEnabled
-                ? 'bg-accent text-on-accent'
-                : 'bg-surface-2 text-ink hover:bg-surface-3',
-            ]"
+          <span class="text-sm font-medium">{{ t('text.stroke') }}</span>
+          <UiButton
+            size="sm"
+            :variant="collage.selectedText.strokeEnabled ? 'primary' : 'secondary'"
+            :aria-pressed="collage.selectedText.strokeEnabled"
             @click="toggleStroke"
           >
             {{ collage.selectedText.strokeEnabled ? t('text.strokeOn') : t('text.strokeOff') }}
-          </button>
+          </UiButton>
         </div>
 
         <div v-if="collage.selectedText.strokeEnabled" class="space-y-3">
-          <!-- Stroke Width -->
           <ControlSlider
             label-size="xs"
             :label="t('text.strokeWidth')"
@@ -427,21 +404,23 @@
 
           <!-- Stroke Color -->
           <div>
-            <label class="block text-xs text-ink-2 mb-1">
+            <label for="text-stroke-color" class="block text-xs text-ink-2 mb-1">
               {{ t('text.strokeColor') }}
             </label>
             <div class="flex gap-2">
               <input
+                id="text-stroke-color"
                 type="color"
                 :value="collage.selectedText.strokeColor"
-                class="w-12 h-8 rounded-sm border border-line-strong cursor-pointer"
+                class="w-12 h-7 rounded-sm border border-line-strong cursor-pointer"
                 @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
               />
               <input
                 type="text"
                 :value="collage.selectedText.strokeColor"
                 placeholder="#ffffff"
-                class="flex-1 px-2 py-1 border border-line-strong rounded-sm bg-surface-1 text-xs font-mono"
+                :aria-label="t('text.strokeColor')"
+                class="flex-1 px-2 py-1 border border-line-strong rounded-sm bg-surface-1 text-xs font-mono focus-visible:outline-none focus-visible:shadow-focus"
                 @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
               />
             </div>
@@ -449,13 +428,24 @@
         </div>
       </div>
 
-      <!-- Delete Button -->
-      <button
-        class="w-full px-4 py-2 bg-surface-2 hover:bg-surface-3 text-danger font-medium rounded-md transition-colors"
-        @click="deleteText"
-      >
+      <!-- Delete: destruktiv, deshalb textbasiert -->
+      <UiButton variant="danger" block @click="deleteText">
         {{ t('text.delete') }}
-      </button>
+      </UiButton>
     </div>
-  </div>
+  </UiPanel>
 </template>
+
+<style scoped>
+  /* Ausrichtung füllt die Restbreite neben dem Fett-Schalter. */
+  .text-align-control {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .text-align-control :deep(.ui-segmented__option) {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 var(--ds-space-2);
+  }
+</style>

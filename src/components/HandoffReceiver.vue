@@ -55,12 +55,12 @@
         </div>
 
         <div class="handoff-actions">
-          <button class="btn-accept" @click="handleAccept">
+          <UiButton variant="primary" size="sm" @click="handleAccept">
             {{ t('handoff.accept') }}
-          </button>
-          <button class="btn-dismiss" @click="handleDismiss">
+          </UiButton>
+          <UiButton variant="ghost" size="sm" @click="handleDismiss">
             {{ t('handoff.dismiss') }}
-          </button>
+          </UiButton>
         </div>
       </div>
     </div>
@@ -70,6 +70,7 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { UiButton } from '@/components/ui'
   import {
     checkHandoff,
     consumeHandoff,
@@ -123,7 +124,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1050;
+    z-index: var(--ds-z-dialog);
     padding: var(--ds-space-2) var(--ds-space-3);
     background: var(--ds-surface-1);
     border-bottom: var(--ds-border-width) solid var(--ds-border);
@@ -200,38 +201,6 @@
     display: flex;
     gap: var(--ds-space-2);
     flex-shrink: 0;
-  }
-
-  .btn-accept {
-    padding: 6px 16px;
-    border-radius: var(--ds-radius-md);
-    background: var(--ds-accent);
-    color: var(--ds-on-accent);
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition:
-      background-color var(--ds-duration) var(--ds-ease),
-      color var(--ds-duration) var(--ds-ease);
-  }
-
-  .btn-accept:hover {
-    background: var(--ds-accent-hover);
-  }
-
-  .btn-dismiss {
-    padding: 6px 12px;
-    border-radius: var(--ds-radius-md);
-    background: transparent;
-    color: var(--ds-text-2);
-    font-size: 0.85rem;
-    transition:
-      background-color var(--ds-duration) var(--ds-ease),
-      color var(--ds-duration) var(--ds-ease);
-  }
-
-  .btn-dismiss:hover {
-    background: var(--ds-surface-2);
-    color: var(--ds-text);
   }
 
   /* Transition */

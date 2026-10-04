@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+  import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
   import ImageUploader from '@/components/ImageUploader.vue'
@@ -17,6 +17,7 @@
   import TemplateLibrary from '@/components/TemplateLibrary.vue'
   import ToastContainer from '@/components/ToastContainer.vue'
   import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
+  import { UiButton, UiDialog, UiIconButton, UiSegmentedControl } from '@/components/ui'
   import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
   import { useClipboardPaste } from '@/composables/useClipboardPaste'
   import HandoffReceiver from '@/components/HandoffReceiver.vue'
@@ -84,6 +85,17 @@
     { id: 'canvas', label: 'editor.tabCanvas' },
     { id: 'export', label: 'editor.tabExport' },
   ]
+
+  // UiSegmentedControl arbeitet mit string; der Proxy hält den Union-Typ im State.
+  const inspectorOptions = computed(() =>
+    inspectorTabs.map((tab) => ({ value: tab.id, label: t(tab.label) }))
+  )
+  const inspectorTabModel = computed({
+    get: () => inspectorTab.value as string,
+    set: (value) => {
+      inspectorTab.value = value as InspectorTab
+    },
+  })
 
   // Icon-Leiste: aktives Werkzeug erneut anklicken klappt das Panel ein
   function selectTool(tool: Exclude<ToolTab, null>) {
@@ -194,102 +206,77 @@
         <div class="flex items-center gap-1 sm:gap-3">
           <!-- Undo/Redo Buttons -->
           <div class="flex items-center gap-1 mr-1 sm:mr-2">
-            <button
+            <UiIconButton
+              :label="`${t('shortcuts.undo')} (Ctrl+Z)`"
               :disabled="!collage.canUndo"
-              class="p-2 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-surface-2"
-              :title="`${t('shortcuts.undo')} (Ctrl+Z)`"
               @click="collage.undo"
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-              >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
                 />
               </svg>
-            </button>
-            <button
+            </UiIconButton>
+            <UiIconButton
+              :label="`${t('shortcuts.redo')} (Ctrl+Y)`"
               :disabled="!collage.canRedo"
-              class="p-2 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-surface-2"
-              :title="`${t('shortcuts.redo')} (Ctrl+Y)`"
               @click="collage.redo"
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-              >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
                 />
               </svg>
-            </button>
+            </UiIconButton>
           </div>
 
-          <button
-            class="px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium transition-colors flex items-center gap-2"
+          <UiButton
+            variant="secondary"
             :title="t('templates.saveAsCurrent')"
+            :aria-label="t('templates.saveAsCurrent')"
             @click="openSaveTemplate"
           >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
-              />
-            </svg>
+            <template #icon>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
+                />
+              </svg>
+            </template>
             <span class="hidden sm:inline">{{ t('templates.saveAsCurrent') }}</span>
-          </button>
-          <button
-            class="px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium transition-colors flex items-center gap-2"
+          </UiButton>
+          <UiButton
+            variant="secondary"
+            :title="t('templates.library')"
+            :aria-label="t('templates.library')"
             @click="showTemplates = true"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
-              />
-            </svg>
+            <template #icon>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
+                />
+              </svg>
+            </template>
             <span class="hidden sm:inline">{{ t('templates.library') }}</span>
-          </button>
-          <button
-            class="p-2 rounded-md hover:bg-surface-2 transition-colors"
-            :title="t('shortcuts.title')"
-            :aria-label="t('shortcuts.title')"
-            @click="showShortcutsModal = true"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-            >
+          </UiButton>
+          <UiIconButton :label="t('shortcuts.title')" @click="showShortcutsModal = true">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"
               />
             </svg>
-          </button>
+          </UiIconButton>
         </div>
       </div>
     </header>
@@ -333,7 +320,7 @@
              verkleinert die Leinwand, statt sie zu überdecken. -->
         <aside
           v-if="activeTool"
-          class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start bg-surface-1 rounded-lg border border-line p-4 lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
+          class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
         >
           <ImageUploader v-if="activeTool === 'upload'" />
           <LayoutSelector v-else-if="activeTool === 'layouts'" />
@@ -357,39 +344,18 @@
           <template v-if="inspectorOpen">
             <!-- Reiter + Einklappen -->
             <div class="flex items-center gap-1 mb-3">
-              <div
-                class="flex-1 flex gap-0.5 p-0.5 bg-surface-0 border border-line rounded-md overflow-hidden"
-              >
-                <button
-                  v-for="tab in inspectorTabs"
-                  :key="tab.id"
-                  class="flex-1 px-2 py-1.5 text-xs font-medium rounded-sm border border-transparent transition-colors truncate"
-                  :class="
-                    inspectorTab === tab.id
-                      ? 'bg-surface-1 border-line-strong text-ink'
-                      : 'text-ink-2 hover:text-ink'
-                  "
-                  :aria-pressed="inspectorTab === tab.id"
-                  @click="inspectorTab = tab.id"
-                >
-                  {{ t(tab.label) }}
-                </button>
-              </div>
-              <button
-                class="p-2 rounded-md hover:bg-surface-2 transition-colors flex-shrink-0"
-                :title="t('editor.hidePanel')"
-                :aria-label="t('editor.hidePanel')"
-                @click="inspectorOpen = false"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
+              <UiSegmentedControl
+                v-model="inspectorTabModel"
+                class="inspector-tabs"
+                :options="inspectorOptions"
+                :label="t('editor.settings')"
+                size="sm"
+              />
+              <UiIconButton :label="t('editor.hidePanel')" @click="inspectorOpen = false">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
+              </UiIconButton>
             </div>
 
             <!-- Inhalt je nach Reiter -->
@@ -399,59 +365,46 @@
                 <ImageControls v-else />
               </template>
               <template v-else-if="inspectorTab === 'text'">
-                <div class="bg-surface-1 rounded-md border border-line p-4">
-                  <TextList />
-                </div>
+                <TextList />
                 <TextControls v-if="collage.selectedTextId" />
               </template>
               <CanvasSettings v-else-if="inspectorTab === 'canvas'" />
-              <div v-else class="bg-surface-1 rounded-md border border-line p-4">
-                <ExportControls />
-              </div>
+              <ExportControls v-else />
             </div>
           </template>
 
           <!-- Eingeklappt: Wieder-Öffnen -->
           <template v-else>
-            <button
-              class="hidden lg:flex w-10 h-10 mx-auto rounded-md bg-surface-2 hover:bg-surface-3 items-center justify-center transition-colors"
-              :title="t('editor.showSettings')"
-              :aria-label="t('editor.showSettings')"
-              @click="inspectorOpen = true"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-            <button
-              class="lg:hidden w-full px-4 py-2.5 rounded-md bg-surface-2 hover:bg-surface-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
-              @click="inspectorOpen = true"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                stroke-width="2"
+            <div class="hidden lg:flex justify-center">
+              <UiIconButton
+                :label="t('editor.showSettings')"
+                variant="secondary"
+                @click="inspectorOpen = true"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              {{ t('editor.showSettings') }}
-            </button>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </UiIconButton>
+            </div>
+            <div class="lg:hidden">
+              <UiButton variant="secondary" block @click="inspectorOpen = true">
+                <template #icon>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </template>
+                {{ t('editor.showSettings') }}
+              </UiButton>
+            </div>
           </template>
         </aside>
       </div>
@@ -467,71 +420,44 @@
     <ToastContainer />
 
     <!-- Auto-Save Restore Dialog -->
-    <Teleport to="#modal-portal">
-      <div
-        v-if="showRestoreDialog"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
-      >
-        <div
-          class="bg-surface-1 rounded-lg shadow-overlay p-6 max-w-md w-full mx-4 border border-line"
-        >
-          <!-- Icon -->
-          <div class="flex justify-center mb-4">
-            <div class="w-16 h-16 bg-accent-soft rounded-full flex items-center justify-center">
-              <svg
-                class="w-8 h-8 text-accent"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <!-- Title -->
-          <h3 class="text-xl font-bold text-center mb-2 text-ink">
-            {{ t('autoSave.restoreTitle') }}
-          </h3>
-
-          <!-- Description -->
-          <p class="text-ink-2 text-center mb-2">
-            {{ t('autoSave.restoreDescription') }}
-          </p>
-
-          <!-- Save Date -->
-          <p v-if="restoreSaveDate" class="text-sm text-ink-2 text-center mb-6">
-            {{ t('autoSave.savedAt') }}: {{ restoreSaveDate.toLocaleString() }}
-          </p>
-
-          <!-- Buttons -->
-          <div class="flex flex-col gap-3">
-            <button
-              class="w-full px-4 py-3 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-semibold transition-colors"
-              @click="handleRestore"
-            >
-              {{ t('autoSave.restore') }}
-            </button>
-            <button
-              class="w-full px-4 py-2 bg-surface-2 hover:bg-surface-3 text-ink rounded-md font-medium transition-colors"
-              @click="handleContinueWithoutRestore"
-            >
-              {{ t('autoSave.continueWithout') }}
-            </button>
-            <button
-              class="w-full px-4 py-2 text-danger text-sm transition-colors"
-              @click="handleDiscardRestore"
-            >
-              {{ t('autoSave.discard') }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <UiDialog
+      teleport-to="#modal-portal"
+      :open="showRestoreDialog"
+      :title="t('autoSave.restoreTitle')"
+      :description="t('autoSave.restoreDescription')"
+      :close-label="t('common.close')"
+      @close="handleContinueWithoutRestore"
+    >
+      <p v-if="restoreSaveDate" class="text-sm text-ink-2">
+        {{ t('autoSave.savedAt') }}: {{ restoreSaveDate.toLocaleString() }}
+      </p>
+      <template #footer>
+        <UiButton variant="danger" @click="handleDiscardRestore">
+          {{ t('autoSave.discard') }}
+        </UiButton>
+        <UiButton variant="secondary" @click="handleContinueWithoutRestore">
+          {{ t('autoSave.continueWithout') }}
+        </UiButton>
+        <UiButton variant="primary" @click="handleRestore">
+          {{ t('autoSave.restore') }}
+        </UiButton>
+      </template>
+    </UiDialog>
   </div>
 </template>
+
+<style scoped>
+  /* Reiter füllen die Breite des Inspektors, jede Option gleich breit. */
+  .inspector-tabs {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .inspector-tabs :deep(.ui-segmented__option) {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 var(--ds-space-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

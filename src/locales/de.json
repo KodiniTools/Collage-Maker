@@ -493,6 +493,9 @@
     "letterSpacing": "Buchstabenabstand",
     "fontWeight": "Schriftstärke",
     "textAlign": "Ausrichtung",
+    "alignLeft": "Links",
+    "alignCenter": "Mitte",
+    "alignRight": "Rechts",
     "color": "Textfarbe",
     "shadow": "Textschatten",
     "shadowOn": "An",
@@ -566,7 +569,8 @@
   },
   "common": {
     "save": "Speichern",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "close": "Schließen"
   },
   "shortcuts": {
     "title": "Tastaturkurzbefehle",

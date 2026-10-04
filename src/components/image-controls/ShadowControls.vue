@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { UiButton } from '@/components/ui'
   import type { CollageImage } from '@/types'
   import type { ImageControlsApi } from '@/composables/useImageControls'
   import ControlSlider from './ControlSlider.vue'
@@ -13,20 +14,15 @@
 <template>
   <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
-      <label class="text-sm font-medium">{{ t('imageControls.shadow') }}</label>
-      <button
-        :class="[
-          'px-3 py-1 text-xs rounded-sm transition-colors',
-          image.shadowEnabled
-            ? 'bg-accent hover:bg-accent-hover text-on-accent'
-            : 'bg-surface-2 hover:bg-surface-3 text-ink',
-        ]"
+      <span class="text-sm font-medium">{{ t('imageControls.shadow') }}</span>
+      <UiButton
+        size="sm"
+        :variant="image.shadowEnabled ? 'primary' : 'secondary'"
+        :aria-pressed="image.shadowEnabled"
         @click="api.toggleShadow"
       >
-        {{
-          image.shadowEnabled ? t('imageControls.shadowEnabled') : t('imageControls.shadowEnabled')
-        }}
-      </button>
+        {{ image.shadowEnabled ? t('canvas.on') : t('canvas.off') }}
+      </UiButton>
     </div>
 
     <div v-if="image.shadowEnabled" class="space-y-3">

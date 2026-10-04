@@ -2,6 +2,7 @@
   import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
+  import { UiButton } from '@/components/ui'
 
   const { t, tm } = useI18n()
   const openIndex = ref<number | null>(null)
@@ -66,12 +67,9 @@
             >
               {{ t('nav.home') }}
             </RouterLink>
-            <RouterLink
-              to="/editor"
-              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors"
-            >
+            <UiButton to="/editor" variant="primary" size="sm">
               {{ t('nav.editor') }}
-            </RouterLink>
+            </UiButton>
           </div>
         </nav>
       </header>
@@ -157,20 +155,18 @@
           <p class="text-ink-2 mb-6 sm:mb-8">
             {{ t('faqPage.cta.subtitle') }}
           </p>
-          <RouterLink
-            to="/editor"
-            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-hover text-on-accent font-semibold rounded-md transition-colors"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
+          <UiButton to="/editor" variant="primary" size="lg">
+            <template #icon>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+            </template>
             {{ t('landing.cta') }}
-          </RouterLink>
+          </UiButton>
         </div>
       </section>
     </div>

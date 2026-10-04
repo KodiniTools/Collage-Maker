@@ -29,4 +29,14 @@ export default [
       '@typescript-eslint/no-empty-object-type': 'warn',
     },
   },
+
+  {
+    // Ui-Komponenten (Kopie aus dem Playlist Generator): optionale Props sind per
+    // TypeScript optional, ein explizites `undefined`-Default bringt nichts.
+    name: 'app/ui-components',
+    files: ['src/components/ui/**/*.vue'],
+    rules: {
+      'vue/require-default-prop': 'off',
+    },
+  },
 ]

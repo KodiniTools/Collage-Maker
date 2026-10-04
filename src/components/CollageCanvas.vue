@@ -7,6 +7,7 @@
   import { useCanvasRenderer } from '@/composables/useCanvasRenderer'
   import { useDragResize } from '@/composables/useDragResize'
   import QuickActionToolbar from '@/components/QuickActionToolbar.vue'
+  import { UiButton, UiIconButton } from '@/components/ui'
 
   const { t } = useI18n()
   const collage = useCollageStore()
@@ -115,36 +116,36 @@
       v-if="hasCanvasImages"
       class="zoom-control absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-surface-1 border border-line text-ink rounded-md shadow-overlay px-1 py-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
     >
-      <button
-        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      <UiIconButton
+        :label="t('shortcuts.zoomOut')"
+        size="sm"
         :disabled="collage.canvasZoom <= 0.25"
-        :title="t('shortcuts.zoomOut')"
-        :aria-label="t('shortcuts.zoomOut')"
         @click="zoomBy(-ZOOM_STEP)"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M20 12H4" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M20 12H4" />
         </svg>
-      </button>
-      <button
-        class="min-w-[3.25rem] h-8 px-1 flex items-center justify-center rounded-sm text-xs font-semibold hover:bg-surface-2 transition-colors"
+      </UiIconButton>
+      <UiButton
+        variant="ghost"
+        size="sm"
+        class="min-w-[3.25rem] tabular-nums"
         :title="t('shortcuts.resetZoom')"
         :aria-label="t('shortcuts.resetZoom')"
         @click="collage.resetCanvasView()"
       >
         {{ Math.round(collage.canvasZoom * 100) }}%
-      </button>
-      <button
-        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      </UiButton>
+      <UiIconButton
+        :label="t('shortcuts.zoomIn')"
+        size="sm"
         :disabled="collage.canvasZoom >= 4"
-        :title="t('shortcuts.zoomIn')"
-        :aria-label="t('shortcuts.zoomIn')"
         @click="zoomBy(ZOOM_STEP)"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M12 4v16m8-8H4" />
         </svg>
-      </button>
+      </UiIconButton>
     </div>
     <!-- Pan hint when zoomed -->
     <div
@@ -202,32 +203,28 @@
     <Transition name="preview-fade">
       <div
         v-if="previewUrl"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        class="fixed inset-0 z-backdrop flex items-center justify-center bg-black/50"
         @click.self="closePreview"
         @keydown.esc="closePreview"
       >
         <div class="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
           <!-- Close button -->
-          <button
-            class="absolute -top-4 -right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-surface-1 hover:bg-surface-2 border border-line text-ink transition-colors"
-            aria-label="Vorschau schliessen"
+          <UiIconButton
+            :label="t('common.close')"
+            variant="secondary"
+            round
+            class="absolute -top-4 -right-4 z-10"
             @click="closePreview"
           >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </UiIconButton>
           <!-- Image -->
           <img
             :src="previewUrl"
             class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-overlay"
-            alt="Bildvorschau"
+            :alt="t('gallery.preview')"
           />
         </div>
       </div>

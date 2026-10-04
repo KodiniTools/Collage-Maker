@@ -87,3 +87,17 @@ describe('UI-Schrift Supreme', () => {
     expect(match).toMatch(/\.\/assets\/fonts\/Supreme-(Regular|Medium|Bold)\.woff2/)
   })
 })
+
+describe('Leinwand-Overlays', () => {
+  const overlayFiles = ['composables/useCanvasRenderer.ts', 'composables/useAlignmentGuides.ts']
+
+  it.each(overlayFiles)('%s zeichnet Auswahl und Hilfslinien mit Token-Farben', (file) => {
+    const src = readFileSync(join(SRC_DIR, file), 'utf8')
+    // Nur Weiß bleibt als fester Wert (X im Löschbutton, Handle-Füllung, Häkchen).
+    const hexValues = (src.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []).filter(
+      (hex) => hex.toLowerCase() !== '#ffffff'
+    )
+    expect(hexValues).toEqual([])
+    expect(src).toMatch(/themeColorsV2\(settings\.theme\)/)
+  })
+})

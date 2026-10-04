@@ -1,5 +1,8 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import ResetButton from '@/components/ResetButton.vue'
+  import { computed } from 'vue'
+  import { UiIconButton, UiSelect } from '@/components/ui'
   import type { BackgroundImageFit } from '@/types'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
@@ -7,18 +10,25 @@
   const { t } = useI18n()
   const { api } = props
   const { collage } = api
+
+  const fitOptions = computed(() => [
+    { value: 'cover', label: t('canvas.fitCover') },
+    { value: 'contain', label: t('canvas.fitContain') },
+    { value: 'stretch', label: t('canvas.fitStretch') },
+    { value: 'tile', label: t('canvas.fitTile') },
+  ])
 </script>
 
 <template>
   <!-- Background Image -->
   <div v-if="collage.settings.backgroundImage.url" class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-2">
-      <label class="block text-sm font-medium">
+      <span class="block text-sm font-medium">
         {{ t('canvas.backgroundImage') }}
-      </label>
+      </span>
       <span
         v-if="collage.isBackgroundSelected"
-        class="text-xs px-2 py-0.5 bg-accent-soft text-link rounded-full"
+        class="text-xs px-2 py-0.5 bg-accent-soft text-ink rounded-full"
       >
         {{ t('canvas.selected') }}
       </span>
@@ -26,8 +36,10 @@
 
     <!-- Preview -->
     <div
-      class="relative mb-3 cursor-pointer"
-      :class="{ 'ring-2 ring-accent ring-offset-2 rounded-md': collage.isBackgroundSelected }"
+      class="relative mb-3 cursor-pointer rounded-md"
+      :class="{
+        'ring-2 ring-accent ring-offset-2 ring-offset-surface-1': collage.isBackgroundSelected,
+      }"
       @click="collage.selectBackground(true)"
     >
       <img
@@ -35,70 +47,64 @@
         :alt="t('canvas.backgroundImage')"
         class="w-full h-24 object-cover rounded-md border border-line"
       />
-      <button
-        class="absolute top-1 right-1 p-1 bg-surface-2 hover:bg-surface-3 text-danger rounded-full transition-colors"
-        :title="t('canvas.removeBackgroundImage')"
+      <UiIconButton
+        :label="t('canvas.removeBackgroundImage')"
+        variant="secondary"
+        size="sm"
+        round
+        class="absolute top-1 right-1"
         @click.stop="api.removeBackground"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
+        <svg
+          class="text-danger"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
-      </button>
+      </UiIconButton>
     </div>
 
     <!-- Fit Mode -->
     <div class="mb-3">
-      <label class="block text-xs font-medium mb-1.5 text-ink-2">
-        {{ t('canvas.backgroundFit') }}
-      </label>
-      <select
-        :value="collage.settings.backgroundImage.fit"
-        class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm"
-        @change="
-          api.updateBackgroundFit(($event.target as HTMLSelectElement).value as BackgroundImageFit)
-        "
-      >
-        <option value="cover">{{ t('canvas.fitCover') }}</option>
-        <option value="contain">{{ t('canvas.fitContain') }}</option>
-        <option value="stretch">{{ t('canvas.fitStretch') }}</option>
-        <option value="tile">{{ t('canvas.fitTile') }}</option>
-      </select>
+      <UiSelect
+        :model-value="collage.settings.backgroundImage.fit"
+        :options="fitOptions"
+        :label="t('canvas.backgroundFit')"
+        size="sm"
+        @update:model-value="(v) => api.updateBackgroundFit(v as BackgroundImageFit)"
+      />
     </div>
 
     <!-- Editing Controls (show when background is selected) -->
     <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-surface-2 rounded-md p-3">
-      <p class="text-xs font-medium text-link mb-2">
+      <p class="text-xs font-medium text-ink mb-2">
         {{ t('canvas.editBackground') }}
       </p>
 
       <!-- Opacity -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-ink-2">
+          <label for="bg-opacity" class="text-xs font-medium text-ink-2">
             {{ t('imageControls.opacity') }}:
             {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
           </label>
-          <button
+          <ResetButton
             v-if="collage.settings.backgroundImage.opacity !== 1"
-            class="text-xs text-ink-2 hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
+            :label="t('imageControls.resetValue')"
             @click="api.updateBackgroundOpacity(1)"
-          >
-            ↺
-          </button>
+          />
         </div>
         <input
+          id="bg-opacity"
           type="range"
           :value="collage.settings.backgroundImage.opacity"
           min="0"
           max="1"
           step="0.01"
-          class="w-full accent-accent"
+          class="w-full"
           @input="api.updateBackgroundOpacity(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
@@ -106,25 +112,23 @@
       <!-- Brightness -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-ink-2">
+          <label for="bg-brightness" class="text-xs font-medium text-ink-2">
             {{ t('imageControls.brightness') }}: {{ collage.settings.backgroundImage.brightness }}%
           </label>
-          <button
+          <ResetButton
             v-if="collage.settings.backgroundImage.brightness !== 100"
-            class="text-xs text-ink-2 hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
+            :label="t('imageControls.resetValue')"
             @click="api.updateBackgroundBrightness(100)"
-          >
-            ↺
-          </button>
+          />
         </div>
         <input
+          id="bg-brightness"
           type="range"
           :value="collage.settings.backgroundImage.brightness"
           min="0"
           max="200"
           step="1"
-          class="w-full accent-accent"
+          class="w-full"
           @input="api.updateBackgroundBrightness(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
@@ -132,25 +136,23 @@
       <!-- Contrast -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-ink-2">
+          <label for="bg-contrast" class="text-xs font-medium text-ink-2">
             {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
           </label>
-          <button
+          <ResetButton
             v-if="collage.settings.backgroundImage.contrast !== 100"
-            class="text-xs text-ink-2 hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
+            :label="t('imageControls.resetValue')"
             @click="api.updateBackgroundContrast(100)"
-          >
-            ↺
-          </button>
+          />
         </div>
         <input
+          id="bg-contrast"
           type="range"
           :value="collage.settings.backgroundImage.contrast"
           min="0"
           max="200"
           step="1"
-          class="w-full accent-accent"
+          class="w-full"
           @input="api.updateBackgroundContrast(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
@@ -158,25 +160,23 @@
       <!-- Saturation -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-ink-2">
+          <label for="bg-saturation" class="text-xs font-medium text-ink-2">
             {{ t('imageControls.saturation') }}: {{ collage.settings.backgroundImage.saturation }}%
           </label>
-          <button
+          <ResetButton
             v-if="collage.settings.backgroundImage.saturation !== 100"
-            class="text-xs text-ink-2 hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
+            :label="t('imageControls.resetValue')"
             @click="api.updateBackgroundSaturation(100)"
-          >
-            ↺
-          </button>
+          />
         </div>
         <input
+          id="bg-saturation"
           type="range"
           :value="collage.settings.backgroundImage.saturation"
           min="0"
           max="200"
           step="1"
-          class="w-full accent-accent"
+          class="w-full"
           @input="api.updateBackgroundSaturation(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
@@ -184,25 +184,23 @@
       <!-- Blur -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-ink-2">
+          <label for="bg-blur" class="text-xs font-medium text-ink-2">
             {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
           </label>
-          <button
+          <ResetButton
             v-if="collage.settings.backgroundImage.blur !== 0"
-            class="text-xs text-ink-2 hover:text-accent transition-colors"
-            :title="t('imageControls.resetValue')"
+            :label="t('imageControls.resetValue')"
             @click="api.updateBackgroundBlur(0)"
-          >
-            ↺
-          </button>
+          />
         </div>
         <input
+          id="bg-blur"
           type="range"
           :value="collage.settings.backgroundImage.blur"
           min="0"
           max="20"
           step="0.5"
-          class="w-full accent-accent"
+          class="w-full"
           @input="api.updateBackgroundBlur(Number(($event.target as HTMLInputElement).value))"
         />
       </div>

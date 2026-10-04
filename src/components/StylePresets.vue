@@ -2,6 +2,7 @@
   import { computed } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
+  import { UiCallout, UiPanel } from '@/components/ui'
   import type { CollageImage } from '@/types'
 
   const collage = useCollageStore()
@@ -199,25 +200,22 @@
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="text-lg font-semibold mb-1">{{ t('stylePresets.title') }}</h2>
+  <UiPanel :title="t('stylePresets.title')">
     <p class="text-xs text-ink-2 mb-3">{{ t('stylePresets.subtitle') }}</p>
 
     <!-- Hinweis: keine Bilder auf der Leinwand -->
-    <div v-if="canvasImageCount === 0" class="mb-3 p-2 bg-surface-2 rounded-md text-xs text-ink-2">
+    <UiCallout v-if="canvasImageCount === 0" type="info" class="mb-3">
       {{ t('stylePresets.noImages') }}
-    </div>
+    </UiCallout>
 
     <!-- Wirkungsbereich: Auswahl vs. alle Bilder -->
-    <div v-else class="mb-3 p-2 bg-accent-soft rounded-md border text-xs">
-      <p class="font-medium text-ink">
-        {{
-          selectedCount > 0
-            ? t('stylePresets.scopeSelected', { count: selectedCount })
-            : t('stylePresets.scopeAll', { count: canvasImageCount })
-        }}
-      </p>
-    </div>
+    <UiCallout v-else type="success" class="mb-3">
+      {{
+        selectedCount > 0
+          ? t('stylePresets.scopeSelected', { count: selectedCount })
+          : t('stylePresets.scopeAll', { count: canvasImageCount })
+      }}
+    </UiCallout>
 
     <div
       class="grid grid-cols-2 gap-2 max-h-[440px] overflow-y-auto pr-1"
@@ -246,5 +244,5 @@
         <span class="text-xs font-medium text-center leading-tight">{{ t(preset.labelKey) }}</span>
       </button>
     </div>
-  </div>
+  </UiPanel>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import { useCanvasSettings } from '@/composables/useCanvasSettings'
+  import { UiPanel } from '@/components/ui'
   import CanvasSizeControls from './canvas-settings/CanvasSizeControls.vue'
   import CanvasCornerRadius from './canvas-settings/CanvasCornerRadius.vue'
   import CanvasBorderControls from './canvas-settings/CanvasBorderControls.vue'
@@ -14,9 +15,7 @@
 </script>
 
 <template>
-  <div class="w-full bg-surface-1 rounded-md border border-line p-4">
-    <h2 class="text-lg font-semibold mb-4">{{ t('canvas.size') }}</h2>
-
+  <UiPanel :title="t('canvas.size')">
     <div class="space-y-4">
       <!-- Größe: Seitenverhältnis, Inhalts-Skalierung, Breite & Höhe -->
       <CanvasSizeControls :api="api" />
@@ -39,5 +38,5 @@
       <!-- Hilfsraster -->
       <CanvasGridControls :api="api" />
     </div>
-  </div>
+  </UiPanel>
 </template>

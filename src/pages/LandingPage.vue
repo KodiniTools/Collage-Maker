@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
+  import { UiButton } from '@/components/ui'
 
   const { t } = useI18n()
 
@@ -80,25 +81,19 @@
           </p>
 
           <!-- CTA Button -->
-          <RouterLink
-            to="/editor"
-            class="inline-flex items-center gap-2 sm:gap-3 px-5 py-3 sm:px-6 sm:py-3 bg-accent hover:bg-accent-hover text-on-accent font-semibold text-base sm:text-lg rounded-md transition-colors"
-          >
+          <UiButton to="/editor" variant="primary" size="lg">
             <span>{{ t('landing.cta') }}</span>
             <svg
-              class="w-5 h-5 transition-transform"
+              class="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              stroke-width="1.75"
+              aria-hidden="true"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-          </RouterLink>
+          </UiButton>
         </div>
 
         <!-- Hero Feature Cards Grid (3 Cards) -->
@@ -210,20 +205,18 @@
           <p class="text-ink-2 mb-6 sm:mb-8">
             {{ t('landing.bottomCta.subtitle') }}
           </p>
-          <RouterLink
-            to="/editor"
-            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-hover text-on-accent font-semibold rounded-md transition-colors"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
+          <UiButton to="/editor" variant="primary" size="lg">
+            <template #icon>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+            </template>
             {{ t('landing.cta') }}
-          </RouterLink>
+          </UiButton>
         </div>
       </section>
     </div>

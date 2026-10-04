@@ -3,6 +3,7 @@
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
+  import { UiButton, UiPanel } from '@/components/ui'
   import { compressImages, copyImagesInMemory } from '@/utils/imageCompression'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
@@ -107,9 +108,7 @@
 </script>
 
 <template>
-  <div class="w-full">
-    <h2 class="text-lg font-semibold mb-3">{{ t('upload.title') }}</h2>
-
+  <UiPanel :title="t('upload.title')">
     <!-- Drop zone — no @click handler, buttons below are the only triggers -->
     <div
       :aria-label="t('upload.dragDrop')"
@@ -139,7 +138,7 @@
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            stroke-width="2"
+            stroke-width="1.75"
           >
             <path
               stroke-linecap="round"
@@ -154,42 +153,36 @@
         <p class="text-xs text-ink-2">
           {{ t('upload.formats') }}
         </p>
-        <p class="text-xs text-ink-2 opacity-70">
+        <p class="text-xs text-ink-3">
           {{ t('upload.pasteHint') }}
         </p>
       </div>
     </div>
 
     <!-- Two separate buttons below the drop zone -->
-    <div class="flex gap-2 mt-3">
-      <button
-        type="button"
-        :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-accent text-on-accent hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        @click="fileInput!.click()"
-      >
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4-4 4 4 4-8 4 8" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 20h16" />
-        </svg>
+    <div class="flex flex-col gap-2 mt-3">
+      <UiButton variant="primary" block :disabled="isProcessing" @click="fileInput!.click()">
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4-4 4 4 4-8 4 8" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 20h16" />
+          </svg>
+        </template>
         {{ t('upload.button') }}
-      </button>
+      </UiButton>
 
-      <button
-        type="button"
-        :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium border border-line-strong text-ink hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        @click="folderInput!.click()"
-      >
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
-          />
-        </svg>
+      <UiButton variant="secondary" block :disabled="isProcessing" @click="folderInput!.click()">
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
+            />
+          </svg>
+        </template>
         {{ t('upload.buttonFolder') }}
-      </button>
+      </UiButton>
     </div>
 
     <!-- Originalauflösung beibehalten -->
@@ -204,7 +197,7 @@
       />
       <span class="text-xs text-ink-2">
         {{ t('upload.keepOriginal') }}
-        <span class="block text-[10px] opacity-70">{{ t('upload.keepOriginalHint') }}</span>
+        <span class="block text-xs text-ink-3">{{ t('upload.keepOriginalHint') }}</span>
       </span>
     </label>
 
@@ -228,5 +221,5 @@
       class="hidden"
       @change="handleFileSelect"
     />
-  </div>
+  </UiPanel>
 </template>

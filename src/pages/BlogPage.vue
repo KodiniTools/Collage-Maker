@@ -2,6 +2,7 @@
   import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
+  import { UiButton } from '@/components/ui'
   import { getBlogArticlesNewestFirst } from '@/data/blogArticles'
   import { buildBlogCards } from '@/lib/blogCards'
 
@@ -48,12 +49,9 @@
             >
               {{ t('nav.home') }}
             </RouterLink>
-            <RouterLink
-              to="/editor"
-              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors"
-            >
+            <UiButton to="/editor" variant="primary" size="sm">
               {{ t('nav.editor') }}
-            </RouterLink>
+            </UiButton>
           </div>
         </nav>
       </header>
@@ -143,12 +141,7 @@
           <p class="text-ink-2 mb-6">
             {{ t('blogPage.cta.subtitle') }}
           </p>
-          <RouterLink
-            to="/editor"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-on-accent font-semibold rounded-lg transition-colors"
-          >
-            {{ t('landing.cta') }} →
-          </RouterLink>
+          <UiButton to="/editor" variant="primary" size="lg">{{ t('landing.cta') }} →</UiButton>
         </div>
       </section>
     </div>

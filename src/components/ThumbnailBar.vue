@@ -2,6 +2,7 @@
   import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useCollageStore } from '@/stores/collage'
+  import { UiButton } from '@/components/ui'
 
   const { t } = useI18n()
   const collage = useCollageStore()
@@ -86,12 +87,9 @@
         <span class="text-xs text-ink-2 whitespace-nowrap">
           {{ t('thumbnailBar.selected', { count: collage.selectedImageIds.length }) }}
         </span>
-        <button
-          class="text-xs text-link hover:text-ink transition-colors whitespace-nowrap"
-          @click="collage.deselectAllImages()"
-        >
+        <UiButton variant="ghost" size="sm" @click="collage.deselectAllImages()">
           {{ t('thumbnailBar.deselectAll') }}
-        </button>
+        </UiButton>
       </div>
     </div>
 

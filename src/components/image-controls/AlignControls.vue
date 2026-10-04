@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { UiButton, UiIconButton } from '@/components/ui'
   import type { ImageControlsApi } from '@/composables/useImageControls'
 
   const props = defineProps<{ api: ImageControlsApi }>()
@@ -12,96 +13,102 @@
 
 <template>
   <div>
-    <label class="block text-sm font-medium mb-2">{{ t('imageControls.align') }}</label>
+    <span class="block text-sm font-medium mb-2">{{ t('imageControls.align') }}</span>
 
     <!-- Ausrichten -->
-    <div class="grid grid-cols-6 gap-1.5 mb-2">
-      <button
-        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
-        :title="t('imageControls.alignLeft')"
-        :aria-label="t('imageControls.alignLeft')"
+    <div class="flex flex-wrap gap-1.5 mb-2">
+      <UiIconButton
+        :label="t('imageControls.alignLeft')"
+        variant="secondary"
+        size="sm"
         @click="api.alignImages('left')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M4 4v16M8 8h9M8 16h5" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M4 4v16M8 8h9M8 16h5" />
         </svg>
-      </button>
-      <button
-        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
-        :title="t('imageControls.alignCenterH')"
-        :aria-label="t('imageControls.alignCenterH')"
+      </UiIconButton>
+      <UiIconButton
+        :label="t('imageControls.alignCenterH')"
+        variant="secondary"
+        size="sm"
         @click="api.alignImages('center-h')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M12 4v16M7 8h10M9 16h6" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M12 4v16M7 8h10M9 16h6" />
         </svg>
-      </button>
-      <button
-        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
-        :title="t('imageControls.alignRight')"
-        :aria-label="t('imageControls.alignRight')"
+      </UiIconButton>
+      <UiIconButton
+        :label="t('imageControls.alignRight')"
+        variant="secondary"
+        size="sm"
         @click="api.alignImages('right')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M20 4v16M7 8h9M12 16h4" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M20 4v16M7 8h9M12 16h4" />
         </svg>
-      </button>
-      <button
-        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
-        :title="t('imageControls.alignTop')"
-        :aria-label="t('imageControls.alignTop')"
+      </UiIconButton>
+      <UiIconButton
+        :label="t('imageControls.alignTop')"
+        variant="secondary"
+        size="sm"
         @click="api.alignImages('top')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M4 4h16M8 8v9M16 8v5" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M4 4h16M8 8v9M16 8v5" />
         </svg>
-      </button>
-      <button
-        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
-        :title="t('imageControls.alignMiddleV')"
-        :aria-label="t('imageControls.alignMiddleV')"
+      </UiIconButton>
+      <UiIconButton
+        :label="t('imageControls.alignMiddleV')"
+        variant="secondary"
+        size="sm"
         @click="api.alignImages('middle-v')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M4 12h16M8 7v10M16 9v6" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M4 12h16M8 7v10M16 9v6" />
         </svg>
-      </button>
-      <button
-        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
-        :title="t('imageControls.alignBottom')"
-        :aria-label="t('imageControls.alignBottom')"
+      </UiIconButton>
+      <UiIconButton
+        :label="t('imageControls.alignBottom')"
+        variant="secondary"
+        size="sm"
         @click="api.alignImages('bottom')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M4 20h16M8 7v10M16 11v6" />
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path stroke-linecap="round" d="M4 20h16M8 7v10M16 11v6" />
         </svg>
-      </button>
+      </UiIconButton>
     </div>
 
     <!-- Verteilen (ab 3 Bildern) -->
     <div class="grid grid-cols-2 gap-1.5">
-      <button
-        class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-sm text-xs bg-surface-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
+      <UiButton
+        variant="secondary"
+        size="sm"
         :disabled="!canDistribute()"
         :title="t('imageControls.distributeHorizontal')"
         @click="api.distributeImages('horizontal')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M4 5v14M20 5v14M11 8v8" />
-        </svg>
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path stroke-linecap="round" d="M4 5v14M20 5v14M11 8v8" />
+          </svg>
+        </template>
         {{ t('imageControls.distributeH') }}
-      </button>
-      <button
-        class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-sm text-xs bg-surface-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
+      </UiButton>
+      <UiButton
+        variant="secondary"
+        size="sm"
         :disabled="!canDistribute()"
         :title="t('imageControls.distributeVertical')"
         @click="api.distributeImages('vertical')"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-width="2" d="M5 4h14M5 20h14M8 11h8" />
-        </svg>
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path stroke-linecap="round" d="M5 4h14M5 20h14M8 11h8" />
+          </svg>
+        </template>
         {{ t('imageControls.distributeV') }}
-      </button>
+      </UiButton>
     </div>
   </div>
 </template>

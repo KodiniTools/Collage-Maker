@@ -1,30 +1,26 @@
 <script setup lang="ts">
   import { useCollageStore } from '@/stores/collage'
   import { useI18n } from 'vue-i18n'
+  import { UiButton, UiEmptyState, UiPanel } from '@/components/ui'
 
   const collage = useCollageStore()
   const { t } = useI18n()
 </script>
 
 <template>
-  <div class="w-full">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-lg font-semibold">{{ t('text.title') }}</h2>
-      <button
-        class="px-3 py-1.5 bg-accent hover:bg-accent-hover text-on-accent text-sm font-medium rounded-sm transition-colors focus-visible:outline-none focus-visible:shadow-focus"
-        aria-label="Add new text"
-        @click="collage.addText()"
-      >
-        + {{ t('text.addText') }}
-      </button>
-    </div>
+  <UiPanel :title="t('text.title')" :count="collage.texts.length">
+    <template #actions>
+      <UiButton variant="primary" size="sm" @click="collage.addText()">
+        <template #icon>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+        </template>
+        {{ t('text.addText') }}
+      </UiButton>
+    </template>
 
-    <div
-      v-if="collage.texts.length === 0"
-      class="text-sm text-ink-2 text-center py-6 border border-line rounded-md"
-    >
-      {{ t('text.empty') }}
-    </div>
+    <UiEmptyState v-if="collage.texts.length === 0" :title="t('text.empty')" />
 
     <div v-else class="space-y-2">
       <div
@@ -61,5 +57,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </UiPanel>
 </template>

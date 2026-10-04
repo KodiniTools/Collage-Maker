@@ -1,16 +1,19 @@
 <script setup lang="ts">
-  import { ref, nextTick } from 'vue'
+  import { computed, nextTick, ref } from 'vue'
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
   import { renderCollage, exportToPdf, printCanvas } from '@/lib/export-engine'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
+  import { UiButton, UiDialog, UiIconButton, UiPanel, UiSelect, UiTextField } from '@/components/ui'
+
+  type ExportFormat = 'png' | 'png-transparent' | 'jpeg' | 'webp' | 'pdf'
 
   const collage = useCollageStore()
   const toast = useToastStore()
   const { t } = useI18n()
 
-  const exportFormat = ref<'png' | 'png-transparent' | 'jpeg' | 'webp' | 'pdf'>('png')
+  const exportFormat = ref<ExportFormat>('png')
   const exportQuality = ref(0.95)
   const isExporting = ref(false)
   const isPrinting = ref(false)
@@ -18,22 +21,48 @@
   const showPreviewModal = ref(false)
   const previewDataUrl = ref<string | null>(null)
 
+  // UiSelect arbeitet mit string; der Proxy hält den Union-Typ im State.
+  const formatModel = computed({
+    get: () => exportFormat.value as string,
+    set: (value) => {
+      exportFormat.value = value as ExportFormat
+    },
+  })
+  const formatOptions = computed(() => [
+    { value: 'png', label: 'PNG' },
+    { value: 'png-transparent', label: t('export.pngTransparent') },
+    { value: 'jpeg', label: 'JPEG' },
+    { value: 'webp', label: 'WebP' },
+    { value: 'pdf', label: 'PDF' },
+  ])
+  const hasQuality = computed(() => ['jpeg', 'webp', 'pdf'].includes(exportFormat.value))
+
   // Filename dialog state
+  const FILENAME_INPUT_ID = 'export-filename'
   const showFilenameDialog = ref(false)
   const customFilename = ref('collage')
-  const filenameInput = ref<HTMLInputElement | null>(null)
   let resolveFilename: ((name: string | null) => void) | null = null
+
+  const resultingFilename = computed(
+    () => `${customFilename.value.trim() || 'collage'}.${getFileExtension()}`
+  )
 
   function getFileExtension(): string {
     return exportFormat.value === 'png-transparent' ? 'png' : exportFormat.value
   }
 
+  async function focusFilenameInput() {
+    // Zwei Ticks: UiDialog setzt beim Öffnen zuerst den Fokus auf den Dialog selbst.
+    await nextTick()
+    await nextTick()
+    const input = document.getElementById(FILENAME_INPUT_ID)
+    if (input instanceof HTMLInputElement) input.select()
+  }
+
   function promptFilename(): Promise<string | null> {
     customFilename.value = 'collage'
     showFilenameDialog.value = true
-    nextTick(() => {
-      filenameInput.value?.select()
-    })
+    void focusFilenameInput()
     return new Promise((resolve) => {
       resolveFilename = resolve
     })
@@ -175,202 +204,147 @@
 </script>
 
 <template>
-  <div class="w-full space-y-4">
-    <h2 class="text-lg font-semibold">{{ t('export.title') }}</h2>
+  <UiPanel :title="t('export.title')">
+    <div class="space-y-4">
+      <UiSelect v-model="formatModel" :options="formatOptions" :label="t('export.format')" />
 
-    <div>
-      <label class="block text-sm font-medium mb-2">{{ t('export.format') }}</label>
-      <select
-        v-model="exportFormat"
-        class="w-full px-3 py-2 rounded-md border border-line-strong bg-surface-1 focus-visible:outline-none focus-visible:shadow-focus"
-        aria-label="Export format"
-      >
-        <option value="png">PNG</option>
-        <option value="png-transparent">{{ t('export.pngTransparent') }}</option>
-        <option value="jpeg">JPEG</option>
-        <option value="webp">WebP</option>
-        <option value="pdf">PDF</option>
-      </select>
-    </div>
-
-    <div v-if="exportFormat === 'jpeg' || exportFormat === 'webp' || exportFormat === 'pdf'">
-      <label class="block text-sm font-medium mb-2">
-        {{ t('export.quality') }}: {{ Math.round(exportQuality * 100) }}%
-      </label>
-      <input
-        v-model.number="exportQuality"
-        type="range"
-        min="0.1"
-        max="1"
-        step="0.05"
-        class="w-full accent-accent"
-        aria-label="Export quality"
-      />
-    </div>
-
-    <button
-      :disabled="collage.images.length === 0 || isGeneratingPreview"
-      class="w-full px-4 py-3 border border-line-strong bg-surface-2 text-ink hover:bg-surface-3 disabled:border-line disabled:text-ink-3 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:shadow-focus flex items-center justify-center gap-2"
-      aria-label="Preview collage"
-      @click="generatePreview"
-    >
-      <!-- loading spinner -->
-      <LoadingSpinner v-if="isGeneratingPreview" class="w-5 h-5" />
-      <!-- eye icon -->
-      <svg
-        v-else
-        class="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+      <div v-if="hasQuality">
+        <label for="export-quality" class="block text-sm font-medium mb-2">
+          {{ t('export.quality') }}: {{ Math.round(exportQuality * 100) }}%
+        </label>
+        <input
+          id="export-quality"
+          v-model.number="exportQuality"
+          type="range"
+          min="0.1"
+          max="1"
+          step="0.05"
+          class="w-full"
         />
-      </svg>
-      <span>{{ t('export.preview') }}</span>
-    </button>
+      </div>
 
-    <button
-      :disabled="collage.images.length === 0 || isExporting"
-      class="w-full px-4 py-3 bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:shadow-focus flex items-center justify-center gap-2"
-      aria-label="Download collage"
-      @click="startExport"
-    >
-      <!-- loading spinner -->
-      <LoadingSpinner v-if="isExporting" class="w-5 h-5" />
-      <span>{{ t('export.download') }}</span>
-    </button>
+      <div class="flex flex-col gap-2">
+        <UiButton
+          variant="secondary"
+          block
+          :disabled="collage.images.length === 0 || isGeneratingPreview"
+          @click="generatePreview"
+        >
+          <template #icon>
+            <LoadingSpinner v-if="isGeneratingPreview" />
+            <svg v-else fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+          </template>
+          {{ t('export.preview') }}
+        </UiButton>
 
-    <button
-      :disabled="collage.images.length === 0 || isPrinting"
-      class="w-full px-4 py-3 border border-line-strong bg-surface-2 text-ink hover:bg-surface-3 disabled:border-line disabled:text-ink-3 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:shadow-focus flex items-center justify-center gap-2"
-      aria-label="Print collage"
-      @click="printCollage"
-    >
-      <!-- loading spinner -->
-      <LoadingSpinner v-if="isPrinting" class="w-5 h-5" />
-      <!-- printer icon -->
-      <svg
-        v-else
-        class="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-        />
-      </svg>
-      <span>{{ t('export.print') }}</span>
-    </button>
+        <UiButton
+          variant="primary"
+          block
+          :disabled="collage.images.length === 0 || isExporting"
+          @click="startExport"
+        >
+          <template v-if="isExporting" #icon>
+            <LoadingSpinner />
+          </template>
+          {{ t('export.download') }}
+        </UiButton>
 
-    <button
-      :disabled="collage.images.length === 0"
-      class="w-full px-4 py-2 border border-transparent text-danger hover:bg-surface-2 disabled:opacity-50 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:shadow-focus"
-      aria-label="Clear all images"
-      @click="collage.clearCollage"
-    >
-      {{ t('controls.clear') }}
-    </button>
+        <UiButton
+          variant="secondary"
+          block
+          :disabled="collage.images.length === 0 || isPrinting"
+          @click="printCollage"
+        >
+          <template #icon>
+            <LoadingSpinner v-if="isPrinting" />
+            <svg v-else fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              />
+            </svg>
+          </template>
+          {{ t('export.print') }}
+        </UiButton>
+
+        <UiButton
+          variant="danger"
+          block
+          :disabled="collage.images.length === 0"
+          @click="collage.clearCollage"
+        >
+          {{ t('controls.clear') }}
+        </UiButton>
+      </div>
+    </div>
 
     <!-- Filename Dialog -->
-    <Teleport to="#modal-portal">
-      <div
-        v-if="showFilenameDialog"
-        class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50"
-        @click.self="cancelFilename"
-      >
-        <div
-          class="w-full max-w-sm bg-surface-1 rounded-lg shadow-overlay overflow-hidden border border-line"
-        >
-          <div class="px-5 py-4 border-b border-line">
-            <h3 class="text-base font-semibold text-ink">
-              {{ t('export.filenameDialogTitle') }}
-            </h3>
-          </div>
-          <div class="px-5 py-4 space-y-3">
-            <label class="block text-sm font-medium text-ink">{{
-              t('export.filenameLabel')
-            }}</label>
-            <div class="flex items-center gap-0">
-              <input
-                ref="filenameInput"
-                v-model="customFilename"
-                type="text"
-                class="flex-1 min-w-0 px-3 py-2 border border-line-strong rounded-l-md bg-surface-1 text-ink text-sm focus-visible:outline-none focus-visible:shadow-focus"
-                @keydown.enter="confirmFilename"
-                @keydown.esc="cancelFilename"
-              />
-              <span
-                class="px-3 py-2 bg-surface-2 border border-l-0 border-line-strong rounded-r-md text-sm text-ink-2 select-none"
-              >
-                .{{ getFileExtension() }}
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 px-5 py-4 border-t border-line">
-            <button
-              class="flex-1 px-4 py-2 border border-line-strong text-ink hover:bg-surface-2 font-medium rounded-md transition-colors text-sm"
-              @click="cancelFilename"
-            >
-              {{ t('export.filenameCancel') }}
-            </button>
-            <button
-              class="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors text-sm"
-              @click="confirmFilename"
-            >
-              {{ t('export.filenameConfirm') }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <UiDialog
+      teleport-to="#modal-portal"
+      :open="showFilenameDialog"
+      :title="t('export.filenameDialogTitle')"
+      :close-label="t('common.close')"
+      @close="cancelFilename"
+    >
+      <UiTextField
+        :id="FILENAME_INPUT_ID"
+        v-model="customFilename"
+        :label="t('export.filenameLabel')"
+        :hint="resultingFilename"
+        @keydown.enter="confirmFilename"
+      />
+      <template #footer>
+        <UiButton variant="secondary" @click="cancelFilename">
+          {{ t('export.filenameCancel') }}
+        </UiButton>
+        <UiButton variant="primary" @click="confirmFilename">
+          {{ t('export.filenameConfirm') }}
+        </UiButton>
+      </template>
+    </UiDialog>
 
-    <!-- Preview Modal -->
+    <!-- Preview Modal (breit, deshalb kein UiDialog) -->
     <Teleport to="#modal-portal">
       <div
         v-if="showPreviewModal"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+        class="fixed inset-0 z-backdrop flex items-center justify-center p-4 bg-black/50"
         @click.self="closePreview"
       >
         <div
-          class="relative max-w-[90vw] max-h-[90vh] bg-surface-1 text-ink rounded-lg shadow-overlay overflow-hidden"
+          class="relative max-w-[90vw] max-h-[90vh] bg-surface-1 text-ink rounded-lg border border-line shadow-overlay overflow-hidden"
         >
           <!-- Header -->
           <div
-            class="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 border-b border-line"
+            class="flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-3 border-b border-line"
           >
             <h3 class="text-base sm:text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
-            <button
-              class="p-2 rounded-md hover:bg-surface-2 transition-colors"
-              aria-label="Close preview"
-              @click="closePreview"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+            <UiIconButton :label="t('export.close')" size="sm" @click="closePreview">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </button>
+            </UiIconButton>
           </div>
 
-          <!-- Preview Image Container -->
+          <!-- Preview Image Container (Schachbrett zeigt Transparenz) -->
           <div
             class="p-2 sm:p-4 overflow-auto max-h-[calc(90vh-120px)]"
             style="
-              background-image: repeating-conic-gradient(#e5e7eb 0% 25%, #f9fafb 0% 50%);
+              background-image: repeating-conic-gradient(
+                var(--ds-surface-3) 0% 25%,
+                var(--ds-surface-1) 0% 50%
+              );
               background-size: 20px 20px;
             "
           >
@@ -391,22 +365,20 @@
               {{ collage.settings.width }} x {{ collage.settings.height }} px
             </p>
             <div class="flex gap-2 w-full sm:w-auto">
-              <button
-                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 border border-line-strong text-ink-2 hover:bg-surface-2 font-medium rounded-md transition-colors text-sm"
-                @click="closePreview"
-              >
+              <UiButton variant="secondary" class="flex-1 sm:flex-initial" @click="closePreview">
                 {{ t('export.close') }}
-              </button>
-              <button
-                class="flex-1 sm:flex-initial px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors text-sm"
+              </UiButton>
+              <UiButton
+                variant="primary"
+                class="flex-1 sm:flex-initial"
                 @click="closePreviewAndExport"
               >
                 {{ t('export.download') }}
-              </button>
+              </UiButton>
             </div>
           </div>
         </div>
       </div>
     </Teleport>
-  </div>
+  </UiPanel>
 </template>
