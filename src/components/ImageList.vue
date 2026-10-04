@@ -39,6 +39,14 @@
     )
   })
 
+  // Stammt das Hintergrundbild der Leinwand aus den zu löschenden Bildern?
+  const deleteAffectsBackground = computed(() => {
+    if (deleteMode.value === 'single') {
+      return imageToDelete.value ? collage.isGalleryImageBackground(imageToDelete.value.id) : false
+    }
+    return selectedGalleryIds.value.some((id) => collage.isGalleryImageBackground(id))
+  })
+
   // Führt die eigentliche Löschung aus und zeigt einen „Rückgängig"-Toast.
   function performDelete(mode: 'single' | 'selected', image: CollageImage | null) {
     if (mode === 'single') {
@@ -495,6 +503,9 @@
         </p>
         <p v-if="deleteInstanceCount > 0" class="text-sm text-danger font-medium">
           {{ t('gallery.deleteConfirmOnCanvas', { count: deleteInstanceCount }) }}
+        </p>
+        <p v-if="deleteAffectsBackground" class="text-sm text-danger font-medium">
+          {{ t('gallery.deleteConfirmBackground') }}
         </p>
         <label class="flex items-center gap-2 text-sm text-ink-2 cursor-pointer select-none">
           <input

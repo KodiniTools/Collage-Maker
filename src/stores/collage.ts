@@ -84,27 +84,59 @@ export const useCollageStore = defineStore('collage', () => {
     if (url && file) retainedFiles.set(url, file)
   }
 
+  // Blob-URLs, die dieser Store widerrufen hat. Nur sie müssen beim
+  // Wiederherstellen neu erzeugt werden; behaltene Quellen (z. B. vor
+  // „Verzerrung übernehmen“) bleiben gültig und behalten ihre URL.
+  const revokedUrls = new Set<string>()
+  function revokeUrl(url: string) {
+    URL.revokeObjectURL(url)
+    revokedUrls.add(url)
+  }
+
   // Stellt den Zustand aus einem Snapshot wieder her
   function restoreFromSnapshot(snapshot: {
     images: Omit<CollageImage, 'file'>[]
     texts: CollageText[]
     settings: CollageSettings
   }) {
+    // Blob-URLs gelöschter Bilder sind widerrufen und werden aus der behaltenen
+    // Datei neu erzeugt; Template und Instanzen mit derselben alten URL teilen
+    // sich die neue. Nicht widerrufene URLs bleiben unverändert.
+    const freshUrls = new Map<string, string>()
+    function reviveUrl(url: string): string {
+      if (!revokedUrls.has(url)) return url
+      const known = freshUrls.get(url)
+      if (known) return known
+      const file = retainedFiles.get(url)
+      if (!file) return url
+      const fresh = URL.createObjectURL(file)
+      retainFile(fresh, file)
+      freshUrls.set(url, fresh)
+      return fresh
+    }
+
     // Stelle Bilder wieder her (mit File-Referenzen von existierenden Bildern)
     const restoredImages = snapshot.images.map((snapshotImg) => {
       // Finde das ursprüngliche Bild mit dem File-Objekt
       const existingImg = images.value.find((img) => img.url === snapshotImg.url)
       return {
         ...snapshotImg,
+        url: reviveUrl(snapshotImg.url),
         file: existingImg?.file || retainedFiles.get(snapshotImg.url) || (null as unknown as File),
       } as CollageImage
     })
 
+    // Stelle Settings wieder her (deep copy); ein Hintergrund aus einem
+    // Galerie-Bild folgt dessen neuer URL.
+    const restoredSettings: CollageSettings = JSON.parse(JSON.stringify(snapshot.settings))
+    const backgroundUrl = restoredSettings.backgroundImage.url
+    if (backgroundUrl) {
+      restoredSettings.backgroundImage.url = freshUrls.get(backgroundUrl) ?? backgroundUrl
+    }
+
     images.value = restoredImages
     texts.value = [...snapshot.texts]
-
-    // Stelle Settings wieder her (deep copy)
-    settings.value = JSON.parse(JSON.stringify(snapshot.settings))
+    settings.value = restoredSettings
 
     // Deselektiere alles nach Undo/Redo
     selectedImageIds.value = []
@@ -226,9 +258,12 @@ export const useCollageStore = defineStore('collage', () => {
         (img) => img.id !== id && img.url === imageToRemove.url
       )
 
+      // Datei behalten: Undo stellt das Bild mit Datei und frischer URL wieder her
+      retainFile(imageToRemove.url, imageToRemove.file)
+
       // Nur URL revoken, wenn KEIN anderes Bild diese URL mehr verwendet
       if (otherImagesWithSameUrl.length === 0) {
-        URL.revokeObjectURL(imageToRemove.url)
+        revokeUrl(imageToRemove.url)
       }
 
       images.value.splice(index, 1)
@@ -381,9 +416,11 @@ export const useCollageStore = defineStore('collage', () => {
 
   function clearCollage() {
     saveStateForUndo()
-    // Sammle nur unique URLs (Templates und Instanzen teilen URLs)
+    // Dateien behalten (Undo) und nur unique URLs widerrufen (Templates und
+    // Instanzen teilen URLs)
+    images.value.forEach((img) => retainFile(img.url, img.file))
     const uniqueUrls = new Set(images.value.map((img) => img.url))
-    uniqueUrls.forEach((url) => URL.revokeObjectURL(url))
+    uniqueUrls.forEach((url) => revokeUrl(url))
 
     images.value = []
     texts.value = []
@@ -543,6 +580,7 @@ export const useCollageStore = defineStore('collage', () => {
     removeSelectedGalleryImages: gallery.removeSelectedGalleryImages,
     removeGalleryImage: gallery.removeGalleryImage,
     countGalleryImageInstances: gallery.countGalleryImageInstances,
+    isGalleryImageBackground: gallery.isGalleryImageBackground,
     // Text-Funktionen
     addText: textActions.addText,
     removeText: textActions.removeText,
