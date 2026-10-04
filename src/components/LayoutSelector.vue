@@ -47,11 +47,8 @@
     <h2 class="text-lg font-semibold mb-3">{{ t('layout.title') }}</h2>
 
     <!-- Info wenn Galerie-Bilder ausgewählt -->
-    <div
-      v-if="selectedGalleryCount > 0"
-      class="mb-3 p-2 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/30 text-xs"
-    >
-      <p class="font-medium text-slate-dark dark:text-accent">
+    <div v-if="selectedGalleryCount > 0" class="mb-3 p-2 bg-accent-soft rounded-md border text-xs">
+      <p class="font-medium text-ink">
         {{ t('layout.withSelectedImages', { count: selectedGalleryCount }) }}
       </p>
     </div>
@@ -59,7 +56,7 @@
     <!-- Info wenn keine Bilder zum Layouten -->
     <div
       v-else-if="canvasImageCount === 0"
-      class="mb-3 p-2 bg-muted/10 dark:bg-navy/20 rounded-lg text-xs text-muted dark:text-muted-light"
+      class="mb-3 p-2 bg-surface-2 rounded-md text-xs text-ink-2"
     >
       {{ t('layout.noImages') }}
     </div>
@@ -73,11 +70,11 @@
         v-for="layout in layouts"
         :key="layout.value"
         :class="[
-          'p-3 rounded-lg border-2 transition-colors duration-150 text-sm font-medium',
-          'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark',
+          'p-3 rounded-md border transition-colors text-sm font-medium',
+          'focus-visible:outline-none focus-visible:shadow-focus',
           collage.settings.layout === layout.value
-            ? 'border-accent bg-accent/10 dark:bg-accent/5 text-slate-dark dark:text-muted-light'
-            : 'border-muted/50 dark:border-slate hover:border-accent',
+            ? 'border-accent bg-accent-soft text-ink'
+            : 'border-line-strong hover:border-accent',
         ]"
         :aria-pressed="collage.settings.layout === layout.value"
         @click="selectLayout(layout.value)"

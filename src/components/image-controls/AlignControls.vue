@@ -17,7 +17,7 @@
     <!-- Ausrichten -->
     <div class="grid grid-cols-6 gap-1.5 mb-2">
       <button
-        class="flex items-center justify-center px-2 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md"
+        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
         :title="t('imageControls.alignLeft')"
         :aria-label="t('imageControls.alignLeft')"
         @click="api.alignImages('left')"
@@ -27,7 +27,7 @@
         </svg>
       </button>
       <button
-        class="flex items-center justify-center px-2 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md"
+        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
         :title="t('imageControls.alignCenterH')"
         :aria-label="t('imageControls.alignCenterH')"
         @click="api.alignImages('center-h')"
@@ -37,7 +37,7 @@
         </svg>
       </button>
       <button
-        class="flex items-center justify-center px-2 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md"
+        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
         :title="t('imageControls.alignRight')"
         :aria-label="t('imageControls.alignRight')"
         @click="api.alignImages('right')"
@@ -47,7 +47,7 @@
         </svg>
       </button>
       <button
-        class="flex items-center justify-center px-2 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md"
+        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
         :title="t('imageControls.alignTop')"
         :aria-label="t('imageControls.alignTop')"
         @click="api.alignImages('top')"
@@ -57,7 +57,7 @@
         </svg>
       </button>
       <button
-        class="flex items-center justify-center px-2 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md"
+        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
         :title="t('imageControls.alignMiddleV')"
         :aria-label="t('imageControls.alignMiddleV')"
         @click="api.alignImages('middle-v')"
@@ -67,7 +67,7 @@
         </svg>
       </button>
       <button
-        class="flex items-center justify-center px-2 py-2 bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 rounded-md"
+        class="flex items-center justify-center px-2 py-2 bg-surface-2 hover:bg-surface-3 rounded-sm"
         :title="t('imageControls.alignBottom')"
         :aria-label="t('imageControls.alignBottom')"
         @click="api.alignImages('bottom')"
@@ -81,7 +81,7 @@
     <!-- Verteilen (ab 3 Bildern) -->
     <div class="grid grid-cols-2 gap-1.5">
       <button
-        class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 disabled:opacity-40 disabled:cursor-not-allowed"
+        class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-sm text-xs bg-surface-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="!canDistribute()"
         :title="t('imageControls.distributeHorizontal')"
         @click="api.distributeImages('horizontal')"
@@ -92,7 +92,7 @@
         {{ t('imageControls.distributeH') }}
       </button>
       <button
-        class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs bg-muted/30 hover:bg-muted/50 dark:bg-navy/50 dark:hover:bg-navy/70 disabled:opacity-40 disabled:cursor-not-allowed"
+        class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-sm text-xs bg-surface-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="!canDistribute()"
         :title="t('imageControls.distributeVertical')"
         @click="api.distributeImages('vertical')"

@@ -11,15 +11,15 @@
 
 <template>
   <!-- Canvas-Rahmen -->
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
       <label class="text-sm font-medium">{{ t('canvas.border') }}</label>
       <button
         :class="[
-          'px-3 py-1 text-xs rounded transition-colors',
+          'px-3 py-1 text-xs rounded-sm transition-colors',
           collage.settings.border.enabled
-            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+            ? 'bg-accent hover:bg-accent-hover text-on-accent'
+            : 'bg-surface-2 hover:bg-surface-3 text-ink',
         ]"
         :aria-pressed="collage.settings.border.enabled"
         @click="api.toggleCanvasBorder"
@@ -31,7 +31,7 @@
     <div v-if="collage.settings.border.enabled" class="space-y-3">
       <!-- Rahmenbreite -->
       <div>
-        <label class="block text-xs text-muted dark:text-muted-light mb-1">
+        <label class="block text-xs text-ink-2 mb-1">
           {{ t('imageControls.borderWidth') }}: {{ collage.settings.border.width }}px
         </label>
         <input
@@ -47,12 +47,10 @@
 
       <!-- Rahmenstil -->
       <div>
-        <label class="block text-xs text-muted dark:text-muted-light mb-1">{{
-          t('imageControls.borderStyle')
-        }}</label>
+        <label class="block text-xs text-ink-2 mb-1">{{ t('imageControls.borderStyle') }}</label>
         <select
           :value="collage.settings.border.style"
-          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm"
           @change="
             api.updateBorderStyle(
               ($event.target as HTMLSelectElement).value as CanvasBorderSettings['style']
@@ -68,20 +66,18 @@
 
       <!-- Rahmenfarbe -->
       <div>
-        <label class="block text-xs text-muted dark:text-muted-light mb-1">{{
-          t('imageControls.borderColor')
-        }}</label>
+        <label class="block text-xs text-ink-2 mb-1">{{ t('imageControls.borderColor') }}</label>
         <div class="flex gap-2">
           <input
             type="color"
             :value="collage.settings.border.color"
-            class="w-12 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
+            class="w-12 h-10 rounded-sm border border-line-strong cursor-pointer"
             @input="api.updateBorderColor(($event.target as HTMLInputElement).value)"
           />
           <input
             type="text"
             :value="collage.settings.border.color"
-            class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
+            class="flex-1 px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm font-mono"
             @input="api.updateBorderColor(($event.target as HTMLInputElement).value)"
           />
         </div>

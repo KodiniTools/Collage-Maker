@@ -10,14 +10,14 @@
 
 <template>
   <!-- Ecken abrunden -->
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-2">
       <label class="text-sm font-medium">
         {{ t('canvas.cornerRadius') }}: {{ collage.settings.cornerRadius }}px
       </label>
       <button
         v-if="collage.settings.cornerRadius !== 0"
-        class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+        class="text-xs text-ink-2 hover:text-accent transition-colors"
         :title="t('imageControls.resetValue')"
         @click="api.updateCornerRadius(0)"
       >

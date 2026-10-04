@@ -103,7 +103,7 @@
 <template>
   <div
     ref="container"
-    class="group w-full bg-muted/10 dark:bg-navy/30 rounded-lg p-4 relative flex items-center justify-center transition-all duration-300"
+    class="group w-full bg-surface-2 rounded-md p-4 relative flex items-center justify-center transition-all duration-slow"
     :style="{
       height: 'calc(100vh - 12rem)',
       overflow: 'hidden',
@@ -113,10 +113,10 @@
          auf Zeigegeräten erst bei Mouse-Over (oder Tastaturfokus) eingeblendet -->
     <div
       v-if="hasCanvasImages"
-      class="zoom-control absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-slate-dark/85 dark:bg-surface-darker/90 backdrop-blur-sm text-surface-light rounded-lg shadow-lg px-1 py-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100"
+      class="zoom-control absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 bg-surface-1 border border-line text-ink rounded-md shadow-overlay px-1 py-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
     >
       <button
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         :disabled="collage.canvasZoom <= 0.25"
         :title="t('shortcuts.zoomOut')"
         :aria-label="t('shortcuts.zoomOut')"
@@ -127,7 +127,7 @@
         </svg>
       </button>
       <button
-        class="min-w-[3.25rem] h-8 px-1 flex items-center justify-center rounded-md text-xs font-semibold hover:bg-white/15 transition-colors"
+        class="min-w-[3.25rem] h-8 px-1 flex items-center justify-center rounded-sm text-xs font-semibold hover:bg-surface-2 transition-colors"
         :title="t('shortcuts.resetZoom')"
         :aria-label="t('shortcuts.resetZoom')"
         @click="collage.resetCanvasView()"
@@ -135,7 +135,7 @@
         {{ Math.round(collage.canvasZoom * 100) }}%
       </button>
       <button
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         :disabled="collage.canvasZoom >= 4"
         :title="t('shortcuts.zoomIn')"
         :aria-label="t('shortcuts.zoomIn')"
@@ -149,7 +149,7 @@
     <!-- Pan hint when zoomed -->
     <div
       v-if="collage.canvasZoom > 1"
-      class="absolute top-2 left-2 z-10 bg-slate-dark/80 text-surface-light text-xs px-2 py-1 rounded pointer-events-none"
+      class="absolute top-2 left-2 z-10 bg-surface-1 border border-line text-ink-2 text-xs px-2 py-1 rounded-sm pointer-events-none"
     >
       <span class="hidden sm:inline">Space + Drag / Arrows to pan</span>
       <span class="sm:hidden">2 Finger zum Verschieben</span>
@@ -165,7 +165,7 @@
         ref="canvas"
         tabindex="-1"
         data-collage-canvas
-        class="shadow-lg outline-none transition-transform duration-200"
+        class="outline-none transition-transform"
         :style="{
           transform: `scale(${autoFitScale})`,
           transformOrigin: 'center center',
@@ -202,14 +202,14 @@
     <Transition name="preview-fade">
       <div
         v-if="previewUrl"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
         @click.self="closePreview"
         @keydown.esc="closePreview"
       >
         <div class="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
           <!-- Close button -->
           <button
-            class="absolute -top-4 -right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 text-white transition-colors shadow-lg"
+            class="absolute -top-4 -right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-surface-1 hover:bg-surface-2 border border-line text-ink transition-colors"
             aria-label="Vorschau schliessen"
             @click="closePreview"
           >
@@ -226,7 +226,7 @@
           <!-- Image -->
           <img
             :src="previewUrl"
-            class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-overlay"
             alt="Bildvorschau"
           />
         </div>

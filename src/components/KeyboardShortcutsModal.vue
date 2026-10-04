@@ -26,15 +26,15 @@
   <Teleport to="#modal-portal">
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
       @click.self="close"
     >
       <div
-        class="relative w-full max-w-3xl max-h-[85vh] bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-surface-light rounded-xl shadow-2xl overflow-hidden flex flex-col"
+        class="relative w-full max-w-3xl max-h-[85vh] bg-surface-1 text-ink rounded-lg shadow-overlay overflow-hidden flex flex-col"
       >
         <!-- Header -->
         <div
-          class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5"
+          class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-line"
         >
           <div class="flex items-center gap-2 sm:gap-3">
             <svg
@@ -53,7 +53,7 @@
             <h2 class="text-lg sm:text-xl font-semibold">{{ t('shortcuts.title') }}</h2>
           </div>
           <button
-            class="p-2 rounded-lg hover:bg-muted/10 dark:hover:bg-navy/10 transition-colors"
+            class="p-2 rounded-md hover:bg-surface-2 transition-colors"
             :aria-label="t('common.cancel')"
             @click="close"
           >
@@ -75,7 +75,7 @@
             <!-- Selection Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-ink uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -93,11 +93,9 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
-                    t(shortcut.descriptionKey)
-                  }}</span>
+                  <span class="text-sm text-ink">{{ t(shortcut.descriptionKey) }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-ink bg-surface-2 rounded-sm border border-line"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
@@ -108,7 +106,7 @@
             <!-- Editing Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-ink uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -126,11 +124,9 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
-                    t(shortcut.descriptionKey)
-                  }}</span>
+                  <span class="text-sm text-ink">{{ t(shortcut.descriptionKey) }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-ink bg-surface-2 rounded-sm border border-line"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
@@ -141,7 +137,7 @@
             <!-- Navigation Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-ink uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -159,16 +155,14 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
-                    t(shortcut.descriptionKey)
-                  }}</span>
+                  <span class="text-sm text-ink">{{ t(shortcut.descriptionKey) }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-ink bg-surface-2 rounded-sm border border-line"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
                 </div>
-                <div class="text-xs text-muted dark:text-muted-light mt-2">
+                <div class="text-xs text-ink-2 mt-2">
                   {{ t('shortcuts.shiftHint') }}
                 </div>
               </div>
@@ -177,7 +171,7 @@
             <!-- Canvas Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-ink uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -197,11 +191,9 @@
                   :key="shortcut.descriptionKey"
                   class="flex items-center justify-between py-1.5"
                 >
-                  <span class="text-sm text-slate-dark dark:text-surface-light">{{
-                    t(shortcut.descriptionKey)
-                  }}</span>
+                  <span class="text-sm text-ink">{{ t(shortcut.descriptionKey) }}</span>
                   <kbd
-                    class="px-2 py-1 text-xs font-mono text-slate-dark dark:text-surface-light bg-muted/20 dark:bg-navy/20 rounded border border-muted/30 dark:border-slate/30"
+                    class="px-2 py-1 text-xs font-mono text-ink bg-surface-2 rounded-sm border border-line"
                   >
                     {{ formatShortcut(shortcut) }}
                   </kbd>
@@ -211,11 +203,11 @@
           </div>
 
           <!-- Tips Section -->
-          <div class="mt-6 p-4 bg-accent/10 dark:bg-accent/5 rounded-lg border border-accent/20">
-            <h3 class="text-sm font-semibold text-slate-dark dark:text-accent-light mb-2">
+          <div class="mt-6 p-4 bg-accent-soft rounded-md border">
+            <h3 class="text-sm font-semibold text-ink mb-2">
               {{ t('shortcuts.tips.title') }}
             </h3>
-            <ul class="text-sm text-slate-dark dark:text-surface-light space-y-1">
+            <ul class="text-sm text-ink space-y-1">
               <li>{{ t('shortcuts.tips.multiSelect') }}</li>
               <li>{{ t('shortcuts.tips.shiftResize') }}</li>
             </ul>
@@ -223,15 +215,13 @@
         </div>
 
         <!-- Footer -->
-        <div
-          class="px-3 py-3 sm:px-6 sm:py-4 border-t border-muted/20 dark:border-slate/20 bg-muted/5 dark:bg-navy/5"
-        >
+        <div class="px-3 py-3 sm:px-6 sm:py-4 border-t border-line">
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted dark:text-muted-light">
+            <span class="text-xs text-ink-2">
               {{ t('shortcuts.pressToOpen') }}
             </span>
             <button
-              class="px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink font-medium rounded-lg transition-colors"
+              class="px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors"
               @click="close"
             >
               {{ t('shortcuts.close') }}

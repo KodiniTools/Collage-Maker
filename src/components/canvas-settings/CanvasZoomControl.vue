@@ -10,13 +10,13 @@
 
 <template>
   <!-- Zoom Control -->
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-2">
       <label class="block text-sm font-medium">
         {{ t('canvas.zoom') }}: {{ Math.round(collage.canvasZoom * 100) }}%
       </label>
       <button
-        class="text-xs px-2 py-1 bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 rounded transition-colors"
+        class="text-xs px-2 py-1 bg-surface-2 hover:bg-surface-3 rounded-sm transition-colors"
         @click="api.resetView"
       >
         {{ t('canvas.resetView') }}
@@ -31,7 +31,7 @@
       class="w-full"
       @input="api.updateZoom(Number(($event.target as HTMLInputElement).value))"
     />
-    <p class="text-xs text-muted dark:text-muted-light mt-1">
+    <p class="text-xs text-ink-2 mt-1">
       {{ t('canvas.zoomHint') }}
     </p>
   </div>

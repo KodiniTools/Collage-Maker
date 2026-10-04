@@ -16,10 +16,8 @@
         <label class="text-sm font-medium">{{ t('imageControls.size') }}</label>
         <button
           :class="[
-            'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
-            api.collage.lockAspectRatio
-              ? 'bg-accent/20 text-slate-dark dark:text-accent'
-              : 'bg-muted/10 dark:bg-navy/30 text-slate dark:text-muted-light',
+            'flex items-center gap-1 px-2 py-1 text-xs rounded-sm transition-colors',
+            api.collage.lockAspectRatio ? 'bg-accent-soft text-ink' : 'bg-surface-2 text-ink',
           ]"
           :title="t('imageControls.lockAspectRatio')"
           @click="api.toggleAspectRatio"
@@ -53,29 +51,29 @@
       </div>
       <div class="space-y-2">
         <div>
-          <label class="text-xs text-muted dark:text-muted-light">{{ t('canvas.width') }}</label>
+          <label class="text-xs text-ink-2">{{ t('canvas.width') }}</label>
           <input
             type="number"
             :value="Math.round(image.width)"
             min="10"
             max="8000"
-            class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+            class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
             @input="api.updateWidth(Number(($event.target as HTMLInputElement).value))"
           />
         </div>
         <div>
-          <label class="text-xs text-muted dark:text-muted-light">{{ t('canvas.height') }}</label>
+          <label class="text-xs text-ink-2">{{ t('canvas.height') }}</label>
           <input
             type="number"
             :value="Math.round(image.height)"
             min="10"
             max="8000"
-            class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+            class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
             @input="api.updateHeight(Number(($event.target as HTMLInputElement).value))"
           />
         </div>
       </div>
-      <p class="text-xs text-muted dark:text-muted-light mt-1">
+      <p class="text-xs text-ink-2 mt-1">
         {{ t('imageControls.shiftHint') }}
       </p>
     </div>
@@ -85,24 +83,20 @@
       <label class="text-sm font-medium mb-2 block">{{ t('imageControls.position') }}</label>
       <div class="space-y-2">
         <div>
-          <label class="text-xs text-muted dark:text-muted-light">{{
-            t('imageControls.positionX')
-          }}</label>
+          <label class="text-xs text-ink-2">{{ t('imageControls.positionX') }}</label>
           <input
             type="number"
             :value="Math.round(image.x)"
-            class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+            class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
             @input="api.updatePositionX(Number(($event.target as HTMLInputElement).value))"
           />
         </div>
         <div>
-          <label class="text-xs text-muted dark:text-muted-light">{{
-            t('imageControls.positionY')
-          }}</label>
+          <label class="text-xs text-ink-2">{{ t('imageControls.positionY') }}</label>
           <input
             type="number"
             :value="Math.round(image.y)"
-            class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+            class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
             @input="api.updatePositionY(Number(($event.target as HTMLInputElement).value))"
           />
         </div>

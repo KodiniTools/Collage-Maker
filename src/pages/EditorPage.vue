@@ -164,19 +164,15 @@
 </script>
 
 <template>
-  <div
-    class="flex flex-col min-h-screen bg-page-gradient text-slate-dark dark:text-muted-light transition-colors"
-  >
+  <div class="flex flex-col min-h-screen bg-surface-0 text-ink transition-colors">
     <!-- Header -->
-    <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md border-b border-muted/30 dark:border-slate/30"
-    >
+    <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
       <div class="container mx-auto px-2 py-2 sm:px-4 sm:py-4 flex items-center justify-between">
         <div class="flex items-center gap-2 sm:gap-4">
           <!-- Back to Landing Button -->
           <RouterLink
             to="/"
-            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
+            class="p-2 rounded-md hover:bg-surface-2 transition-colors"
             :title="t('app.backToHome')"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,7 +186,7 @@
           </RouterLink>
           <div>
             <h1 class="text-lg sm:text-2xl font-bold">{{ t('app.title') }}</h1>
-            <p class="text-xs sm:text-sm text-muted dark:text-muted-light hidden sm:block">
+            <p class="text-xs sm:text-sm text-ink-2 hidden sm:block">
               {{ t('app.subtitle') }}
             </p>
           </div>
@@ -200,7 +196,7 @@
           <div class="flex items-center gap-1 mr-1 sm:mr-2">
             <button
               :disabled="!collage.canUndo"
-              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-navy/20"
+              class="p-2 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-surface-2"
               :title="`${t('shortcuts.undo')} (Ctrl+Z)`"
               @click="collage.undo"
             >
@@ -220,7 +216,7 @@
             </button>
             <button
               :disabled="!collage.canRedo"
-              class="p-2 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted/20 dark:hover:bg-navy/20"
+              class="p-2 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-surface-2"
               :title="`${t('shortcuts.redo')} (Ctrl+Y)`"
               @click="collage.redo"
             >
@@ -241,7 +237,7 @@
           </div>
 
           <button
-            class="px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium transition-colors flex items-center gap-2"
+            class="px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium transition-colors flex items-center gap-2"
             :title="t('templates.saveAsCurrent')"
             @click="openSaveTemplate"
           >
@@ -261,7 +257,7 @@
             <span class="hidden sm:inline">{{ t('templates.saveAsCurrent') }}</span>
           </button>
           <button
-            class="px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium transition-colors flex items-center gap-2"
+            class="px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium transition-colors flex items-center gap-2"
             @click="showTemplates = true"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,7 +271,7 @@
             <span class="hidden sm:inline">{{ t('templates.library') }}</span>
           </button>
           <button
-            class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors"
+            class="p-2 rounded-md hover:bg-surface-2 transition-colors"
             :title="t('shortcuts.title')"
             :aria-label="t('shortcuts.title')"
             @click="showShortcutsModal = true"
@@ -307,17 +303,15 @@
         <!-- Icon-Leiste: wechselt das Werkzeug-Panel. Aktives Werkzeug erneut
              anklicken klappt das Panel ein. Immer sichtbar, immer im Fluss. -->
         <nav
-          class="flex lg:flex-col gap-1.5 p-1.5 flex-shrink-0 lg:self-start overflow-x-auto bg-surface-light dark:bg-surface-dark rounded-xl border border-muted/30 dark:border-slate/30"
+          class="flex lg:flex-col gap-1.5 p-1.5 flex-shrink-0 lg:self-start overflow-x-auto bg-surface-1 rounded-lg border border-line"
           :aria-label="t('editor.tools')"
         >
           <button
             v-for="tool in tools"
             :key="tool.id"
-            class="w-11 h-11 flex-shrink-0 rounded-xl flex items-center justify-center transition-colors"
+            class="w-11 h-11 flex-shrink-0 rounded-lg flex items-center justify-center transition-colors"
             :class="
-              activeTool === tool.id
-                ? 'bg-accent/20 text-slate-dark dark:text-accent'
-                : 'text-muted dark:text-muted-light hover:bg-muted/15 dark:hover:bg-navy/40'
+              activeTool === tool.id ? 'bg-accent-soft text-ink' : 'text-ink-2 hover:bg-surface-2'
             "
             :title="t(tool.label)"
             :aria-label="t(tool.label)"
@@ -339,7 +333,7 @@
              verkleinert die Leinwand, statt sie zu überdecken. -->
         <aside
           v-if="activeTool"
-          class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start bg-surface-light dark:bg-surface-dark rounded-xl border border-muted/30 dark:border-slate/30 p-4 lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
+          class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start bg-surface-1 rounded-lg border border-line p-4 lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
         >
           <ImageUploader v-if="activeTool === 'upload'" />
           <LayoutSelector v-else-if="activeTool === 'layouts'" />
@@ -357,23 +351,23 @@
         <!-- Inspektor: folgt der Auswahl (Bild / Text / Leinwand / Export).
              Liegt im Fluss und überdeckt die Leinwand nie. -->
         <aside
-          class="w-full flex-shrink-0 lg:self-start transition-all duration-300"
+          class="w-full flex-shrink-0 lg:self-start transition-all duration-slow"
           :class="inspectorOpen ? 'lg:w-80 xl:w-96' : 'lg:w-12'"
         >
           <template v-if="inspectorOpen">
             <!-- Reiter + Einklappen -->
             <div class="flex items-center gap-1 mb-3">
               <div
-                class="flex-1 flex gap-1 p-1 bg-muted/15 dark:bg-navy/40 rounded-xl overflow-hidden"
+                class="flex-1 flex gap-0.5 p-0.5 bg-surface-0 border border-line rounded-md overflow-hidden"
               >
                 <button
                   v-for="tab in inspectorTabs"
                   :key="tab.id"
-                  class="flex-1 px-2 py-2 text-xs font-medium rounded-lg transition-colors truncate"
+                  class="flex-1 px-2 py-1.5 text-xs font-medium rounded-sm border border-transparent transition-colors truncate"
                   :class="
                     inspectorTab === tab.id
-                      ? 'bg-surface-light dark:bg-surface-dark shadow-sm text-slate-dark dark:text-surface-light'
-                      : 'text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light'
+                      ? 'bg-surface-1 border-line-strong text-ink'
+                      : 'text-ink-2 hover:text-ink'
                   "
                   :aria-pressed="inspectorTab === tab.id"
                   @click="inspectorTab = tab.id"
@@ -382,7 +376,7 @@
                 </button>
               </div>
               <button
-                class="p-2 rounded-lg hover:bg-muted/20 dark:hover:bg-navy/20 transition-colors flex-shrink-0"
+                class="p-2 rounded-md hover:bg-surface-2 transition-colors flex-shrink-0"
                 :title="t('editor.hidePanel')"
                 :aria-label="t('editor.hidePanel')"
                 @click="inspectorOpen = false"
@@ -405,18 +399,13 @@
                 <ImageControls v-else />
               </template>
               <template v-else-if="inspectorTab === 'text'">
-                <div
-                  class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-                >
+                <div class="bg-surface-1 rounded-md border border-line p-4">
                   <TextList />
                 </div>
                 <TextControls v-if="collage.selectedTextId" />
               </template>
               <CanvasSettings v-else-if="inspectorTab === 'canvas'" />
-              <div
-                v-else
-                class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-              >
+              <div v-else class="bg-surface-1 rounded-md border border-line p-4">
                 <ExportControls />
               </div>
             </div>
@@ -425,7 +414,7 @@
           <!-- Eingeklappt: Wieder-Öffnen -->
           <template v-else>
             <button
-              class="hidden lg:flex w-10 h-10 mx-auto rounded-lg bg-muted/20 dark:bg-navy/20 hover:bg-muted/40 dark:hover:bg-navy/40 items-center justify-center transition-colors"
+              class="hidden lg:flex w-10 h-10 mx-auto rounded-md bg-surface-2 hover:bg-surface-3 items-center justify-center transition-colors"
               :title="t('editor.showSettings')"
               :aria-label="t('editor.showSettings')"
               @click="inspectorOpen = true"
@@ -440,7 +429,7 @@
               </svg>
             </button>
             <button
-              class="lg:hidden w-full px-4 py-2.5 rounded-lg bg-muted/15 dark:bg-navy/40 hover:bg-muted/25 dark:hover:bg-navy/60 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+              class="lg:hidden w-full px-4 py-2.5 rounded-md bg-surface-2 hover:bg-surface-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
               @click="inspectorOpen = true"
             >
               <svg
@@ -481,16 +470,14 @@
     <Teleport to="#modal-portal">
       <div
         v-if="showRestoreDialog"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
       >
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-muted/20 dark:border-white/10"
+          class="bg-surface-1 rounded-lg shadow-overlay p-6 max-w-md w-full mx-4 border border-line"
         >
           <!-- Icon -->
           <div class="flex justify-center mb-4">
-            <div
-              class="w-16 h-16 bg-accent/10 dark:bg-accent/20 rounded-full flex items-center justify-center"
-            >
+            <div class="w-16 h-16 bg-accent-soft rounded-full flex items-center justify-center">
               <svg
                 class="w-8 h-8 text-accent"
                 fill="none"
@@ -508,39 +495,36 @@
           </div>
 
           <!-- Title -->
-          <h3 class="text-xl font-bold text-center mb-2 text-slate-dark dark:text-surface-light">
+          <h3 class="text-xl font-bold text-center mb-2 text-ink">
             {{ t('autoSave.restoreTitle') }}
           </h3>
 
           <!-- Description -->
-          <p class="text-muted dark:text-muted-light text-center mb-2">
+          <p class="text-ink-2 text-center mb-2">
             {{ t('autoSave.restoreDescription') }}
           </p>
 
           <!-- Save Date -->
-          <p
-            v-if="restoreSaveDate"
-            class="text-sm text-muted dark:text-muted-light text-center mb-6"
-          >
+          <p v-if="restoreSaveDate" class="text-sm text-ink-2 text-center mb-6">
             {{ t('autoSave.savedAt') }}: {{ restoreSaveDate.toLocaleString() }}
           </p>
 
           <!-- Buttons -->
           <div class="flex flex-col gap-3">
             <button
-              class="w-full px-4 py-3 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-semibold transition-colors"
+              class="w-full px-4 py-3 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-semibold transition-colors"
               @click="handleRestore"
             >
               {{ t('autoSave.restore') }}
             </button>
             <button
-              class="w-full px-4 py-2 bg-muted/20 hover:bg-muted/30 dark:bg-navy/50 dark:hover:bg-navy/70 text-slate-dark dark:text-muted-light rounded-lg font-medium transition-colors"
+              class="w-full px-4 py-2 bg-surface-2 hover:bg-surface-3 text-ink rounded-md font-medium transition-colors"
               @click="handleContinueWithoutRestore"
             >
               {{ t('autoSave.continueWithout') }}
             </button>
             <button
-              class="w-full px-4 py-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors"
+              class="w-full px-4 py-2 text-danger text-sm transition-colors"
               @click="handleDiscardRestore"
             >
               {{ t('autoSave.discard') }}

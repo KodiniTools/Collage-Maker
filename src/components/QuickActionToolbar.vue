@@ -216,7 +216,7 @@
     <div
       v-if="position"
       ref="toolbarRef"
-      class="quick-action-toolbar absolute z-30 flex items-center gap-0.5 bg-slate-dark/90 dark:bg-surface-darker/95 backdrop-blur-sm text-surface-light rounded-lg shadow-xl px-1 py-1"
+      class="quick-action-toolbar absolute z-30 flex items-center gap-0.5 bg-surface-1 border border-line text-ink rounded-md shadow-overlay px-1 py-1"
       :style="{
         left: `${position.left}px`,
         top: `${position.top}px`,
@@ -231,7 +231,7 @@
       <!-- Nach hinten -->
       <button
         type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 transition-colors"
+        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 transition-colors"
         :title="t('quickActions.sendToBack')"
         :aria-label="t('quickActions.sendToBack')"
         @click="onSendBackward"
@@ -248,7 +248,7 @@
       <!-- Nach vorne -->
       <button
         type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 transition-colors"
+        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 transition-colors"
         :title="t('quickActions.bringToFront')"
         :aria-label="t('quickActions.bringToFront')"
         @click="onBringForward"
@@ -263,12 +263,12 @@
         </svg>
       </button>
 
-      <span class="w-px h-5 bg-white/20 mx-0.5" aria-hidden="true"></span>
+      <span class="w-px h-5 mx-0.5 bg-line" aria-hidden="true"></span>
 
       <!-- Drehen -->
       <button
         type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/15 transition-colors"
+        class="w-8 h-8 flex items-center justify-center rounded-sm hover:bg-surface-2 transition-colors"
         :title="t('quickActions.rotate')"
         :aria-label="t('quickActions.rotate')"
         @click="onRotate"
@@ -283,12 +283,12 @@
         </svg>
       </button>
 
-      <span class="w-px h-5 bg-white/20 mx-0.5" aria-hidden="true"></span>
+      <span class="w-px h-5 mx-0.5 bg-line" aria-hidden="true"></span>
 
       <!-- Löschen -->
       <button
         type="button"
-        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-red-500/80 transition-colors"
+        class="w-8 h-8 flex items-center justify-center rounded-sm text-danger hover:bg-surface-2 transition-colors"
         :title="t('quickActions.delete')"
         :aria-label="t('quickActions.delete')"
         @click="onDelete"
@@ -317,15 +317,15 @@
   .qat-fade-enter-active,
   .qat-fade-leave-active {
     transition:
-      opacity 0.15s ease,
-      transform 0.15s ease;
+      opacity var(--ds-duration) var(--ds-ease),
+      transform var(--ds-duration) var(--ds-ease);
   }
   .qat-fade-enter-from,
   .qat-fade-leave-to {
     opacity: 0;
   }
 
-  /* Kleiner dreieckiger Zeiger, der zum Objekt weist. */
+  /* Kleiner dreieckiger Zeiger in Rahmenfarbe, der zum Objekt weist. */
   .qat-arrow {
     position: absolute;
     left: 50%;
@@ -337,16 +337,10 @@
   }
   .qat-arrow-down {
     top: 100%;
-    border-top: 6px solid rgb(20 38 64 / 0.9);
+    border-top: 6px solid var(--ds-border-strong);
   }
   .qat-arrow-up {
     bottom: 100%;
-    border-bottom: 6px solid rgb(20 38 64 / 0.9);
-  }
-  :global(.dark) .qat-arrow-down {
-    border-top-color: var(--qat-dark-bg, rgb(15 23 42 / 0.95));
-  }
-  :global(.dark) .qat-arrow-up {
-    border-bottom-color: var(--qat-dark-bg, rgb(15 23 42 / 0.95));
+    border-bottom: 6px solid var(--ds-border-strong);
   }
 </style>

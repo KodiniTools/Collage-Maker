@@ -119,8 +119,8 @@
   <!-- Modal Overlay -->
   <Teleport to="#modal-portal">
     <Transition
-      enter-active-class="transition-opacity duration-200"
-      leave-active-class="transition-opacity duration-200"
+      enter-active-class="transition-opacity"
+      leave-active-class="transition-opacity"
       enter-from-class="opacity-0"
       leave-to-class="opacity-0"
     >
@@ -134,19 +134,14 @@
              Editor-Wrapper herausgelöst und erbt dessen Standardfarbe nicht mehr;
              ohne diese Angabe wären Überschriften/Titel kontaktarm. -->
         <div
-          class="bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col"
+          class="bg-surface-1 text-ink rounded-md shadow-overlay w-full max-w-6xl max-h-[90vh] flex flex-col"
         >
           <!-- Header -->
-          <div
-            class="flex items-center justify-between p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30"
-          >
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-dark dark:text-surface-light">
+          <div class="flex items-center justify-between p-3 sm:p-6 border-b border-line">
+            <h2 class="text-xl sm:text-2xl font-bold text-ink">
               {{ t('templates.library') }}
             </h2>
-            <button
-              class="p-2 hover:bg-muted/20 dark:hover:bg-navy/30 rounded-lg transition-colors"
-              @click="closeModal"
-            >
+            <button class="p-2 hover:bg-surface-2 rounded-md transition-colors" @click="closeModal">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -160,15 +155,15 @@
 
           <!-- Tabs + Save Button -->
           <div
-            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30"
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-6 border-b border-line"
           >
             <div class="flex gap-1 sm:gap-2 flex-wrap">
               <button
                 :class="[
-                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
+                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-md font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'all'
-                    ? 'bg-accent text-accent-ink'
-                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
+                    ? 'bg-accent text-on-accent'
+                    : 'bg-surface-2 hover:bg-surface-2',
                 ]"
                 @click="activeTab = 'all'"
               >
@@ -176,10 +171,10 @@
               </button>
               <button
                 :class="[
-                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
+                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-md font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'predefined'
-                    ? 'bg-accent text-accent-ink'
-                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
+                    ? 'bg-accent text-on-accent'
+                    : 'bg-surface-2 hover:bg-surface-2',
                 ]"
                 @click="activeTab = 'predefined'"
               >
@@ -187,10 +182,10 @@
               </button>
               <button
                 :class="[
-                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base',
+                  'px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-md font-medium transition-colors text-sm sm:text-base',
                   activeTab === 'user'
-                    ? 'bg-accent text-accent-ink'
-                    : 'bg-muted/10 dark:bg-navy/30 hover:bg-muted/20 dark:hover:bg-navy/50',
+                    ? 'bg-accent text-on-accent'
+                    : 'bg-surface-2 hover:bg-surface-2',
                 ]"
                 @click="activeTab = 'user'"
               >
@@ -199,7 +194,7 @@
             </div>
 
             <button
-              class="px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium transition-colors text-sm sm:text-base w-full sm:w-auto"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium transition-colors text-sm sm:text-base w-full sm:w-auto"
               @click="openSaveDialog"
             >
               {{ t('templates.saveAsCurrent') }}
@@ -208,10 +203,7 @@
 
           <!-- Templates Grid -->
           <div class="flex-1 overflow-y-auto p-3 sm:p-6">
-            <div
-              v-if="filteredTemplates.length === 0"
-              class="text-center py-8 sm:py-12 text-muted dark:text-muted-light"
-            >
+            <div v-if="filteredTemplates.length === 0" class="text-center py-8 sm:py-12 text-ink-2">
               {{ t('templates.noTemplates') }}
             </div>
 
@@ -230,8 +222,8 @@
 
         <!-- Save Dialog -->
         <Transition
-          enter-active-class="transition-opacity duration-200"
-          leave-active-class="transition-opacity duration-200"
+          enter-active-class="transition-opacity"
+          leave-active-class="transition-opacity"
           enter-from-class="opacity-0"
           leave-to-class="opacity-0"
         >
@@ -240,10 +232,8 @@
             class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
             @click.self="showSaveDialog = false"
           >
-            <div
-              class="bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
-            >
-              <h3 class="text-lg sm:text-xl font-bold mb-4 text-slate-dark dark:text-surface-light">
+            <div class="bg-surface-1 text-ink rounded-md shadow-overlay w-full max-w-md p-4 sm:p-6">
+              <h3 class="text-lg sm:text-xl font-bold mb-4 text-ink">
                 {{ t('templates.saveAsCurrent') }}
               </h3>
 
@@ -255,7 +245,7 @@
                   <input
                     v-model="templateName"
                     type="text"
-                    class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-lg bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-accent outline-none"
+                    class="w-full px-3 py-2 border border-line-strong rounded-md bg-surface-1 focus-visible:shadow-focus outline-none"
                     :placeholder="t('templates.namePlaceholder')"
                   />
                 </div>
@@ -267,7 +257,7 @@
                   <textarea
                     v-model="templateDescription"
                     rows="3"
-                    class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-lg bg-surface-light dark:bg-surface-dark focus:ring-2 focus:ring-accent outline-none resize-none"
+                    class="w-full px-3 py-2 border border-line-strong rounded-md bg-surface-1 focus-visible:shadow-focus outline-none resize-none"
                     :placeholder="t('templates.descriptionPlaceholder')"
                   ></textarea>
                 </div>
@@ -275,13 +265,13 @@
 
               <div class="flex gap-3 mt-6">
                 <button
-                  class="flex-1 px-4 py-2 border border-muted/50 dark:border-slate rounded-lg hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors"
+                  class="flex-1 px-4 py-2 border border-line-strong rounded-md hover:bg-surface-2 transition-colors"
                   @click="showSaveDialog = false"
                 >
                   {{ t('common.cancel') }}
                 </button>
                 <button
-                  class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium transition-colors"
+                  class="flex-1 px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium transition-colors"
                   @click="saveCurrentAsTemplate"
                 >
                   {{ t('common.save') }}

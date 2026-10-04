@@ -159,15 +159,10 @@
 </script>
 
 <template>
-  <div
-    class="w-full bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-  >
+  <div class="w-full bg-surface-1 rounded-md border border-line p-4">
     <h2 class="text-lg font-semibold mb-4">{{ t('text.title') }}</h2>
 
-    <div
-      v-if="!collage.selectedText"
-      class="text-sm text-muted dark:text-muted-light text-center py-4"
-    >
+    <div v-if="!collage.selectedText" class="text-sm text-ink-2 text-center py-4">
       {{ t('text.noSelection') }}
     </div>
 
@@ -178,7 +173,7 @@
         <textarea
           :value="collage.selectedText.text"
           rows="3"
-          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark resize-none"
+          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 resize-none"
           @input="updateTextContent(($event.target as HTMLTextAreaElement).value)"
         />
       </div>
@@ -188,7 +183,7 @@
         <label class="block text-sm font-medium mb-2">{{ t('text.fontFamily') }}</label>
         <select
           v-model="selectedFontFamily"
-          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
           @change="updateFontFamily(selectedFontFamily)"
         >
           <optgroup label="System Fonts">
@@ -241,14 +236,14 @@
       <div class="flex gap-2">
         <button
           :class="[
-            'flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+            'flex-1 px-3 py-2 rounded-sm text-sm font-medium transition-colors',
             (
               typeof collage.selectedText.fontWeight === 'number'
                 ? collage.selectedText.fontWeight >= 700
                 : collage.selectedText.fontWeight === 'bold'
             )
-              ? 'bg-accent text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/50',
+              ? 'bg-accent text-on-accent'
+              : 'bg-surface-2',
           ]"
           @click="toggleFontWeight"
         >
@@ -257,10 +252,8 @@
 
         <button
           :class="[
-            'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
-            collage.selectedText.textAlign === 'left'
-              ? 'bg-accent text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/50',
+            'flex-1 px-3 py-2 rounded-sm text-sm transition-colors',
+            collage.selectedText.textAlign === 'left' ? 'bg-accent text-on-accent' : 'bg-surface-2',
           ]"
           @click="updateTextAlign('left')"
         >
@@ -269,10 +262,10 @@
 
         <button
           :class="[
-            'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
+            'flex-1 px-3 py-2 rounded-sm text-sm transition-colors',
             collage.selectedText.textAlign === 'center'
-              ? 'bg-accent text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/50',
+              ? 'bg-accent text-on-accent'
+              : 'bg-surface-2',
           ]"
           @click="updateTextAlign('center')"
         >
@@ -281,10 +274,10 @@
 
         <button
           :class="[
-            'flex-1 px-3 py-2 rounded-md text-sm transition-colors',
+            'flex-1 px-3 py-2 rounded-sm text-sm transition-colors',
             collage.selectedText.textAlign === 'right'
-              ? 'bg-accent text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/50',
+              ? 'bg-accent text-on-accent'
+              : 'bg-surface-2',
           ]"
           @click="updateTextAlign('right')"
         >
@@ -299,29 +292,29 @@
           <input
             type="color"
             :value="collage.selectedText.color"
-            class="w-16 h-10 rounded border border-muted/50 dark:border-slate cursor-pointer"
+            class="w-16 h-10 rounded-sm border border-line-strong cursor-pointer"
             @input="updateColor(($event.target as HTMLInputElement).value)"
           />
           <input
             type="text"
             :value="collage.selectedText.color"
             placeholder="#000000"
-            class="flex-1 px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm font-mono"
+            class="flex-1 px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm font-mono"
             @input="updateColor(($event.target as HTMLInputElement).value)"
           />
         </div>
       </div>
 
       <!-- Shadow Controls -->
-      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+      <div class="border-t border-line pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('text.shadow') }}</label>
           <button
             :class="[
-              'px-3 py-1 text-xs rounded-md font-medium transition-colors',
+              'px-3 py-1 text-xs rounded-sm font-medium transition-colors',
               collage.selectedText.shadowEnabled
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700',
+                ? 'bg-accent text-on-accent'
+                : 'bg-surface-2 text-ink hover:bg-surface-3',
             ]"
             @click="toggleShadow"
           >
@@ -377,21 +370,21 @@
 
           <!-- Shadow Color -->
           <div>
-            <label class="block text-xs text-muted dark:text-muted-light mb-1">
+            <label class="block text-xs text-ink-2 mb-1">
               {{ t('text.shadowColor') }}
             </label>
             <div class="flex gap-2">
               <input
                 type="color"
                 :value="collage.selectedText.shadowColor"
-                class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
+                class="w-12 h-8 rounded-sm border border-line-strong cursor-pointer"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
               />
               <input
                 type="text"
                 :value="collage.selectedText.shadowColor"
                 placeholder="#000000"
-                class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
+                class="flex-1 px-2 py-1 border border-line-strong rounded-sm bg-surface-1 text-xs font-mono"
                 @input="updateShadowColor(($event.target as HTMLInputElement).value)"
               />
             </div>
@@ -400,15 +393,15 @@
       </div>
 
       <!-- Stroke (Textumrandung) Controls -->
-      <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+      <div class="border-t border-line pt-4">
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-medium">{{ t('text.stroke') }}</label>
           <button
             :class="[
-              'px-3 py-1 text-xs rounded-md font-medium transition-colors',
+              'px-3 py-1 text-xs rounded-sm font-medium transition-colors',
               collage.selectedText.strokeEnabled
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700',
+                ? 'bg-accent text-on-accent'
+                : 'bg-surface-2 text-ink hover:bg-surface-3',
             ]"
             @click="toggleStroke"
           >
@@ -434,21 +427,21 @@
 
           <!-- Stroke Color -->
           <div>
-            <label class="block text-xs text-muted dark:text-muted-light mb-1">
+            <label class="block text-xs text-ink-2 mb-1">
               {{ t('text.strokeColor') }}
             </label>
             <div class="flex gap-2">
               <input
                 type="color"
                 :value="collage.selectedText.strokeColor"
-                class="w-12 h-8 rounded border border-muted/50 dark:border-slate cursor-pointer"
+                class="w-12 h-8 rounded-sm border border-line-strong cursor-pointer"
                 @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
               />
               <input
                 type="text"
                 :value="collage.selectedText.strokeColor"
                 placeholder="#ffffff"
-                class="flex-1 px-2 py-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-xs font-mono"
+                class="flex-1 px-2 py-1 border border-line-strong rounded-sm bg-surface-1 text-xs font-mono"
                 @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
               />
             </div>
@@ -458,7 +451,7 @@
 
       <!-- Delete Button -->
       <button
-        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light font-medium rounded-lg transition-colors"
+        class="w-full px-4 py-2 bg-surface-2 hover:bg-surface-3 text-danger font-medium rounded-md transition-colors"
         @click="deleteText"
       >
         {{ t('text.delete') }}

@@ -114,10 +114,10 @@
     <div
       :aria-label="t('upload.dragDrop')"
       :class="[
-        'border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-150',
+        'border border-dashed rounded-md p-6 text-center transition-colors',
         isDragging
-          ? 'border-accent bg-accent/10 dark:bg-accent/5'
-          : 'border-muted dark:border-slate hover:border-accent hover:bg-accent/5',
+          ? 'border-accent bg-accent-soft'
+          : 'border-line-strong hover:border-accent hover:bg-surface-2',
       ]"
       @drop.prevent="handleDrop"
       @dragover.prevent="isDragging = true"
@@ -127,9 +127,7 @@
         <div
           :class="[
             'p-3 rounded-full transition-colors',
-            isDragging
-              ? 'bg-accent text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/30 text-muted dark:text-muted-light',
+            isDragging ? 'bg-accent text-on-accent' : 'bg-surface-2 text-ink-2',
           ]"
         >
           <!-- Loading spinner -->
@@ -150,13 +148,13 @@
             />
           </svg>
         </div>
-        <p class="text-sm text-muted dark:text-muted-light">
+        <p class="text-sm text-ink-2">
           {{ isProcessing ? t('upload.processing') : t('upload.dragDrop') }}
         </p>
-        <p class="text-xs text-muted dark:text-muted-light">
+        <p class="text-xs text-ink-2">
           {{ t('upload.formats') }}
         </p>
-        <p class="text-xs text-muted dark:text-muted-light opacity-70">
+        <p class="text-xs text-ink-2 opacity-70">
           {{ t('upload.pasteHint') }}
         </p>
       </div>
@@ -167,7 +165,7 @@
       <button
         type="button"
         :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-accent text-accent-ink hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-accent text-on-accent hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         @click="fileInput!.click()"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -180,7 +178,7 @@
       <button
         type="button"
         :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-muted dark:border-slate text-slate-dark dark:text-muted-light hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium border border-line-strong text-ink hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         @click="folderInput!.click()"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -204,7 +202,7 @@
         type="checkbox"
         class="mt-0.5 w-4 h-4 accent-accent shrink-0 cursor-pointer"
       />
-      <span class="text-xs text-muted dark:text-muted-light">
+      <span class="text-xs text-ink-2">
         {{ t('upload.keepOriginal') }}
         <span class="block text-[10px] opacity-70">{{ t('upload.keepOriginalHint') }}</span>
       </span>

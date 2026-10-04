@@ -211,53 +211,42 @@
 </script>
 
 <template>
-  <div class="min-h-screen bg-page-gradient">
-    <!-- Animated Background -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent/10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-1/3 -left-40 w-96 h-96 bg-warm/10 rounded-full blur-3xl"></div>
-    </div>
-
+  <div class="min-h-screen bg-surface-0">
     <div class="relative z-10">
       <!-- Navigation -->
-      <header
-        class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md container mx-auto px-4 pt-6"
-      >
-        <nav class="flex flex-wrap items-center justify-between gap-y-2">
+      <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
+        <nav
+          class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-y-2"
+        >
           <RouterLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span class="text-xl font-bold text-slate-dark dark:text-surface-light">{{
-              t('app.title')
-            }}</span>
+            <span class="text-xl font-bold text-ink">{{ t('app.title') }}</span>
           </RouterLink>
 
           <div class="flex items-center gap-2 sm:gap-6 ml-auto">
-            <RouterLink
-              to="/blog"
-              class="text-sm sm:text-base text-slate-dark dark:text-accent-light font-semibold"
-            >
+            <RouterLink to="/blog" class="text-sm sm:text-base text-ink font-semibold">
               {{ t('nav.guide') }}
             </RouterLink>
             <RouterLink
               to="/artikel"
-              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
               to="/faq"
-              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.faq') }}
             </RouterLink>
             <RouterLink
               to="/"
-              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.home') }}
             </RouterLink>
             <RouterLink
               to="/editor"
-              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-light text-accent-ink font-medium rounded-lg transition-colors"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors"
             >
               {{ t('nav.editor') }}
             </RouterLink>
@@ -268,21 +257,19 @@
       <!-- Hero -->
       <section class="container mx-auto px-4 pt-12 pb-8 sm:pt-20 sm:pb-12 text-center">
         <span
-          class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase rounded-full bg-accent/10 dark:bg-accent/20 text-slate-dark dark:text-accent"
+          class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase rounded-full bg-accent-soft text-ink"
         >
           {{ hero.tag }}
         </span>
-        <h1
-          class="text-3xl sm:text-5xl font-bold text-slate-dark dark:text-surface-light mb-4 leading-tight"
-        >
+        <h1 class="text-3xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
           {{ hero.title }}
         </h1>
-        <p class="text-muted dark:text-muted-light max-w-2xl mx-auto mb-8 text-base sm:text-lg">
+        <p class="text-ink-2 max-w-2xl mx-auto mb-8 text-base sm:text-lg">
           {{ hero.subtitle }}
         </p>
         <RouterLink
           to="/editor"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-accent-ink font-semibold rounded-xl transition-colors shadow-lg"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-on-accent font-semibold rounded-lg transition-colors"
         >
           {{ hero.cta }} →
         </RouterLink>
@@ -290,19 +277,15 @@
 
       <!-- Table of Contents -->
       <section class="container mx-auto px-4 pb-8 max-w-3xl">
-        <div
-          class="bg-white/60 dark:bg-navy/40 border border-muted/20 dark:border-white/10 rounded-2xl p-6"
-        >
-          <h2
-            class="text-sm font-semibold uppercase tracking-widest text-muted dark:text-muted-light mb-4"
-          >
+        <div class="bg-surface-1 border border-line rounded-lg p-6">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-ink-2 mb-4">
             {{ hero.toc }}
           </h2>
           <ol class="space-y-1">
             <li v-for="section in sections" :key="section.id">
               <a
                 :href="`#${section.id}`"
-                class="text-slate-dark dark:text-surface-light hover:text-accent dark:hover:text-accent transition-colors text-sm"
+                class="text-ink hover:text-accent transition-colors text-sm"
                 v-html="section.title"
               ></a>
             </li>
@@ -319,14 +302,14 @@
           class="scroll-mt-24"
         >
           <h2
-            class="text-xl sm:text-2xl font-bold text-slate-dark dark:text-surface-light mb-4 pb-3 border-b border-muted/20 dark:border-white/10"
+            class="text-xl sm:text-2xl font-bold text-ink mb-4 pb-3 border-b border-line"
             v-html="section.title"
           ></h2>
           <ul class="space-y-3">
             <li
               v-for="(para, i) in section.content"
               :key="i"
-              class="flex gap-3 text-slate-dark dark:text-muted-light leading-relaxed"
+              class="flex gap-3 text-ink leading-relaxed"
             >
               <span class="mt-1.5 w-1.5 h-1.5 flex-shrink-0 rounded-full bg-accent"></span>
               <span v-html="para"></span>
@@ -335,13 +318,11 @@
         </article>
 
         <!-- CTA -->
-        <div
-          class="rounded-2xl bg-gradient-to-br from-accent/20 to-accent-dark/10 border border-accent/20 p-8 text-center"
-        >
-          <h2 class="text-2xl font-bold text-slate-dark dark:text-surface-light mb-3">
+        <div class="rounded-lg bg-surface-1 border border-line p-8 text-center">
+          <h2 class="text-2xl font-bold text-ink mb-3">
             {{ isDE ? 'Jetzt loslegen' : 'Start now' }}
           </h2>
-          <p class="text-muted dark:text-muted-light mb-6">
+          <p class="text-ink-2 mb-6">
             {{
               isDE
                 ? 'Kostenlos, ohne Anmeldung – direkt im Browser.'
@@ -350,7 +331,7 @@
           </p>
           <RouterLink
             to="/editor"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-accent-ink font-semibold rounded-xl transition-colors shadow-lg"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-on-accent font-semibold rounded-lg transition-colors"
           >
             {{ isDE ? 'Collage erstellen →' : 'Create Collage →' }}
           </RouterLink>

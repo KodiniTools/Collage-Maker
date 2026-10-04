@@ -11,17 +11,14 @@
 
 <template>
   <!-- Background Image -->
-  <div
-    v-if="collage.settings.backgroundImage.url"
-    class="border-t border-muted/30 dark:border-slate/30 pt-4"
-  >
+  <div v-if="collage.settings.backgroundImage.url" class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-2">
       <label class="block text-sm font-medium">
         {{ t('canvas.backgroundImage') }}
       </label>
       <span
         v-if="collage.isBackgroundSelected"
-        class="text-xs px-2 py-0.5 bg-primary/20 dark:bg-accent/20 text-primary dark:text-accent rounded-full"
+        class="text-xs px-2 py-0.5 bg-accent-soft text-link rounded-full"
       >
         {{ t('canvas.selected') }}
       </span>
@@ -30,16 +27,16 @@
     <!-- Preview -->
     <div
       class="relative mb-3 cursor-pointer"
-      :class="{ 'ring-2 ring-primary ring-offset-2 rounded-lg': collage.isBackgroundSelected }"
+      :class="{ 'ring-2 ring-accent ring-offset-2 rounded-md': collage.isBackgroundSelected }"
       @click="collage.selectBackground(true)"
     >
       <img
         :src="collage.settings.backgroundImage.url"
         :alt="t('canvas.backgroundImage')"
-        class="w-full h-24 object-cover rounded-lg border border-muted/30 dark:border-slate/30"
+        class="w-full h-24 object-cover rounded-md border border-line"
       />
       <button
-        class="absolute top-1 right-1 p-1 bg-warm hover:bg-warm-dark text-surface-light rounded-full transition-colors"
+        class="absolute top-1 right-1 p-1 bg-surface-2 hover:bg-surface-3 text-danger rounded-full transition-colors"
         :title="t('canvas.removeBackgroundImage')"
         @click.stop="api.removeBackground"
       >
@@ -56,12 +53,12 @@
 
     <!-- Fit Mode -->
     <div class="mb-3">
-      <label class="block text-xs font-medium mb-1.5 text-muted dark:text-muted-light">
+      <label class="block text-xs font-medium mb-1.5 text-ink-2">
         {{ t('canvas.backgroundFit') }}
       </label>
       <select
         :value="collage.settings.backgroundImage.fit"
-        class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+        class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm"
         @change="
           api.updateBackgroundFit(($event.target as HTMLSelectElement).value as BackgroundImageFit)
         "
@@ -74,24 +71,21 @@
     </div>
 
     <!-- Editing Controls (show when background is selected) -->
-    <div
-      v-if="collage.isBackgroundSelected"
-      class="space-y-3 bg-muted/10 dark:bg-navy/20 rounded-lg p-3"
-    >
-      <p class="text-xs font-medium text-primary dark:text-accent mb-2">
+    <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-surface-2 rounded-md p-3">
+      <p class="text-xs font-medium text-link mb-2">
         {{ t('canvas.editBackground') }}
       </p>
 
       <!-- Opacity -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted dark:text-muted-light">
+          <label class="text-xs font-medium text-ink-2">
             {{ t('imageControls.opacity') }}:
             {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
           </label>
           <button
             v-if="collage.settings.backgroundImage.opacity !== 1"
-            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+            class="text-xs text-ink-2 hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundOpacity(1)"
           >
@@ -112,12 +106,12 @@
       <!-- Brightness -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted dark:text-muted-light">
+          <label class="text-xs font-medium text-ink-2">
             {{ t('imageControls.brightness') }}: {{ collage.settings.backgroundImage.brightness }}%
           </label>
           <button
             v-if="collage.settings.backgroundImage.brightness !== 100"
-            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+            class="text-xs text-ink-2 hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundBrightness(100)"
           >
@@ -138,12 +132,12 @@
       <!-- Contrast -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted dark:text-muted-light">
+          <label class="text-xs font-medium text-ink-2">
             {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
           </label>
           <button
             v-if="collage.settings.backgroundImage.contrast !== 100"
-            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+            class="text-xs text-ink-2 hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundContrast(100)"
           >
@@ -164,12 +158,12 @@
       <!-- Saturation -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted dark:text-muted-light">
+          <label class="text-xs font-medium text-ink-2">
             {{ t('imageControls.saturation') }}: {{ collage.settings.backgroundImage.saturation }}%
           </label>
           <button
             v-if="collage.settings.backgroundImage.saturation !== 100"
-            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+            class="text-xs text-ink-2 hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundSaturation(100)"
           >
@@ -190,12 +184,12 @@
       <!-- Blur -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label class="text-xs font-medium text-muted dark:text-muted-light">
+          <label class="text-xs font-medium text-ink-2">
             {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
           </label>
           <button
             v-if="collage.settings.backgroundImage.blur !== 0"
-            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+            class="text-xs text-ink-2 hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundBlur(0)"
           >
@@ -214,7 +208,7 @@
       </div>
     </div>
 
-    <p class="text-xs text-muted dark:text-muted-light mt-2">
+    <p class="text-xs text-ink-2 mt-2">
       {{ t('canvas.backgroundFitHint') }}
     </p>
   </div>

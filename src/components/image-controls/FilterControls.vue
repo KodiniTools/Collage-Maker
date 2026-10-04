@@ -10,7 +10,7 @@
 </script>
 
 <template>
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <h4 class="text-sm font-semibold mb-3">{{ t('imageControls.imageFilters') }}</h4>
 
     <div class="space-y-3">

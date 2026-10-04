@@ -33,50 +33,42 @@
 </script>
 
 <template>
-  <div class="min-h-screen bg-page-gradient">
-    <!-- Animated Background -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent/10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-1/3 -left-40 w-96 h-96 bg-warm/10 rounded-full blur-3xl"></div>
-    </div>
-
+  <div class="min-h-screen bg-surface-0">
     <!-- Content -->
     <div class="relative z-10">
       <!-- Navigation -->
-      <header
-        class="sticky top-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-md container mx-auto px-4 pt-6"
-      >
-        <nav class="flex flex-wrap items-center justify-between gap-y-2">
+      <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
+        <nav
+          class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-y-2"
+        >
           <!-- Logo -->
           <RouterLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span class="text-xl font-bold text-slate-dark dark:text-surface-light">{{
-              t('app.title')
-            }}</span>
+            <span class="text-xl font-bold text-ink">{{ t('app.title') }}</span>
           </RouterLink>
 
           <!-- Nav Links + Controls -->
           <div class="flex items-center gap-2 sm:gap-6 ml-auto">
             <RouterLink
               to="/blog"
-              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.guide') }}
             </RouterLink>
             <RouterLink
               to="/artikel"
-              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
               to="/"
-              class="text-sm sm:text-base text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light transition-colors font-medium"
+              class="text-sm sm:text-base text-ink-2 hover:text-ink transition-colors font-medium"
             >
               {{ t('nav.home') }}
             </RouterLink>
             <RouterLink
               to="/editor"
-              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-light text-accent-ink font-medium rounded-lg transition-colors"
+              class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-accent hover:bg-accent-hover text-on-accent font-medium rounded-md transition-colors"
             >
               {{ t('nav.editor') }}
             </RouterLink>
@@ -86,12 +78,10 @@
 
       <!-- Hero Section -->
       <section class="container mx-auto px-4 pt-8 sm:pt-16 pb-8 sm:pb-12 text-center">
-        <h1
-          class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-dark dark:text-surface-light mb-4"
-        >
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ink mb-4">
           {{ t('faqPage.title') }}
         </h1>
-        <p class="text-base sm:text-lg text-muted dark:text-muted-light max-w-2xl mx-auto">
+        <p class="text-base sm:text-lg text-ink-2 max-w-2xl mx-auto">
           {{ t('faqPage.subtitle') }}
         </p>
       </section>
@@ -101,7 +91,7 @@
         <div class="max-w-4xl mx-auto">
           <!-- Category Sections -->
           <div v-for="(items, category) in categories" :key="category" class="mb-12">
-            <h2 class="text-2xl font-bold text-slate-dark dark:text-surface-light mb-6">
+            <h2 class="text-2xl font-bold text-ink mb-6">
               {{ t(`faqPage.categories.${category}`) }}
             </h2>
 
@@ -109,18 +99,17 @@
               <div
                 v-for="item in items"
                 :key="item.index"
-                class="border border-muted/30 dark:border-slate/50 rounded-xl overflow-hidden bg-white dark:bg-navy backdrop-blur-sm"
+                class="border border-line rounded-lg overflow-hidden bg-surface-1"
               >
                 <button
-                  class="w-full px-4 py-3 sm:px-6 sm:py-5 text-left hover:bg-muted/10 dark:hover:bg-navy/30 transition-colors flex items-center justify-between gap-3 sm:gap-4"
+                  class="w-full px-4 py-3 sm:px-6 sm:py-5 text-left hover:bg-surface-2 transition-colors flex items-center justify-between gap-3 sm:gap-4"
                   @click="toggleQuestion(item.index)"
                 >
-                  <span
-                    class="font-semibold text-base sm:text-lg text-slate-dark dark:text-surface-light"
-                    >{{ item.question }}</span
-                  >
+                  <span class="font-semibold text-base sm:text-lg text-ink">{{
+                    item.question
+                  }}</span>
                   <svg
-                    class="w-5 h-5 flex-shrink-0 transition-transform text-slate dark:text-muted-light"
+                    class="w-5 h-5 flex-shrink-0 transition-transform text-ink"
                     :class="{ 'rotate-180': openIndex === item.index }"
                     fill="none"
                     stroke="currentColor"
@@ -136,8 +125,8 @@
                 </button>
 
                 <transition
-                  enter-active-class="transition-[max-height,opacity] duration-200 ease-out"
-                  leave-active-class="transition-[max-height,opacity] duration-200 ease-in"
+                  enter-active-class="transition-[max-height,opacity]"
+                  leave-active-class="transition-[max-height,opacity]"
                   enter-from-class="max-h-0 opacity-0"
                   enter-to-class="max-h-96 opacity-100"
                   leave-from-class="max-h-96 opacity-100"
@@ -145,7 +134,7 @@
                 >
                   <div v-show="openIndex === item.index" class="overflow-hidden">
                     <div
-                      class="px-4 py-3 sm:px-6 sm:py-5 bg-muted/5 dark:bg-navy/20 text-slate-dark dark:text-gray-100 leading-relaxed border-t border-muted/20 dark:border-slate/30 text-sm sm:text-base"
+                      class="px-4 py-3 sm:px-6 sm:py-5 text-ink leading-relaxed border-t border-line text-sm sm:text-base"
                     >
                       {{ item.answer }}
                     </div>
@@ -160,17 +149,17 @@
       <!-- CTA Section -->
       <section class="container mx-auto px-4 py-10 sm:py-16">
         <div
-          class="max-w-2xl mx-auto bg-gradient-to-br from-slate-dark to-slate dark:from-slate dark:to-slate-light/10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl text-center"
+          class="max-w-2xl mx-auto bg-surface-1 border border-line rounded-lg p-5 sm:p-8 md:p-12 text-center"
         >
-          <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-cream mb-4">
+          <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-ink mb-4">
             {{ t('faqPage.cta.title') }}
           </h3>
-          <p class="text-cream/70 mb-6 sm:mb-8">
+          <p class="text-ink-2 mb-6 sm:mb-8">
             {{ t('faqPage.cta.subtitle') }}
           </p>
           <RouterLink
             to="/editor"
-            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-light text-accent-ink font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            class="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-accent hover:bg-accent-hover text-on-accent font-semibold rounded-md transition-colors"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

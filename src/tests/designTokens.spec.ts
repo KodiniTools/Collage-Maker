@@ -1,11 +1,12 @@
 /**
  * Regressionsschutz für die Design-Tokens der Oberfläche.
  *
- * Die Palette ist in tailwind.config.js definiert (primary, accent, warm, muted,
- * surface, cream, navy). Diese Tests stellen sicher, dass Komponenten keine
- * Tailwind-Standardgrautöne (slate-50 … slate-900), kein reines Weiß als
- * Dark-Mode-Textfarbe und keine undefinierten Farbklassen (text-text) nutzen und
- * dass die UI-Schrift Supreme in allen verwendeten Gewichten geladen wird.
+ * Die Oberfläche läuft auf den gemeinsamen KodiniTools-Tokens (--ds-*, siehe
+ * src/design-system/README.md). Tailwind kennt nur noch semantische Farbklassen
+ * (surface, line, ink, accent, on-accent, link, Status); die Variablen wechseln
+ * mit dem Theme. Diese Tests verhindern die Rückkehr der alten Palette, von
+ * dark:-Varianten, Gradients, Blur, Karten-Schatten und Tailwind-Standardgrau
+ * und stellen sicher, dass Supreme in allen genutzten Gewichten geladen wird.
  */
 import { describe, expect, it } from 'vitest'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
@@ -40,18 +41,38 @@ function findInVueFiles(pattern: RegExp): string[] {
 }
 
 describe('Design-Tokens in Vue-Komponenten', () => {
-  it('nutzen keine Tailwind-Standardgrautöne (slate-50 … slate-900)', () => {
-    // Die eigene Palette definiert slate / slate-light / slate-dark; numerische
-    // Stufen sind Tailwind-Defaults außerhalb des Markenfarbraums.
-    expect(findInVueFiles(/\bslate-\d{3}\b/)).toEqual([])
+  it('nutzen keine Klassen der alten Palette (primary, slate, cream, navy, warm, muted, accent-dark …)', () => {
+    const legacy =
+      /\b(?:bg|text|border|ring|from|to|via|fill|stroke|accent|divide|outline|placeholder)-(?:primary|slate|cream|navy|warm|muted|surface-(?:light|dark|darker)|accent-(?:dark|light|ink))(?:\b|\/)/
+    expect(findInVueFiles(legacy)).toEqual([])
+  })
+
+  it('nutzen keine Tailwind-Standardfarben (slate-500, green-600, white/20 …)', () => {
+    const defaults =
+      /\b(?:bg|text|border|ring|from|to|via)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b|\b(?:bg|text|border)-white\/\d+/
+    expect(findInVueFiles(defaults)).toEqual([])
+  })
+
+  it('nutzen keine dark:-Varianten mehr (die Tokens wechseln mit dem Theme)', () => {
+    expect(findInVueFiles(/\bdark:/)).toEqual([])
+  })
+
+  it('nutzen keine Gradients, Blur, Blob-Animation oder Karten-Schatten', () => {
+    const effects =
+      /\b(?:bg-gradient-to-\w+|backdrop-blur(?:-\w+)?|blur-3xl|animate-blob|(?:hover:)?shadow-(?:sm|md|lg|xl|2xl)|hover:scale-\d+|hover:-translate-y-\d+)\b/
+    expect(findInVueFiles(effects)).toEqual([])
+  })
+
+  it('nutzen nur die drei Radien und die Token-Dauern', () => {
+    expect(findInVueFiles(/\brounded-(?:xl|2xl|3xl)\b|\bduration-\d+\b/)).toEqual([])
+  })
+
+  it('setzen Fokus über den Fokus-Ring der Tokens statt focus:ring-*', () => {
+    expect(findInVueFiles(/\bfocus:ring-/)).toEqual([])
   })
 
   it('nutzen keine undefinierten Farbklassen (text-text, text-text-dark)', () => {
     expect(findInVueFiles(/\btext-text(?:-dark)?\b/)).toEqual([])
-  })
-
-  it('nutzen im Dark-Mode surface-light statt reinem Weiß als Textfarbe', () => {
-    expect(findInVueFiles(/\bdark:(?:hover:)?text-white\b/)).toEqual([])
   })
 })
 

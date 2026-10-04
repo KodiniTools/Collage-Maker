@@ -26,13 +26,13 @@
 
 <template>
   <div>
-    <label class="block text-xs text-muted dark:text-muted-light mb-1">{{ label }}</label>
+    <label class="block text-xs text-ink-2 mb-1">{{ label }}</label>
     <div class="flex gap-2">
       <input
         type="color"
         :value="value"
         :class="[
-          'rounded border border-muted/50 dark:border-slate cursor-pointer',
+          'rounded-sm border border-line-strong cursor-pointer',
           variant === 'sm' ? 'w-12 h-8' : 'w-12 h-10',
         ]"
         @input="onInput"
@@ -41,7 +41,7 @@
         type="text"
         :value="value"
         :class="[
-          'flex-1 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark',
+          'flex-1 border border-line-strong rounded-sm bg-surface-1',
           variant === 'sm' ? 'px-2 py-1 text-xs font-mono' : 'px-3 py-2 text-sm',
         ]"
         @input="onInput"

@@ -203,16 +203,13 @@
   <div class="w-full">
     <h2 class="text-lg font-semibold mb-3">{{ t('images.title') }} ({{ galleryImages.length }})</h2>
 
-    <div
-      v-if="galleryImages.length === 0"
-      class="text-center py-8 text-muted dark:text-muted-light"
-    >
+    <div v-if="galleryImages.length === 0" class="text-center py-8 text-ink-2">
       {{ t('images.empty') }}
     </div>
 
     <template v-else>
       <!-- Hint -->
-      <p class="text-[10px] text-muted/70 dark:text-muted-light/70 mb-2">
+      <p class="text-[10px] text-ink-3 mb-2">
         {{ t('gallery.hint') }}
       </p>
 
@@ -226,11 +223,11 @@
           role="button"
           :aria-label="`Select image ${image.file.name}`"
           :class="[
-            'flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-150',
-            'focus:outline-none focus:ring-2 focus:ring-accent',
+            'flex items-center gap-3 p-2 rounded-md cursor-pointer transition-all',
+            'focus-visible:outline-none focus-visible:shadow-focus',
             collage.isGalleryImageSelected(image.id)
-              ? 'bg-primary/15 dark:bg-primary/25 ring-2 ring-primary shadow-sm'
-              : 'hover:bg-muted/10 dark:hover:bg-navy/30',
+              ? 'bg-accent-soft ring-2 ring-accent'
+              : 'hover:bg-surface-2',
           ]"
           :title="t('gallery.doubleClickHint')"
           style="touch-action: pan-y"
@@ -246,16 +243,16 @@
           <!-- Selection Checkbox - Improved -->
           <div
             :class="[
-              'w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-150 cursor-pointer',
+              'w-6 h-6 rounded-sm border flex items-center justify-center shrink-0 transition-all cursor-pointer',
               collage.isGalleryImageSelected(image.id)
-                ? 'bg-primary border-primary shadow-md scale-110'
-                : 'border-muted/50 hover:border-primary hover:bg-primary/10',
+                ? 'bg-accent border-accent'
+                : 'border-line-strong hover:border-accent hover:bg-accent-soft',
             ]"
             @click.stop="collage.toggleGallerySelection(image.id)"
           >
             <svg
               v-if="collage.isGalleryImageSelected(image.id)"
-              class="w-4 h-4 text-surface-light"
+              class="w-4 h-4 text-ink"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -274,14 +271,14 @@
             <img
               :src="image.url"
               :alt="image.file.name"
-              class="w-12 h-12 object-cover rounded"
-              :class="{ 'ring-2 ring-primary': collage.isGalleryImageSelected(image.id) }"
+              class="w-12 h-12 object-cover rounded-sm"
+              :class="{ 'ring-2 ring-accent': collage.isGalleryImageSelected(image.id) }"
               @load="onImageLoad(image.id, $event)"
             />
             <!-- Selection number badge -->
             <span
               v-if="collage.isGalleryImageSelected(image.id)"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-surface-light text-[10px] font-bold rounded-full flex items-center justify-center"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-accent text-on-accent text-[10px] font-bold rounded-full flex items-center justify-center"
             >
               {{ collage.selectedGalleryIds.indexOf(image.id) + 1 }}
             </span>
@@ -290,7 +287,7 @@
           <!-- File Info -->
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium truncate">{{ image.file.name }}</p>
-            <p class="text-xs text-muted dark:text-muted-light">
+            <p class="text-xs text-ink-2">
               {{ formatFileSize(image.file.size)
               }}<template v-if="dimensionsText(image.id)">
                 • {{ dimensionsText(image.id) }}</template
@@ -300,16 +297,11 @@
 
           <!-- Remove Button -->
           <button
-            class="p-1 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm-dark"
+            class="p-1 hover:bg-surface-2 rounded-sm transition-colors focus-visible:outline-none focus-visible:shadow-focus"
             :aria-label="t('images.remove')"
             @click.stop="requestDelete(image)"
           >
-            <svg
-              class="w-5 h-5 text-warm-dark dark:text-warm-light"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -322,17 +314,14 @@
       </div>
 
       <!-- Selection Action Bar (below list to prevent jumping) -->
-      <div
-        v-if="selectedCount > 0"
-        class="mt-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/30"
-      >
-        <p class="text-sm font-medium text-primary dark:text-primary-light mb-2">
+      <div v-if="selectedCount > 0" class="mt-3 p-3 bg-accent-soft rounded-md border border-line">
+        <p class="text-sm font-medium text-link mb-2">
           {{ t('gallery.selectedInfo', { count: selectedCount }) }}
         </p>
         <div class="flex flex-col gap-2">
           <!-- Add to Canvas Button - Prominent -->
           <button
-            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-primary hover:bg-primary-dark text-surface-light transition-colors flex items-center justify-center gap-2"
+            class="w-full px-4 py-2 text-sm font-medium rounded-md bg-accent hover:bg-accent-hover text-on-accent transition-colors flex items-center justify-center gap-2"
             @click="collage.addSelectedGalleryToCanvas()"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,7 +338,7 @@
           <!-- Set as Background Button (only when 1 image selected) -->
           <button
             v-if="selectedCount === 1"
-            class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-accent-ink transition-colors flex items-center justify-center gap-2"
+            class="w-full px-4 py-2 text-sm font-medium rounded-md bg-accent hover:bg-accent-hover text-on-accent transition-colors flex items-center justify-center gap-2"
             @click="setSelectedAsBackground"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,7 +355,7 @@
           <div class="flex gap-2">
             <!-- Delete Selected Button -->
             <button
-              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors flex items-center justify-center gap-1"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-md bg-surface-2 hover:bg-surface-3 text-danger transition-colors flex items-center justify-center gap-1"
               @click="requestDeleteSelected"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -382,14 +371,14 @@
 
             <!-- Deselect Button -->
             <button
-              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-navy/20 transition-colors"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded-md border border-line hover:bg-surface-2 transition-colors"
               @click="collage.deselectAllGalleryImages()"
             >
               {{ t('gallery.deselectAll') }}
             </button>
           </div>
         </div>
-        <p class="text-[10px] text-muted dark:text-muted-light mt-2">
+        <p class="text-[10px] text-ink-2 mt-2">
           {{ t('gallery.layoutHint') }}
         </p>
       </div>
@@ -397,7 +386,7 @@
       <!-- Select All Button (when nothing selected) -->
       <div v-else class="mt-3 flex flex-wrap gap-2">
         <button
-          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-navy/20 transition-colors"
+          class="flex-1 min-w-0 px-3 py-1.5 text-xs font-medium rounded-md border border-line hover:bg-surface-2 transition-colors"
           @click="toggleSelectAll"
         >
           {{ t('gallery.selectAll') }}
@@ -409,23 +398,19 @@
     <Teleport to="#modal-portal">
       <div
         v-if="showPreview && previewImage"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
         @click.self="closePreview"
       >
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-muted/10 dark:border-slate/30"
+          class="bg-surface-1 rounded-lg shadow-overlay max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-line"
         >
           <!-- Header -->
-          <div
-            class="flex items-center justify-between p-3 sm:p-4 border-b border-muted/20 dark:border-white/10"
-          >
-            <h3
-              class="text-base sm:text-lg font-semibold truncate pr-4 text-slate-dark dark:text-surface-light"
-            >
+          <div class="flex items-center justify-between p-3 sm:p-4 border-b border-line">
+            <h3 class="text-base sm:text-lg font-semibold truncate pr-4 text-ink">
               {{ t('gallery.preview') }}
             </h3>
             <button
-              class="p-1 text-muted dark:text-muted-light hover:bg-muted/20 dark:hover:bg-navy/20 rounded-lg transition-colors"
+              class="p-1 text-ink-2 hover:bg-surface-2 rounded-md transition-colors"
               @click="closePreview"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,11 +425,11 @@
           </div>
 
           <!-- Image -->
-          <div class="p-2 sm:p-4 flex justify-center bg-muted/10 dark:bg-navy/30">
+          <div class="p-2 sm:p-4 flex justify-center bg-surface-2">
             <img
               :src="previewImage.url"
               :alt="previewImage.file.name"
-              class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-lg"
+              class="max-w-full max-h-[50vh] object-contain rounded-md"
               @load="onImageLoad(previewImage.id, $event)"
             />
           </div>
@@ -453,10 +438,10 @@
           <div class="p-3 sm:p-4 space-y-3">
             <!-- Filename -->
             <div>
-              <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
+              <p class="text-xs text-ink-2 uppercase tracking-wide mb-1">
                 {{ t('gallery.previewTitle') }}
               </p>
-              <p class="font-medium truncate text-slate-dark dark:text-surface-light">
+              <p class="font-medium truncate text-ink">
                 {{ previewImage.file.name }}
               </p>
             </div>
@@ -464,31 +449,31 @@
             <!-- Details Grid -->
             <div class="grid grid-cols-3 gap-2 sm:gap-4">
               <!-- Format -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-navy/30 rounded-lg">
-                <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-surface-2 rounded-md">
+                <p class="text-xs text-ink-2 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewFormat') }}
                 </p>
-                <p class="font-semibold text-primary dark:text-accent">
+                <p class="font-semibold text-link">
                   {{ getFileExtension(previewImage.file.name) }}
                 </p>
               </div>
 
               <!-- Size -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-navy/30 rounded-lg">
-                <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-surface-2 rounded-md">
+                <p class="text-xs text-ink-2 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewSize') }}
                 </p>
-                <p class="font-semibold text-slate-dark dark:text-surface-light">
+                <p class="font-semibold text-ink">
                   {{ formatFileSize(previewImage.file.size) }}
                 </p>
               </div>
 
               <!-- Dimensions -->
-              <div class="text-center p-2 bg-muted/10 dark:bg-navy/30 rounded-lg">
-                <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-surface-2 rounded-md">
+                <p class="text-xs text-ink-2 uppercase tracking-wide mb-1">
                   {{ t('gallery.previewDimensions') }}
                 </p>
-                <p class="font-semibold text-slate-dark dark:text-surface-light">
+                <p class="font-semibold text-ink">
                   {{ dimensionsText(previewImage.id) || '…' }}
                 </p>
               </div>
@@ -499,10 +484,10 @@
               <div class="flex gap-2">
                 <button
                   :class="[
-                    'flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
+                    'flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors',
                     collage.isGalleryImageSelected(previewImage.id)
-                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-navy/50 dark:hover:bg-navy/70 text-slate-dark dark:text-muted-light'
-                      : 'bg-primary hover:bg-primary-dark text-surface-light',
+                      ? 'bg-surface-2 hover:bg-surface-3 text-ink'
+                      : 'bg-accent hover:bg-accent-hover text-on-accent',
                   ]"
                   @click="toggleSelectionAndClose"
                 >
@@ -513,14 +498,14 @@
                   }}
                 </button>
                 <button
-                  class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent-dark text-accent-ink transition-colors"
+                  class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-accent hover:bg-accent-hover text-on-accent transition-colors"
                   @click="addToCanvasAndClose"
                 >
                   {{ t('gallery.addThisToCanvas') }}
                 </button>
               </div>
               <button
-                class="w-full px-4 py-2 text-sm font-medium rounded-lg border-2 border-accent text-slate-dark dark:text-accent hover:bg-accent hover:text-accent-ink dark:hover:text-accent-ink transition-colors flex items-center justify-center gap-2"
+                class="w-full px-4 py-2 text-sm font-medium rounded-md border border-line-strong bg-surface-2 text-ink hover:bg-surface-3 transition-colors flex items-center justify-center gap-2"
                 @click="setAsBackgroundAndClose"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -543,19 +528,19 @@
     <Teleport to="#modal-portal">
       <div
         v-if="showDeleteConfirm"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
         @click.self="cancelDelete"
       >
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-sm w-full border border-muted/10 dark:border-slate/30 overflow-hidden"
+          class="bg-surface-1 rounded-lg shadow-overlay max-w-sm w-full border border-line overflow-hidden"
         >
           <!-- Header -->
           <div class="flex items-start gap-3 p-4 sm:p-5">
             <div
-              class="shrink-0 w-10 h-10 rounded-full bg-warm/15 flex items-center justify-center"
+              class="shrink-0 w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center"
             >
               <svg
-                class="w-6 h-6 text-warm-dark dark:text-warm-light"
+                class="w-6 h-6 text-danger"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -569,7 +554,7 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="text-base font-semibold text-slate-dark dark:text-surface-light">
+              <h3 class="text-base font-semibold text-ink">
                 {{
                   deleteMode === 'single'
                     ? t('gallery.deleteConfirmTitle')
@@ -578,21 +563,18 @@
               </h3>
               <p
                 v-if="deleteMode === 'single' && imageToDelete"
-                class="text-sm text-muted dark:text-muted-light mt-1 break-words"
+                class="text-sm text-ink-2 mt-1 break-words"
               >
                 {{ imageToDelete.file.name }}
               </p>
-              <p class="text-sm text-muted dark:text-muted-light mt-2">
+              <p class="text-sm text-ink-2 mt-2">
                 {{
                   deleteMode === 'single'
                     ? t('gallery.deleteConfirmMessage')
                     : t('gallery.deleteSelectedConfirmMessage')
                 }}
               </p>
-              <p
-                v-if="deleteInstanceCount > 0"
-                class="text-sm text-warm-dark dark:text-warm-light mt-2 font-medium"
-              >
+              <p v-if="deleteInstanceCount > 0" class="text-sm text-danger mt-2 font-medium">
                 {{ t('gallery.deleteConfirmOnCanvas', { count: deleteInstanceCount }) }}
               </p>
             </div>
@@ -600,12 +582,12 @@
 
           <!-- „Nicht mehr fragen" -->
           <label
-            class="flex items-center gap-2 px-4 sm:px-5 pb-2 text-sm text-muted dark:text-muted-light cursor-pointer select-none"
+            class="flex items-center gap-2 px-4 sm:px-5 pb-2 text-sm text-ink-2 cursor-pointer select-none"
           >
             <input
               v-model="dontAskAgain"
               type="checkbox"
-              class="w-4 h-4 rounded border-muted/50 text-warm-dark focus:ring-warm-dark cursor-pointer"
+              class="w-4 h-4 rounded-sm border-line-strong text-danger cursor-pointer"
             />
             {{ t('gallery.dontAskAgain') }}
           </label>
@@ -613,13 +595,13 @@
           <!-- Actions -->
           <div class="flex gap-2 px-4 pb-4 sm:px-5 sm:pb-5">
             <button
-              class="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-navy/20 text-slate-dark dark:text-muted-light transition-colors"
+              class="flex-1 px-4 py-2 text-sm font-medium rounded-md border border-line hover:bg-surface-2 text-ink transition-colors"
               @click="cancelDelete"
             >
               {{ t('gallery.deleteConfirmCancel') }}
             </button>
             <button
-              class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-warm hover:bg-warm-dark text-surface-light transition-colors"
+              class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-surface-2 hover:bg-surface-3 text-danger transition-colors"
               @click="confirmDelete"
             >
               {{ t('gallery.deleteConfirmConfirm') }}

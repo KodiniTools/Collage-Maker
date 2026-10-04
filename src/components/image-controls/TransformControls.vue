@@ -28,7 +28,7 @@
 </script>
 
 <template>
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <!-- Klapp-Kopfzeile -->
     <button
       class="flex items-center justify-between w-full text-left"
@@ -37,7 +37,7 @@
     >
       <span class="text-sm font-medium">{{ t('imageControls.transform') }}</span>
       <svg
-        class="w-4 h-4 text-muted dark:text-muted-light transition-transform"
+        class="w-4 h-4 text-ink-2 transition-transform"
         :class="{ 'rotate-180': expanded }"
         fill="none"
         stroke="currentColor"
@@ -52,10 +52,10 @@
       <div class="grid grid-cols-2 gap-2">
         <button
           :class="[
-            'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-md font-medium transition-colors',
+            'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-sm font-medium transition-colors',
             image.flipHorizontal
-              ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+              ? 'bg-accent hover:bg-accent-hover text-on-accent'
+              : 'bg-surface-2 hover:bg-surface-3 text-ink',
           ]"
           :title="t('imageControls.flipHorizontal')"
           :aria-label="t('imageControls.flipHorizontal')"
@@ -80,10 +80,10 @@
 
         <button
           :class="[
-            'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-md font-medium transition-colors',
+            'flex items-center justify-center gap-1.5 px-2 py-2 text-xs rounded-sm font-medium transition-colors',
             image.flipVertical
-              ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-              : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+              ? 'bg-accent hover:bg-accent-hover text-on-accent'
+              : 'bg-surface-2 hover:bg-surface-3 text-ink',
           ]"
           :title="t('imageControls.flipVertical')"
           :aria-label="t('imageControls.flipVertical')"
@@ -136,17 +136,15 @@
       />
 
       <!-- Freies Verzerren (Distort): Eckpunkte einzeln ziehen -->
-      <div class="border-t border-muted/20 dark:border-slate/20 pt-3">
+      <div class="border-t border-line pt-3">
         <div class="flex items-center justify-between">
-          <label class="text-xs text-muted dark:text-muted-light">{{
-            t('imageControls.distort')
-          }}</label>
+          <label class="text-xs text-ink-2">{{ t('imageControls.distort') }}</label>
           <button
             :class="[
-              'px-2.5 py-1 text-xs rounded transition-colors',
+              'px-2.5 py-1 text-xs rounded-sm transition-colors',
               image.distortEnabled
-                ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-                : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+                ? 'bg-accent hover:bg-accent-hover text-on-accent'
+                : 'bg-surface-2 hover:bg-surface-3 text-ink',
             ]"
             :title="t('imageControls.distortHint')"
             :aria-pressed="!!image.distortEnabled"
@@ -159,7 +157,7 @@
         </div>
         <div v-if="image.distortEnabled" class="grid grid-cols-2 gap-1.5 mt-2">
           <button
-            class="flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-md font-medium transition-colors bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light disabled:opacity-40 disabled:cursor-not-allowed"
+            class="flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-sm font-medium transition-colors bg-surface-2 hover:bg-surface-3 text-ink disabled:opacity-40 disabled:cursor-not-allowed"
             :disabled="!image.cornerOffsets || api.isApplyingDistort.value"
             :title="t('imageControls.distortReset')"
             @click="api.resetDistort"
@@ -167,7 +165,7 @@
             ↺ {{ t('imageControls.distortResetShort') }}
           </button>
           <button
-            class="flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-md font-medium transition-colors bg-accent hover:bg-accent-dark text-accent-ink disabled:opacity-40 disabled:cursor-not-allowed"
+            class="flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded-sm font-medium transition-colors bg-accent hover:bg-accent-hover text-on-accent disabled:opacity-40 disabled:cursor-not-allowed"
             :disabled="!api.canApplyDistort.value || api.isApplyingDistort.value"
             :aria-busy="api.isApplyingDistort.value"
             :title="t('imageControls.distortApplyHint')"
@@ -179,14 +177,12 @@
       </div>
 
       <!-- Zuschneiden (Crop): Presets & freies Zuschneiden -->
-      <div class="border-t border-muted/20 dark:border-slate/20 pt-3">
+      <div class="border-t border-line pt-3">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-xs text-muted dark:text-muted-light">{{
-            t('imageControls.crop')
-          }}</label>
+          <label class="text-xs text-ink-2">{{ t('imageControls.crop') }}</label>
           <button
             v-if="api.isCropped.value"
-            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+            class="text-xs text-ink-2 hover:text-accent transition-colors"
             :title="t('imageControls.cropReset')"
             @click="api.resetCrop"
           >
@@ -199,7 +195,7 @@
           <button
             v-for="preset in cropPresets"
             :key="preset.label"
-            class="px-1 py-1.5 text-xs rounded-md font-medium transition-colors bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light"
+            class="px-1 py-1.5 text-xs rounded-sm font-medium transition-colors bg-surface-2 hover:bg-surface-3 text-ink"
             :title="t('imageControls.cropPresetHint', { ratio: preset.label })"
             @click="api.applyCropPreset(preset.ratio)"
           >

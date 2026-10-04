@@ -23,8 +23,8 @@
     aria-live="polite"
   >
     <TransitionGroup
-      enter-active-class="transition-[opacity,transform] duration-200 ease-out"
-      leave-active-class="transition-[opacity,transform] duration-150 ease-in"
+      enter-active-class="transition-[opacity,transform]"
+      leave-active-class="transition-[opacity,transform]"
       enter-from-class="opacity-0 translate-x-4"
       enter-to-class="opacity-100 translate-x-0"
       leave-from-class="opacity-100 translate-x-0"
@@ -34,17 +34,17 @@
         v-for="t in toast.toasts"
         :key="t.id"
         :class="[
-          'px-3 py-2 sm:px-4 sm:py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 cursor-pointer text-sm sm:text-base',
-          t.type === 'success' && 'bg-green-700 text-white',
-          t.type === 'error' && 'bg-red-600 text-white',
-          t.type === 'info' && 'bg-slate text-white',
+          'px-3 py-2 sm:px-4 sm:py-3 rounded-md border border-line border-l-[3px] bg-surface-1 text-ink shadow-overlay flex items-center gap-2 sm:gap-3 cursor-pointer text-sm sm:text-base',
+          t.type === 'success' && 'border-l-success',
+          t.type === 'error' && 'border-l-danger',
+          t.type === 'info' && 'border-l-info',
         ]"
         @click="toast.removeToast(t.id)"
       >
         <!-- success icon -->
         <svg
           v-if="t.type === 'success'"
-          class="w-5 h-5 flex-shrink-0"
+          class="w-5 h-5 flex-shrink-0 text-success"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -59,7 +59,7 @@
         <!-- error icon -->
         <svg
           v-else-if="t.type === 'error'"
-          class="w-5 h-5 flex-shrink-0"
+          class="w-5 h-5 flex-shrink-0 text-danger"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -74,7 +74,7 @@
         <!-- info icon -->
         <svg
           v-else
-          class="w-5 h-5 flex-shrink-0"
+          class="w-5 h-5 flex-shrink-0 text-info"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -91,7 +91,7 @@
         <!-- Optionale Aktion (z. B. Rückgängig) -->
         <button
           v-if="t.action"
-          class="ml-1 sm:ml-2 shrink-0 px-2 py-1 rounded-md text-xs font-semibold underline underline-offset-2 hover:bg-white/20 transition-colors"
+          class="ml-1 sm:ml-2 shrink-0 px-2 py-1 rounded-sm text-xs font-semibold underline underline-offset-2 hover:bg-surface-2 transition-colors"
           @click.stop="runAction(t)"
         >
           {{ t.action.label }}
@@ -100,7 +100,7 @@
         <!-- "Nicht mehr anzeigen" für abschaltbare Meldungen -->
         <button
           v-if="t.dismissKey"
-          class="ml-auto shrink-0 pl-2 text-[11px] leading-tight text-white/70 hover:text-white underline underline-offset-2 transition-colors"
+          class="ml-auto shrink-0 pl-2 text-[11px] leading-tight text-ink-3 hover:text-ink underline underline-offset-2 transition-colors"
           :title="tr('toast.dontShowAgain')"
           @click.stop="dismissForever(t)"
         >

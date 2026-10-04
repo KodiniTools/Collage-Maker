@@ -76,11 +76,7 @@
   <div>
     <label
       class="block"
-      :class="
-        labelSize === 'sm'
-          ? 'text-sm font-medium mb-2'
-          : 'text-xs text-muted dark:text-muted-light mb-1'
-      "
+      :class="labelSize === 'sm' ? 'text-sm font-medium mb-2' : 'text-xs text-ink-2 mb-1'"
     >
       {{ label }}: {{ displayValue }}
     </label>
@@ -102,7 +98,7 @@
         :min="min"
         :max="max"
         :step="step"
-        class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+        class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-line-strong rounded-sm bg-surface-1"
         :aria-label="label"
         @input="onNumberInput"
       />
@@ -111,7 +107,7 @@
       <span class="w-5 flex-shrink-0 flex justify-center">
         <button
           v-if="showReset"
-          class="text-sm leading-none text-muted dark:text-muted-light hover:text-accent transition-colors"
+          class="text-sm leading-none text-ink-2 hover:text-accent transition-colors"
           :title="resetTitle"
           @click="emit('reset')"
         >

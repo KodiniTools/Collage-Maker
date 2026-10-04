@@ -35,23 +35,17 @@
 
 <template>
   <div
-    class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 overflow-hidden hover:shadow-lg transition-shadow duration-150 cursor-pointer group"
+    class="bg-surface-1 rounded-md border border-line overflow-hidden transition-colors cursor-pointer group"
   >
     <!-- Thumbnail -->
-    <div
-      class="relative aspect-video bg-muted/10 dark:bg-navy/30 overflow-hidden"
-      @click="emit('load', template)"
-    >
+    <div class="relative aspect-video bg-surface-2 overflow-hidden" @click="emit('load', template)">
       <img
         v-if="template.thumbnail"
         :src="template.thumbnail"
         :alt="displayName"
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        class="w-full h-full object-cover transition-transform duration-slow"
       />
-      <div
-        v-else
-        class="w-full h-full flex items-center justify-center text-muted dark:text-muted-light"
-      >
+      <div v-else class="w-full h-full flex items-center justify-center text-ink-2">
         <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -64,10 +58,10 @@
 
       <!-- Overlay on hover -->
       <div
-        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-150 flex items-center justify-center opacity-0 group-hover:opacity-100"
+        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100"
       >
         <button
-          class="px-4 py-2 bg-accent hover:bg-accent-dark text-accent-ink rounded-lg font-medium"
+          class="px-4 py-2 bg-accent hover:bg-accent-hover text-on-accent rounded-md font-medium"
         >
           {{ t('templates.useTemplate') }}
         </button>
@@ -78,13 +72,10 @@
     <div class="p-4">
       <div class="flex items-start justify-between gap-2">
         <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-sm truncate text-slate-dark dark:text-surface-light">
+          <h3 class="font-semibold text-sm truncate text-ink">
             {{ displayName }}
           </h3>
-          <p
-            v-if="displayDescription"
-            class="text-xs text-muted dark:text-muted-light mt-1 line-clamp-2"
-          >
+          <p v-if="displayDescription" class="text-xs text-ink-2 mt-1 line-clamp-2">
             {{ displayDescription }}
           </p>
         </div>
@@ -92,16 +83,11 @@
         <!-- Delete button for user templates -->
         <button
           v-if="canDelete"
-          class="p-1.5 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors flex-shrink-0"
+          class="p-1.5 hover:bg-surface-2 rounded-sm transition-colors flex-shrink-0"
           :title="t('templates.deleteTemplate')"
           @click.stop="emit('delete', template.id)"
         >
-          <svg
-            class="w-4 h-4 text-warm-dark dark:text-warm-light"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -115,11 +101,11 @@
       <!-- Category badge -->
       <div class="mt-2">
         <span
-          class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+          class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium"
           :class="
             template.category === 'predefined'
-              ? 'bg-accent/20 text-slate-dark dark:bg-accent/10 dark:text-accent'
-              : 'bg-warm/20 text-warm-dark dark:bg-warm/10 dark:text-warm-light'
+              ? 'bg-accent-soft text-ink'
+              : 'bg-surface-2 text-danger'
           "
         >
           {{

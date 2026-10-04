@@ -11,15 +11,15 @@
 </script>
 
 <template>
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
       <label class="text-sm font-medium">{{ t('imageControls.shadow') }}</label>
       <button
         :class="[
-          'px-3 py-1 text-xs rounded transition-colors',
+          'px-3 py-1 text-xs rounded-sm transition-colors',
           image.shadowEnabled
-            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+            ? 'bg-accent hover:bg-accent-hover text-on-accent'
+            : 'bg-surface-2 hover:bg-surface-3 text-ink',
         ]"
         @click="api.toggleShadow"
       >

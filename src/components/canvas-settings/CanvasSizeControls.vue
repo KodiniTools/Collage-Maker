@@ -15,10 +15,10 @@
       <label class="text-sm font-medium">{{ t('canvas.keepAspectRatio') }}</label>
       <button
         :class="[
-          'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
+          'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-sm transition-colors',
           api.keepAspect.value
-            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+            ? 'bg-accent hover:bg-accent-hover text-on-accent'
+            : 'bg-surface-2 hover:bg-surface-3 text-ink',
         ]"
         :title="t('canvas.keepAspectRatio')"
         :aria-pressed="api.keepAspect.value"
@@ -49,10 +49,10 @@
       <label class="text-sm font-medium">{{ t('canvas.scaleContent') }}</label>
       <button
         :class="[
-          'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors',
+          'flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-sm transition-colors',
           api.scaleContent.value
-            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+            ? 'bg-accent hover:bg-accent-hover text-on-accent'
+            : 'bg-surface-2 hover:bg-surface-3 text-ink',
         ]"
         :title="t('canvas.scaleContent')"
         :aria-pressed="api.scaleContent.value"
@@ -78,7 +78,7 @@
         </label>
         <button
           v-if="collage.settings.width !== api.DEFAULT_WIDTH"
-          class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+          class="text-xs text-ink-2 hover:text-accent transition-colors"
           :title="t('imageControls.resetValue')"
           @click="api.resetWidth"
         >
@@ -91,7 +91,7 @@
         :min="api.MIN_SIZE"
         :max="api.MAX_SIZE"
         step="1"
-        class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+        class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
         @input="api.updateWidth(Number(($event.target as HTMLInputElement).value))"
       />
       <input
@@ -114,7 +114,7 @@
         </label>
         <button
           v-if="collage.settings.height !== api.DEFAULT_HEIGHT"
-          class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
+          class="text-xs text-ink-2 hover:text-accent transition-colors"
           :title="t('imageControls.resetValue')"
           @click="api.resetHeight"
         >
@@ -127,7 +127,7 @@
         :min="api.MIN_SIZE"
         :max="api.MAX_SIZE"
         step="1"
-        class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark"
+        class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1"
         @input="api.updateHeight(Number(($event.target as HTMLInputElement).value))"
       />
       <input
@@ -143,10 +143,7 @@
     </div>
 
     <!-- Warnung bei sehr großer Leinwand (Mobile-Export-Limit) -->
-    <p
-      v-if="api.showLargeSizeWarning.value"
-      class="flex items-start gap-1.5 text-xs text-amber-600 dark:text-amber-400"
-    >
+    <p v-if="api.showLargeSizeWarning.value" class="flex items-start gap-1.5 text-xs text-warning">
       <svg
         class="w-4 h-4 flex-shrink-0 mt-0.5"
         fill="none"

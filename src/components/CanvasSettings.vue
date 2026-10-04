@@ -14,9 +14,7 @@
 </script>
 
 <template>
-  <div
-    class="w-full bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-  >
+  <div class="w-full bg-surface-1 rounded-md border border-line p-4">
     <h2 class="text-lg font-semibold mb-4">{{ t('canvas.size') }}</h2>
 
     <div class="space-y-4">

@@ -16,9 +16,7 @@
 </script>
 
 <template>
-  <div
-    class="bg-surface-light dark:bg-surface-dark rounded-lg border border-muted/30 dark:border-slate/30 p-4"
-  >
+  <div class="bg-surface-1 rounded-md border border-line p-4">
     <h3 class="text-lg font-semibold mb-4">{{ t('imageControls.title') }}</h3>
 
     <!-- Auswahl vorhanden -->
@@ -56,7 +54,7 @@
 
       <!-- Zurücksetzen -->
       <button
-        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
+        class="w-full px-4 py-2 bg-surface-2 hover:bg-surface-3 text-danger rounded-sm font-medium"
         @click="api.resetImageChanges"
       >
         {{ t('imageControls.resetChanges') }}
@@ -64,7 +62,7 @@
 
       <!-- Löschen -->
       <button
-        class="w-full px-4 py-2 bg-warm hover:bg-warm-dark text-surface-light rounded-md font-medium"
+        class="w-full px-4 py-2 bg-surface-2 hover:bg-surface-3 text-danger rounded-sm font-medium"
         @click="api.deleteImage"
       >
         {{
@@ -75,7 +73,7 @@
       </button>
     </div>
 
-    <div v-else class="text-center text-muted dark:text-muted-light py-8">
+    <div v-else class="text-center text-ink-2 py-8">
       <p>{{ t('imageControls.noSelection') }}</p>
       <p class="text-xs mt-2">{{ t('imageControls.ctrlClickHint') }}</p>
     </div>

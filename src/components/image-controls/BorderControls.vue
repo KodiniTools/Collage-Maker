@@ -11,15 +11,15 @@
 </script>
 
 <template>
-  <div class="border-t border-muted/30 dark:border-slate/30 pt-4">
+  <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
       <label class="text-sm font-medium">{{ t('imageControls.border') }}</label>
       <button
         :class="[
-          'px-3 py-1 text-xs rounded transition-colors',
+          'px-3 py-1 text-xs rounded-sm transition-colors',
           image.borderEnabled
-            ? 'bg-accent hover:bg-accent-dark text-accent-ink'
-            : 'bg-muted/20 dark:bg-navy/50 hover:bg-muted/30 dark:hover:bg-navy/70 text-slate dark:text-muted-light',
+            ? 'bg-accent hover:bg-accent-hover text-on-accent'
+            : 'bg-surface-2 hover:bg-surface-3 text-ink',
         ]"
         @click="api.toggleBorder"
       >
@@ -46,12 +46,12 @@
 
       <!-- Rahmenstil -->
       <div>
-        <label class="block text-xs text-muted dark:text-muted-light mb-1">
+        <label class="block text-xs text-ink-2 mb-1">
           {{ t('imageControls.borderStyle') }}
         </label>
         <select
           :value="image.borderStyle"
-          class="w-full px-3 py-2 border border-muted/50 dark:border-slate rounded-md bg-surface-light dark:bg-surface-dark text-sm"
+          class="w-full px-3 py-2 border border-line-strong rounded-sm bg-surface-1 text-sm"
           @change="
             api.updateBorderStyle(
               ($event.target as HTMLSelectElement).value as CollageImage['borderStyle']
@@ -73,17 +73,15 @@
       />
 
       <!-- Rahmenschatten -->
-      <div class="border-t border-muted/50 dark:border-slate pt-3 mt-3">
+      <div class="border-t border-line-strong pt-3 mt-3">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-xs text-muted dark:text-muted-light">{{
-            t('imageControls.borderShadow')
-          }}</label>
+          <label class="text-xs text-ink-2">{{ t('imageControls.borderShadow') }}</label>
           <button
             :class="[
-              'px-2 py-1 text-xs rounded transition-colors',
+              'px-2 py-1 text-xs rounded-sm transition-colors',
               image.borderShadowEnabled
-                ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300',
+                ? 'bg-accent hover:bg-accent-hover text-on-accent'
+                : 'bg-surface-2 hover:bg-surface-3 text-ink',
             ]"
             @click="api.toggleBorderShadow"
           >

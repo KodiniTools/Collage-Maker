@@ -11,7 +11,7 @@
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-lg font-semibold">{{ t('text.title') }}</h2>
       <button
-        class="px-3 py-1.5 bg-accent hover:bg-accent-dark text-accent-ink text-sm font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-surface-dark"
+        class="px-3 py-1.5 bg-accent hover:bg-accent-hover text-on-accent text-sm font-medium rounded-sm transition-colors focus-visible:outline-none focus-visible:shadow-focus"
         aria-label="Add new text"
         @click="collage.addText()"
       >
@@ -21,7 +21,7 @@
 
     <div
       v-if="collage.texts.length === 0"
-      class="text-sm text-muted dark:text-muted-light text-center py-6 border border-muted/30 dark:border-slate/30 rounded-lg"
+      class="text-sm text-ink-2 text-center py-6 border border-line rounded-md"
     >
       {{ t('text.empty') }}
     </div>
@@ -34,11 +34,11 @@
         role="button"
         :aria-pressed="collage.selectedTextId === text.id"
         :class="[
-          'p-3 rounded-lg cursor-pointer transition-colors duration-150 border',
-          'focus:outline-none focus:ring-2 focus:ring-accent',
+          'p-3 rounded-md cursor-pointer transition-colors border',
+          'focus-visible:outline-none focus-visible:shadow-focus',
           collage.selectedTextId === text.id
-            ? 'bg-accent/10 dark:bg-accent/5 border-accent'
-            : 'bg-muted/5 dark:bg-navy/20 border-muted/30 dark:border-slate/30 hover:bg-muted/10 dark:hover:bg-navy/30',
+            ? 'bg-accent-soft border-accent'
+            : 'bg-surface-2 border-line hover:bg-surface-3',
         ]"
         @click="collage.selectText(text.id)"
         @keydown.enter="collage.selectText(text.id)"
@@ -49,12 +49,12 @@
             <p class="text-sm font-medium truncate">
               {{ text.text || t('text.empty') }}
             </p>
-            <p class="text-xs text-muted dark:text-muted-light mt-1">
+            <p class="text-xs text-ink-2 mt-1">
               {{ text.fontFamily }} • {{ Math.round(text.fontSize) }}px
             </p>
           </div>
           <div
-            class="w-6 h-6 rounded border border-muted/50 dark:border-slate flex-shrink-0"
+            class="w-6 h-6 rounded-sm border border-line-strong flex-shrink-0"
             :style="{ backgroundColor: text.color }"
             :title="text.color"
           />
