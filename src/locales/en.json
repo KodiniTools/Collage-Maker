@@ -13,6 +13,10 @@
       "description": "Answers about the free photo collage maker: privacy, supported formats, layouts, export and usage."
     },
     "blog": {
+      "title": "Blog – photo collage tips | KodiniTools",
+      "description": "Guides, tips and ideas for stunning photo collages with the free KodiniTools collage maker."
+    },
+    "guide": {
       "title": "Guide – The Complete Collage Maker Guide | KodiniTools",
       "description": "Every feature of the free KodiniTools collage maker step by step: uploading images, layouts, image editing, text, export and templates."
     }
@@ -29,13 +33,18 @@
     "guide": "Guide",
     "blog": "Blog"
   },
+  "blogPage": {
+    "tag": "Blog",
+    "title": "From the Blog",
+    "subtitle": "Guides and tips for the collage maker on kodinitools.com – posts open in a new tab.",
+    "readMore": "Read article",
+    "minutes": "min",
+    "cta": {
+      "title": "Start now",
+      "subtitle": "Free, no sign-up required – directly in the browser."
+    }
+  },
   "landing": {
-    "blog": {
-      "title": "From the Blog",
-      "subtitle": "Guides and tips for the collage maker on kodinitools.com.",
-      "readMore": "Read article",
-      "minutes": "min"
-    },
     "hero": {
       "title": "Create Stunning Photo Collages",
       "subtitle": "Free, directly in your browser, without uploading to servers. Your images stay private on your device."
