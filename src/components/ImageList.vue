@@ -300,12 +300,12 @@
 
           <!-- Remove Button -->
           <button
-            class="p-1 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm"
+            class="p-1 hover:bg-warm/20 dark:hover:bg-warm/10 rounded transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-warm-dark"
             :aria-label="t('images.remove')"
             @click.stop="requestDelete(image)"
           >
             <svg
-              class="w-5 h-5 text-warm dark:text-warm-light"
+              class="w-5 h-5 text-warm-dark dark:text-warm-light"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -413,19 +413,19 @@
         @click.self="closePreview"
       >
         <div
-          class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-muted/10 dark:border-white/10"
+          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-muted/10 dark:border-slate/30"
         >
           <!-- Header -->
           <div
             class="flex items-center justify-between p-3 sm:p-4 border-b border-muted/20 dark:border-white/10"
           >
             <h3
-              class="text-base sm:text-lg font-semibold truncate pr-4 text-slate-900 dark:text-white"
+              class="text-base sm:text-lg font-semibold truncate pr-4 text-slate-dark dark:text-surface-light"
             >
               {{ t('gallery.preview') }}
             </h3>
             <button
-              class="p-1 text-slate-500 dark:text-slate-400 hover:bg-muted/20 dark:hover:bg-white/10 rounded-lg transition-colors"
+              class="p-1 text-muted dark:text-muted-light hover:bg-muted/20 dark:hover:bg-navy/20 rounded-lg transition-colors"
               @click="closePreview"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +440,7 @@
           </div>
 
           <!-- Image -->
-          <div class="p-2 sm:p-4 flex justify-center bg-slate-100 dark:bg-slate-900/50">
+          <div class="p-2 sm:p-4 flex justify-center bg-muted/10 dark:bg-navy/30">
             <img
               :src="previewImage.url"
               :alt="previewImage.file.name"
@@ -453,10 +453,10 @@
           <div class="p-3 sm:p-4 space-y-3">
             <!-- Filename -->
             <div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+              <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
                 {{ t('gallery.previewTitle') }}
               </p>
-              <p class="font-medium truncate text-slate-800 dark:text-slate-100">
+              <p class="font-medium truncate text-slate-dark dark:text-surface-light">
                 {{ previewImage.file.name }}
               </p>
             </div>
@@ -464,8 +464,8 @@
             <!-- Details Grid -->
             <div class="grid grid-cols-3 gap-2 sm:gap-4">
               <!-- Format -->
-              <div class="text-center p-2 bg-slate-100 dark:bg-slate-700/60 rounded-lg">
-                <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-muted/10 dark:bg-navy/30 rounded-lg">
+                <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
                   {{ t('gallery.previewFormat') }}
                 </p>
                 <p class="font-semibold text-primary dark:text-accent">
@@ -474,21 +474,21 @@
               </div>
 
               <!-- Size -->
-              <div class="text-center p-2 bg-slate-100 dark:bg-slate-700/60 rounded-lg">
-                <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-muted/10 dark:bg-navy/30 rounded-lg">
+                <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
                   {{ t('gallery.previewSize') }}
                 </p>
-                <p class="font-semibold text-slate-800 dark:text-slate-100">
+                <p class="font-semibold text-slate-dark dark:text-surface-light">
                   {{ formatFileSize(previewImage.file.size) }}
                 </p>
               </div>
 
               <!-- Dimensions -->
-              <div class="text-center p-2 bg-slate-100 dark:bg-slate-700/60 rounded-lg">
-                <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+              <div class="text-center p-2 bg-muted/10 dark:bg-navy/30 rounded-lg">
+                <p class="text-xs text-muted dark:text-muted-light uppercase tracking-wide mb-1">
                   {{ t('gallery.previewDimensions') }}
                 </p>
-                <p class="font-semibold text-slate-800 dark:text-slate-100">
+                <p class="font-semibold text-slate-dark dark:text-surface-light">
                   {{ dimensionsText(previewImage.id) || '…' }}
                 </p>
               </div>
@@ -501,7 +501,7 @@
                   :class="[
                     'flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
                     collage.isGalleryImageSelected(previewImage.id)
-                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200'
+                      ? 'bg-muted/20 hover:bg-muted/30 dark:bg-navy/50 dark:hover:bg-navy/70 text-slate-dark dark:text-muted-light'
                       : 'bg-primary hover:bg-primary-dark text-surface-light',
                   ]"
                   @click="toggleSelectionAndClose"
@@ -547,7 +547,7 @@
         @click.self="cancelDelete"
       >
         <div
-          class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-sm w-full border border-muted/10 dark:border-white/10 overflow-hidden"
+          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl max-w-sm w-full border border-muted/10 dark:border-slate/30 overflow-hidden"
         >
           <!-- Header -->
           <div class="flex items-start gap-3 p-4 sm:p-5">
@@ -555,7 +555,7 @@
               class="shrink-0 w-10 h-10 rounded-full bg-warm/15 flex items-center justify-center"
             >
               <svg
-                class="w-6 h-6 text-warm dark:text-warm-light"
+                class="w-6 h-6 text-warm-dark dark:text-warm-light"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -569,7 +569,7 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="text-base font-semibold text-slate-900 dark:text-white">
+              <h3 class="text-base font-semibold text-slate-dark dark:text-surface-light">
                 {{
                   deleteMode === 'single'
                     ? t('gallery.deleteConfirmTitle')
@@ -578,11 +578,11 @@
               </h3>
               <p
                 v-if="deleteMode === 'single' && imageToDelete"
-                class="text-sm text-slate-600 dark:text-slate-300 mt-1 break-words"
+                class="text-sm text-muted dark:text-muted-light mt-1 break-words"
               >
                 {{ imageToDelete.file.name }}
               </p>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
+              <p class="text-sm text-muted dark:text-muted-light mt-2">
                 {{
                   deleteMode === 'single'
                     ? t('gallery.deleteConfirmMessage')
@@ -600,12 +600,12 @@
 
           <!-- „Nicht mehr fragen" -->
           <label
-            class="flex items-center gap-2 px-4 sm:px-5 pb-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer select-none"
+            class="flex items-center gap-2 px-4 sm:px-5 pb-2 text-sm text-muted dark:text-muted-light cursor-pointer select-none"
           >
             <input
               v-model="dontAskAgain"
               type="checkbox"
-              class="w-4 h-4 rounded border-muted/50 text-warm focus:ring-warm cursor-pointer"
+              class="w-4 h-4 rounded border-muted/50 text-warm-dark focus:ring-warm-dark cursor-pointer"
             />
             {{ t('gallery.dontAskAgain') }}
           </label>
@@ -613,7 +613,7 @@
           <!-- Actions -->
           <div class="flex gap-2 px-4 pb-4 sm:px-5 sm:pb-5">
             <button
-              class="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 transition-colors"
+              class="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-muted/30 hover:bg-muted/10 dark:hover:bg-navy/20 text-slate-dark dark:text-muted-light transition-colors"
               @click="cancelDelete"
             >
               {{ t('gallery.deleteConfirmCancel') }}

@@ -116,7 +116,7 @@
                   @click="toggleQuestion(item.index)"
                 >
                   <span
-                    class="font-semibold text-base sm:text-lg text-slate-dark dark:text-white"
+                    class="font-semibold text-base sm:text-lg text-slate-dark dark:text-surface-light"
                     >{{ item.question }}</span
                   >
                   <svg

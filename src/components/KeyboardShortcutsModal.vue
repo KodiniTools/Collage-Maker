@@ -75,7 +75,7 @@
             <!-- Selection Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -108,7 +108,7 @@
             <!-- Editing Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -141,7 +141,7 @@
             <!-- Navigation Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -177,7 +177,7 @@
             <!-- Canvas Category -->
             <div class="space-y-3">
               <div
-                class="flex items-center gap-2 text-sm font-semibold text-accent dark:text-accent-light uppercase tracking-wide"
+                class="flex items-center gap-2 text-sm font-semibold text-slate-dark dark:text-accent-light uppercase tracking-wide"
               >
                 <svg
                   class="w-4 h-4"
@@ -212,7 +212,7 @@
 
           <!-- Tips Section -->
           <div class="mt-6 p-4 bg-accent/10 dark:bg-accent/5 rounded-lg border border-accent/20">
-            <h3 class="text-sm font-semibold text-accent dark:text-accent-light mb-2">
+            <h3 class="text-sm font-semibold text-slate-dark dark:text-accent-light mb-2">
               {{ t('shortcuts.tips.title') }}
             </h3>
             <ul class="text-sm text-slate-dark dark:text-surface-light space-y-1">

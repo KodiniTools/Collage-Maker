@@ -35,7 +35,7 @@
         :key="t.id"
         :class="[
           'px-3 py-2 sm:px-4 sm:py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 cursor-pointer text-sm sm:text-base',
-          t.type === 'success' && 'bg-green-600 text-white',
+          t.type === 'success' && 'bg-green-700 text-white',
           t.type === 'error' && 'bg-red-600 text-white',
           t.type === 'info' && 'bg-slate text-white',
         ]"

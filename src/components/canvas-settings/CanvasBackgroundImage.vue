@@ -91,7 +91,7 @@
           </label>
           <button
             v-if="collage.settings.backgroundImage.opacity !== 1"
-            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundOpacity(1)"
           >
@@ -117,7 +117,7 @@
           </label>
           <button
             v-if="collage.settings.backgroundImage.brightness !== 100"
-            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundBrightness(100)"
           >
@@ -143,7 +143,7 @@
           </label>
           <button
             v-if="collage.settings.backgroundImage.contrast !== 100"
-            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundContrast(100)"
           >
@@ -169,7 +169,7 @@
           </label>
           <button
             v-if="collage.settings.backgroundImage.saturation !== 100"
-            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundSaturation(100)"
           >
@@ -195,7 +195,7 @@
           </label>
           <button
             v-if="collage.settings.backgroundImage.blur !== 0"
-            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
             :title="t('imageControls.resetValue')"
             @click="api.updateBackgroundBlur(0)"
           >

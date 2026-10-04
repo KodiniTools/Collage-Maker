@@ -231,7 +231,10 @@
           </RouterLink>
 
           <div class="flex items-center gap-2 sm:gap-6 ml-auto">
-            <RouterLink to="/blog" class="text-sm sm:text-base text-accent font-semibold">
+            <RouterLink
+              to="/blog"
+              class="text-sm sm:text-base text-slate-dark dark:text-accent-light font-semibold"
+            >
               {{ t('nav.guide') }}
             </RouterLink>
             <RouterLink
@@ -265,7 +268,7 @@
       <!-- Hero -->
       <section class="container mx-auto px-4 pt-12 pb-8 sm:pt-20 sm:pb-12 text-center">
         <span
-          class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase rounded-full bg-accent/10 text-accent"
+          class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase rounded-full bg-accent/10 dark:bg-accent/20 text-slate-dark dark:text-accent"
         >
           {{ hero.tag }}
         </span>
@@ -323,7 +326,7 @@
             <li
               v-for="(para, i) in section.content"
               :key="i"
-              class="flex gap-3 text-slate-700 dark:text-slate-300 leading-relaxed"
+              class="flex gap-3 text-slate-dark dark:text-muted-light leading-relaxed"
             >
               <span class="mt-1.5 w-1.5 h-1.5 flex-shrink-0 rounded-full bg-accent"></span>
               <span v-html="para"></span>

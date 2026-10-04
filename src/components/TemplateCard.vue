@@ -78,7 +78,7 @@
     <div class="p-4">
       <div class="flex items-start justify-between gap-2">
         <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-sm truncate text-slate-900 dark:text-white">
+          <h3 class="font-semibold text-sm truncate text-slate-dark dark:text-surface-light">
             {{ displayName }}
           </h3>
           <p
@@ -97,7 +97,7 @@
           @click.stop="emit('delete', template.id)"
         >
           <svg
-            class="w-4 h-4 text-warm dark:text-warm-light"
+            class="w-4 h-4 text-warm-dark dark:text-warm-light"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

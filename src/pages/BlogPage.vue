@@ -41,7 +41,10 @@
             >
               {{ t('nav.guide') }}
             </RouterLink>
-            <RouterLink to="/artikel" class="text-sm sm:text-base text-accent font-semibold">
+            <RouterLink
+              to="/artikel"
+              class="text-sm sm:text-base text-slate-dark dark:text-accent-light font-semibold"
+            >
               {{ t('nav.blog') }}
             </RouterLink>
             <RouterLink
@@ -69,7 +72,7 @@
       <!-- Hero -->
       <section class="container mx-auto px-4 pt-12 pb-8 sm:pt-20 sm:pb-12 text-center">
         <span
-          class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase rounded-full bg-accent/10 text-accent"
+          class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase rounded-full bg-accent/10 dark:bg-accent/20 text-slate-dark dark:text-accent"
         >
           {{ t('blogPage.tag') }}
         </span>

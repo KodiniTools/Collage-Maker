@@ -105,7 +105,7 @@
           <!-- CTA Button -->
           <RouterLink
             to="/editor"
-            class="group relative inline-flex items-center gap-2 sm:gap-3 px-5 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-accent to-accent-dark hover:from-accent-light hover:to-accent text-slate-dark font-semibold text-base sm:text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+            class="group relative inline-flex items-center gap-2 sm:gap-3 px-5 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-accent to-accent-dark hover:from-accent-light hover:to-accent text-accent-ink font-semibold text-base sm:text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
           >
             <span>{{ t('landing.cta') }}</span>
             <svg

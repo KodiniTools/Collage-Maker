@@ -186,7 +186,7 @@
           }}</label>
           <button
             v-if="api.isCropped.value"
-            class="text-xs text-accent hover:text-accent-dark transition-colors"
+            class="text-xs text-muted dark:text-muted-light hover:text-accent transition-colors"
             :title="t('imageControls.cropReset')"
             @click="api.resetCrop"
           >

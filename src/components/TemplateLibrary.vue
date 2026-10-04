@@ -140,7 +140,7 @@
           <div
             class="flex items-center justify-between p-3 sm:p-6 border-b border-muted/30 dark:border-slate/30"
           >
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-dark dark:text-surface-light">
               {{ t('templates.library') }}
             </h2>
             <button
@@ -243,7 +243,7 @@
             <div
               class="bg-surface-light dark:bg-surface-dark text-slate-dark dark:text-muted-light rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
             >
-              <h3 class="text-lg sm:text-xl font-bold mb-4 text-slate-900 dark:text-white">
+              <h3 class="text-lg sm:text-xl font-bold mb-4 text-slate-dark dark:text-surface-light">
                 {{ t('templates.saveAsCurrent') }}
               </h3>
 

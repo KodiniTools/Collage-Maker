@@ -372,8 +372,8 @@
                   class="flex-1 px-2 py-2 text-xs font-medium rounded-lg transition-colors truncate"
                   :class="
                     inspectorTab === tab.id
-                      ? 'bg-surface-light dark:bg-surface-dark shadow-sm text-slate-dark dark:text-white'
-                      : 'text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-white'
+                      ? 'bg-surface-light dark:bg-surface-dark shadow-sm text-slate-dark dark:text-surface-light'
+                      : 'text-muted dark:text-muted-light hover:text-slate-dark dark:hover:text-surface-light'
                   "
                   :aria-pressed="inspectorTab === tab.id"
                   @click="inspectorTab = tab.id"
@@ -508,19 +508,19 @@
           </div>
 
           <!-- Title -->
-          <h3 class="text-xl font-bold text-center mb-2 text-slate-900 dark:text-white">
+          <h3 class="text-xl font-bold text-center mb-2 text-slate-dark dark:text-surface-light">
             {{ t('autoSave.restoreTitle') }}
           </h3>
 
           <!-- Description -->
-          <p class="text-slate-600 dark:text-slate-300 text-center mb-2">
+          <p class="text-muted dark:text-muted-light text-center mb-2">
             {{ t('autoSave.restoreDescription') }}
           </p>
 
           <!-- Save Date -->
           <p
             v-if="restoreSaveDate"
-            class="text-sm text-slate-500 dark:text-slate-400 text-center mb-6"
+            class="text-sm text-muted dark:text-muted-light text-center mb-6"
           >
             {{ t('autoSave.savedAt') }}: {{ restoreSaveDate.toLocaleString() }}
           </p>
@@ -534,7 +534,7 @@
               {{ t('autoSave.restore') }}
             </button>
             <button
-              class="w-full px-4 py-2 bg-muted/20 hover:bg-muted/30 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 rounded-lg font-medium transition-colors"
+              class="w-full px-4 py-2 bg-muted/20 hover:bg-muted/30 dark:bg-navy/50 dark:hover:bg-navy/70 text-slate-dark dark:text-muted-light rounded-lg font-medium transition-colors"
               @click="handleContinueWithoutRestore"
             >
               {{ t('autoSave.continueWithout') }}

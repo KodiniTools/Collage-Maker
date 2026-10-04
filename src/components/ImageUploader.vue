@@ -180,7 +180,7 @@
       <button
         type="button"
         :disabled="isProcessing"
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-muted dark:border-slate text-text dark:text-text-dark hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-muted dark:border-slate text-slate-dark dark:text-muted-light hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
         @click="folderInput!.click()"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">

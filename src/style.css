@@ -17,6 +17,32 @@ body {
   min-height: 100%;
 }
 
+/* UI-Schrift Supreme in den drei genutzten Gewichten (font-medium = 500,
+   font-semibold/-bold = 700). Die woff2-Dateien liegen im Repo und werden von
+   Vite gebündelt. Ohne diese Deklarationen kannte der Browser nur den über
+   /fonts.css geladenen Regular-Schnitt und synthetisierte alle fetten Stufen. */
+@font-face {
+  font-family: 'Supreme';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('./assets/fonts/Supreme-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Supreme';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('./assets/fonts/Supreme-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Supreme';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('./assets/fonts/Supreme-Bold.woff2') format('woff2');
+}
+
 body {
   font-family: 'Supreme', sans-serif;
   -webkit-font-smoothing: antialiased;

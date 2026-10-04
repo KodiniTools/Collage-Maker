@@ -216,7 +216,7 @@
       v-else
       class="mb-3 p-2 bg-accent/10 dark:bg-accent/20 rounded-lg border border-accent/30 text-xs"
     >
-      <p class="font-medium text-accent-dark dark:text-accent">
+      <p class="font-medium text-slate-dark dark:text-accent">
         {{
           selectedCount > 0
             ? t('stylePresets.scopeSelected', { count: selectedCount })
