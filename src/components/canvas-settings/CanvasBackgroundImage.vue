@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
-  import ResetButton from '@/components/ResetButton.vue'
+  import ControlSlider from '@/components/image-controls/ControlSlider.vue'
   import { computed } from 'vue'
   import { UiIconButton, UiSelect } from '@/components/ui'
   import type { BackgroundImageFit } from '@/types'
@@ -78,132 +78,79 @@
       />
     </div>
 
-    <!-- Editing Controls (show when background is selected) -->
+    <!-- Editing Controls (show when background is selected): Slider mit Spinner
+         und Zurücksetzen wie bei den Bildreglern im Auswahl-Tab -->
     <div v-if="collage.isBackgroundSelected" class="space-y-3 bg-surface-2 rounded-md p-3">
       <p class="text-xs font-medium text-ink mb-2">
         {{ t('canvas.editBackground') }}
       </p>
 
-      <!-- Opacity -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label for="bg-opacity" class="text-xs font-medium text-ink-2">
-            {{ t('imageControls.opacity') }}:
-            {{ Math.round(collage.settings.backgroundImage.opacity * 100) }}%
-          </label>
-          <ResetButton
-            v-if="collage.settings.backgroundImage.opacity !== 1"
-            :label="t('imageControls.resetValue')"
-            @click="api.updateBackgroundOpacity(1)"
-          />
-        </div>
-        <input
-          id="bg-opacity"
-          type="range"
-          :value="collage.settings.backgroundImage.opacity"
-          min="0"
-          max="1"
-          step="0.01"
-          class="w-full"
-          @input="api.updateBackgroundOpacity(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        label-size="xs"
+        :label="t('imageControls.opacity')"
+        :display-value="`${Math.round(collage.settings.backgroundImage.opacity * 100)}%`"
+        :value="collage.settings.backgroundImage.opacity"
+        :min="0"
+        :max="1"
+        :step="0.01"
+        :show-reset="collage.settings.backgroundImage.opacity !== 1"
+        :reset-title="t('imageControls.resetValue')"
+        @input="api.updateBackgroundOpacity"
+        @reset="api.updateBackgroundOpacity(1)"
+      />
 
-      <!-- Brightness -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label for="bg-brightness" class="text-xs font-medium text-ink-2">
-            {{ t('imageControls.brightness') }}: {{ collage.settings.backgroundImage.brightness }}%
-          </label>
-          <ResetButton
-            v-if="collage.settings.backgroundImage.brightness !== 100"
-            :label="t('imageControls.resetValue')"
-            @click="api.updateBackgroundBrightness(100)"
-          />
-        </div>
-        <input
-          id="bg-brightness"
-          type="range"
-          :value="collage.settings.backgroundImage.brightness"
-          min="0"
-          max="200"
-          step="1"
-          class="w-full"
-          @input="api.updateBackgroundBrightness(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        label-size="xs"
+        :label="t('imageControls.brightness')"
+        :display-value="`${collage.settings.backgroundImage.brightness}%`"
+        :value="collage.settings.backgroundImage.brightness"
+        :min="0"
+        :max="200"
+        :show-reset="collage.settings.backgroundImage.brightness !== 100"
+        :reset-title="t('imageControls.resetValue')"
+        @input="api.updateBackgroundBrightness"
+        @reset="api.updateBackgroundBrightness(100)"
+      />
 
-      <!-- Contrast -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label for="bg-contrast" class="text-xs font-medium text-ink-2">
-            {{ t('imageControls.contrast') }}: {{ collage.settings.backgroundImage.contrast }}%
-          </label>
-          <ResetButton
-            v-if="collage.settings.backgroundImage.contrast !== 100"
-            :label="t('imageControls.resetValue')"
-            @click="api.updateBackgroundContrast(100)"
-          />
-        </div>
-        <input
-          id="bg-contrast"
-          type="range"
-          :value="collage.settings.backgroundImage.contrast"
-          min="0"
-          max="200"
-          step="1"
-          class="w-full"
-          @input="api.updateBackgroundContrast(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        label-size="xs"
+        :label="t('imageControls.contrast')"
+        :display-value="`${collage.settings.backgroundImage.contrast}%`"
+        :value="collage.settings.backgroundImage.contrast"
+        :min="0"
+        :max="200"
+        :show-reset="collage.settings.backgroundImage.contrast !== 100"
+        :reset-title="t('imageControls.resetValue')"
+        @input="api.updateBackgroundContrast"
+        @reset="api.updateBackgroundContrast(100)"
+      />
 
-      <!-- Saturation -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label for="bg-saturation" class="text-xs font-medium text-ink-2">
-            {{ t('imageControls.saturation') }}: {{ collage.settings.backgroundImage.saturation }}%
-          </label>
-          <ResetButton
-            v-if="collage.settings.backgroundImage.saturation !== 100"
-            :label="t('imageControls.resetValue')"
-            @click="api.updateBackgroundSaturation(100)"
-          />
-        </div>
-        <input
-          id="bg-saturation"
-          type="range"
-          :value="collage.settings.backgroundImage.saturation"
-          min="0"
-          max="200"
-          step="1"
-          class="w-full"
-          @input="api.updateBackgroundSaturation(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        label-size="xs"
+        :label="t('imageControls.saturation')"
+        :display-value="`${collage.settings.backgroundImage.saturation}%`"
+        :value="collage.settings.backgroundImage.saturation"
+        :min="0"
+        :max="200"
+        :show-reset="collage.settings.backgroundImage.saturation !== 100"
+        :reset-title="t('imageControls.resetValue')"
+        @input="api.updateBackgroundSaturation"
+        @reset="api.updateBackgroundSaturation(100)"
+      />
 
-      <!-- Blur -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label for="bg-blur" class="text-xs font-medium text-ink-2">
-            {{ t('canvas.blur') }}: {{ collage.settings.backgroundImage.blur }}px
-          </label>
-          <ResetButton
-            v-if="collage.settings.backgroundImage.blur !== 0"
-            :label="t('imageControls.resetValue')"
-            @click="api.updateBackgroundBlur(0)"
-          />
-        </div>
-        <input
-          id="bg-blur"
-          type="range"
-          :value="collage.settings.backgroundImage.blur"
-          min="0"
-          max="20"
-          step="0.5"
-          class="w-full"
-          @input="api.updateBackgroundBlur(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        label-size="xs"
+        :label="t('canvas.blur')"
+        :display-value="`${collage.settings.backgroundImage.blur}px`"
+        :value="collage.settings.backgroundImage.blur"
+        :min="0"
+        :max="20"
+        :step="0.5"
+        :show-reset="collage.settings.backgroundImage.blur !== 0"
+        :reset-title="t('imageControls.resetValue')"
+        @input="api.updateBackgroundBlur"
+        @reset="api.updateBackgroundBlur(0)"
+      />
     </div>
 
     <p class="text-xs text-ink-2 mt-2">
