@@ -41,7 +41,7 @@
         </div>
 
         <div class="handoff-text">
-          <strong>{{ t('handoff.title', { count: handoff.images.length }) }}</strong>
+          <strong>{{ t('handoff.title', handoff.images.length) }}</strong>
           <span class="handoff-source">{{ t('handoff.from', { tool: sourceLabel }) }}</span>
         </div>
 
@@ -88,6 +88,7 @@
   }>()
 
   const SOURCE_LABELS: Record<string, string> = {
+    bildergalerie: 'Bildergalerie',
     'bilder-batchbearbeitung': 'Bilder-Batchbearbeitung',
     bildkonverter: 'Bildkonverter',
     collagemaker: 'Collage Maker',

@@ -660,7 +660,7 @@
     "discard": "Gespeicherte Daten löschen"
   },
   "handoff": {
-    "title": "{count} Bilder empfangen",
+    "title": "{count} Bild empfangen | {count} Bilder empfangen",
     "from": "von {tool}",
     "accept": "Übernehmen",
     "dismiss": "Verwerfen"
