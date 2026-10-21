@@ -109,6 +109,16 @@ export function prepareHandoff(
 
 // ─── Receiver API ─────────────────────────────────────────────────────────────
 
+function isValidHandoffImage(image: unknown): image is HandoffImage {
+  if (!image || typeof image !== 'object') return false
+  const { name, dataUrl } = image as Partial<HandoffImage>
+  return (
+    typeof name === 'string' &&
+    typeof dataUrl === 'string' &&
+    /^data:image\/(jpeg|png|webp|gif);base64,/.test(dataUrl)
+  )
+}
+
 /**
  * Check if a handoff payload exists and is still valid (< 30 min old).
  * Does NOT consume the data — call consumeHandoff() after user accepts.
@@ -120,17 +130,19 @@ export function checkHandoff(): HandoffPayload | null {
 
     const payload: HandoffPayload = JSON.parse(raw)
 
-    if (Date.now() - payload.timestamp > MAX_AGE_MS) {
+    if (typeof payload.timestamp !== 'number' || Date.now() - payload.timestamp > MAX_AGE_MS) {
       localStorage.removeItem(STORAGE_KEY)
       return null
     }
 
-    if (!payload.images?.length) {
+    // Nur gültige Bild-Data-URLs annehmen; der Speicher ist für alle Tools der Domain beschreibbar
+    const images = Array.isArray(payload.images) ? payload.images.filter(isValidHandoffImage) : []
+    if (!images.length) {
       localStorage.removeItem(STORAGE_KEY)
       return null
     }
 
-    return payload
+    return { ...payload, images }
   } catch {
     localStorage.removeItem(STORAGE_KEY)
     return null

@@ -660,7 +660,7 @@
     "discard": "Delete Saved Data"
   },
   "handoff": {
-    "title": "{count} images received",
+    "title": "{count} image received | {count} images received",
     "from": "from {tool}",
     "accept": "Accept",
     "dismiss": "Dismiss"
