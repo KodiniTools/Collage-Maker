@@ -375,7 +375,12 @@
     "filenameDialogTitle": "Dateiname festlegen",
     "filenameLabel": "Dateiname",
     "filenameConfirm": "Speichern",
-    "filenameCancel": "Abbrechen"
+    "filenameCancel": "Abbrechen",
+    "share": "Teilen",
+    "copy": "Kopieren",
+    "shareTitle": "Meine Collage",
+    "shareReadyTitle": "Collage ist bereit",
+    "shareReadyText": "Dein Browser braucht noch einen Klick, um das Teilen-Menü zu öffnen."
   },
   "controls": {
     "clear": "Alles löschen",
@@ -649,7 +654,10 @@
     "undo": "Rückgängig",
     "dontShowAgain": "Nicht mehr anzeigen",
     "distortApplied": "Verzerrung übernommen",
-    "distortFailed": "Verzerrung konnte nicht übernommen werden"
+    "distortFailed": "Verzerrung konnte nicht übernommen werden",
+    "shareError": "Fehler beim Teilen der Collage",
+    "copySuccess": "Collage als Bild in die Zwischenablage kopiert",
+    "copyError": "Kopieren in die Zwischenablage fehlgeschlagen"
   },
   "autoSave": {
     "restoreTitle": "Vorherige Arbeit gefunden",

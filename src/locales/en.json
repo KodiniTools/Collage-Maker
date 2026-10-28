@@ -375,7 +375,12 @@
     "filenameDialogTitle": "Set filename",
     "filenameLabel": "Filename",
     "filenameConfirm": "Save",
-    "filenameCancel": "Cancel"
+    "filenameCancel": "Cancel",
+    "share": "Share",
+    "copy": "Copy",
+    "shareTitle": "My collage",
+    "shareReadyTitle": "Collage is ready",
+    "shareReadyText": "Your browser needs one more click to open the share menu."
   },
   "controls": {
     "clear": "Clear All",
@@ -649,7 +654,10 @@
     "undo": "Undo",
     "dontShowAgain": "Don't show again",
     "distortApplied": "Distortion applied",
-    "distortFailed": "Could not apply the distortion"
+    "distortFailed": "Could not apply the distortion",
+    "shareError": "Error sharing the collage",
+    "copySuccess": "Collage copied to clipboard as an image",
+    "copyError": "Copying to the clipboard failed"
   },
   "autoSave": {
     "restoreTitle": "Previous Work Found",

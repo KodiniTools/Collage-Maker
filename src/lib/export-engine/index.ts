@@ -9,3 +9,12 @@ export { exportToPdf } from './exportToPdf'
 export type { PdfOptions } from './exportToPdf'
 export { printCanvas, buildPrintDocument, getPrintOrientation, PRINT_FRAME_ID } from './printCanvas'
 export type { PrintCanvasOptions, PrintDocumentOptions, PrintOrientation } from './printCanvas'
+export {
+  canvasToBlob,
+  canShareFileType,
+  canShareImageFiles,
+  shareFile,
+  canCopyImage,
+  copyImageToClipboard,
+} from './shareCanvas'
+export type { ShareResult } from './shareCanvas'
