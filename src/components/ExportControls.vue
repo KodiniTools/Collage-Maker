@@ -3,7 +3,17 @@
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
-  import { renderCollage, exportToPdf, printCanvas } from '@/lib/export-engine'
+  import {
+    renderCollage,
+    exportToPdf,
+    printCanvas,
+    canvasToBlob,
+    canShareFileType,
+    canShareImageFiles,
+    shareFile,
+    canCopyImage,
+    copyImageToClipboard,
+  } from '@/lib/export-engine'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
   import { UiButton, UiDialog, UiIconButton, UiPanel, UiSelect, UiTextField } from '@/components/ui'
 
@@ -190,6 +200,87 @@
     }
   }
 
+  // Teilen / Kopieren: Buttons nur anbieten, wenn der Browser es unterstützt.
+  const canShare = canShareImageFiles()
+  const canCopy = canCopyImage()
+  const isSharing = ref(false)
+  const isCopying = ref(false)
+  // Datei, deren Teilen der Browser mangels Nutzeraktion blockiert hat (v. a. Safari
+  // nach langem Rendern); ein zweiter Klick im Dialog teilt sie ohne neues Rendern.
+  const pendingShareFile = ref<File | null>(null)
+
+  /** Teilen nutzt das gewählte Bildformat; PDF und nicht teilbare Typen werden PNG. */
+  function getShareMimeType(): string {
+    if (exportFormat.value === 'pdf') return 'image/png'
+    const mimeType = getMimeType()
+    return canShareFileType(mimeType) ? mimeType : 'image/png'
+  }
+
+  async function runShare(file: File) {
+    const result = await shareFile(file, t('export.shareTitle'))
+    pendingShareFile.value = result === 'blocked' ? file : null
+  }
+
+  async function shareCollage() {
+    if (isSharing.value) return
+    isSharing.value = true
+    try {
+      const canvas = await renderCollage(buildRenderOptions())
+      const mimeType = getShareMimeType()
+      const blob = await canvasToBlob(canvas, mimeType, exportQuality.value)
+      const extension = mimeType.split('/')[1] === 'jpeg' ? 'jpg' : mimeType.split('/')[1]
+      await runShare(new File([blob], `collage.${extension}`, { type: mimeType }))
+    } catch (error) {
+      console.error('Share error:', error)
+      toast.error(t('toast.shareError'))
+    } finally {
+      isSharing.value = false
+    }
+  }
+
+  async function confirmPendingShare() {
+    const file = pendingShareFile.value
+    pendingShareFile.value = null
+    if (!file) return
+    try {
+      await runShare(file)
+    } catch (error) {
+      console.error('Share error:', error)
+      toast.error(t('toast.shareError'))
+    }
+  }
+
+  function cancelPendingShare() {
+    pendingShareFile.value = null
+  }
+
+  function copyCollage() {
+    if (isCopying.value) return
+    isCopying.value = true
+    // Kein await vor clipboard.write: Safari verlangt den Aufruf synchron im Klick.
+    // Zwischenablage nimmt nur PNG, deshalb Alpha immer erhalten.
+    const pngBlob = renderCollage({ ...buildRenderOptions(), supportsAlpha: true }).then((canvas) =>
+      canvasToBlob(canvas, 'image/png')
+    )
+    let write: Promise<void>
+    try {
+      write = copyImageToClipboard(pngBlob)
+    } catch (error) {
+      write = Promise.reject(error)
+      // Render-Promise läuft weiter; der Fehler wird über `write` gemeldet.
+      pngBlob.catch(() => undefined)
+    }
+    write
+      .then(() => toast.success(t('toast.copySuccess')))
+      .catch((error: unknown) => {
+        console.error('Copy error:', error)
+        toast.error(t('toast.copyError'))
+      })
+      .finally(() => {
+        isCopying.value = false
+      })
+  }
+
   function closePreview() {
     showPreviewModal.value = false
     previewDataUrl.value = null
@@ -260,6 +351,47 @@
           {{ t('export.download') }}
         </UiButton>
 
+        <div v-if="canShare || canCopy" class="flex gap-2" data-testid="share-copy-row">
+          <UiButton
+            v-if="canShare"
+            variant="secondary"
+            class="flex-1"
+            :disabled="collage.images.length === 0 || isSharing"
+            @click="shareCollage"
+          >
+            <template #icon>
+              <LoadingSpinner v-if="isSharing" />
+              <svg v-else fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                />
+              </svg>
+            </template>
+            {{ t('export.share') }}
+          </UiButton>
+          <UiButton
+            v-if="canCopy"
+            variant="secondary"
+            class="flex-1"
+            :disabled="collage.images.length === 0 || isCopying"
+            @click="copyCollage"
+          >
+            <template #icon>
+              <LoadingSpinner v-if="isCopying" />
+              <svg v-else fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </template>
+            {{ t('export.copy') }}
+          </UiButton>
+        </div>
+
         <UiButton
           variant="secondary"
           block
@@ -311,6 +443,25 @@
         </UiButton>
         <UiButton variant="primary" @click="confirmFilename">
           {{ t('export.filenameConfirm') }}
+        </UiButton>
+      </template>
+    </UiDialog>
+
+    <!-- Teilen erneut bestätigen (Browser hat das Teilen nach dem Rendern blockiert) -->
+    <UiDialog
+      teleport-to="#modal-portal"
+      :open="pendingShareFile !== null"
+      :title="t('export.shareReadyTitle')"
+      :description="t('export.shareReadyText')"
+      :close-label="t('common.close')"
+      @close="cancelPendingShare"
+    >
+      <template #footer>
+        <UiButton variant="secondary" @click="cancelPendingShare">
+          {{ t('common.cancel') }}
+        </UiButton>
+        <UiButton variant="primary" @click="confirmPendingShare">
+          {{ t('export.share') }}
         </UiButton>
       </template>
     </UiDialog>
