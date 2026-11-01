@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import type { Theme, Locale } from '@/types'
-import { i18n } from '@/i18n'
+import { i18n, initialLocale } from '@/i18n'
 
 // SSI nav translations — keys must match the data-i18n attributes in nav.html
 const ssiNavTranslations: Record<string, Record<string, string>> = {
@@ -63,7 +63,8 @@ const ssiNavTranslations: Record<string, Record<string, string>> = {
 
 export const useSettingsStore = defineStore('settings', () => {
   const theme = ref<Theme>((localStorage.getItem('theme') as Theme) || 'light')
-  const locale = ref<Locale>((localStorage.getItem('locale') as Locale) || 'de')
+  // Startsprache inkl. ?lang=de|en (hreflang-Ziel), siehe i18n.ts
+  const locale = ref<Locale>(initialLocale)
 
   // MutationObserver state (declared early because theme watcher runs immediately)
   let themeObserver: MutationObserver | null = null

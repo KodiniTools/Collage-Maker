@@ -4,6 +4,7 @@ import {
   ogLocale,
   ogLocaleAlternate,
   buildSeoHead,
+  resolveInitialLocale,
   OG_IMAGE,
   SITE_NAME,
 } from '@/config/seo'
@@ -52,5 +53,28 @@ describe('SEO helpers', () => {
     expect(head.siteName).toBe(SITE_NAME)
     expect(head.ogLocale).toBe('de_DE')
     expect(head.ogLocaleAlternate).toBe('en_US')
+    expect(head.alternates).toEqual([
+      { hreflang: 'de', href: 'https://kodinitools.com/collagemaker/editor' },
+      { hreflang: 'en', href: 'https://kodinitools.com/collagemaker/editor?lang=en' },
+      { hreflang: 'x-default', href: 'https://kodinitools.com/collagemaker/editor' },
+    ])
+  })
+
+  it('englische Fassung: Canonical mit ?lang=en', () => {
+    expect(canonicalUrl('/', 'en')).toBe('https://kodinitools.com/collagemaker/?lang=en')
+    expect(canonicalUrl('/faq?lang=en', 'en')).toBe(
+      'https://kodinitools.com/collagemaker/faq?lang=en'
+    )
+    const head = buildSeoHead({ title: 'T', description: 'D', path: '/faq', locale: 'en' })
+    expect(head.canonical).toBe('https://kodinitools.com/collagemaker/faq?lang=en')
+    expect(head.url).toBe(head.canonical)
+  })
+
+  it('resolveInitialLocale: ?lang vor Speicher, sonst Deutsch', () => {
+    expect(resolveInitialLocale('?lang=en', 'de')).toBe('en')
+    expect(resolveInitialLocale('?x=1&lang=de', 'en')).toBe('de')
+    expect(resolveInitialLocale('?lang=fr', 'en')).toBe('en')
+    expect(resolveInitialLocale('', null)).toBe('de')
+    expect(resolveInitialLocale('', 'xx')).toBe('de')
   })
 })

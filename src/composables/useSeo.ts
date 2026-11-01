@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { buildSeoHead, type SeoHead, type SeoKey } from '@/config/seo'
 
 /**
- * Hält die <head>-SEO-Tags (Titel, Description, Canonical, Open Graph, Twitter)
+ * Hält die <head>-SEO-Tags (Titel, Description, Canonical, hreflang, Open Graph, Twitter)
  * synchron zur aktuellen Route und Sprache.
  *
  * Die statische index.html enthält bereits sinnvolle Standardwerte (DE,
@@ -38,12 +38,26 @@ export function useSeo() {
     el.setAttribute('href', href)
   }
 
+  function setAlternate(hreflang: string, href: string) {
+    let el = document.head.querySelector<HTMLLinkElement>(
+      `link[rel="alternate"][hreflang="${hreflang}"]`
+    )
+    if (!el) {
+      el = document.createElement('link')
+      el.setAttribute('rel', 'alternate')
+      el.setAttribute('hreflang', hreflang)
+      document.head.appendChild(el)
+    }
+    el.setAttribute('href', href)
+  }
+
   function apply(head: SeoHead, lang: string) {
     document.title = head.title
     document.documentElement.lang = lang
 
     setMeta('name', 'description', head.description)
     setLink('canonical', head.canonical)
+    for (const { hreflang, href } of head.alternates) setAlternate(hreflang, href)
 
     // Open Graph
     setMeta('property', 'og:title', head.title)
