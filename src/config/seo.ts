@@ -32,16 +32,34 @@ export function ogLocaleAlternate(locale: string): string {
   return locale === 'en' ? OG_LOCALES.de : OG_LOCALES.en
 }
 
+/** Startsprache: ?lang=de|en (hreflang-Ziel), dann gespeicherte Wahl, sonst Deutsch. */
+export function resolveInitialLocale(search: string, stored: string | null): 'de' | 'en' {
+  const fromUrl = new URLSearchParams(search).get('lang')
+  if (fromUrl === 'de' || fromUrl === 'en') return fromUrl
+  return stored === 'en' ? 'en' : 'de'
+}
+
 /**
  * Absolute, kanonische URL für einen (Router-relativen) Pfad.
  * Query-String und Fragment werden entfernt, ein Trailing-Slash normalisiert.
+ * Englisch bekommt ?lang=en (Deutsch ist die URL ohne Parameter).
  */
-export function canonicalUrl(path: string): string {
+export function canonicalUrl(path: string, locale = 'de'): string {
   const clean = (path || '/').split('?')[0].split('#')[0]
-  if (clean === '' || clean === '/') {
-    return `${SITE_URL}${APP_BASE}/`
-  }
-  return `${SITE_URL}${APP_BASE}${clean.replace(/\/+$/, '')}`
+  const url =
+    clean === '' || clean === '/'
+      ? `${SITE_URL}${APP_BASE}/`
+      : `${SITE_URL}${APP_BASE}${clean.replace(/\/+$/, '')}`
+  return locale === 'en' ? `${url}?lang=en` : url
+}
+
+/** hreflang-Ziele eines Pfads: de, en (?lang=en), x-default = de. */
+export function alternateUrls(path: string): { hreflang: string; href: string }[] {
+  return [
+    { hreflang: 'de', href: canonicalUrl(path, 'de') },
+    { hreflang: 'en', href: canonicalUrl(path, 'en') },
+    { hreflang: 'x-default', href: canonicalUrl(path, 'de') },
+  ]
 }
 
 export interface SeoInput {
@@ -60,11 +78,12 @@ export interface SeoHead {
   siteName: string
   ogLocale: string
   ogLocaleAlternate: string
+  alternates: { hreflang: string; href: string }[]
 }
 
 /** Baut aus übersetzten Texten + Pfad + Sprache das vollständige Head-Modell. */
 export function buildSeoHead(input: SeoInput): SeoHead {
-  const url = canonicalUrl(input.path)
+  const url = canonicalUrl(input.path, input.locale)
   return {
     title: input.title,
     description: input.description,
@@ -74,5 +93,6 @@ export function buildSeoHead(input: SeoInput): SeoHead {
     siteName: SITE_NAME,
     ogLocale: ogLocale(input.locale),
     ogLocaleAlternate: ogLocaleAlternate(input.locale),
+    alternates: alternateUrls(input.path),
   }
 }
