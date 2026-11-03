@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import ControlSlider from '@/components/image-controls/ControlSlider.vue'
   import { UiSwitch } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
@@ -24,18 +25,15 @@
 
     <!-- Rastergröße -->
     <div v-if="collage.settings.gridEnabled" class="mt-3">
-      <label for="canvas-grid-size" class="block text-xs text-ink-2 mb-1">
-        {{ t('grid.size') }}: {{ collage.settings.gridSize }}px
-      </label>
-      <input
-        id="canvas-grid-size"
-        type="range"
+      <ControlSlider
+        label-size="xs"
+        :label="t('grid.size')"
+        :display-value="`${collage.settings.gridSize}px`"
         :value="collage.settings.gridSize"
-        min="10"
-        max="200"
-        step="5"
-        class="w-full"
-        @input="api.updateGridSize(Number(($event.target as HTMLInputElement).value))"
+        :min="10"
+        :max="200"
+        :step="5"
+        @input="api.updateGridSize"
       />
       <div class="flex justify-between text-xs text-ink-2 mt-1">
         <span>10px</span>

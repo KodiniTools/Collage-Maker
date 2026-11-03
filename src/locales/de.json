@@ -578,6 +578,10 @@
     "cancel": "Abbrechen",
     "close": "Schließen"
   },
+  "slider": {
+    "value": "Wert",
+    "reset": "Zurücksetzen"
+  },
   "shortcuts": {
     "title": "Tastaturkurzbefehle",
     "close": "Schließen",

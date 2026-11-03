@@ -578,6 +578,10 @@
     "cancel": "Cancel",
     "close": "Close"
   },
+  "slider": {
+    "value": "Value",
+    "reset": "Reset"
+  },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
     "close": "Close",

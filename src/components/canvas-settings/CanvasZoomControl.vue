@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
-  import { UiButton } from '@/components/ui'
+  import { SliderField, UiButton } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
   const props = defineProps<{ api: CanvasSettingsApi }>()
@@ -20,15 +20,15 @@
         {{ t('canvas.resetView') }}
       </UiButton>
     </div>
-    <input
+    <!-- Regler und Zahlenfeld in Prozent (25–400), intern bleibt der Faktor 0,25–4 -->
+    <SliderField
       id="canvas-zoom"
-      type="range"
-      :value="collage.canvasZoom"
-      min="0.25"
-      max="4"
-      step="0.05"
-      class="w-full"
-      @input="api.updateZoom(Number(($event.target as HTMLInputElement).value))"
+      :aria-label="t('canvas.zoom')"
+      :model-value="Math.round(collage.canvasZoom * 100)"
+      :min="25"
+      :max="400"
+      :step="5"
+      @update:model-value="api.updateZoom($event / 100)"
     />
     <p class="text-xs text-ink-2 mt-1">
       {{ t('canvas.zoomHint') }}

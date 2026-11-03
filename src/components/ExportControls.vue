@@ -15,6 +15,7 @@
     copyImageToClipboard,
   } from '@/lib/export-engine'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
+  import ControlSlider from '@/components/image-controls/ControlSlider.vue'
   import { UiButton, UiDialog, UiIconButton, UiPanel, UiSelect, UiTextField } from '@/components/ui'
 
   type ExportFormat = 'png' | 'png-transparent' | 'jpeg' | 'webp' | 'pdf'
@@ -299,20 +300,17 @@
     <div class="space-y-4">
       <UiSelect v-model="formatModel" :options="formatOptions" :label="t('export.format')" />
 
-      <div v-if="hasQuality">
-        <label for="export-quality" class="block text-sm font-medium mb-2">
-          {{ t('export.quality') }}: {{ Math.round(exportQuality * 100) }}%
-        </label>
-        <input
-          id="export-quality"
-          v-model.number="exportQuality"
-          type="range"
-          min="0.1"
-          max="1"
-          step="0.05"
-          class="w-full"
-        />
-      </div>
+      <!-- Regler und Zahlenfeld in Prozent (10–100), intern bleibt der Faktor 0,1–1 -->
+      <ControlSlider
+        v-if="hasQuality"
+        :label="t('export.quality')"
+        :display-value="`${Math.round(exportQuality * 100)}%`"
+        :value="Math.round(exportQuality * 100)"
+        :min="10"
+        :max="100"
+        :step="5"
+        @input="exportQuality = $event / 100"
+      />
 
       <div class="flex flex-col gap-2">
         <UiButton
