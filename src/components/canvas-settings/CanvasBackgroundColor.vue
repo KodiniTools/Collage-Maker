@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { ColorField } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
   const props = defineProps<{ api: CanvasSettingsApi }>()
@@ -15,11 +16,12 @@
       {{ t('canvas.background') }}
     </label>
     <div class="flex gap-2">
-      <input
-        type="color"
-        :value="collage.settings.backgroundColor"
-        class="w-16 h-10 rounded-sm border border-line-strong cursor-pointer"
-        @input="api.updateBackgroundColor(($event.target as HTMLInputElement).value)"
+      <ColorField
+        teleport-to="#modal-portal"
+        :model-value="collage.settings.backgroundColor"
+        :label="t('canvas.background')"
+        class="!w-16 !h-10 rounded-sm"
+        @update:model-value="api.updateBackgroundColor"
       />
       <input
         type="text"

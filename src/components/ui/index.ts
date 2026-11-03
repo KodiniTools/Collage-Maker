@@ -1,9 +1,10 @@
 /**
  * UI-Bausteine des gemeinsamen KodiniTools-Designs (Kopie aus
  * KodiniTools/Playlist-Generator, src/components/ui, Stand 89bb48e, ohne UiFileList;
- * UiSwitch und SliderField (+ range.css) aus Stand a1132de).
+ * UiSwitch, SliderField (+ range.css) und ColorField (+ utils/color.ts) aus Stand a1132de).
  * Alle Komponenten nutzen ausschließlich --ds-* Tokens aus src/design-system/tokens-v2.css.
  */
+export { default as ColorField } from './ColorField.vue'
 export { default as SliderField } from './SliderField.vue'
 export { default as UiButton } from './UiButton.vue'
 export { default as UiCallout } from './UiCallout.vue'

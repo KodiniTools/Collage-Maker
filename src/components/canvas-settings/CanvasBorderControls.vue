@@ -2,7 +2,7 @@
   import { useI18n } from 'vue-i18n'
   import { computed } from 'vue'
   import ControlSlider from '@/components/image-controls/ControlSlider.vue'
-  import { UiSelect, UiSwitch } from '@/components/ui'
+  import { ColorField, UiSelect, UiSwitch } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
   import type { CanvasBorderSettings } from '@/types'
 
@@ -60,12 +60,13 @@
           {{ t('imageControls.borderColor') }}
         </label>
         <div class="flex gap-2">
-          <input
+          <ColorField
             id="canvas-border-color"
-            type="color"
-            :value="collage.settings.border.color"
-            class="w-12 h-9 rounded-sm border border-line-strong cursor-pointer"
-            @input="api.updateBorderColor(($event.target as HTMLInputElement).value)"
+            teleport-to="#modal-portal"
+            :model-value="collage.settings.border.color"
+            :label="t('imageControls.borderColor')"
+            class="!w-12 !h-9 rounded-sm"
+            @update:model-value="api.updateBorderColor"
           />
           <input
             type="text"

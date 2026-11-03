@@ -582,6 +582,14 @@
     "value": "Wert",
     "reset": "Zurücksetzen"
   },
+  "color": {
+    "pick": "Farbe wählen",
+    "hue": "Farbton",
+    "saturation": "Sättigung",
+    "lightness": "Helligkeit",
+    "hex": "Hex-Wert",
+    "invalidHex": "Ungültiger Hex-Wert (z. B. #ff8800)"
+  },
   "shortcuts": {
     "title": "Tastaturkurzbefehle",
     "close": "Schließen",
