@@ -3,7 +3,7 @@
   import { useCollageStore } from '@/stores/collage'
   import { useToastStore } from '@/stores/toast'
   import { useI18n } from 'vue-i18n'
-  import { UiButton, UiPanel } from '@/components/ui'
+  import { UiButton, UiPanel, UiSwitch } from '@/components/ui'
   import { compressImages, copyImagesInMemory } from '@/utils/imageCompression'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
@@ -186,20 +186,10 @@
     </div>
 
     <!-- Originalauflösung beibehalten -->
-    <label
-      class="flex items-start gap-2 mt-3 cursor-pointer select-none"
-      :title="t('upload.keepOriginalHint')"
-    >
-      <input
-        v-model="keepOriginal"
-        type="checkbox"
-        class="mt-0.5 w-4 h-4 accent-accent shrink-0 cursor-pointer"
-      />
-      <span class="text-xs text-ink-2">
-        {{ t('upload.keepOriginal') }}
-        <span class="block text-xs text-ink-3">{{ t('upload.keepOriginalHint') }}</span>
-      </span>
-    </label>
+    <div class="mt-3" :title="t('upload.keepOriginalHint')">
+      <UiSwitch v-model="keepOriginal" :label="t('upload.keepOriginal')" />
+      <p class="mt-1 text-xs text-ink-3">{{ t('upload.keepOriginalHint') }}</p>
+    </div>
 
     <!-- Files input (no webkitdirectory) -->
     <input

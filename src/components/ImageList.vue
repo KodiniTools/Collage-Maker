@@ -5,7 +5,14 @@
   import { useI18n } from 'vue-i18n'
   import type { CollageImage } from '@/types'
   import { useGalleryTouchDrag } from '@/composables/useGalleryTouchDrag'
-  import { UiButton, UiDialog, UiEmptyState, UiIconButton, UiPanel } from '@/components/ui'
+  import {
+    UiButton,
+    UiDialog,
+    UiEmptyState,
+    UiIconButton,
+    UiPanel,
+    UiSwitch,
+  } from '@/components/ui'
 
   const collage = useCollageStore()
   const { selectedGalleryIds, images } = storeToRefs(collage)
@@ -507,14 +514,7 @@
         <p v-if="deleteAffectsBackground" class="text-sm text-danger font-medium">
           {{ t('gallery.deleteConfirmBackground') }}
         </p>
-        <label class="flex items-center gap-2 text-sm text-ink-2 cursor-pointer select-none">
-          <input
-            v-model="dontAskAgain"
-            type="checkbox"
-            class="w-4 h-4 accent-accent cursor-pointer"
-          />
-          {{ t('gallery.dontAskAgain') }}
-        </label>
+        <UiSwitch v-model="dontAskAgain" :label="t('gallery.dontAskAgain')" />
       </div>
       <template #footer>
         <UiButton variant="secondary" @click="cancelDelete">
