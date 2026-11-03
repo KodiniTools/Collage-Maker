@@ -70,6 +70,23 @@ test.describe('Editor (Smoke)', () => {
     await expect(page.getByText('Zoom: 100%')).toBeVisible()
   })
 
+  test('Hintergrundfarbe über ColorField (HSL-Regler und Hex-Feld)', async ({ page }) => {
+    const swatch = page.getByRole('button', { name: /^Hintergrund #/ })
+    await expect(swatch).toHaveAttribute('aria-expanded', 'false')
+    await swatch.click()
+
+    const panel = page.getByRole('dialog', { name: 'Hintergrund' })
+    await expect(panel.getByRole('slider')).toHaveCount(3)
+    const hex = panel.locator('input.color-field__hex')
+    await hex.fill('#ff8800')
+    await hex.press('Enter')
+    await expect(page.getByPlaceholder('#ffffff')).toHaveValue('#ff8800')
+
+    await page.keyboard.press('Escape')
+    await expect(panel).toBeHidden()
+    await expect(swatch).toHaveAccessibleName('Hintergrund #ff8800')
+  })
+
   test('Schalter (UiSwitch) für Raster, Seitenverhältnis und Originalauflösung', async ({
     page,
   }) => {

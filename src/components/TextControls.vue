@@ -5,6 +5,7 @@
   import ControlSlider from './image-controls/ControlSlider.vue'
   import { availableFonts } from '@/assets/fonts/fontList'
   import {
+    ColorField,
     UiButton,
     UiEmptyState,
     UiIconButton,
@@ -275,12 +276,13 @@
       <div>
         <label for="text-color" class="block text-sm font-medium mb-2">{{ t('text.color') }}</label>
         <div class="flex gap-2">
-          <input
+          <ColorField
             id="text-color"
-            type="color"
-            :value="collage.selectedText.color"
-            class="w-16 h-9 rounded-sm border border-line-strong cursor-pointer"
-            @input="updateColor(($event.target as HTMLInputElement).value)"
+            teleport-to="#modal-portal"
+            :model-value="collage.selectedText.color"
+            :label="t('text.color')"
+            class="!w-16 !h-9 rounded-sm"
+            @update:model-value="updateColor"
           />
           <input
             type="text"
@@ -352,12 +354,13 @@
               {{ t('text.shadowColor') }}
             </label>
             <div class="flex gap-2">
-              <input
+              <ColorField
                 id="text-shadow-color"
-                type="color"
-                :value="collage.selectedText.shadowColor"
-                class="w-12 h-7 rounded-sm border border-line-strong cursor-pointer"
-                @input="updateShadowColor(($event.target as HTMLInputElement).value)"
+                teleport-to="#modal-portal"
+                :model-value="collage.selectedText.shadowColor"
+                :label="t('text.shadowColor')"
+                class="!w-12 !h-7 rounded-sm"
+                @update:model-value="updateShadowColor"
               />
               <input
                 type="text"
@@ -405,12 +408,13 @@
               {{ t('text.strokeColor') }}
             </label>
             <div class="flex gap-2">
-              <input
+              <ColorField
                 id="text-stroke-color"
-                type="color"
-                :value="collage.selectedText.strokeColor"
-                class="w-12 h-7 rounded-sm border border-line-strong cursor-pointer"
-                @input="updateStrokeColor(($event.target as HTMLInputElement).value)"
+                teleport-to="#modal-portal"
+                :model-value="collage.selectedText.strokeColor"
+                :label="t('text.strokeColor')"
+                class="!w-12 !h-7 rounded-sm"
+                @update:model-value="updateStrokeColor"
               />
               <input
                 type="text"

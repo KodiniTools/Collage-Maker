@@ -1,6 +1,8 @@
 <script setup lang="ts">
+  import { ColorField } from '@/components/ui'
+
   /**
-   * Farbwähler bestehend aus Color-Picker und synchronisiertem Textfeld.
+   * Farbwähler bestehend aus ColorField und synchronisiertem Textfeld.
    * Wird für Rahmen-, Rahmenschatten- und Schattenfarbe verwendet.
    */
   withDefaults(
@@ -28,14 +30,12 @@
   <div>
     <label class="block text-xs text-ink-2 mb-1">{{ label }}</label>
     <div class="flex gap-2">
-      <input
-        type="color"
-        :value="value"
-        :class="[
-          'rounded-sm border border-line-strong cursor-pointer',
-          variant === 'sm' ? 'w-12 h-8' : 'w-12 h-10',
-        ]"
-        @input="onInput"
+      <ColorField
+        teleport-to="#modal-portal"
+        :model-value="value"
+        :label="label"
+        :class="['rounded-sm', variant === 'sm' ? '!w-12 !h-8' : '!w-12 !h-10']"
+        @update:model-value="emit('input', $event)"
       />
       <input
         type="text"

@@ -18,36 +18,38 @@ Alle Komponenten:
 import { UiButton, UiPanel, UiTextField } from '@/components/ui'
 ```
 
-| Komponente           | Zweck                                                                 | Wichtige Props / Events                                                                                                                                        |
-| -------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UiButton`           | Textbutton; `to` = RouterLink, `href` = a                             | `variant` primary · secondary · ghost · danger, `size` sm · md · lg, `block`, Slot `icon`                                                                      |
-| `UiIconButton`       | Quadratischer Icon-Button                                             | `label` (Pflicht, wird aria-label und title), `variant` ghost · secondary · primary, `size` sm · md, `round`, `pressed`                                        |
-| `UiPanel`            | Flache Fläche mit Kopfzeile                                           | `title`, `headingLevel` 2 · 3, `count`, `padded`, Slot `actions`                                                                                               |
-| `UiCallout`          | Ruhiger Hinweis im Textfluss                                          | `type` info · success · warning · danger, `title`, Slot default                                                                                                |
-| `UiEmptyState`       | Leerzustand                                                           | `title`, `text`, Slots `icon` · `action`                                                                                                                       |
-| `UiSegmentedControl` | Eine Option aus wenigen, Radiogroup-Muster                            | `v-model` (string), `options` `{ value, label, disabled? }`, `label`, `size`; Pfeiltasten wechseln                                                             |
-| `UiSelect`           | Natives Select im System-Look                                         | `v-model` (string), `options`, `label` (Pflicht), `inline`, `labelHidden`, `size`; Attrs → select                                                              |
-| `UiSwitch`           | Schiebeschalter An/Aus (32 × 18), `role="switch"`, aus dem Visualizer | `v-model` (boolean), `label` (Pflicht; sichtbar rechts oder `labelHidden`), `id`, `disabled`                                                                   |
-| `UiTextField`        | Einzeiliges Textfeld mit Label                                        | `v-model`, `label`, `hint`, `error` (aria-invalid, role=alert), `required`, `disabled`, Attrs → input                                                          |
-| `UiDialog`           | Modaler Dialog (Teleport, hier `#modal-portal`)                       | `open`, `title`, `description`, `closeLabel` (Default: i18n `common.close`), `size` md · lg, `teleportTo`, `id`, Slots default · `footer`; Event `close`       |
-| `UiToast`            | Benachrichtigung                                                      | `message`, `type` success · error · warning · info, `actionLabel`, `dismissLabel` (Default: i18n `common.close`), `dismissOnClick`; Events `action`, `dismiss` |
-| `UiKbd`              | Tastenkombination                                                     | `keys: string[]`                                                                                                                                               |
+| Komponente           | Zweck                                                                                                 | Wichtige Props / Events                                                                                                                                        |
+| -------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `UiButton`           | Textbutton; `to` = RouterLink, `href` = a                                                             | `variant` primary · secondary · ghost · danger, `size` sm · md · lg, `block`, Slot `icon`                                                                      |
+| `UiIconButton`       | Quadratischer Icon-Button                                                                             | `label` (Pflicht, wird aria-label und title), `variant` ghost · secondary · primary, `size` sm · md, `round`, `pressed`                                        |
+| `UiPanel`            | Flache Fläche mit Kopfzeile                                                                           | `title`, `headingLevel` 2 · 3, `count`, `padded`, Slot `actions`                                                                                               |
+| `UiCallout`          | Ruhiger Hinweis im Textfluss                                                                          | `type` info · success · warning · danger, `title`, Slot default                                                                                                |
+| `UiEmptyState`       | Leerzustand                                                                                           | `title`, `text`, Slots `icon` · `action`                                                                                                                       |
+| `UiSegmentedControl` | Eine Option aus wenigen, Radiogroup-Muster                                                            | `v-model` (string), `options` `{ value, label, disabled? }`, `label`, `size`; Pfeiltasten wechseln                                                             |
+| `UiSelect`           | Natives Select im System-Look                                                                         | `v-model` (string), `options`, `label` (Pflicht), `inline`, `labelHidden`, `size`; Attrs → select                                                              |
+| `ColorField`         | Farbfeld mit HSL-Reglern und Hex-Feld, ersetzt `<input type="color">`; Panel nach `body` teleportiert | `v-model` (`#rrggbb`), `label`, `disabled`; Attrs → Button; Events `start`, `change`, `open`, `close`                                                          |
+| `UiSwitch`           | Schiebeschalter An/Aus (32 × 18), `role="switch"`, aus dem Visualizer                                 | `v-model` (boolean), `label` (Pflicht; sichtbar rechts oder `labelHidden`), `id`, `disabled`                                                                   |
+| `UiTextField`        | Einzeiliges Textfeld mit Label                                                                        | `v-model`, `label`, `hint`, `error` (aria-invalid, role=alert), `required`, `disabled`, Attrs → input                                                          |
+| `UiDialog`           | Modaler Dialog (Teleport, hier `#modal-portal`)                                                       | `open`, `title`, `description`, `closeLabel` (Default: i18n `common.close`), `size` md · lg, `teleportTo`, `id`, Slots default · `footer`; Event `close`       |
+| `UiToast`            | Benachrichtigung                                                                                      | `message`, `type` success · error · warning · info, `actionLabel`, `dismissLabel` (Default: i18n `common.close`), `dismissOnClick`; Events `action`, `dismiss` |
+| `UiKbd`              | Tastenkombination                                                                                     | `keys: string[]`                                                                                                                                               |
 
 ## Einsatz im Collage Maker
 
-| Stelle                                        | Komponente                                        |
-| --------------------------------------------- | ------------------------------------------------- |
-| Werkzeug- und Inspektor-Panels                | `UiPanel` (Titel, Zähler, Aktion rechts)          |
-| Kopfzeile, Zoom-Pill, Quick-Action-Toolbar    | `UiIconButton`, `UiButton variant="secondary"`    |
-| Inspektor-Reiter, Vorlagen-Filter, Textausr.  | `UiSegmentedControl` (Proxy für Union-Typen)      |
-| Exportformat, Rahmenstil, Hintergrund-Fit     | `UiSelect`                                        |
-| An/Aus (Schatten, Rahmen, Raster, Optionen)   | `UiSwitch`; Kopfzeile: Text links, `labelHidden`  |
-| Wiederherstellen, Dateiname, Löschen, Vorlage | `UiDialog` + `UiButton` im Footer                 |
-| Tastaturkürzel                                | `UiDialog size="lg"`, `UiKbd`, `UiCallout`        |
-| Toasts                                        | `UiToast` in `ToastContainer` (Teleport, z-toast) |
-| Hinweise, Warnungen                           | `UiCallout`                                       |
-| Leere Listen, keine Auswahl                   | `UiEmptyState`                                    |
-| Zurücksetzen neben Slidern                    | `ResetButton` (Hülle um `UiIconButton size="sm"`) |
+| Stelle                                        | Komponente                                                 |
+| --------------------------------------------- | ---------------------------------------------------------- |
+| Werkzeug- und Inspektor-Panels                | `UiPanel` (Titel, Zähler, Aktion rechts)                   |
+| Kopfzeile, Zoom-Pill, Quick-Action-Toolbar    | `UiIconButton`, `UiButton variant="secondary"`             |
+| Inspektor-Reiter, Vorlagen-Filter, Textausr.  | `UiSegmentedControl` (Proxy für Union-Typen)               |
+| Exportformat, Rahmenstil, Hintergrund-Fit     | `UiSelect`                                                 |
+| An/Aus (Schatten, Rahmen, Raster, Optionen)   | `UiSwitch`; Kopfzeile: Text links, `labelHidden`           |
+| Farben (Text, Rahmen, Schatten, Hintergrund)  | `ColorField` + Hex-Textfeld daneben; Größe per `!w-* !h-*` |
+| Wiederherstellen, Dateiname, Löschen, Vorlage | `UiDialog` + `UiButton` im Footer                          |
+| Tastaturkürzel                                | `UiDialog size="lg"`, `UiKbd`, `UiCallout`                 |
+| Toasts                                        | `UiToast` in `ToastContainer` (Teleport, z-toast)          |
+| Hinweise, Warnungen                           | `UiCallout`                                                |
+| Leere Listen, keine Auswahl                   | `UiEmptyState`                                             |
+| Zurücksetzen neben Slidern                    | `ResetButton` (Hülle um `UiIconButton size="sm"`)          |
 
 Union-typisierte Zustände (`'png' | 'jpeg' | …`) binden an `UiSegmentedControl`/`UiSelect` über
 einen `computed`-Proxy mit `get`/`set`, damit der Store seinen engen Typ behält.

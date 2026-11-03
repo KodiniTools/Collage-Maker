@@ -582,6 +582,14 @@
     "value": "Value",
     "reset": "Reset"
   },
+  "color": {
+    "pick": "Pick color",
+    "hue": "Hue",
+    "saturation": "Saturation",
+    "lightness": "Lightness",
+    "hex": "Hex value",
+    "invalidHex": "Invalid hex value (e.g. #ff8800)"
+  },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
     "close": "Close",
