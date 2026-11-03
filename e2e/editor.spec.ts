@@ -1,0 +1,99 @@
+import { expect, test } from '@playwright/test'
+import { collectPageErrors, imageFile, prepare, uploadImages } from './helpers'
+
+test.describe('Editor (Smoke)', () => {
+  let errors: string[] = []
+
+  test.beforeEach(async ({ page }) => {
+    errors = collectPageErrors(page)
+    await prepare(page, 'de')
+    await page.goto('./editor')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bilder-Collage-Macher')
+  })
+
+  test.afterEach(() => {
+    expect(errors).toEqual([])
+  })
+
+  test('Bilder hochladen legt sie auf die Leinwand', async ({ page }) => {
+    await uploadImages(page, [imageFile('a.png'), imageFile('b.png', 30, 40)])
+
+    await expect(page.getByText('Bilder auf Canvas (2)')).toBeVisible()
+    await expect(page.getByRole('img', { name: 'Bild 1' })).toBeVisible()
+    await expect(page.getByRole('img', { name: 'Bild 2' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Rückgängig (Ctrl+Z)' })).toBeEnabled()
+  })
+
+  test('Layout wechseln markiert das gewählte Layout', async ({ page }) => {
+    await page
+      .getByRole('navigation', { name: 'Werkzeuge' })
+      .getByRole('button', { name: 'Layout' })
+      .click()
+    const layouts = page.getByRole('group', { name: 'Layout' })
+    await expect(layouts.getByRole('button', { name: 'Grid 3×3' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+
+    await layouts.getByRole('button', { name: 'Grid 2×2' }).click()
+
+    await expect(layouts.getByRole('button', { name: 'Grid 2×2' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+    await expect(layouts.getByRole('button', { name: 'Grid 3×3' })).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    )
+  })
+
+  test('Leinwandbreite über Zahlenfeld und Regler', async ({ page }) => {
+    const panel = page.getByRole('region', { name: 'Canvas-Größe' })
+    const slider = panel.getByRole('slider', { name: 'Breite' })
+    await expect(slider).toHaveValue('700')
+
+    await slider.fill('900')
+    await expect(panel.getByText('Breite: 900px')).toBeVisible()
+
+    const spinner = panel.getByRole('spinbutton', { name: /^Breite/ })
+    await spinner.fill('800')
+    await expect(slider).toHaveValue('800')
+  })
+
+  test('Export: Vorschau öffnet und Herunterladen liefert eine PNG-Datei', async ({ page }) => {
+    await uploadImages(page, [imageFile('a.png')])
+    await expect(page.getByText('Bilder auf Canvas (1)')).toBeVisible()
+
+    await page.getByRole('radio', { name: 'Export' }).click()
+    const exportPanel = page.getByRole('region', { name: 'Exportieren' })
+    await expect(exportPanel.getByRole('combobox', { name: 'Format' })).toHaveValue(/png/i)
+
+    await exportPanel.getByRole('button', { name: 'Vorschau' }).click()
+    const previewTitle = page.getByRole('heading', { name: 'Vorschau der Collage' })
+    await expect(previewTitle).toBeVisible()
+    await expect(page.getByRole('img', { name: 'Vorschau der fertigen Collage' })).toBeVisible()
+    // Die breite Vorschau ist (noch) kein UiDialog: per Überschrift eingrenzen.
+    const preview = page.locator('#modal-portal > div').filter({ has: previewTitle })
+    await preview.getByRole('button', { name: 'Schließen' }).first().click()
+    await expect(previewTitle).toBeHidden()
+
+    await exportPanel.getByRole('button', { name: 'Herunterladen' }).click()
+    const dialog = page.getByRole('dialog', { name: 'Dateiname festlegen' })
+    await expect(dialog).toBeVisible()
+    await dialog.getByLabel('Dateiname').fill('meine-collage')
+
+    const downloadPromise = page.waitForEvent('download')
+    await dialog.getByRole('button', { name: 'Speichern' }).click()
+    const download = await downloadPromise
+    expect(download.suggestedFilename()).toBe('meine-collage.png')
+    await expect(dialog).toBeHidden()
+  })
+
+  test('Tastenkürzel-Dialog öffnet und schließt mit Escape', async ({ page }) => {
+    await page.getByRole('button', { name: 'Tastaturkurzbefehle' }).click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
+  })
+})

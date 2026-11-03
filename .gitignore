@@ -30,6 +30,9 @@ dist-ssr
 
 # Testing
 coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
 .nyc_output
 
 # Build artifacts

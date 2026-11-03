@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
@@ -24,6 +25,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // Playwright-Specs laufen über `npm run test:e2e`, nicht in Vitest
+    exclude: [...configDefaults.exclude, 'e2e/**'],
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
