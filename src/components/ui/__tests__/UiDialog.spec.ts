@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
+import { i18n } from '@/i18n'
 import UiDialog from '../UiDialog.vue'
 
 function mountDialog(open: boolean) {
@@ -72,5 +73,28 @@ describe('UiDialog', () => {
     await wrapper.get('[role="dialog"]').trigger('click')
     await wrapper.get('[data-test="confirm"]').trigger('click')
     expect(wrapper.emitted('close')).toBeUndefined()
+  })
+
+  describe('Schließen-Label', () => {
+    afterEach(() => {
+      i18n.global.locale.value = 'de'
+    })
+
+    it('fällt ohne closeLabel auf die Übersetzung der aktuellen Sprache zurück', async () => {
+      const wrapper = mountDialog(true)
+      const close = () => wrapper.get('.ui-dialog__header .ui-icon-button').attributes('aria-label')
+      expect(close()).toBe('Schließen')
+      i18n.global.locale.value = 'en'
+      await wrapper.vm.$nextTick()
+      expect(close()).toBe('Close')
+    })
+
+    it('nutzt ein übergebenes closeLabel unverändert', () => {
+      const wrapper = mount(UiDialog, {
+        props: { open: true, title: 'Titel', closeLabel: 'Fenster schließen' },
+        global: { stubs: { teleport: true } },
+      })
+      expect(wrapper.get('.ui-icon-button').attributes('aria-label')).toBe('Fenster schließen')
+    })
   })
 })

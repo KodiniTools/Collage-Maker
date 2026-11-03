@@ -162,12 +162,12 @@
   }
 
   .handoff-text strong {
-    font-size: 0.9rem;
+    font-size: var(--ds-text-md);
     color: var(--ds-text);
   }
 
   .handoff-source {
-    font-size: 0.8rem;
+    font-size: var(--ds-text-sm);
     color: var(--ds-text-2);
   }
 
@@ -192,7 +192,7 @@
   }
 
   .handoff-more {
-    font-size: 0.8rem;
+    font-size: var(--ds-text-sm);
     color: var(--ds-text-2);
     font-weight: 600;
     padding-left: 4px;

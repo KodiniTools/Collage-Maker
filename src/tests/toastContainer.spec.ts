@@ -33,6 +33,16 @@ describe('ToastContainer (UiToast)', () => {
     expect(toasts[0].text()).toContain('Collage exportiert')
   })
 
+  it('reicht den Typ warning an UiToast durch', async () => {
+    const { wrapper, store } = mountContainer()
+    store.showToast('Bild ist sehr groß', 'warning', 0)
+    await wrapper.vm.$nextTick()
+
+    const toast = wrapper.get('.ui-toast')
+    expect(toast.classes()).toContain('ui-toast--warning')
+    expect(toast.attributes('role')).toBe('status')
+  })
+
   it('bietet bei abschaltbaren Meldungen „Nicht mehr anzeigen“ als Aktion', async () => {
     const { wrapper, store } = mountContainer()
     store.notify('toast.layoutApplied', 'Layout angewendet', 'info', 0)

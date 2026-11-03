@@ -226,7 +226,7 @@ body
   appearance: none;
   width: 14px;
   height: 14px;
-  border-radius: 50%;
+  border-radius: var(--ds-radius-full);
   background: var(--ds-accent);
   border: 2px solid var(--ds-surface-1);
   cursor: pointer;
@@ -234,7 +234,7 @@ body
 #app input[type='range']::-moz-range-thumb {
   width: 14px;
   height: 14px;
-  border-radius: 50%;
+  border-radius: var(--ds-radius-full);
   background: var(--ds-accent);
   border: 2px solid var(--ds-surface-1);
   cursor: pointer;

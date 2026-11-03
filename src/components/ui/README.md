@@ -18,19 +18,19 @@ Alle Komponenten:
 import { UiButton, UiPanel, UiTextField } from '@/components/ui'
 ```
 
-| Komponente           | Zweck                                           | Wichtige Props / Events                                                                                                   |
-| -------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `UiButton`           | Textbutton; `to` = RouterLink, `href` = a       | `variant` primary · secondary · ghost · danger, `size` sm · md · lg, `block`, Slot `icon`                                 |
-| `UiIconButton`       | Quadratischer Icon-Button                       | `label` (Pflicht, wird aria-label und title), `variant` ghost · secondary · primary, `size` sm · md, `round`, `pressed`   |
-| `UiPanel`            | Flache Fläche mit Kopfzeile                     | `title`, `headingLevel` 2 · 3, `count`, `padded`, Slot `actions`                                                          |
-| `UiCallout`          | Ruhiger Hinweis im Textfluss                    | `type` info · success · warning · danger, `title`, Slot default                                                           |
-| `UiEmptyState`       | Leerzustand                                     | `title`, `text`, Slots `icon` · `action`                                                                                  |
-| `UiSegmentedControl` | Eine Option aus wenigen, Radiogroup-Muster      | `v-model` (string), `options` `{ value, label, disabled? }`, `label`, `size`; Pfeiltasten wechseln                        |
-| `UiSelect`           | Natives Select im System-Look                   | `v-model` (string), `options`, `label` (Pflicht), `inline`, `labelHidden`, `size`; Attrs → select                         |
-| `UiTextField`        | Einzeiliges Textfeld mit Label                  | `v-model`, `label`, `hint`, `error` (aria-invalid, role=alert), `required`, `disabled`, Attrs → input                     |
-| `UiDialog`           | Modaler Dialog (Teleport, hier `#modal-portal`) | `open`, `title`, `description`, `closeLabel`, `size` md · lg, `teleportTo`, `id`, Slots default · `footer`; Event `close` |
-| `UiToast`            | Benachrichtigung                                | `message`, `type` success · error · info, `actionLabel`, `dismissLabel`, `dismissOnClick`; Events `action`, `dismiss`     |
-| `UiKbd`              | Tastenkombination                               | `keys: string[]`                                                                                                          |
+| Komponente           | Zweck                                           | Wichtige Props / Events                                                                                                                                        |
+| -------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `UiButton`           | Textbutton; `to` = RouterLink, `href` = a       | `variant` primary · secondary · ghost · danger, `size` sm · md · lg, `block`, Slot `icon`                                                                      |
+| `UiIconButton`       | Quadratischer Icon-Button                       | `label` (Pflicht, wird aria-label und title), `variant` ghost · secondary · primary, `size` sm · md, `round`, `pressed`                                        |
+| `UiPanel`            | Flache Fläche mit Kopfzeile                     | `title`, `headingLevel` 2 · 3, `count`, `padded`, Slot `actions`                                                                                               |
+| `UiCallout`          | Ruhiger Hinweis im Textfluss                    | `type` info · success · warning · danger, `title`, Slot default                                                                                                |
+| `UiEmptyState`       | Leerzustand                                     | `title`, `text`, Slots `icon` · `action`                                                                                                                       |
+| `UiSegmentedControl` | Eine Option aus wenigen, Radiogroup-Muster      | `v-model` (string), `options` `{ value, label, disabled? }`, `label`, `size`; Pfeiltasten wechseln                                                             |
+| `UiSelect`           | Natives Select im System-Look                   | `v-model` (string), `options`, `label` (Pflicht), `inline`, `labelHidden`, `size`; Attrs → select                                                              |
+| `UiTextField`        | Einzeiliges Textfeld mit Label                  | `v-model`, `label`, `hint`, `error` (aria-invalid, role=alert), `required`, `disabled`, Attrs → input                                                          |
+| `UiDialog`           | Modaler Dialog (Teleport, hier `#modal-portal`) | `open`, `title`, `description`, `closeLabel` (Default: i18n `common.close`), `size` md · lg, `teleportTo`, `id`, Slots default · `footer`; Event `close`       |
+| `UiToast`            | Benachrichtigung                                | `message`, `type` success · error · warning · info, `actionLabel`, `dismissLabel` (Default: i18n `common.close`), `dismissOnClick`; Events `action`, `dismiss` |
+| `UiKbd`              | Tastenkombination                               | `keys: string[]`                                                                                                                                               |
 
 ## Einsatz im Collage Maker
 
