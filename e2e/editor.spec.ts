@@ -60,6 +60,16 @@ test.describe('Editor (Smoke)', () => {
     await expect(slider).toHaveValue('800')
   })
 
+  test('Zoom-Regler arbeitet in Prozent (SliderField)', async ({ page }) => {
+    const zoom = page.getByRole('slider', { name: 'Zoom' })
+    await expect(zoom).toHaveValue('100')
+    await page.getByRole('spinbutton', { name: 'Zoom (Wert)' }).fill('150')
+    await expect(page.getByText('Zoom: 150%')).toBeVisible()
+    await expect(zoom).toHaveValue('150')
+    await page.getByRole('button', { name: 'Ansicht zurücksetzen' }).click()
+    await expect(page.getByText('Zoom: 100%')).toBeVisible()
+  })
+
   test('Schalter (UiSwitch) für Raster, Seitenverhältnis und Originalauflösung', async ({
     page,
   }) => {

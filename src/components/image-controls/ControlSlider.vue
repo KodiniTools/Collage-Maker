@@ -4,14 +4,14 @@
    * Reset-Button. Ersetzt das mehrfach wiederholte Markup in ImageControls.
    *
    * Layout: Label + Anzeigewert stehen in der Kopfzeile. Darunter liegen
-   * Slider, Zahlen-Spinner und Reset-Button gemeinsam in EINER Zeile. Der
-   * Spinner erlaubt die präzise numerische Eingabe (inkl. Auf-/Ab-Pfeilen)
-   * und spiegelt denselben Rohwert wie der Slider.
+   * Slider, Zahlen-Spinner (beides: ui/SliderField) und Reset-Button
+   * gemeinsam in EINER Zeile. Props und Events sind unverändert: `input`
+   * kommt live bei jeder Änderung, `reset` beim Klick auf Zurücksetzen.
    */
-  import { computed } from 'vue'
   import ResetButton from '@/components/ResetButton.vue'
+  import { SliderField } from '@/components/ui'
 
-  const props = withDefaults(
+  withDefaults(
     defineProps<{
       label: string
       // Bereits formatierter Anzeigewert (z. B. "45°", "80%", "6px")
@@ -38,39 +38,6 @@
     input: [value: number]
     reset: []
   }>()
-
-  // Schrittweite als Zahl (step kann als String übergeben werden)
-  const stepNum = computed(() => Number(props.step) || 1)
-
-  // Wert für den Spinner auf das Schritt-Raster einrasten und float-Rauschen
-  // (z. B. 45.30000001) auf die passende Nachkommastellenzahl kürzen. So zeigt
-  // der Spinner denselben Wert wie das Label, ohne lange Kommazahlen.
-  const spinnerValue = computed(() => {
-    const step = stepNum.value
-    const snapped = Math.round(props.value / step) * step
-    const decimals = String(step).includes('.') ? String(step).split('.')[1].length : 0
-    return Number(snapped.toFixed(decimals))
-  })
-
-  function onInput(event: Event) {
-    emit('input', Number((event.target as HTMLInputElement).value))
-  }
-
-  // Eingabe im Zahlenfeld: reagiert live auf jede Eingabe (@input), damit die
-  // Spinner-Pfeile sofort – auch beim Halten – wirken und nicht erst beim
-  // Loslassen. Unvollständige/ungültige Zwischenstände werden übersprungen,
-  // damit das Tippen von Dezimalzahlen (z. B. "0.5") nicht abgeschnitten wird:
-  //   - leer, "-", "." bzw. auf "." / "e" endend  → weiter tippen lassen
-  //   - sonst: auf den erlaubten Bereich [min, max] begrenzen und übernehmen
-  function onNumberInput(event: Event) {
-    const raw = (event.target as HTMLInputElement).value.trim()
-    if (raw === '' || raw === '-' || raw === '.' || raw === '-.') return
-    if (/[.eE]$/.test(raw)) return
-    const n = Number(raw)
-    if (Number.isNaN(n)) return
-    const clamped = Math.min(props.max, Math.max(props.min, n))
-    emit('input', clamped)
-  }
 </script>
 
 <template>
@@ -84,24 +51,13 @@
 
     <!-- Slider, Spinner und Reset-Button in einer gemeinsamen Zeile -->
     <div class="flex items-center gap-2">
-      <input
-        type="range"
-        :value="value"
+      <SliderField
+        :model-value="value"
         :min="min"
         :max="max"
         :step="step"
-        class="flex-1 min-w-0"
-        @input="onInput"
-      />
-      <input
-        type="number"
-        :value="spinnerValue"
-        :min="min"
-        :max="max"
-        :step="step"
-        class="w-16 flex-shrink-0 px-1.5 py-1 text-xs border border-line-strong rounded-sm bg-surface-1 focus-visible:outline-none focus-visible:shadow-focus"
         :aria-label="label"
-        @input="onNumberInput"
+        @update:model-value="emit('input', $event)"
       />
       <!-- Reset-Platz dauerhaft reserviert, damit der Spinner beim Ein-/
            Ausblenden des Buttons nicht seitlich springt -->

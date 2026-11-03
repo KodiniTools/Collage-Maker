@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import { computed } from 'vue'
+  import ControlSlider from '@/components/image-controls/ControlSlider.vue'
   import { UiSelect, UiSwitch } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
   import type { CanvasBorderSettings } from '@/types'
@@ -33,21 +34,16 @@
 
     <div v-if="collage.settings.border.enabled" class="space-y-3">
       <!-- Rahmenbreite -->
-      <div>
-        <label for="canvas-border-width" class="block text-xs text-ink-2 mb-1">
-          {{ t('imageControls.borderWidth') }}: {{ collage.settings.border.width }}px
-        </label>
-        <input
-          id="canvas-border-width"
-          type="range"
-          :value="collage.settings.border.width"
-          min="1"
-          max="100"
-          step="1"
-          class="w-full"
-          @input="api.updateBorderWidth(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
+      <ControlSlider
+        label-size="xs"
+        :label="t('imageControls.borderWidth')"
+        :display-value="`${collage.settings.border.width}px`"
+        :value="collage.settings.border.width"
+        :min="1"
+        :max="100"
+        :step="1"
+        @input="api.updateBorderWidth"
+      />
 
       <!-- Rahmenstil -->
       <UiSelect
