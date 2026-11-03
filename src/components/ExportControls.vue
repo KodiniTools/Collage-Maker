@@ -1,36 +1,46 @@
 <script setup lang="ts">
-  import { computed, nextTick, ref } from 'vue'
-  import { useCollageStore } from '@/stores/collage'
-  import { useToastStore } from '@/stores/toast'
+  /**
+   * Export-Panel: Format, Qualität und Aktionen. Die Logik liegt in
+   * `useCollageExport`, die Dialoge unter `components/export/`.
+   */
+  import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import {
-    renderCollage,
-    exportToPdf,
-    printCanvas,
-    canvasToBlob,
-    canShareFileType,
-    canShareImageFiles,
-    shareFile,
-    canCopyImage,
-    copyImageToClipboard,
-  } from '@/lib/export-engine'
+  import { useCollageExport, type ExportFormat } from '@/composables/useCollageExport'
   import LoadingSpinner from '@/components/LoadingSpinner.vue'
   import ControlSlider from '@/components/image-controls/ControlSlider.vue'
-  import { UiButton, UiDialog, UiIconButton, UiPanel, UiSelect, UiTextField } from '@/components/ui'
+  import ExportFilenameDialog from '@/components/export/ExportFilenameDialog.vue'
+  import ExportPreviewModal from '@/components/export/ExportPreviewModal.vue'
+  import ExportShareDialog from '@/components/export/ExportShareDialog.vue'
+  import { UiButton, UiPanel, UiSelect } from '@/components/ui'
 
-  type ExportFormat = 'png' | 'png-transparent' | 'jpeg' | 'webp' | 'pdf'
-
-  const collage = useCollageStore()
-  const toast = useToastStore()
   const { t } = useI18n()
-
-  const exportFormat = ref<ExportFormat>('png')
-  const exportQuality = ref(0.95)
-  const isExporting = ref(false)
-  const isPrinting = ref(false)
-  const isGeneratingPreview = ref(false)
-  const showPreviewModal = ref(false)
-  const previewDataUrl = ref<string | null>(null)
+  const {
+    collage,
+    exportFormat,
+    exportQuality,
+    hasQuality,
+    isExporting,
+    startExport,
+    filenamePrompt,
+    isGeneratingPreview,
+    showPreviewModal,
+    previewDataUrl,
+    generatePreview,
+    closePreview,
+    closePreviewAndExport,
+    isPrinting,
+    printCollage,
+    canShare,
+    canCopy,
+    isSharing,
+    isCopying,
+    pendingShareFile,
+    shareCollage,
+    confirmPendingShare,
+    cancelPendingShare,
+    copyCollage,
+  } = useCollageExport()
+  const { isOpen: showFilenameDialog, filename: customFilename, resultingFilename } = filenamePrompt
 
   // UiSelect arbeitet mit string; der Proxy hält den Union-Typ im State.
   const formatModel = computed({
@@ -46,253 +56,6 @@
     { value: 'webp', label: 'WebP' },
     { value: 'pdf', label: 'PDF' },
   ])
-  const hasQuality = computed(() => ['jpeg', 'webp', 'pdf'].includes(exportFormat.value))
-
-  // Filename dialog state
-  const FILENAME_INPUT_ID = 'export-filename'
-  const showFilenameDialog = ref(false)
-  const customFilename = ref('collage')
-  let resolveFilename: ((name: string | null) => void) | null = null
-
-  const resultingFilename = computed(
-    () => `${customFilename.value.trim() || 'collage'}.${getFileExtension()}`
-  )
-
-  function getFileExtension(): string {
-    return exportFormat.value === 'png-transparent' ? 'png' : exportFormat.value
-  }
-
-  async function focusFilenameInput() {
-    // Zwei Ticks: UiDialog setzt beim Öffnen zuerst den Fokus auf den Dialog selbst.
-    await nextTick()
-    await nextTick()
-    const input = document.getElementById(FILENAME_INPUT_ID)
-    if (input instanceof HTMLInputElement) input.select()
-  }
-
-  function promptFilename(): Promise<string | null> {
-    customFilename.value = 'collage'
-    showFilenameDialog.value = true
-    void focusFilenameInput()
-    return new Promise((resolve) => {
-      resolveFilename = resolve
-    })
-  }
-
-  function confirmFilename() {
-    const name = customFilename.value.trim() || 'collage'
-    showFilenameDialog.value = false
-    resolveFilename?.(name)
-    resolveFilename = null
-  }
-
-  function cancelFilename() {
-    showFilenameDialog.value = false
-    resolveFilename?.(null)
-    resolveFilename = null
-  }
-
-  function buildRenderOptions() {
-    return {
-      width: collage.settings.width,
-      height: collage.settings.height,
-      backgroundColor: collage.settings.backgroundColor,
-      backgroundImage: collage.settings.backgroundImage,
-      images: collage.images.filter((img) => img.isGalleryTemplate !== true),
-      texts: collage.texts,
-      transparent: exportFormat.value === 'png-transparent',
-      // Nur JPEG hat keinen Alpha-Kanal; alle anderen Formate (PNG, WebP, PDF)
-      // behalten abgerundete Ecken transparent, wie im Live-Editor.
-      supportsAlpha: exportFormat.value !== 'jpeg',
-      border: collage.settings.border,
-      cornerRadius: collage.settings.cornerRadius,
-    }
-  }
-
-  function getMimeType(): string {
-    if (exportFormat.value === 'webp') return 'image/webp'
-    if (exportFormat.value === 'png' || exportFormat.value === 'png-transparent') return 'image/png'
-    return 'image/jpeg'
-  }
-
-  async function exportCollage(filename?: string) {
-    isExporting.value = true
-    try {
-      const canvas = await renderCollage(buildRenderOptions())
-      const fileExtension = getFileExtension()
-      const finalName = `${filename ?? 'collage'}.${fileExtension}`
-
-      if (exportFormat.value === 'pdf') {
-        await exportToPdf({ canvas, quality: exportQuality.value, filename: finalName })
-        toast.notify('toast.exportSuccess', t('toast.exportSuccess'))
-        return
-      }
-
-      const mimeType = getMimeType()
-
-      await new Promise<void>((resolve, reject) => {
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(new Error('Failed to create blob'))
-              return
-            }
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = finalName
-            a.click()
-            URL.revokeObjectURL(url)
-            resolve()
-          },
-          mimeType,
-          exportQuality.value
-        )
-      })
-
-      toast.notify('toast.exportSuccess', t('toast.exportSuccess'))
-    } catch (error) {
-      console.error('Export error:', error)
-      toast.error(t('toast.exportError'))
-    } finally {
-      isExporting.value = false
-    }
-  }
-
-  async function startExport() {
-    const filename = await promptFilename()
-    if (filename === null) return
-    exportCollage(filename)
-  }
-
-  async function generatePreview() {
-    isGeneratingPreview.value = true
-    try {
-      const canvas = await renderCollage(buildRenderOptions())
-      // PDF-Vorschau als JPEG anzeigen (PDF selbst hat kein dataURL-Format)
-      const mimeType = exportFormat.value === 'pdf' ? 'image/jpeg' : getMimeType()
-      previewDataUrl.value = canvas.toDataURL(mimeType, exportQuality.value)
-      showPreviewModal.value = true
-    } catch (error) {
-      console.error('Preview error:', error)
-      toast.error(t('toast.exportError'))
-    } finally {
-      isGeneratingPreview.value = false
-    }
-  }
-
-  async function printCollage() {
-    if (isPrinting.value) return
-    isPrinting.value = true
-    try {
-      // Druck zeigt die Collage wie im Editor: Hintergrund wird immer mitgedruckt,
-      // abgerundete Ecken bleiben transparent (weißes Papier).
-      const canvas = await renderCollage({
-        ...buildRenderOptions(),
-        transparent: false,
-        supportsAlpha: true,
-      })
-      await printCanvas(canvas, { title: 'Collage' })
-    } catch (error) {
-      console.error('Print error:', error)
-      toast.error(t('toast.printError'))
-    } finally {
-      isPrinting.value = false
-    }
-  }
-
-  // Teilen / Kopieren: Buttons nur anbieten, wenn der Browser es unterstützt.
-  const canShare = canShareImageFiles()
-  const canCopy = canCopyImage()
-  const isSharing = ref(false)
-  const isCopying = ref(false)
-  // Datei, deren Teilen der Browser mangels Nutzeraktion blockiert hat (v. a. Safari
-  // nach langem Rendern); ein zweiter Klick im Dialog teilt sie ohne neues Rendern.
-  const pendingShareFile = ref<File | null>(null)
-
-  /** Teilen nutzt das gewählte Bildformat; PDF und nicht teilbare Typen werden PNG. */
-  function getShareMimeType(): string {
-    if (exportFormat.value === 'pdf') return 'image/png'
-    const mimeType = getMimeType()
-    return canShareFileType(mimeType) ? mimeType : 'image/png'
-  }
-
-  async function runShare(file: File) {
-    const result = await shareFile(file, t('export.shareTitle'))
-    pendingShareFile.value = result === 'blocked' ? file : null
-  }
-
-  async function shareCollage() {
-    if (isSharing.value) return
-    isSharing.value = true
-    try {
-      const canvas = await renderCollage(buildRenderOptions())
-      const mimeType = getShareMimeType()
-      const blob = await canvasToBlob(canvas, mimeType, exportQuality.value)
-      const extension = mimeType.split('/')[1] === 'jpeg' ? 'jpg' : mimeType.split('/')[1]
-      await runShare(new File([blob], `collage.${extension}`, { type: mimeType }))
-    } catch (error) {
-      console.error('Share error:', error)
-      toast.error(t('toast.shareError'))
-    } finally {
-      isSharing.value = false
-    }
-  }
-
-  async function confirmPendingShare() {
-    const file = pendingShareFile.value
-    pendingShareFile.value = null
-    if (!file) return
-    try {
-      await runShare(file)
-    } catch (error) {
-      console.error('Share error:', error)
-      toast.error(t('toast.shareError'))
-    }
-  }
-
-  function cancelPendingShare() {
-    pendingShareFile.value = null
-  }
-
-  function copyCollage() {
-    if (isCopying.value) return
-    isCopying.value = true
-    // Kein await vor clipboard.write: Safari verlangt den Aufruf synchron im Klick.
-    // Zwischenablage nimmt nur PNG, deshalb Alpha immer erhalten.
-    const pngBlob = renderCollage({ ...buildRenderOptions(), supportsAlpha: true }).then((canvas) =>
-      canvasToBlob(canvas, 'image/png')
-    )
-    let write: Promise<void>
-    try {
-      write = copyImageToClipboard(pngBlob)
-    } catch (error) {
-      write = Promise.reject(error)
-      // Render-Promise läuft weiter; der Fehler wird über `write` gemeldet.
-      pngBlob.catch(() => undefined)
-    }
-    write
-      .then(() => toast.success(t('toast.copySuccess')))
-      .catch((error: unknown) => {
-        console.error('Copy error:', error)
-        toast.error(t('toast.copyError'))
-      })
-      .finally(() => {
-        isCopying.value = false
-      })
-  }
-
-  function closePreview() {
-    showPreviewModal.value = false
-    previewDataUrl.value = null
-  }
-
-  async function closePreviewAndExport() {
-    closePreview()
-    const filename = await promptFilename()
-    if (filename === null) return
-    exportCollage(filename)
-  }
 </script>
 
 <template>
@@ -420,114 +183,27 @@
       </div>
     </div>
 
-    <!-- Filename Dialog -->
-    <UiDialog
-      teleport-to="#modal-portal"
+    <ExportFilenameDialog
+      v-model:filename="customFilename"
       :open="showFilenameDialog"
-      :title="t('export.filenameDialogTitle')"
-      :close-label="t('common.close')"
-      @close="cancelFilename"
-    >
-      <UiTextField
-        :id="FILENAME_INPUT_ID"
-        v-model="customFilename"
-        :label="t('export.filenameLabel')"
-        :hint="resultingFilename"
-        @keydown.enter="confirmFilename"
-      />
-      <template #footer>
-        <UiButton variant="secondary" @click="cancelFilename">
-          {{ t('export.filenameCancel') }}
-        </UiButton>
-        <UiButton variant="primary" @click="confirmFilename">
-          {{ t('export.filenameConfirm') }}
-        </UiButton>
-      </template>
-    </UiDialog>
+      :resulting-filename="resultingFilename"
+      @confirm="filenamePrompt.confirm"
+      @cancel="filenamePrompt.cancel"
+    />
 
-    <!-- Teilen erneut bestätigen (Browser hat das Teilen nach dem Rendern blockiert) -->
-    <UiDialog
-      teleport-to="#modal-portal"
+    <ExportShareDialog
       :open="pendingShareFile !== null"
-      :title="t('export.shareReadyTitle')"
-      :description="t('export.shareReadyText')"
-      :close-label="t('common.close')"
-      @close="cancelPendingShare"
-    >
-      <template #footer>
-        <UiButton variant="secondary" @click="cancelPendingShare">
-          {{ t('common.cancel') }}
-        </UiButton>
-        <UiButton variant="primary" @click="confirmPendingShare">
-          {{ t('export.share') }}
-        </UiButton>
-      </template>
-    </UiDialog>
+      @confirm="confirmPendingShare"
+      @cancel="cancelPendingShare"
+    />
 
-    <!-- Preview Modal (breit, deshalb kein UiDialog) -->
-    <Teleport to="#modal-portal">
-      <div
-        v-if="showPreviewModal"
-        class="fixed inset-0 z-backdrop flex items-center justify-center p-4 bg-black/50"
-        @click.self="closePreview"
-      >
-        <div
-          class="relative max-w-[90vw] max-h-[90vh] bg-surface-1 text-ink rounded-lg border border-line shadow-overlay overflow-hidden"
-        >
-          <!-- Header -->
-          <div
-            class="flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-3 border-b border-line"
-          >
-            <h3 class="text-lg font-semibold">{{ t('export.previewTitle') }}</h3>
-            <UiIconButton :label="t('export.close')" size="sm" @click="closePreview">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </UiIconButton>
-          </div>
-
-          <!-- Preview Image Container (Schachbrett zeigt Transparenz) -->
-          <div
-            class="p-2 sm:p-4 overflow-auto max-h-[calc(90vh-120px)]"
-            style="
-              background-image: repeating-conic-gradient(
-                var(--ds-surface-3) 0% 25%,
-                var(--ds-surface-1) 0% 50%
-              );
-              background-size: 20px 20px;
-            "
-          >
-            <img
-              v-if="previewDataUrl"
-              :src="previewDataUrl"
-              :alt="t('export.previewAlt')"
-              class="max-w-full h-auto mx-auto rounded-md"
-              style="max-height: calc(90vh - 180px)"
-            />
-          </div>
-
-          <!-- Footer -->
-          <div
-            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3 border-t border-line"
-          >
-            <p class="text-xs sm:text-sm text-ink-2">
-              {{ collage.settings.width }} x {{ collage.settings.height }} px
-            </p>
-            <div class="flex gap-2 w-full sm:w-auto">
-              <UiButton variant="secondary" class="flex-1 sm:flex-initial" @click="closePreview">
-                {{ t('export.close') }}
-              </UiButton>
-              <UiButton
-                variant="primary"
-                class="flex-1 sm:flex-initial"
-                @click="closePreviewAndExport"
-              >
-                {{ t('export.download') }}
-              </UiButton>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <ExportPreviewModal
+      :open="showPreviewModal"
+      :data-url="previewDataUrl"
+      :width="collage.settings.width"
+      :height="collage.settings.height"
+      @close="closePreview"
+      @download="closePreviewAndExport"
+    />
   </UiPanel>
 </template>
