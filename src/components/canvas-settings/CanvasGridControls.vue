@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
-  import { UiButton } from '@/components/ui'
+  import { UiSwitch } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
   const props = defineProps<{ api: CanvasSettingsApi }>()
@@ -14,14 +14,12 @@
   <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium">{{ t('grid.enabled') }}</span>
-      <UiButton
-        size="sm"
-        :variant="collage.settings.gridEnabled ? 'primary' : 'secondary'"
-        :aria-pressed="collage.settings.gridEnabled"
-        @click="api.toggleGrid"
-      >
-        {{ collage.settings.gridEnabled ? t('grid.on') : t('grid.off') }}
-      </UiButton>
+      <UiSwitch
+        :model-value="collage.settings.gridEnabled"
+        :label="t('grid.enabled')"
+        label-hidden
+        @update:model-value="api.toggleGrid()"
+      />
     </div>
 
     <!-- Rastergröße -->

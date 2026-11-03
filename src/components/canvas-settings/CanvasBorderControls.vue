@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import { computed } from 'vue'
-  import { UiButton, UiSelect } from '@/components/ui'
+  import { UiSelect, UiSwitch } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
   import type { CanvasBorderSettings } from '@/types'
 
@@ -23,14 +23,12 @@
   <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
       <span class="text-sm font-medium">{{ t('canvas.border') }}</span>
-      <UiButton
-        size="sm"
-        :variant="collage.settings.border.enabled ? 'primary' : 'secondary'"
-        :aria-pressed="collage.settings.border.enabled"
-        @click="api.toggleCanvasBorder"
-      >
-        {{ collage.settings.border.enabled ? t('canvas.on') : t('canvas.off') }}
-      </UiButton>
+      <UiSwitch
+        :model-value="collage.settings.border.enabled"
+        :label="t('canvas.border')"
+        label-hidden
+        @update:model-value="api.toggleCanvasBorder()"
+      />
     </div>
 
     <div v-if="collage.settings.border.enabled" class="space-y-3">

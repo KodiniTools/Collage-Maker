@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { UiButton } from '@/components/ui'
+  import { UiButton, UiSwitch } from '@/components/ui'
   import type { CollageImage } from '@/types'
   import type { ImageControlsApi } from '@/composables/useImageControls'
   import ControlSlider from './ControlSlider.vue'
@@ -133,18 +133,15 @@
       <!-- Freies Verzerren (Distort): Eckpunkte einzeln ziehen -->
       <div class="border-t border-line pt-3">
         <div class="flex items-center justify-between">
-          <span class="text-xs text-ink-2">{{ t('imageControls.distort') }}</span>
-          <UiButton
-            size="sm"
-            :variant="image.distortEnabled ? 'primary' : 'secondary'"
-            :title="t('imageControls.distortHint')"
-            :aria-pressed="!!image.distortEnabled"
-            @click="api.toggleDistort"
-          >
-            {{
-              image.distortEnabled ? t('imageControls.distortOn') : t('imageControls.distortOff')
-            }}
-          </UiButton>
+          <span class="text-xs text-ink-2" :title="t('imageControls.distortHint')">{{
+            t('imageControls.distort')
+          }}</span>
+          <UiSwitch
+            :model-value="!!image.distortEnabled"
+            :label="t('imageControls.distort')"
+            label-hidden
+            @update:model-value="api.toggleDistort()"
+          />
         </div>
         <div v-if="image.distortEnabled" class="grid grid-cols-2 gap-1.5 mt-2">
           <UiButton

@@ -10,6 +10,7 @@
     UiIconButton,
     UiPanel,
     UiSegmentedControl,
+    UiSwitch,
   } from '@/components/ui'
 
   type TextAlign = 'left' | 'center' | 'right'
@@ -296,14 +297,12 @@
       <div class="border-t border-line pt-4">
         <div class="flex items-center justify-between mb-3">
           <span class="text-sm font-medium">{{ t('text.shadow') }}</span>
-          <UiButton
-            size="sm"
-            :variant="collage.selectedText.shadowEnabled ? 'primary' : 'secondary'"
-            :aria-pressed="collage.selectedText.shadowEnabled"
-            @click="toggleShadow"
-          >
-            {{ collage.selectedText.shadowEnabled ? t('text.shadowOn') : t('text.shadowOff') }}
-          </UiButton>
+          <UiSwitch
+            :model-value="collage.selectedText.shadowEnabled"
+            :label="t('text.shadow')"
+            label-hidden
+            @update:model-value="toggleShadow()"
+          />
         </div>
 
         <div v-if="collage.selectedText.shadowEnabled" class="space-y-3">
@@ -377,14 +376,12 @@
       <div class="border-t border-line pt-4">
         <div class="flex items-center justify-between mb-3">
           <span class="text-sm font-medium">{{ t('text.stroke') }}</span>
-          <UiButton
-            size="sm"
-            :variant="collage.selectedText.strokeEnabled ? 'primary' : 'secondary'"
-            :aria-pressed="collage.selectedText.strokeEnabled"
-            @click="toggleStroke"
-          >
-            {{ collage.selectedText.strokeEnabled ? t('text.strokeOn') : t('text.strokeOff') }}
-          </UiButton>
+          <UiSwitch
+            :model-value="collage.selectedText.strokeEnabled"
+            :label="t('text.stroke')"
+            label-hidden
+            @update:model-value="toggleStroke()"
+          />
         </div>
 
         <div v-if="collage.selectedText.strokeEnabled" class="space-y-3">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import ResetButton from '@/components/ResetButton.vue'
-  import { UiButton, UiCallout } from '@/components/ui'
+  import { UiCallout, UiSwitch } from '@/components/ui'
   import type { CanvasSettingsApi } from '@/composables/useCanvasSettings'
 
   const props = defineProps<{ api: CanvasSettingsApi }>()
@@ -15,54 +15,23 @@
     <!-- Seitenverhältnis beibehalten -->
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium">{{ t('canvas.keepAspectRatio') }}</span>
-      <UiButton
-        size="sm"
-        :variant="api.keepAspect.value ? 'primary' : 'secondary'"
-        :title="t('canvas.keepAspectRatio')"
-        :aria-pressed="api.keepAspect.value"
-        @click="api.toggleKeepAspect"
-      >
-        <template #icon>
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-            <path
-              v-if="api.keepAspect.value"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-            <path
-              v-else
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
-            />
-          </svg>
-        </template>
-        {{ api.keepAspect.value ? t('canvas.on') : t('canvas.off') }}
-      </UiButton>
+      <UiSwitch
+        :model-value="api.keepAspect.value"
+        :label="t('canvas.keepAspectRatio')"
+        label-hidden
+        @update:model-value="api.toggleKeepAspect()"
+      />
     </div>
 
     <!-- Inhalte mitskalieren -->
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium">{{ t('canvas.scaleContent') }}</span>
-      <UiButton
-        size="sm"
-        :variant="api.scaleContent.value ? 'primary' : 'secondary'"
-        :title="t('canvas.scaleContent')"
-        :aria-pressed="api.scaleContent.value"
-        @click="api.toggleScaleContent"
-      >
-        <template #icon>
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-            />
-          </svg>
-        </template>
-        {{ api.scaleContent.value ? t('canvas.on') : t('canvas.off') }}
-      </UiButton>
+      <UiSwitch
+        :model-value="api.scaleContent.value"
+        :label="t('canvas.scaleContent')"
+        label-hidden
+        @update:model-value="api.toggleScaleContent()"
+      />
     </div>
 
     <!-- Canvas Width -->

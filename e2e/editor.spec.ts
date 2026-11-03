@@ -60,6 +60,25 @@ test.describe('Editor (Smoke)', () => {
     await expect(slider).toHaveValue('800')
   })
 
+  test('Schalter (UiSwitch) für Raster, Seitenverhältnis und Originalauflösung', async ({
+    page,
+  }) => {
+    const grid = page.getByRole('switch', { name: 'Raster anzeigen' })
+    await expect(grid).toHaveAttribute('aria-checked', 'false')
+    await grid.click()
+    await expect(grid).toHaveAttribute('aria-checked', 'true')
+    await expect(page.getByText(/^Rastergröße/)).toBeVisible()
+
+    const keepAspect = page.getByRole('switch', { name: 'Seitenverhältnis beibehalten' })
+    await keepAspect.click()
+    await expect(keepAspect).toHaveAttribute('aria-checked', 'true')
+
+    const keepOriginal = page.getByRole('switch', { name: 'Originalauflösung beibehalten' })
+    await expect(keepOriginal).toHaveAttribute('aria-checked', 'false')
+    await page.getByText('Originalauflösung beibehalten').click()
+    await expect(keepOriginal).toHaveAttribute('aria-checked', 'true')
+  })
+
   test('Export: Vorschau öffnet und Herunterladen liefert eine PNG-Datei', async ({ page }) => {
     await uploadImages(page, [imageFile('a.png')])
     await expect(page.getByText('Bilder auf Canvas (1)')).toBeVisible()

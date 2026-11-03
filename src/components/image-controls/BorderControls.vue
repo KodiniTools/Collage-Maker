@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
   import { computed } from 'vue'
-  import { UiButton, UiSelect } from '@/components/ui'
+  import { UiSelect, UiSwitch } from '@/components/ui'
   import type { CollageImage } from '@/types'
   import type { ImageControlsApi } from '@/composables/useImageControls'
   import ControlSlider from './ControlSlider.vue'
@@ -23,16 +23,12 @@
   <div class="border-t border-line pt-4">
     <div class="flex items-center justify-between mb-3">
       <span class="text-sm font-medium">{{ t('imageControls.border') }}</span>
-      <UiButton
-        size="sm"
-        :variant="image.borderEnabled ? 'primary' : 'secondary'"
-        :aria-pressed="image.borderEnabled"
-        @click="api.toggleBorder"
-      >
-        {{
-          image.borderEnabled ? t('imageControls.borderEnabled') : t('imageControls.borderDisabled')
-        }}
-      </UiButton>
+      <UiSwitch
+        :model-value="image.borderEnabled"
+        :label="t('imageControls.border')"
+        label-hidden
+        @update:model-value="api.toggleBorder()"
+      />
     </div>
 
     <div v-if="image.borderEnabled" class="space-y-3">
@@ -70,18 +66,12 @@
       <div class="border-t border-line-strong pt-3 mt-3">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-ink-2">{{ t('imageControls.borderShadow') }}</span>
-          <UiButton
-            size="sm"
-            :variant="image.borderShadowEnabled ? 'primary' : 'secondary'"
-            :aria-pressed="image.borderShadowEnabled"
-            @click="api.toggleBorderShadow"
-          >
-            {{
-              image.borderShadowEnabled
-                ? t('imageControls.borderShadowEnabled')
-                : t('imageControls.borderShadowDisabled')
-            }}
-          </UiButton>
+          <UiSwitch
+            :model-value="image.borderShadowEnabled"
+            :label="t('imageControls.borderShadow')"
+            label-hidden
+            @update:model-value="api.toggleBorderShadow()"
+          />
         </div>
 
         <div v-if="image.borderShadowEnabled" class="space-y-2">
