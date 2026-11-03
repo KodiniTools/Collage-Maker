@@ -192,7 +192,7 @@
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: var(--ds-border-strong);
-    border-radius: 2px;
+    border-radius: var(--ds-radius-full);
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {

@@ -177,7 +177,7 @@ export interface ToastAction {
 export interface Toast {
   id: string
   message: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'warning' | 'info'
   duration?: number
   action?: ToastAction
   // Stabiler Schlüssel für abschaltbare Meldungen ("Nicht mehr anzeigen").

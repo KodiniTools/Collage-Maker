@@ -15,7 +15,7 @@
         >
           <header class="ui-dialog__header">
             <h2 :id="titleId" class="ui-dialog__title">{{ title }}</h2>
-            <UiIconButton :label="closeLabel" size="sm" @click="emit('close')">
+            <UiIconButton :label="resolvedCloseLabel" size="sm" @click="emit('close')">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -45,12 +45,14 @@
 
 <script setup lang="ts">
   import { computed, nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
+  import { i18n } from '@/i18n'
   import UiIconButton from './UiIconButton.vue'
 
   /**
    * Modaler Dialog. Schließt über Escape, Klick auf den Hintergrund und den
    * Schließen-Button, jeweils per `close`-Event; der Aufrufer steuert `open`.
    * Fokus wandert beim Öffnen in den Dialog und beim Schließen zurück.
+   * Ohne `closeLabel` gilt die Übersetzung `common.close`.
    */
   const props = withDefaults(
     defineProps<{
@@ -65,12 +67,14 @@
       /** Teleport-Ziel, z. B. ein Portal-Element der App mit eigenem Stacking-Context. */
       teleportTo?: string
     }>(),
-    { closeLabel: 'Schließen', size: 'md', teleportTo: 'body' }
+    { closeLabel: undefined, size: 'md', teleportTo: 'body' }
   )
 
   const emit = defineEmits<{
     close: []
   }>()
+
+  const resolvedCloseLabel = computed(() => props.closeLabel ?? i18n.global.t('common.close'))
 
   const generatedId = useId()
   const dialogId = computed(() => props.id ?? `ui-dialog-${generatedId}`)
