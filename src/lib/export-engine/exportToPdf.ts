@@ -1,5 +1,3 @@
-import { jsPDF } from 'jspdf'
-
 export interface PdfOptions {
   canvas: HTMLCanvasElement
   filename?: string
@@ -20,6 +18,9 @@ export async function exportToPdf({
   const heightMm = heightPx * PX_TO_MM
 
   const orientation = widthPx >= heightPx ? 'landscape' : 'portrait'
+
+  // jsPDF (inkl. pako/fflate) erst beim PDF-Export laden, nicht mit dem Haupt-Bundle.
+  const { jsPDF } = await import('jspdf')
 
   // mm-Einheiten vermeiden px_scaling-Artefakte
   const pdf = new jsPDF({
