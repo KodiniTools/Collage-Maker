@@ -181,6 +181,29 @@ test.describe('Editor (Smoke)', () => {
     await expect(dialog).toBeHidden()
   })
 
+  test('Export: PDF lädt jsPDF nach und liefert eine PDF-Datei', async ({ page }) => {
+    await uploadImages(page, [imageFile('a.png')])
+    await expect(page.getByText('Bilder auf Canvas (1)')).toBeVisible()
+
+    await page.getByRole('radio', { name: 'Export' }).click()
+    const exportPanel = page.getByRole('region', { name: 'Exportieren' })
+    await exportPanel.getByRole('combobox', { name: 'Format' }).selectOption('pdf')
+
+    await exportPanel.getByRole('button', { name: 'Herunterladen' }).click()
+    const dialog = page.getByRole('dialog', { name: 'Dateiname festlegen' })
+    await dialog.getByLabel('Dateiname').fill('meine-collage')
+
+    const downloadPromise = page.waitForEvent('download')
+    await dialog.getByRole('button', { name: 'Speichern' }).click()
+    const download = await downloadPromise
+    expect(download.suggestedFilename()).toBe('meine-collage.pdf')
+    const stream = await download.createReadStream()
+    const head = await new Promise<string>((resolve) =>
+      stream.once('data', (chunk: Buffer) => resolve(chunk.subarray(0, 5).toString()))
+    )
+    expect(head).toBe('%PDF-')
+  })
+
   test('Tastenkürzel-Dialog öffnet und schließt mit Escape', async ({ page }) => {
     await page.getByRole('button', { name: 'Tastaturkurzbefehle' }).click()
     const dialog = page.getByRole('dialog')
