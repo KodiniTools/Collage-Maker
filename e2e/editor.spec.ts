@@ -133,6 +133,25 @@ test.describe('Editor (Smoke)', () => {
     await expect(keepOriginal).toHaveAttribute('aria-checked', 'true')
   })
 
+  test('Text: hinzufügen, Inhalt ändern, Schatten schalten und löschen', async ({ page }) => {
+    await page.getByRole('radio', { name: 'Text' }).click()
+    await page.getByRole('button', { name: 'Text hinzufügen' }).click()
+
+    const content = page.getByLabel('Textinhalt')
+    await expect(content).toBeVisible()
+    await content.fill('Hallo Collage')
+    await expect(content).toHaveValue('Hallo Collage')
+
+    const shadow = page.getByRole('switch', { name: 'Textschatten' })
+    await expect(shadow).toHaveAttribute('aria-checked', 'false')
+    await shadow.click()
+    await expect(shadow).toHaveAttribute('aria-checked', 'true')
+    await expect(page.getByText(/^Schatten X/)).toBeVisible()
+
+    await page.getByRole('button', { name: 'Text löschen' }).click()
+    await expect(page.getByText('Keine Texte hinzugefügt')).toBeVisible()
+  })
+
   test('Export: Vorschau öffnet und Herunterladen liefert eine PNG-Datei', async ({ page }) => {
     await uploadImages(page, [imageFile('a.png')])
     await expect(page.getByText('Bilder auf Canvas (1)')).toBeVisible()
