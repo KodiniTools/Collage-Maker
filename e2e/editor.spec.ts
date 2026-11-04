@@ -24,6 +24,33 @@ test.describe('Editor (Smoke)', () => {
     await expect(page.getByRole('button', { name: 'Rückgängig (Ctrl+Z)' })).toBeEnabled()
   })
 
+  test('Bilderliste: Auswahl, Vorschau und Löschen mit Rückfrage', async ({ page }) => {
+    await uploadImages(page, [imageFile('a.png'), imageFile('b.png', 30, 40)])
+    await page.getByRole('button', { name: 'Bilder', exact: true }).click()
+
+    const item = page.getByRole('button', { name: /: a\.png$/ })
+    await expect(item).toBeVisible()
+    await item.click()
+    await expect(page.getByText('1 Bild(er) ausgewählt')).toBeVisible()
+
+    await item.dblclick()
+    const preview = page.locator('#modal-portal').getByRole('heading', { name: 'Bildvorschau' })
+    await expect(preview).toBeVisible()
+    await page
+      .locator('#modal-portal > div')
+      .filter({ has: page.getByRole('heading', { name: 'Bildvorschau' }) })
+      .getByRole('button', { name: 'Schließen' })
+      .click()
+    await expect(preview).toBeHidden()
+
+    await item.getByRole('button', { name: 'Entfernen' }).click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('button', { name: 'Löschen' }).click()
+    await expect(page.getByRole('button', { name: /: a\.png$/ })).toHaveCount(0)
+    await expect(page.getByRole('button', { name: /: b\.png$/ })).toBeVisible()
+  })
+
   test('Layout wechseln markiert das gewählte Layout', async ({ page }) => {
     await page
       .getByRole('navigation', { name: 'Werkzeuge' })
