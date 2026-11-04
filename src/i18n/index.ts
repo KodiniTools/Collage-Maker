@@ -1,7 +1,7 @@
 import { createI18n } from 'vue-i18n'
-import de from './locales/de.json'
-import en from './locales/en.json'
-import { resolveInitialLocale } from './config/seo'
+import de from './de'
+import en from './en'
+import { resolveInitialLocale } from '@/config/seo'
 
 function readStoredLocale(): string | null {
   try {
