@@ -95,14 +95,11 @@ vue-collage-maker/
 │   ├── stores/           # Pinia Stores
 │   │   ├── settings.ts   # Theme & Locale
 │   │   └── collage.ts    # Collage State
-│   ├── locales/          # i18n Übersetzungen
-│   │   ├── de.json
-│   │   └── en.json
+│   ├── i18n/             # i18n: index.ts (Setup), de.ts (Referenz), en.ts, nav.ts (SSI-Navigation)
 │   ├── types/            # TypeScript Types
 │   │   └── index.ts
 │   ├── App.vue           # Root Component
 │   ├── main.ts           # Entry Point
-│   ├── i18n.ts           # i18n Setup
 │   └── style.css         # Global Styles
 ├── public/               # Static Assets
 ├── index.html

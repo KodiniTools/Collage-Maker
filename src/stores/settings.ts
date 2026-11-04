@@ -2,68 +2,11 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import type { Theme, Locale } from '@/types'
 import { i18n, initialLocale } from '@/i18n'
-
-// SSI nav translations — keys must match the data-i18n attributes in nav.html
-const ssiNavTranslations: Record<string, Record<string, string>> = {
-  de: {
-    'nav.audioTools': 'Audiotools',
-    'nav.mp3Converter': 'MP3 Konverter',
-    'nav.audioEqualizer': 'Interaktiver Audio Equalizer',
-    'nav.modernPlayer': 'Moderner Musikplayer',
-    'nav.ultimatePlayer': 'Ultimativer Musikplayer',
-    'nav.playlistGenerator': 'Wiedergabeliste Generator',
-    'nav.playlistConverter': 'Wiedergabeliste Konverter',
-    'nav.alarmTool': 'Alarmtool',
-    'nav.audioNormalizer': 'Audio Normalizer',
-    'nav.visualizer': 'Visualizer',
-    'nav.equalizer19': '19-Band Equalizer',
-    'nav.audioConverter': 'Audio Konverter',
-    'nav.imageTools': 'Bildtools',
-    'nav.imageConverter': 'Bildkonverter',
-    'nav.batchImageEditor': 'Bildserie bearbeiten',
-    'nav.photoCollage': 'Fotocollage',
-    'nav.tools': 'Tools',
-    'nav.colorExtractor': 'Kodini Farbextraktor',
-    'nav.videoConverter': 'Videokonverter',
-    'nav.contact': 'Kontakt',
-    'aria.toggleTheme': 'Theme wechseln',
-    'aria.selectLanguage': 'Sprache wählen',
-    'aria.menuOpen': 'Menü öffnen',
-    'aria.menuClose': 'Menü schliessen',
-    'aria.mainNav': 'Hauptnavigation',
-  },
-  en: {
-    'nav.audioTools': 'Audio Tools',
-    'nav.mp3Converter': 'MP3 Converter',
-    'nav.audioEqualizer': 'Interactive Audio Equalizer',
-    'nav.modernPlayer': 'Modern Music Player',
-    'nav.ultimatePlayer': 'Ultimate Music Player',
-    'nav.playlistGenerator': 'Audio Playlist Generator',
-    'nav.playlistConverter': 'Playlist to WebM Converter',
-    'nav.alarmTool': 'Alarm Tool',
-    'nav.audioNormalizer': 'Audio Normalizer',
-    'nav.visualizer': 'Visualizer',
-    'nav.equalizer19': '19-Band Equalizer',
-    'nav.audioConverter': 'Audio Converter',
-    'nav.imageTools': 'Image Tools',
-    'nav.imageConverter': 'Image Converter',
-    'nav.batchImageEditor': 'Batch Image Editor',
-    'nav.photoCollage': 'Photo Collage',
-    'nav.tools': 'Tools',
-    'nav.colorExtractor': 'Kodini Color Extractor',
-    'nav.videoConverter': 'Video Converter',
-    'nav.contact': 'Contact',
-    'aria.toggleTheme': 'Toggle theme',
-    'aria.selectLanguage': 'Select language',
-    'aria.menuOpen': 'Open menu',
-    'aria.menuClose': 'Close menu',
-    'aria.mainNav': 'Main navigation',
-  },
-}
+import { ssiNavTranslations } from '@/i18n/nav'
 
 export const useSettingsStore = defineStore('settings', () => {
   const theme = ref<Theme>((localStorage.getItem('theme') as Theme) || 'light')
-  // Startsprache inkl. ?lang=de|en (hreflang-Ziel), siehe i18n.ts
+  // Startsprache inkl. ?lang=de|en (hreflang-Ziel), siehe i18n/index.ts
   const locale = ref<Locale>(initialLocale)
 
   // MutationObserver state (declared early because theme watcher runs immediately)
