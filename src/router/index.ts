@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+// Startseite fest im Haupt-Bundle; alle anderen Seiten werden beim Aufruf nachgeladen.
 import LandingPage from '@/pages/LandingPage.vue'
-import EditorPage from '@/pages/EditorPage.vue'
-import FaqPage from '@/pages/FaqPage.vue'
-import GuidePage from '@/pages/GuidePage.vue'
-import BlogPage from '@/pages/BlogPage.vue'
+import { clearChunkReloadFlag, reloadOnChunkError } from './chunkReload'
 
 const routes = [
   {
@@ -15,27 +13,27 @@ const routes = [
   {
     path: '/editor',
     name: 'editor',
-    component: EditorPage,
+    component: () => import('@/pages/EditorPage.vue'),
     meta: { seo: 'editor' },
   },
   {
     path: '/faq',
     name: 'faq',
-    component: FaqPage,
+    component: () => import('@/pages/FaqPage.vue'),
     meta: { seo: 'faq' },
   },
   {
     // Anleitung (guide); the path stays /blog so existing links keep working
     path: '/blog',
     name: 'guide',
-    component: GuidePage,
+    component: () => import('@/pages/GuidePage.vue'),
     meta: { seo: 'guide' },
   },
   {
     // Blog posts about the collage maker on kodinitools.com/blog
     path: '/artikel',
     name: 'blog',
-    component: BlogPage,
+    component: () => import('@/pages/BlogPage.vue'),
     meta: { seo: 'blog' },
   },
 ]
@@ -63,5 +61,11 @@ router.beforeEach((to, _from, next) => {
   }
   next()
 })
+
+// Fehlender Chunk nach einem Deploy: Zielseite einmal neu laden statt leerer Seite.
+router.onError((error, to) => {
+  reloadOnChunkError(error, router.resolve(to).href)
+})
+router.afterEach(() => clearChunkReloadFlag())
 
 export default router

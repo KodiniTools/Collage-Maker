@@ -40,3 +40,30 @@ test('?lang=en hat Vorrang vor der gespeicherten Sprache', async ({ page }) => {
   await page.goto('./faq?lang=en')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Frequently Asked Questions')
 })
+
+test('Startseite → Editor: Seite wird nachgeladen', async ({ page }) => {
+  const errors = collectPageErrors(page)
+  await prepare(page, 'de')
+  await page.goto('./')
+  await page.getByRole('link', { name: 'Jetzt Collage erstellen' }).first().click()
+
+  await expect(page).toHaveURL(/\/collagemaker\/editor$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bilder-Collage-Macher')
+  expect(errors).toEqual([])
+})
+
+test('fehlender Seiten-Chunk (nach Deploy) lädt die Zielseite einmal neu', async ({ page }) => {
+  await prepare(page, 'de')
+  let blocked = 0
+  // Erster Abruf des Editor-Chunks schlägt fehl, wie bei einem gelöschten alten Chunk.
+  await page.route(/EditorPage/, (route) => {
+    if (blocked++ === 0) return route.abort()
+    return route.continue()
+  })
+  await page.goto('./')
+  await page.getByRole('link', { name: 'Jetzt Collage erstellen' }).first().click()
+
+  await expect(page).toHaveURL(/\/collagemaker\/editor$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bilder-Collage-Macher')
+  expect(blocked).toBeGreaterThanOrEqual(2)
+})
