@@ -1,36 +1,32 @@
 <script setup lang="ts">
-  import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import { RouterLink } from 'vue-router'
-  import ImageUploader from '@/components/ImageUploader.vue'
-  import LayoutSelector from '@/components/LayoutSelector.vue'
-  import StylePresets from '@/components/StylePresets.vue'
-  import FrameGallery from '@/components/FrameGallery.vue'
-  import CanvasSettings from '@/components/CanvasSettings.vue'
-  import ImageList from '@/components/ImageList.vue'
-  import TextList from '@/components/TextList.vue'
+  /**
+   * Editor-Seite: setzt Kopfzeile, Werkzeuge, Leinwand und Inspektor zusammen.
+   * Zustand der Oberfläche in `useEditorLayout`, Wiederherstellung in
+   * `useRestoreDialog`, Teile unter `components/editor/`.
+   */
+  import { ref, onMounted, onUnmounted, nextTick } from 'vue'
   import ThumbnailBar from '@/components/ThumbnailBar.vue'
   import CollageCanvas from '@/components/CollageCanvas.vue'
-  import ImageControls from '@/components/ImageControls.vue'
-  import TextControls from '@/components/TextControls.vue'
-  import ExportControls from '@/components/ExportControls.vue'
   import TemplateLibrary from '@/components/TemplateLibrary.vue'
   import ToastContainer from '@/components/ToastContainer.vue'
   import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal.vue'
-  import { UiButton, UiDialog, UiIconButton, UiSegmentedControl } from '@/components/ui'
+  import HandoffReceiver from '@/components/HandoffReceiver.vue'
+  import EditorHeader from '@/components/editor/EditorHeader.vue'
+  import EditorToolbar from '@/components/editor/EditorToolbar.vue'
+  import EditorToolPanel from '@/components/editor/EditorToolPanel.vue'
+  import EditorInspector from '@/components/editor/EditorInspector.vue'
+  import RestoreDialog from '@/components/editor/RestoreDialog.vue'
   import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
   import { useClipboardPaste } from '@/composables/useClipboardPaste'
-  import HandoffReceiver from '@/components/HandoffReceiver.vue'
+  import { useAutoSave } from '@/composables/useAutoSave'
+  import { useEditorLayout } from '@/composables/useEditorLayout'
+  import { useRestoreDialog } from '@/composables/useRestoreDialog'
   import { handoffImageToFile, type HandoffImage } from '@/lib/core/handoff'
   import { useCollageStore } from '@/stores/collage'
-  import { useAutoSave } from '@/composables/useAutoSave'
 
-  const { t } = useI18n()
+  const collage = useCollageStore()
   const showTemplates = ref(false)
   const templateLibraryRef = ref<InstanceType<typeof TemplateLibrary> | null>(null)
-  const showRestoreDialog = ref(false)
-  const restoreSaveDate = ref<Date | null>(null)
-  const collage = useCollageStore()
 
   // Öffnet die Vorlagenbibliothek und springt direkt in den Speichern-Dialog,
   // damit die aktuelle Arbeit ohne Umweg als eigene Vorlage gesichert werden kann.
@@ -39,105 +35,21 @@
     nextTick(() => templateLibraryRef.value?.openSaveDialog())
   }
 
-  // ── Neues Layout: Icon-Leiste + kontextbezogenes Werkzeug-Panel (links)
-  //    und ein auswahlabhängiger Inspektor (rechts). Alle Panels liegen im
-  //    Fluss (flex) – sie verkleinern die Leinwand, überdecken sie nie.
-  type ToolTab = 'upload' | 'layouts' | 'effects' | 'frames' | 'images' | null
-  type InspectorTab = 'selection' | 'text' | 'canvas' | 'export'
-
-  const activeTool = ref<ToolTab>('upload')
-  const inspectorOpen = ref(true)
-  const inspectorTab = ref<InspectorTab>('canvas')
-
-  // Werkzeuge der Icon-Leiste (Reihenfolge = Anzeige). Icons als SVG-Pfad.
-  const tools: { id: Exclude<ToolTab, null>; label: string; icon: string }[] = [
-    {
-      id: 'upload',
-      label: 'upload.title',
-      icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
-    },
-    {
-      id: 'layouts',
-      label: 'layout.title',
-      icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
-    },
-    {
-      id: 'effects',
-      label: 'stylePresets.title',
-      icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
-    },
-    {
-      id: 'frames',
-      label: 'frameGallery.title',
-      icon: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm3 2v10h10V7H7z',
-    },
-    {
-      id: 'images',
-      label: 'images.title',
-      icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
-    },
-  ]
-
-  // Reiter des Inspektors (Text jetzt hier statt in der linken Leiste)
-  const inspectorTabs: { id: InspectorTab; label: string }[] = [
-    { id: 'selection', label: 'editor.tabSelection' },
-    { id: 'text', label: 'text.title' },
-    { id: 'canvas', label: 'editor.tabCanvas' },
-    { id: 'export', label: 'editor.tabExport' },
-  ]
-
-  // UiSegmentedControl arbeitet mit string; der Proxy hält den Union-Typ im State.
-  const inspectorOptions = computed(() =>
-    inspectorTabs.map((tab) => ({ value: tab.id, label: t(tab.label) }))
-  )
-  const inspectorTabModel = computed({
-    get: () => inspectorTab.value as string,
-    set: (value) => {
-      inspectorTab.value = value as InspectorTab
-    },
-  })
-
-  // Icon-Leiste: aktives Werkzeug erneut anklicken klappt das Panel ein
-  function selectTool(tool: Exclude<ToolTab, null>) {
-    activeTool.value = activeTool.value === tool ? null : tool
-  }
-
-  // Inspektor folgt der Auswahl: Bild/Text markiert → Reiter "Auswahl"
-  watch(
-    () => [collage.selectedImageId, collage.selectedTextId] as const,
-    ([imgId, textId]) => {
-      if (imgId || textId) {
-        // Ist der Nutzer bereits im Text-Reiter und wählt einen Text aus,
-        // dort bleiben – die Bearbeitung wird inline unter der Liste angezeigt.
-        if (textId && inspectorTab.value === 'text') {
-          inspectorOpen.value = true
-          return
-        }
-        inspectorTab.value = 'selection'
-        inspectorOpen.value = true
-      }
-    }
-  )
+  const { activeTool, inspectorOpen, inspectorTab, selectTool, collapseOnSmallScreens } =
+    useEditorLayout()
 
   const { showShortcutsModal, setupKeyboardListeners, cleanupKeyboardListeners } =
     useKeyboardShortcuts()
   const { setupClipboardListener, cleanupClipboardListener } = useClipboardPaste()
   const autoSave = useAutoSave()
-
-  // Wiederherstellungsdialog Funktionen
-  async function handleRestore() {
-    showRestoreDialog.value = false
-    await autoSave.restoreState()
-  }
-
-  function handleDiscardRestore() {
-    showRestoreDialog.value = false
-    autoSave.clearSavedState()
-  }
-
-  function handleContinueWithoutRestore() {
-    showRestoreDialog.value = false
-  }
+  const {
+    showRestoreDialog,
+    restoreSaveDate,
+    checkForSavedState,
+    handleRestore,
+    handleDiscardRestore,
+    handleContinueWithoutRestore,
+  } = useRestoreDialog(autoSave)
 
   async function handleHandoffAccept(images: HandoffImage[]) {
     const files: File[] = []
@@ -154,19 +66,8 @@
     setupKeyboardListeners()
     setupClipboardListener()
     autoSave.setupAutoSave()
-
-    // Auf kleinen Bildschirmen: Panels eingeklappt starten, damit die
-    // Leinwand oben sofort sichtbar ist (Panels schieben Inhalt nur nach unten).
-    if (window.innerWidth < 1024) {
-      activeTool.value = null
-      inspectorOpen.value = false
-    }
-
-    // Prüfe ob gespeicherte Daten vorhanden sind
-    if (autoSave.hasSavedState()) {
-      restoreSaveDate.value = autoSave.getSaveDate()
-      showRestoreDialog.value = true
-    }
+    collapseOnSmallScreens(window.innerWidth)
+    checkForSavedState()
   })
 
   onUnmounted(() => {
@@ -177,122 +78,11 @@
 
 <template>
   <div class="flex flex-col min-h-screen bg-surface-0 text-ink transition-colors">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
-      <div class="container mx-auto px-2 py-2 sm:px-4 sm:py-4 flex items-center justify-between">
-        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
-          <!-- Back to Landing Button -->
-          <RouterLink
-            to="/"
-            class="p-2 rounded-md hover:bg-surface-2 transition-colors"
-            :title="t('app.backToHome')"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-          </RouterLink>
-          <div class="min-w-0">
-            <h1 class="text-lg sm:text-2xl font-bold truncate">{{ t('app.title') }}</h1>
-            <p class="text-sm text-ink-2 hidden sm:block">
-              {{ t('app.subtitle') }}
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
-          <!-- Undo/Redo Buttons -->
-          <div class="flex items-center gap-1 mr-1 sm:mr-2">
-            <UiIconButton
-              :label="`${t('shortcuts.undo')} (Ctrl+Z)`"
-              :disabled="!collage.canUndo"
-              @click="collage.undo"
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                />
-              </svg>
-            </UiIconButton>
-            <UiIconButton
-              :label="`${t('shortcuts.redo')} (Ctrl+Y)`"
-              :disabled="!collage.canRedo"
-              @click="collage.redo"
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
-                />
-              </svg>
-            </UiIconButton>
-          </div>
-
-          <!-- Vorlagen: unter sm nur Icons, ab sm Buttons mit Text -->
-          <div class="contents sm:hidden">
-            <UiIconButton :label="t('templates.saveAsCurrent')" @click="openSaveTemplate">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
-                />
-              </svg>
-            </UiIconButton>
-            <UiIconButton :label="t('templates.library')" @click="showTemplates = true">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
-                />
-              </svg>
-            </UiIconButton>
-          </div>
-          <div class="hidden sm:contents">
-            <UiButton variant="secondary" @click="openSaveTemplate">
-              <template #icon>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1-4l-4 4m0 0L8 3m4 4V3"
-                  />
-                </svg>
-              </template>
-              {{ t('templates.saveAsCurrent') }}
-            </UiButton>
-            <UiButton variant="secondary" @click="showTemplates = true">
-              <template #icon>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
-                  />
-                </svg>
-              </template>
-              {{ t('templates.library') }}
-            </UiButton>
-          </div>
-          <UiIconButton :label="t('shortcuts.title')" @click="showShortcutsModal = true">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"
-              />
-            </svg>
-          </UiIconButton>
-        </div>
-      </div>
-    </header>
+    <EditorHeader
+      @save-template="openSaveTemplate"
+      @open-templates="showTemplates = true"
+      @open-shortcuts="showShortcutsModal = true"
+    />
 
     <!-- Handoff Banner -->
     <HandoffReceiver @accept="handleHandoffAccept" />
@@ -300,47 +90,9 @@
     <!-- Main Content -->
     <main class="flex-1 container mx-auto px-2 py-3 sm:px-4 sm:py-6">
       <div class="flex flex-col lg:flex-row gap-3 lg:gap-4">
-        <!-- Icon-Leiste: wechselt das Werkzeug-Panel. Aktives Werkzeug erneut
-             anklicken klappt das Panel ein. Immer sichtbar, immer im Fluss. -->
-        <nav
-          class="flex lg:flex-col gap-1.5 p-1.5 flex-shrink-0 lg:self-start overflow-x-auto bg-surface-1 rounded-lg border border-line"
-          :aria-label="t('editor.tools')"
-        >
-          <button
-            v-for="tool in tools"
-            :key="tool.id"
-            class="w-11 h-11 flex-shrink-0 rounded-lg flex items-center justify-center transition-colors"
-            :class="
-              activeTool === tool.id ? 'bg-accent-soft text-ink' : 'text-ink-2 hover:bg-surface-2'
-            "
-            :title="t(tool.label)"
-            :aria-label="t(tool.label)"
-            :aria-pressed="activeTool === tool.id"
-            @click="selectTool(tool.id)"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.8"
-                :d="tool.icon"
-              />
-            </svg>
-          </button>
-        </nav>
+        <EditorToolbar :active-tool="activeTool" @select="selectTool" />
 
-        <!-- Kontext-Panel: zeigt nur das aktive Werkzeug. Liegt im Fluss und
-             verkleinert die Leinwand, statt sie zu überdecken. -->
-        <aside
-          v-if="activeTool"
-          class="w-full lg:w-72 xl:w-80 flex-shrink-0 lg:self-start lg:max-h-[calc(100vh-8rem)] overflow-y-auto"
-        >
-          <ImageUploader v-if="activeTool === 'upload'" />
-          <LayoutSelector v-else-if="activeTool === 'layouts'" />
-          <StylePresets v-else-if="activeTool === 'effects'" />
-          <FrameGallery v-else-if="activeTool === 'frames'" />
-          <ImageList v-else-if="activeTool === 'images'" />
-        </aside>
+        <EditorToolPanel :active-tool="activeTool" />
 
         <!-- Canvas - Expands to fill available space -->
         <section class="flex-1 min-w-0">
@@ -348,78 +100,7 @@
           <CollageCanvas />
         </section>
 
-        <!-- Inspektor: folgt der Auswahl (Bild / Text / Leinwand / Export).
-             Liegt im Fluss und überdeckt die Leinwand nie. -->
-        <aside
-          class="w-full flex-shrink-0 lg:self-start transition-all duration-slow"
-          :class="inspectorOpen ? 'lg:w-80 xl:w-96' : 'lg:w-12'"
-        >
-          <template v-if="inspectorOpen">
-            <!-- Reiter + Einklappen -->
-            <div class="flex items-center gap-1 mb-3">
-              <UiSegmentedControl
-                v-model="inspectorTabModel"
-                class="inspector-tabs"
-                :options="inspectorOptions"
-                :label="t('editor.settings')"
-                size="sm"
-              />
-              <UiIconButton :label="t('editor.hidePanel')" @click="inspectorOpen = false">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </UiIconButton>
-            </div>
-
-            <!-- Inhalt je nach Reiter -->
-            <div class="space-y-6 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
-              <template v-if="inspectorTab === 'selection'">
-                <TextControls v-if="collage.selectedTextId" />
-                <ImageControls v-else />
-              </template>
-              <template v-else-if="inspectorTab === 'text'">
-                <TextList />
-                <TextControls v-if="collage.selectedTextId" />
-              </template>
-              <CanvasSettings v-else-if="inspectorTab === 'canvas'" />
-              <ExportControls v-else />
-            </div>
-          </template>
-
-          <!-- Eingeklappt: Wieder-Öffnen -->
-          <template v-else>
-            <div class="hidden lg:flex justify-center">
-              <UiIconButton
-                :label="t('editor.showSettings')"
-                variant="secondary"
-                @click="inspectorOpen = true"
-              >
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </UiIconButton>
-            </div>
-            <div class="lg:hidden">
-              <UiButton variant="secondary" block @click="inspectorOpen = true">
-                <template #icon>
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </template>
-                {{ t('editor.showSettings') }}
-              </UiButton>
-            </div>
-          </template>
-        </aside>
+        <EditorInspector v-model:open="inspectorOpen" v-model:tab="inspectorTab" />
       </div>
     </main>
 
@@ -433,44 +114,12 @@
     <ToastContainer />
 
     <!-- Auto-Save Restore Dialog -->
-    <UiDialog
-      teleport-to="#modal-portal"
+    <RestoreDialog
       :open="showRestoreDialog"
-      :title="t('autoSave.restoreTitle')"
-      :description="t('autoSave.restoreDescription')"
-      :close-label="t('common.close')"
-      @close="handleContinueWithoutRestore"
-    >
-      <p v-if="restoreSaveDate" class="text-sm text-ink-2">
-        {{ t('autoSave.savedAt') }}: {{ restoreSaveDate.toLocaleString() }}
-      </p>
-      <template #footer>
-        <UiButton variant="danger" @click="handleDiscardRestore">
-          {{ t('autoSave.discard') }}
-        </UiButton>
-        <UiButton variant="secondary" @click="handleContinueWithoutRestore">
-          {{ t('autoSave.continueWithout') }}
-        </UiButton>
-        <UiButton variant="primary" @click="handleRestore">
-          {{ t('autoSave.restore') }}
-        </UiButton>
-      </template>
-    </UiDialog>
+      :save-date="restoreSaveDate"
+      @restore="handleRestore"
+      @discard="handleDiscardRestore"
+      @continue="handleContinueWithoutRestore"
+    />
   </div>
 </template>
-
-<style scoped>
-  /* Reiter füllen die Breite des Inspektors, jede Option gleich breit. */
-  .inspector-tabs {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
-  .inspector-tabs :deep(.ui-segmented__option) {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 0 var(--ds-space-2);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>
