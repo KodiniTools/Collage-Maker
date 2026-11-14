@@ -4,7 +4,10 @@ import { collectPageErrors, prepare, type Locale, type Theme } from './helpers'
 const PAGES: ReadonlyArray<{ path: string; heading: Record<Locale, string> }> = [
   {
     path: './',
-    heading: { de: 'Erstelle beeindruckende Foto-Collagen', en: 'Create Stunning Photo Collages' },
+    heading: {
+      de: 'Fotocollage erstellen – kostenlos online',
+      en: 'Photo Collage Maker – Free Online',
+    },
   },
   { path: './editor', heading: { de: 'Bilder-Collage-Macher', en: 'Image Collage Maker' } },
   { path: './faq', heading: { de: 'Häufig gestellte Fragen', en: 'Frequently Asked Questions' } },

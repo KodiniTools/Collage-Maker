@@ -4,9 +4,9 @@ import type { LocaleMessages } from './de'
 const en: LocaleMessages = {
   seo: {
     landing: {
-      title: 'Photo Collage Maker – free & no upload | KodiniTools',
+      title: 'Photo Collage Maker Online – free, no sign-up | KodiniTools',
       description:
-        'Create stunning photo collages right in your browser: 14 layouts, image editing and text. Free, no sign-up, 100% private – your images stay on your device.',
+        'Free photo collage maker online, no sign-up, no app, no watermark: 14 layouts, image editing and text in your browser. Your images stay on your device.',
     },
     editor: {
       title: 'Collage Editor – arrange your photos | KodiniTools',
@@ -54,7 +54,7 @@ const en: LocaleMessages = {
   },
   landing: {
     hero: {
-      title: 'Create Stunning Photo Collages',
+      title: 'Photo Collage Maker – Free Online',
       subtitle:
         'Free, directly in your browser, without uploading to servers. Your images stay private on your device.',
     },

@@ -6,9 +6,9 @@
 const de = {
   seo: {
     landing: {
-      title: 'Bilder-Collage-Macher – kostenlos & ohne Upload | KodiniTools',
+      title: 'Fotocollage erstellen – kostenlos & ohne Anmeldung | KodiniTools',
       description:
-        'Erstelle beeindruckende Foto-Collagen direkt im Browser: 14 Layouts, Bildbearbeitung und Texte. Kostenlos, ohne Registrierung, 100 % privat – deine Bilder bleiben auf deinem Gerät.',
+        'Fotocollage erstellen ohne Anmeldung, App und Wasserzeichen: 14 Layouts, Bildbearbeitung und Texte direkt im Browser. Deine Bilder bleiben auf deinem Gerät.',
     },
     editor: {
       title: 'Collage-Editor – Fotos zusammenstellen | KodiniTools',
@@ -57,7 +57,7 @@ const de = {
   },
   landing: {
     hero: {
-      title: 'Erstelle beeindruckende Foto-Collagen',
+      title: 'Fotocollage erstellen – kostenlos online',
       subtitle:
         'Kostenlos, direkt im Browser, ohne Upload auf Server. Deine Bilder bleiben privat auf deinem Gerät.',
     },
