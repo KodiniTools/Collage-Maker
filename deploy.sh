@@ -10,7 +10,9 @@
 # Der Build ist bereits auf den Sub-Pfad konfiguriert:
 #   vite.config.ts : base = '/collagemaker/'
 #   router/index.ts: createWebHistory('/collagemaker/')
-# An der NGINX-Konfiguration muss deshalb nichts geändert werden.
+# Für den Sub-Pfad muss an der NGINX-Konfiguration nichts geändert werden.
+# Einmalig für ?lang=en: dist/index.en.html per map + location ausliefern
+# (Snippet siehe README, Abschnitt „Englische Version serverseitig“).
 #
 # ------------------------------------------------------------------------
 # Aufruf (auf dem Server, aus dem Repo-Verzeichnis):

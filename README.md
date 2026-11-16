@@ -81,6 +81,38 @@ location /collagen/ {
 }
 ```
 
+### Englische Version serverseitig (`?lang=en`)
+
+Der Build erzeugt neben `dist/index.html` (Deutsch) auch `dist/index.en.html`:
+gleiche Assets, aber `<html lang="en">`, englischer Titel, Description, Canonical
+(`…/collagemaker/?lang=en`), Open Graph und Twitter. So sehen Crawler ohne
+JavaScript bei `?lang=en` die englische Version. Im Browser ändert sich nichts:
+vue-i18n und `useSeo()` setzen Sprache und Tags wie bisher.
+
+nginx liefert die Datei bei `?lang=en` aus. Dafür zwei Ergänzungen, die
+bestehende `try_files`-Zeile bleibt unverändert:
+
+```nginx
+# http-Kontext (außerhalb von server { }):
+# $request_uri statt $arg_lang, weil try_files die Query beim Fallback verwirft.
+map $request_uri $collage_index {
+    default               index.html;
+    "~[?&]lang=en(&|$)"   index.en.html;
+}
+
+# innerhalb von location /collagemaker/ { … } (neben dem Asset-Block):
+location = /collagemaker/index.html {
+    alias /var/www/kodinitools.com/collagemaker/$collage_index;
+}
+```
+
+Hinweise: Variablen in der `try_files`-Fallback-URI funktionieren mit `alias`
+nicht zuverlässig, deshalb die exakte Location. Gilt für alle Routen, die auf
+`index.html` zurückfallen (z. B. `/faq?lang=en`); deren statische Tags sind wie
+bei Deutsch die der Startseite, im Browser korrigiert `useSeo()` sie.
+Prüfen: `nginx -t && systemctl reload nginx`, dann
+`curl -s 'https://kodinitools.com/collagemaker/?lang=en' | grep -E '<html|<title|canonical'`.
+
 ## Projektstruktur
 
 ```
