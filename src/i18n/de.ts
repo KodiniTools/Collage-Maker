@@ -8,12 +8,12 @@ const de = {
     landing: {
       title: 'Fotocollage erstellen – kostenlos & ohne Anmeldung | KodiniTools',
       description:
-        'Fotocollage erstellen ohne Anmeldung, App und Wasserzeichen: 14 Layouts, Bildbearbeitung und Texte direkt im Browser. Deine Bilder bleiben auf deinem Gerät.',
+        'Fotocollage erstellen ohne Anmeldung, App und Wasserzeichen: 14 Layouts, Bildbearbeitung und Texte direkt im Browser. Ihre Bilder bleiben auf Ihrem Gerät.',
     },
     editor: {
       title: 'Collage-Editor – Fotos zusammenstellen | KodiniTools',
       description:
-        'Ziehe deine Bilder auf die Leinwand, wähle ein Layout und bearbeite Helligkeit, Rahmen, Schatten und Text. Alles lokal im Browser, DSGVO-konform.',
+        'Ziehen Sie Ihre Bilder auf die Leinwand, wählen Sie ein Layout und bearbeiten Sie Helligkeit, Rahmen, Schatten und Text. Lokal im Browser, DSGVO-konform.',
     },
     faq: {
       title: 'Häufige Fragen zum Collage-Macher | KodiniTools',
