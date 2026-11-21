@@ -90,3 +90,36 @@ describe('localizeIndexHtml (index.en.html)', () => {
     ).toThrow(/title/)
   })
 })
+
+describe('Unterseiten (STATIC_SUBPAGES)', () => {
+  it('haben je Sprache eigenen Titel, Canonical und hreflang auf ihren Pfad', async () => {
+    const { STATIC_SUBPAGES } = await import('@/config/seoHtml')
+    const de = (await import('@/i18n/de')).default
+    expect(STATIC_SUBPAGES.map((p) => p.path)).toEqual(['/faq', '/blog', '/artikel'])
+    const titles = new Set<string>()
+    for (const page of STATIC_SUBPAGES) {
+      for (const [locale, dict] of [
+        ['de', de],
+        ['en', en],
+      ] as const) {
+        const text = dict.seo[page.seo]
+        const html = localizeIndexHtml(indexHtml, {
+          locale,
+          title: text.title,
+          description: text.description,
+          path: page.path,
+        })
+        const url = `https://kodinitools.com/collagemaker${page.path}`
+        const canonical = locale === 'en' ? `${url}?lang=en` : url
+        expect(html).toContain(`<html lang="${locale}">`)
+        expect(html).toContain(`<link rel="canonical" href="${canonical}" />`)
+        expect(html).toContain(`hreflang="de" href="${url}"`)
+        expect(html).toContain(`hreflang="en" href="${url}?lang=en"`)
+        expect(metaContent(html, 'property', 'og:url')).toBe(canonical)
+        expect(text.title).not.toBe(dict.seo.landing.title)
+        titles.add(text.title)
+      }
+    }
+    expect(titles.size).toBe(STATIC_SUBPAGES.length * 2)
+  })
+})

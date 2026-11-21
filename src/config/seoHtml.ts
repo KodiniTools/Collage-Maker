@@ -61,7 +61,8 @@ function replaceMetaContent(
 
 /**
  * Setzt <html lang>, <title>, description, canonical, Open Graph und Twitter auf
- * die übergebene Sprache. hreflang-Links bleiben unverändert (sind sprachneutral).
+ * die übergebene Sprache und die hreflang-Links auf den Pfad der Seite
+ * (für Unterseiten nötig, weil die Vorlage auf die Startseite zeigt).
  */
 export function localizeIndexHtml(html: string, input: LocalizedHtmlInput): string {
   const head = buildSeoHead({
@@ -91,5 +92,31 @@ export function localizeIndexHtml(html: string, input: LocalizedHtmlInput): stri
   out = replaceMetaContent(out, 'name', 'twitter:title', head.title)
   out = replaceMetaContent(out, 'name', 'twitter:description', head.description)
 
+  for (const { hreflang, href } of head.alternates) {
+    out = replaceOnce(
+      out,
+      new RegExp(
+        `(<link\\s+rel="alternate"\\s+hreflang="${escapeRegExp(hreflang)}"\\s+href=")[^"]*(")`
+      ),
+      escapeHtml(href),
+      `link hreflang=${hreflang}`
+    )
+  }
+
   return out
 }
+
+/**
+ * Unterseiten mit eigenem statischen Head (Datei in dist/, nginx liefert sie per map aus).
+ * `seo` ist der i18n-Schlüssel unter `seo.*`. Der Editor fehlt bewusst: reine App-Seite,
+ * Canonical und Sitemap bleiben bei der Startseite.
+ */
+export const STATIC_SUBPAGES: ReadonlyArray<{
+  path: string
+  file: string
+  seo: 'faq' | 'guide' | 'blog'
+}> = [
+  { path: '/faq', file: 'faq', seo: 'faq' },
+  { path: '/blog', file: 'blog', seo: 'guide' },
+  { path: '/artikel', file: 'artikel', seo: 'blog' },
+]
