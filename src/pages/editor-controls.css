@@ -99,3 +99,24 @@
 #app #modal-portal .ui-dialog__footer {
   flex-wrap: wrap;
 }
+
+/* Seite: blau-cyanfarbener Verlauf wie auf der Startseite. */
+#app .collage-editor {
+  background-image: var(--collage-page-background);
+  background-repeat: no-repeat;
+}
+
+/* Supreme Regular (400) für alle Texte im Editor und in seinen Dialogen. */
+#app :is(.collage-editor, #modal-portal) {
+  --ds-weight-medium: 400;
+  --ds-weight-semibold: 400;
+  --ds-weight-bold: 400;
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+#app
+  :is(.collage-editor, #modal-portal)
+  :is(.font-medium, .font-semibold, .font-bold, strong, b, th) {
+  font-weight: 400;
+}
