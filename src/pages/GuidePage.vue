@@ -1,10 +1,10 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { RouterLink } from 'vue-router'
   import { UiButton } from '@/components/ui'
+  import CollageHeader from '@/components/CollageHeader.vue'
 
-  const { t, locale } = useI18n()
+  const { locale } = useI18n()
 
   const isDE = computed(() => locale.value === 'de')
 
@@ -215,41 +215,8 @@
   <div class="min-h-screen bg-surface-0">
     <div class="relative z-10">
       <!-- Navigation -->
-      <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
-        <nav
-          class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-y-2"
-        >
-          <RouterLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span class="text-xl font-bold text-ink">{{ t('app.title') }}</span>
-          </RouterLink>
-
-          <div class="flex items-center gap-2 sm:gap-6 ml-auto">
-            <RouterLink to="/blog" class="text-sm sm:text-lg text-ink font-semibold">
-              {{ t('nav.guide') }}
-            </RouterLink>
-            <RouterLink
-              to="/artikel"
-              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
-            >
-              {{ t('nav.blog') }}
-            </RouterLink>
-            <RouterLink
-              to="/faq"
-              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
-            >
-              {{ t('nav.faq') }}
-            </RouterLink>
-            <RouterLink
-              to="/"
-              class="text-sm sm:text-lg text-ink-2 hover:text-ink transition-colors font-medium"
-            >
-              {{ t('nav.home') }}
-            </RouterLink>
-            <UiButton to="/editor" variant="primary" size="sm">
-              {{ t('nav.editor') }}
-            </UiButton>
-          </div>
-        </nav>
+      <header class="collage-site-header">
+        <CollageHeader />
       </header>
 
       <!-- Hero -->

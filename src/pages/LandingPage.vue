@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
-  import { RouterLink } from 'vue-router'
   import { UiButton } from '@/components/ui'
+  import CollageHeader from '@/components/CollageHeader.vue'
   import './landing.css'
 
   import travel1 from '@/assets/collage/travel-1.webp'
@@ -36,31 +36,8 @@
     <!-- Content -->
     <div class="relative z-10">
       <!-- Navigation -->
-      <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
-        <nav
-          class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-y-2"
-        >
-          <!-- Logo -->
-          <div class="flex items-center gap-3">
-            <span class="text-xl font-bold text-ink">{{ t('app.title') }}</span>
-          </div>
-
-          <!-- Nav Links + Controls -->
-          <div class="flex items-center gap-3 sm:gap-6 ml-auto">
-            <RouterLink to="/blog" class="text-ink-2 hover:text-ink transition-colors font-medium">
-              {{ t('nav.guide') }}
-            </RouterLink>
-            <RouterLink
-              to="/artikel"
-              class="text-ink-2 hover:text-ink transition-colors font-medium"
-            >
-              {{ t('nav.blog') }}
-            </RouterLink>
-            <RouterLink to="/faq" class="text-ink-2 hover:text-ink transition-colors font-medium">
-              {{ t('nav.faq') }}
-            </RouterLink>
-          </div>
-        </nav>
+      <header class="collage-site-header">
+        <CollageHeader />
       </header>
 
       <!-- Hero Section -->

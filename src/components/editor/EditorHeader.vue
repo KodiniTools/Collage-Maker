@@ -4,6 +4,7 @@
   import { RouterLink } from 'vue-router'
   import { UiButton, UiIconButton } from '@/components/ui'
   import { useCollageStore } from '@/stores/collage'
+  import CollageHeader from '@/components/CollageHeader.vue'
 
   const emit = defineEmits<{
     'save-template': []
@@ -16,14 +17,16 @@
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 bg-surface-1 border-b border-line">
-    <div class="container mx-auto px-2 py-2 sm:px-4 sm:py-4 flex items-center justify-between">
+  <header class="collage-site-header">
+    <CollageHeader />
+    <div class="collage-shell collage-editor-header-row">
       <div class="flex items-center gap-2 sm:gap-4 min-w-0">
         <!-- Back to Landing Button -->
         <RouterLink
           to="/"
           class="p-2 rounded-md hover:bg-surface-2 transition-colors"
           :title="t('app.backToHome')"
+          :aria-label="t('app.backToHome')"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -41,7 +44,7 @@
           </p>
         </div>
       </div>
-      <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+      <div class="collage-editor-header-actions">
         <!-- Undo/Redo Buttons -->
         <div class="flex items-center gap-1 mr-1 sm:mr-2">
           <UiIconButton
