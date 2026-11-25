@@ -34,14 +34,20 @@ export const useSettingsStore = defineStore('settings', () => {
     { immediate: true }
   )
 
-  // Locale watcher - sync localStorage, html lang, vue-i18n, SSI nav buttons & text
-  watch(locale, (newLocale) => {
-    localStorage.setItem('locale', newLocale)
-    document.documentElement.setAttribute('lang', newLocale)
-    i18n.global.locale.value = newLocale
-    syncNavLangButtons(newLocale)
-    translateSsiNav(newLocale)
-  })
+  // Locale watcher - sync localStorage, html lang, vue-i18n, SSI nav buttons & text.
+  // immediate: Das SSI-Skript markiert die Sprache vor dem App-Start nur aus
+  // localStorage; bei ?lang=en muss die App Markierung und Texte nachziehen.
+  watch(
+    locale,
+    (newLocale) => {
+      localStorage.setItem('locale', newLocale)
+      document.documentElement.setAttribute('lang', newLocale)
+      i18n.global.locale.value = newLocale
+      syncNavLangButtons(newLocale)
+      translateSsiNav(newLocale)
+    },
+    { immediate: true }
+  )
 
   // Listen for locale-changed event from global SSI nav
   function onLocaleChanged(e: Event) {
