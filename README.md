@@ -37,7 +37,7 @@ pnpm install
 # Dev Server starten
 npm run dev
 
-# Läuft auf: http://localhost:5173/collagen/
+# Läuft auf: http://localhost:5173/collagemaker/
 ```
 
 ## Build
@@ -52,7 +52,7 @@ npm run preview
 
 ## Deployment
 
-Die Anwendung ist für Deployment als Subdirectory konfiguriert (`/collagen/`).
+Die Anwendung ist für Deployment als Subdirectory konfiguriert (`/collagemaker/`).
 
 ### Auf Server deployen
 
@@ -61,18 +61,18 @@ Die Anwendung ist für Deployment als Subdirectory konfiguriert (`/collagen/`).
 npm run build
 
 # Per SSH deployen
-scp -r dist/* root@145.223.81.100:/var/www/kodinitools.com/collagen/
+scp -r dist/* root@145.223.81.100:/var/www/kodinitools.com/collagemaker/
 
 # Oder mit rsync
-rsync -avz --delete dist/ root@145.223.81.100:/var/www/kodinitools.com/collagen/
+rsync -avz --delete dist/ root@145.223.81.100:/var/www/kodinitools.com/collagemaker/
 ```
 
 ### Nginx Konfiguration
 
 ```nginx
-location /collagen/ {
-    alias /var/www/kodinitools.com/collagen/;
-    try_files $uri $uri/ /collagen/index.html;
+location /collagemaker/ {
+    alias /var/www/kodinitools.com/collagemaker/;
+    try_files $uri $uri/ /collagemaker/index.html;
     
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf)$ {
         expires 1y;
