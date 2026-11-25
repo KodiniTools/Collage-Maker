@@ -70,3 +70,27 @@ test('fehlender Seiten-Chunk (nach Deploy) lädt die Zielseite einmal neu', asyn
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bilder-Collage-Macher')
   expect(blocked).toBeGreaterThanOrEqual(2)
 })
+
+for (const locale of ['de', 'en'] as const) {
+  test(`Startseite · ${locale} · 390 px: sechs Bilder geladen, kein horizontales Scrollen`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await prepare(page, locale)
+    await page.goto('./')
+
+    const images = page.locator('.collage-hero-tiles img')
+    await expect(images).toHaveCount(6)
+    await expect
+      .poll(() =>
+        images.evaluateAll((list) =>
+          list.every((img) => (img as HTMLImageElement).naturalWidth > 0)
+        )
+      )
+      .toBe(true)
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+    )
+    expect(overflow).toBe(0)
+  })
+}

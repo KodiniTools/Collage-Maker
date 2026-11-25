@@ -2,8 +2,17 @@
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
   import { UiButton } from '@/components/ui'
+  import './landing.css'
+
+  import travel1 from '@/assets/collage/travel-1.webp'
+  import travel2 from '@/assets/collage/travel-2.webp'
+  import travel3 from '@/assets/collage/travel-3.webp'
+  import travel4 from '@/assets/collage/travel-4.webp'
+  import travel5 from '@/assets/collage/travel-5.webp'
+  import travel6 from '@/assets/collage/travel-6.webp'
 
   const { t } = useI18n()
+  const heroPhotos = [travel1, travel2, travel3, travel4, travel5, travel6]
 
   const heroFeatures = ['layouts', 'editing', 'privacy']
 
@@ -23,7 +32,7 @@
 </script>
 
 <template>
-  <div class="min-h-screen bg-surface-0">
+  <div class="collage-landing min-h-screen bg-surface-0">
     <!-- Content -->
     <div class="relative z-10">
       <!-- Navigation -->
@@ -55,48 +64,45 @@
       </header>
 
       <!-- Hero Section -->
-      <section class="container mx-auto px-4 pt-8 pb-8 sm:pt-16 sm:pb-12">
-        <div class="text-center max-w-4xl mx-auto mb-8 sm:mb-16">
-          <h1 class="text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-4 sm:mb-6">
-            {{ t('landing.hero.title') }}
-          </h1>
-
-          <!-- Hero Video (autoplay once on page load, muted for browser autoplay policy) -->
-          <div class="mb-6 sm:mb-10 max-w-3xl mx-auto">
-            <video
-              class="w-full rounded-lg border border-line"
-              :src="heroVideoSrc"
-              autoplay
-              muted
-              playsinline
-              preload="auto"
-              :aria-label="t('landing.hero.title')"
-            ></video>
+      <section class="collage-shell">
+        <div class="collage-hero">
+          <div class="collage-hero-copy">
+            <h1>{{ t('landing.hero.title') }}</h1>
+            <p class="collage-hero-lede">{{ t('landing.hero.lede') }}</p>
+            <p class="collage-hero-description">{{ t('landing.hero.subtitle') }}</p>
+            <UiButton to="/editor" variant="primary" size="lg">
+              <span>{{ t('landing.cta') }}</span>
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                stroke-width="1.75"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </UiButton>
           </div>
 
-          <p class="text-lg text-ink-2 mb-6 sm:mb-10 max-w-2xl mx-auto">
-            {{ t('landing.hero.subtitle') }}
-          </p>
-
-          <!-- CTA Button -->
-          <UiButton to="/editor" variant="primary" size="lg">
-            <span>{{ t('landing.cta') }}</span>
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              stroke-width="1.75"
-              aria-hidden="true"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </UiButton>
+          <div class="collage-hero-art" role="img" :aria-label="t('landing.hero.collageAlt')">
+            <div class="collage-hero-tiles" aria-hidden="true">
+              <img
+                v-for="photo in heroPhotos"
+                :key="photo"
+                :src="photo"
+                alt=""
+                width="512"
+                height="512"
+                decoding="async"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Hero Feature Cards Grid (3 Cards) -->
         <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 collage-feature-cards"
         >
           <div
             v-for="feature in heroFeatures"
@@ -111,6 +117,19 @@
             </p>
           </div>
         </div>
+      </section>
+
+      <section class="collage-demo collage-shell" :aria-label="t('landing.hero.demo')">
+        <h2>{{ t('landing.hero.demo') }}</h2>
+        <video
+          class="w-full rounded-lg border border-line"
+          :src="heroVideoSrc"
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+          :aria-label="t('landing.hero.title')"
+        ></video>
       </section>
 
       <!-- All Features Section -->

@@ -1,0 +1,128 @@
+/* Startseite (Design-Umbau Etappe 1). Alle Regeln hängen an .collage-landing,
+   damit Editor und FAQ unverändert bleiben. Tokens: design-system/landing-tokens.css */
+@import '../design-system/landing-tokens.css';
+
+/* Supreme Regular (400) für die ganze Startseite */
+.collage-landing {
+  --ds-weight-medium: 400;
+  --ds-weight-semibold: 400;
+  --ds-weight-bold: 400;
+  font-family: var(--ds-font-sans);
+  font-weight: 400;
+  font-synthesis: none;
+  background-image: var(--collage-page-background);
+  background-repeat: no-repeat;
+}
+
+.collage-landing :is(.font-medium, .font-semibold, .font-bold, strong, b, th) {
+  font-weight: 400;
+}
+
+.collage-landing .collage-shell {
+  width: min(100%, 1460px);
+  margin-inline: auto;
+  padding-inline: clamp(14px, 3vw, 40px);
+}
+
+.collage-landing .collage-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 80px);
+  padding-block: clamp(36px, 8vw, 110px);
+}
+
+.collage-landing .collage-hero h1 {
+  margin-block-end: 14px;
+  color: var(--ds-text);
+  font-size: clamp(2.25rem, 5vw, 4.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.collage-landing .collage-hero-lede {
+  color: var(--collage-heading-accent);
+  font-size: clamp(1.17rem, 2vw, 1.55rem);
+}
+
+.collage-landing .collage-hero-description {
+  margin-block: 12px 22px;
+  color: var(--ds-text-2);
+}
+
+.collage-landing .ui-button--primary {
+  background-color: var(--collage-action);
+  color: var(--collage-on-action);
+}
+
+.collage-landing .ui-button--primary:hover:not(:disabled) {
+  background-color: var(--collage-action-hover);
+}
+
+.collage-landing .collage-hero-art {
+  padding: clamp(7px, 1.2vw, 12px);
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--collage-frame-radius);
+  background: var(--collage-frame-background);
+  box-shadow: var(--ds-shadow-overlay);
+  transform: rotate(-1.5deg);
+}
+
+.collage-landing .collage-hero-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(3px, 0.6vw, 6px);
+  padding: clamp(4px, 0.75vw, 8px);
+  aspect-ratio: 16 / 10;
+  border-radius: var(--collage-mat-radius);
+  background: var(--collage-mat);
+}
+
+.collage-landing .collage-hero-tiles img {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  object-fit: cover;
+}
+
+.collage-landing .collage-hero-tiles img:first-child {
+  grid-row: span 2;
+}
+
+.collage-landing .collage-hero-tiles img:last-child {
+  grid-column: span 2;
+}
+
+.collage-landing .collage-feature-cards > div {
+  text-align: start;
+  border-radius: var(--ds-radius-lg);
+}
+
+.collage-landing .collage-demo {
+  margin-block-start: clamp(32px, 6vw, 72px);
+}
+
+.collage-landing .collage-demo h2 {
+  margin-block-end: 16px;
+  color: var(--ds-text);
+  font-size: var(--ds-text-2xl);
+  text-align: center;
+}
+
+.collage-landing .collage-demo video {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+@media (max-width: 700px) {
+  .collage-landing .collage-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .collage-landing .collage-hero-art {
+    transform: none;
+  }
+}
