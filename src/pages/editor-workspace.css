@@ -1,0 +1,80 @@
+/* Editor (Design-Umbau Etappe 4): eingefasster Leinwand-Arbeitsbereich mit Punktmuster,
+   Pixelmaß-Anzeige und Bildleiste darunter. Das Muster ist reiner CSS-Hintergrund des
+   Containers und liegt nicht auf dem <canvas>, erscheint also nicht im Export.
+   Tokens: design-system/landing-tokens.css */
+@import '../design-system/landing-tokens.css';
+
+#app .collage-workspace {
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-surface-1);
+  overflow: hidden;
+}
+
+.collage-workspace-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-2) var(--ds-space-4);
+  padding: var(--ds-space-3) var(--ds-space-4);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.collage-workspace-header span {
+  color: var(--ds-text-2);
+  font-size: var(--ds-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+#app .collage-workspace-stage {
+  height: max(18rem, calc(100vh - 12rem));
+  height: max(18rem, calc(100dvh - 12rem));
+  overflow: hidden;
+  background-color: var(--ds-surface-0);
+  background-image: var(--collage-stage-pattern);
+  background-size: 18px 18px;
+}
+
+#app .collage-workspace-stage [data-collage-canvas] {
+  box-shadow: var(--ds-shadow-overlay);
+}
+
+#app .collage-workspace-stage :is(.zoom-control, .quick-action-toolbar) {
+  border-color: var(--ds-border-strong);
+  border-radius: var(--ds-radius-md);
+}
+
+.collage-thumbnail-bar {
+  border-top: 1px solid var(--ds-border);
+  padding: var(--ds-space-3) var(--ds-space-4);
+}
+
+#app .collage-thumbnail-remove {
+  display: flex;
+}
+
+#app .collage-thumbnail:focus-within .collage-thumbnail-remove {
+  opacity: 1;
+}
+
+#app .collage-workspace-tools {
+  border-color: var(--ds-border-strong);
+}
+
+#app .collage-workspace-tools button[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 1px var(--ds-border-strong);
+}
+
+@media (hover: none) {
+  #app .collage-thumbnail-remove {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  #app .collage-workspace-stage {
+    height: clamp(16rem, 55vh, 30rem);
+    height: clamp(16rem, 55dvh, 30rem);
+  }
+}

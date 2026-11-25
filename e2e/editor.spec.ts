@@ -234,4 +234,59 @@ test.describe('Editor (Smoke)', () => {
     await expect(save).toHaveCSS('background-color', GOLD)
     await expect(save).toHaveCSS('color', WHITE)
   })
+
+  test('Etappe 4: Arbeitsbereich zeigt Pixelmaße, Punktmuster und die Bildleiste unter der Leinwand', async ({
+    page,
+  }) => {
+    const workspace = page.getByRole('region', { name: 'Leinwand', exact: true })
+    await expect(workspace.getByText('700 × 740 px')).toBeVisible()
+
+    const stage = workspace.locator('.collage-workspace-stage')
+    await expect(stage).toHaveCSS('background-image', /radial-gradient/)
+    // Das Muster liegt nur auf dem Container, nie auf dem exportierten <canvas>.
+    await expect(stage.locator('canvas[data-collage-canvas]')).toHaveCSS('background-image', 'none')
+
+    await uploadImages(page, [imageFile('a.png')])
+    const bar = workspace.locator('.collage-thumbnail-bar')
+    await expect(bar).toBeVisible()
+    const order = await workspace.evaluate((el) =>
+      Array.from(el.children, (child) => child.className.split(' ')[0])
+    )
+    expect(order).toEqual([
+      'collage-workspace-header',
+      'collage-workspace-stage',
+      'collage-thumbnail-bar',
+    ])
+
+    const width = page
+      .getByRole('region', { name: 'Canvas-Größe' })
+      .getByRole('slider', { name: 'Breite' })
+    await width.fill('900')
+    await expect(workspace.getByText('900 × 740 px')).toBeVisible()
+  })
+})
+
+test('Etappe 4: Entfernen-Symbol der Bildleiste ist auf Touchgeräten dauerhaft sichtbar', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    baseURL: test.info().project.use.baseURL,
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  })
+  const page = await context.newPage()
+  await prepare(page, 'de')
+  await page.goto('./editor')
+  await page
+    .getByRole('navigation', { name: 'Werkzeuge' })
+    .getByRole('button', { name: 'Bilder hochladen' })
+    .click()
+  await uploadImages(page, [imageFile('a.png')])
+
+  const remove = page.locator('.collage-thumbnail-remove').first()
+  await expect(remove).toBeVisible()
+  await expect(remove).toHaveCSS('opacity', '1')
+  await expect(remove).toHaveAttribute('aria-label', 'Bild entfernen')
+  await context.close()
 })

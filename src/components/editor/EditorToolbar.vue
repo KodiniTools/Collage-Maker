@@ -39,7 +39,7 @@
 
 <template>
   <nav
-    class="flex lg:flex-col gap-1.5 p-1.5 flex-shrink-0 lg:self-start overflow-x-auto bg-surface-1 rounded-lg border border-line"
+    class="collage-workspace-tools flex lg:flex-col gap-1.5 p-1.5 flex-shrink-0 lg:self-start overflow-x-auto bg-surface-1 rounded-lg border border-line"
     :aria-label="t('editor.tools')"
   >
     <button
