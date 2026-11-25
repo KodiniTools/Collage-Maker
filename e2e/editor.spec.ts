@@ -235,6 +235,28 @@ test.describe('Editor (Smoke)', () => {
     await expect(save).toHaveCSS('color', WHITE)
   })
 
+  test('Editor nutzt den Seitenverlauf und durchgehend Schriftgewicht 400, auch im Dialog', async ({
+    page,
+  }) => {
+    await expect(page.locator('.collage-editor')).toHaveCSS('background-image', /radial-gradient/)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-weight', '400')
+    await expect(page.getByRole('button', { name: 'Bilder auswählen' })).toHaveCSS(
+      'font-weight',
+      '400'
+    )
+
+    await page.getByRole('button', { name: 'Als Vorlage speichern' }).first().click()
+    const dialog = page.locator('#modal-portal')
+    await expect(dialog.getByRole('heading', { name: 'Als Vorlage speichern' })).toHaveCSS(
+      'font-weight',
+      '400'
+    )
+    await expect(dialog.getByRole('button', { name: 'Speichern', exact: true })).toHaveCSS(
+      'font-weight',
+      '400'
+    )
+  })
+
   test('Etappe 4: Arbeitsbereich zeigt Pixelmaße, Punktmuster und die Bildleiste unter der Leinwand', async ({
     page,
   }) => {
