@@ -4,6 +4,18 @@
    Leinwand-Arbeitsbereich (Etappe 4) sowie die aktive Sprache der globalen
    SSI-Navigation (.global-nav).
    Theme-Mechanik wie tokens-v2.css. */
+
+/* Gefüllte Gold-Buttons auf allen Seiten (auch FAQ, Blog, Artikel): dunkelgold mit
+   weisser Schrift und Verlauf nach Equalizer-19-Muster; jeder Stopp ≥ 4,5:1 zu Weiß.
+   In beiden Themes gleich. */
+:root {
+  --collage-action: #8f6320;
+  --collage-action-hover: #7d561c;
+  --collage-on-action: #ffffff;
+  --collage-action-grad: linear-gradient(180deg, #9c6c26 0%, #7a5218 45%, #4a2f0a 100%);
+  --collage-action-grad-hover: linear-gradient(180deg, #8c5f1f 0%, #6a4614 45%, #402908 100%);
+}
+
 .collage-landing,
 .collage-site-header,
 .collage-editor,
@@ -13,9 +25,6 @@
   --collage-control-panel-glow: linear-gradient(160deg, var(--ds-surface-2), transparent 85%);
   --collage-glow: #123449;
   --collage-heading-accent: #69d7e9;
-  --collage-action: #8f6320;
-  --collage-action-hover: #7d561c;
-  --collage-on-action: #ffffff;
   --collage-mat: #fcf3df;
   --collage-frame-radius: 23px;
   --collage-mat-radius: 12px;

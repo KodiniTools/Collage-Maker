@@ -95,12 +95,12 @@
   }
 
   .ui-icon-button--primary {
-    background: var(--ds-accent);
-    color: var(--ds-on-accent);
+    background: var(--collage-action) var(--collage-action-grad);
+    color: var(--collage-on-action);
   }
 
   .ui-icon-button--primary:hover:not(:disabled) {
-    background: var(--ds-accent-hover);
+    background: var(--collage-action-hover) var(--collage-action-grad-hover);
   }
 
   .ui-icon-button--sm {

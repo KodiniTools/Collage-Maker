@@ -74,12 +74,12 @@ body:has(.global-nav) .collage-site-header {
 }
 
 .collage-header-links .collage-editor-link:not([aria-current='page']) {
-  background: var(--collage-action);
+  background: var(--collage-action) var(--collage-action-grad);
   color: var(--collage-on-action);
 }
 
 .collage-header-links .collage-editor-link:not([aria-current='page']):hover {
-  background: var(--collage-action-hover);
+  background: var(--collage-action-hover) var(--collage-action-grad-hover);
 }
 
 .collage-theme-toggle {

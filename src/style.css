@@ -98,10 +98,12 @@ body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([clas
    Tokens: design-system/landing-tokens.css (.global-nav). */
 body > :not(#app):not(script) .global-nav-lang-btn.active:not(#kt-lang-active) {
   background-color: var(--collage-action) !important;
+  background-image: var(--collage-action-grad) !important;
   color: var(--collage-on-action) !important;
 }
 body > :not(#app):not(script) .global-nav-lang-btn.active:not(#kt-lang-active):hover {
   background-color: var(--collage-action-hover) !important;
+  background-image: var(--collage-action-grad-hover) !important;
 }
 
 /* Dropdowns/Submenüs der SSI-Navigation bekommen wieder eine feste Fläche */
