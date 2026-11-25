@@ -4,6 +4,7 @@
    * Zustand der Oberfläche in `useEditorLayout`, Wiederherstellung in
    * `useRestoreDialog`, Teile unter `components/editor/`.
    */
+  import './editor-controls.css'
   import { ref, onMounted, onUnmounted, nextTick } from 'vue'
   import ThumbnailBar from '@/components/ThumbnailBar.vue'
   import CollageCanvas from '@/components/CollageCanvas.vue'
@@ -77,7 +78,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-surface-0 text-ink transition-colors">
+  <div class="collage-editor flex flex-col min-h-screen bg-surface-0 text-ink transition-colors">
     <EditorHeader
       @save-template="openSaveTemplate"
       @open-templates="showTemplates = true"

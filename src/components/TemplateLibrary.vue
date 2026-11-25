@@ -166,7 +166,7 @@
         <!-- Explizite Textfarbe: Das Modal wird per <Teleport> aus dem themed
              Editor-Wrapper herausgelöst und erbt dessen Standardfarbe nicht mehr. -->
         <div
-          class="bg-surface-1 text-ink rounded-lg border border-line shadow-overlay w-full max-w-6xl max-h-[90vh] flex flex-col"
+          class="collage-modal-surface bg-surface-1 text-ink rounded-lg border border-line shadow-overlay w-full max-w-6xl max-h-[90vh] flex flex-col"
         >
           <!-- Header -->
           <div class="flex items-center justify-between gap-3 p-3 sm:p-5 border-b border-line">

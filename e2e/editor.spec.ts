@@ -175,7 +175,7 @@ test.describe('Editor (Smoke)', () => {
     await dialog.getByLabel('Dateiname').fill('meine-collage')
 
     const downloadPromise = page.waitForEvent('download')
-    await dialog.getByRole('button', { name: 'Speichern' }).click()
+    await dialog.getByRole('button', { name: 'Speichern', exact: true }).click()
     const download = await downloadPromise
     expect(download.suggestedFilename()).toBe('meine-collage.png')
     await expect(dialog).toBeHidden()
@@ -194,7 +194,7 @@ test.describe('Editor (Smoke)', () => {
     await dialog.getByLabel('Dateiname').fill('meine-collage')
 
     const downloadPromise = page.waitForEvent('download')
-    await dialog.getByRole('button', { name: 'Speichern' }).click()
+    await dialog.getByRole('button', { name: 'Speichern', exact: true }).click()
     const download = await downloadPromise
     expect(download.suggestedFilename()).toBe('meine-collage.pdf')
     const stream = await download.createReadStream()
@@ -210,5 +210,28 @@ test.describe('Editor (Smoke)', () => {
     await expect(dialog).toBeVisible()
     await page.keyboard.press('Escape')
     await expect(dialog).toBeHidden()
+  })
+
+  test('Etappe 3: Hauptbuttons dunkelgold, Regler höher, Dialog übernimmt die Editorfarben', async ({
+    page,
+  }) => {
+    const GOLD = 'rgb(143, 99, 32)'
+    const WHITE = 'rgb(255, 255, 255)'
+
+    const pick = page.getByRole('button', { name: 'Bilder auswählen' })
+    await expect(pick).toHaveCSS('background-color', GOLD)
+    await expect(pick).toHaveCSS('color', WHITE)
+
+    const slider = page
+      .getByRole('region', { name: 'Canvas-Größe' })
+      .getByRole('slider', { name: 'Breite' })
+    await expect(slider).toHaveCSS('height', '8px')
+
+    await page.getByRole('button', { name: 'Als Vorlage speichern' }).first().click()
+    const save = page
+      .locator('#modal-portal')
+      .getByRole('button', { name: 'Speichern', exact: true })
+    await expect(save).toHaveCSS('background-color', GOLD)
+    await expect(save).toHaveCSS('color', WHITE)
   })
 })

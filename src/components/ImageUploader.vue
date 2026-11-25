@@ -113,7 +113,7 @@
     <div
       :aria-label="t('upload.dragDrop')"
       :class="[
-        'border border-dashed rounded-md p-6 text-center transition-colors',
+        'collage-drop-zone border border-dashed rounded-md p-6 text-center transition-colors',
         isDragging
           ? 'border-accent bg-accent-soft'
           : 'border-line-strong hover:border-accent hover:bg-surface-2',
@@ -125,7 +125,7 @@
       <div class="flex flex-col items-center gap-2">
         <div
           :class="[
-            'p-3 rounded-full transition-colors',
+            'collage-drop-icon p-3 rounded-full transition-colors',
             isDragging ? 'bg-accent text-on-accent' : 'bg-surface-2 text-ink-2',
           ]"
         >

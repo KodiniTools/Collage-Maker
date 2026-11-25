@@ -42,12 +42,12 @@
 
 <template>
   <aside
-    class="w-full flex-shrink-0 lg:self-start transition-all duration-slow"
+    class="collage-inspector w-full flex-shrink-0 lg:self-start transition-all duration-slow"
     :class="open ? 'lg:w-80 xl:w-96' : 'lg:w-12'"
   >
     <template v-if="open">
       <!-- Reiter + Einklappen -->
-      <div class="flex items-center gap-1 mb-3">
+      <div class="collage-inspector-tabs flex items-center gap-1 mb-3">
         <UiSegmentedControl
           v-model="inspectorTabModel"
           class="inspector-tabs"

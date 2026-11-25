@@ -29,7 +29,7 @@
       @click.self="closePreview"
     >
       <div
-        class="bg-surface-1 rounded-lg shadow-overlay max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-line"
+        class="collage-modal-surface bg-surface-1 rounded-lg shadow-overlay max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-line"
       >
         <!-- Header -->
         <div class="flex items-center justify-between gap-3 p-3 sm:p-4 border-b border-line">
