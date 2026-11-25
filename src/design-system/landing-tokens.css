@@ -1,12 +1,14 @@
 /* Design-Umbau: Farb- und Verlaufs-Tokens für die Startseite (.collage-landing, Etappe 1)
    die gemeinsame Navigation (.collage-site-header, Etappe 2) sowie Bedienfelder und
    Dialoge des Editors (.collage-editor, #modal-portal, Etappe 3) und den
-   Leinwand-Arbeitsbereich (Etappe 4).
+   Leinwand-Arbeitsbereich (Etappe 4) sowie die aktive Sprache der globalen
+   SSI-Navigation (.global-nav).
    Theme-Mechanik wie tokens-v2.css. */
 .collage-landing,
 .collage-site-header,
 .collage-editor,
-#modal-portal {
+#modal-portal,
+.global-nav {
   --collage-stage-pattern: radial-gradient(var(--ds-border-strong) 1px, transparent 1px);
   --collage-control-panel-glow: linear-gradient(160deg, var(--ds-surface-2), transparent 85%);
   --collage-glow: #123449;
@@ -25,9 +27,10 @@
   --collage-frame-background: linear-gradient(145deg, var(--ds-surface-2), var(--ds-surface-1));
 }
 
-.light-theme :is(.collage-landing, .collage-site-header, .collage-editor, #modal-portal),
+.light-theme
+  :is(.collage-landing, .collage-site-header, .collage-editor, #modal-portal, .global-nav),
 :root[data-theme='light']
-  :is(.collage-landing, .collage-site-header, .collage-editor, #modal-portal) {
+  :is(.collage-landing, .collage-site-header, .collage-editor, #modal-portal, .global-nav) {
   --collage-glow: #e0f0f3;
   --collage-heading-accent: #086a80;
 }

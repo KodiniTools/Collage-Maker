@@ -9,6 +9,7 @@
    ========================================================================== */
 
 @import './design-system/tokens-v2.css';
+@import './design-system/landing-tokens.css';
 
 @tailwind base;
 @tailwind components;
@@ -89,6 +90,18 @@ body > :not(#app):not(script):not(.cookie-banner):not(.cookie-consent):not([clas
   )
   :where(*:not(.cookie-banner):not(.cookie-consent):not([class*='cookie'])) {
   background-color: transparent !important;
+}
+
+/* Aktive Sprache der globalen SSI-Navigation: dunkelgold wie die Hauptbuttons.
+   Die Regeln oben machen alle Partial-Hintergründe transparent und setzen die
+   Textfarbe; :not(#kt-lang-active) hebt die Spezifität über diese Regeln.
+   Tokens: design-system/landing-tokens.css (.global-nav). */
+body > :not(#app):not(script) .global-nav-lang-btn.active:not(#kt-lang-active) {
+  background-color: var(--collage-action) !important;
+  color: var(--collage-on-action) !important;
+}
+body > :not(#app):not(script) .global-nav-lang-btn.active:not(#kt-lang-active):hover {
+  background-color: var(--collage-action-hover) !important;
 }
 
 /* Dropdowns/Submenüs der SSI-Navigation bekommen wieder eine feste Fläche */
