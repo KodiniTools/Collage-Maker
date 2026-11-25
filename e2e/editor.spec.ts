@@ -312,3 +312,21 @@ test('Etappe 4: Entfernen-Symbol der Bildleiste ist auf Touchgeräten dauerhaft 
   await expect(remove).toHaveAttribute('aria-label', 'Bild entfernen')
   await context.close()
 })
+
+test('Editor bleibt beim Wechsel zwischen Desktop und Mobil innerhalb des Viewports', async ({
+  page,
+}) => {
+  await prepare(page, 'de', 'dark')
+  await page.setViewportSize({ width: 1440, height: 844 })
+  await page.goto('./editor')
+  await expect(page.locator('.collage-inspector-tabs')).toBeVisible()
+
+  for (const width of [1024, 390, 320, 1440]) {
+    await page.setViewportSize({ width, height: 844 })
+    const layout = await page.evaluate(async () => {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+      return { page: document.documentElement.scrollWidth, viewport: window.innerWidth }
+    })
+    expect(layout.page, `Seitenbreite bei ${width} px`).toBeLessThanOrEqual(layout.viewport)
+  }
+})
