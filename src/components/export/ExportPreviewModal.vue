@@ -26,7 +26,7 @@
       @click.self="emit('close')"
     >
       <div
-        class="relative max-w-[90vw] max-h-[90vh] bg-surface-1 text-ink rounded-lg border border-line shadow-overlay overflow-hidden"
+        class="collage-modal-surface relative max-w-[90vw] max-h-[90vh] bg-surface-1 text-ink rounded-lg border border-line shadow-overlay overflow-hidden"
       >
         <!-- Header -->
         <div
