@@ -46,12 +46,12 @@
 }
 
 .collage-landing .ui-button--primary {
-  background-color: var(--collage-action);
+  background: var(--collage-action) var(--collage-action-grad);
   color: var(--collage-on-action);
 }
 
 .collage-landing .ui-button--primary:hover:not(:disabled) {
-  background-color: var(--collage-action-hover);
+  background: var(--collage-action-hover) var(--collage-action-grad-hover);
 }
 
 .collage-landing .collage-hero-art {

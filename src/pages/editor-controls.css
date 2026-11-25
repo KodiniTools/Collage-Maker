@@ -30,12 +30,12 @@
 }
 
 #app :is(.collage-editor, #modal-portal) .ui-button--primary {
-  background: var(--collage-action);
+  background: var(--collage-action) var(--collage-action-grad);
   color: var(--collage-on-action);
 }
 
 #app :is(.collage-editor, #modal-portal) .ui-button--primary:hover:not(:disabled) {
-  background: var(--collage-action-hover);
+  background: var(--collage-action-hover) var(--collage-action-grad-hover);
 }
 
 #app :is(.collage-editor, #modal-portal) .ui-button--secondary {
