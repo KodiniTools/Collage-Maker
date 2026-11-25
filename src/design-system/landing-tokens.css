@@ -1,6 +1,8 @@
-/* Startseite (Design-Umbau Etappe 1): Farb- und Verlaufs-Tokens nur für .collage-landing.
-   Editor und FAQ bleiben unberührt. Theme-Mechanik wie tokens-v2.css. */
-.collage-landing {
+/* Design-Umbau: Farb- und Verlaufs-Tokens für die Startseite (.collage-landing, Etappe 1)
+   und die gemeinsame Navigation (.collage-site-header, Etappe 2).
+   Theme-Mechanik wie tokens-v2.css. */
+.collage-landing,
+.collage-site-header {
   --collage-glow: #123449;
   --collage-heading-accent: #69d7e9;
   --collage-action: #8f6320;
@@ -17,8 +19,8 @@
   --collage-frame-background: linear-gradient(145deg, var(--ds-surface-2), var(--ds-surface-1));
 }
 
-.light-theme .collage-landing,
-:root[data-theme='light'] .collage-landing {
+.light-theme :is(.collage-landing, .collage-site-header),
+:root[data-theme='light'] :is(.collage-landing, .collage-site-header) {
   --collage-glow: #e0f0f3;
   --collage-heading-accent: #086a80;
 }

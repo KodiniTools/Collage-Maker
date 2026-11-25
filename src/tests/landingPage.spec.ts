@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia } from 'pinia'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { i18n } from '@/i18n'
 import LandingPage from '@/pages/LandingPage.vue'
@@ -14,7 +15,7 @@ async function mountLanding() {
   })
   await router.push('/')
   await router.isReady()
-  return mount(LandingPage, { global: { plugins: [router, i18n] } })
+  return mount(LandingPage, { global: { plugins: [createPinia(), router, i18n] } })
 }
 
 describe('LandingPage (Design-Umbau Etappe 1)', () => {

@@ -18,12 +18,6 @@
   font-weight: 400;
 }
 
-.collage-landing .collage-shell {
-  width: min(100%, 1460px);
-  margin-inline: auto;
-  padding-inline: clamp(14px, 3vw, 40px);
-}
-
 .collage-landing .collage-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);

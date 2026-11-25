@@ -35,6 +35,9 @@ const en: LocaleMessages = {
     backToHome: 'Back to Home',
   },
   nav: {
+    label: 'Collage Maker navigation',
+    switchToLight: 'Light theme',
+    switchToDark: 'Dark theme',
     home: 'Home',
     editor: 'Editor',
     faq: 'FAQ',

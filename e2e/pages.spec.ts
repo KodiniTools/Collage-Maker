@@ -94,3 +94,51 @@ for (const locale of ['de', 'en'] as const) {
     expect(overflow).toBe(0)
   })
 }
+
+const NAV_CURRENT: ReadonlyArray<{ path: string; current: Record<Locale, string> }> = [
+  { path: './', current: { de: 'Startseite', en: 'Home' } },
+  { path: './blog', current: { de: 'Anleitung', en: 'Guide' } },
+  { path: './artikel', current: { de: 'Blog', en: 'Blog' } },
+  { path: './faq', current: { de: 'FAQ', en: 'FAQ' } },
+  { path: './editor', current: { de: 'Editor', en: 'Editor' } },
+]
+
+for (const { path, current } of NAV_CURRENT) {
+  for (const locale of ['de', 'en'] as const) {
+    test(`Navigation ${path} · ${locale}: aktuelle Seite hervorgehoben, 390 px ohne Überlauf`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 })
+      await prepare(page, locale)
+      await page.goto(path)
+
+      const nav = page.getByRole('navigation', {
+        name: locale === 'de' ? 'Collage-Maker-Navigation' : 'Collage Maker navigation',
+      })
+      await expect(nav.getByRole('link')).toHaveCount(5)
+      await expect(nav.locator('[aria-current="page"]')).toHaveText(current[locale])
+
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+      )
+      expect(overflow).toBe(0)
+    })
+  }
+}
+
+test('Theme-Schalter im Header wechselt das Theme und bleibt nach Neuladen erhalten', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    if (!localStorage.getItem('locale')) localStorage.setItem('locale', 'de')
+  })
+  await page.goto('./faq')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+  await page.getByRole('button', { name: 'Dunkles Design' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.getByRole('button', { name: 'Helles Design' })).toBeVisible()
+})

@@ -37,6 +37,9 @@ const de = {
     backToHome: 'Zurück zur Startseite',
   },
   nav: {
+    label: 'Collage-Maker-Navigation',
+    switchToLight: 'Helles Design',
+    switchToDark: 'Dunkles Design',
     home: 'Startseite',
     editor: 'Editor',
     faq: 'FAQ',

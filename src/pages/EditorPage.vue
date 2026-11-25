@@ -88,7 +88,7 @@
     <HandoffReceiver @accept="handleHandoffAccept" />
 
     <!-- Main Content -->
-    <main class="flex-1 container mx-auto px-2 py-3 sm:px-4 sm:py-6">
+    <main class="collage-shell flex-1 py-3 sm:py-6">
       <div class="flex flex-col lg:flex-row gap-3 lg:gap-4">
         <EditorToolbar :active-tool="activeTool" @select="selectTool" />
 
