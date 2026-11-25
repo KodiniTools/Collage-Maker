@@ -142,6 +142,9 @@ const en: LocaleMessages = {
     },
   },
   editor: {
+    canvasDimensions: '{width} × {height} px',
+    panDesktop: 'Hold Space and drag or use the arrow keys to pan',
+    panTouch: 'Pan with two fingers',
     tools: 'Tools',
     settings: 'Settings',
     tabSelection: 'Selection',

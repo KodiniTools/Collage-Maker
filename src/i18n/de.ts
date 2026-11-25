@@ -145,6 +145,9 @@ const de = {
     },
   },
   editor: {
+    canvasDimensions: '{width} × {height} px',
+    panDesktop: 'Leertaste + Ziehen oder Pfeiltasten zum Verschieben',
+    panTouch: 'Mit zwei Fingern verschieben',
     tools: 'Werkzeuge',
     settings: 'Einstellungen',
     tabSelection: 'Auswahl',

@@ -73,12 +73,9 @@
 </script>
 
 <template>
-  <div
-    v-if="canvasImages.length > 0"
-    class="bg-surface-1 border-b border-line py-1.5 px-2 sm:py-2 sm:px-3"
-  >
+  <div v-if="canvasImages.length > 0" class="collage-thumbnail-bar bg-surface-1">
     <!-- Header: Label + Auswahl-Info (scrollt nicht mit den Thumbnails) -->
-    <div class="flex items-center justify-between gap-2 mb-1.5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
       <span class="text-xs text-ink-2 font-medium truncate">
         {{ t('thumbnailBar.title') }} ({{ canvasImages.length }})
       </span>
@@ -100,7 +97,7 @@
         v-for="(img, index) in canvasImages"
         :key="img.id"
         draggable="true"
-        class="relative group shrink-0 cursor-grab active:cursor-grabbing rounded-sm transition-all"
+        class="collage-thumbnail relative group shrink-0 cursor-grab active:cursor-grabbing rounded-sm transition-all"
         :class="{
           'ring-2 ring-accent ring-offset-2 ring-offset-surface-1': collage.isImageSelected(img.id),
           'hover:ring-2 hover:ring-line-strong':
@@ -152,8 +149,9 @@
 
         <!-- Remove Button (on hover) -->
         <button
-          class="absolute -bottom-1 -right-1 w-4 h-4 bg-surface-2 hover:bg-surface-3 text-danger rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex ring-1 ring-surface-1"
+          class="collage-thumbnail-remove absolute -bottom-1 -right-1 w-4 h-4 bg-surface-2 hover:bg-surface-3 text-danger rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex ring-1 ring-surface-1"
           :title="t('thumbnailBar.remove')"
+          :aria-label="t('thumbnailBar.remove')"
           @click="handleRemove(img.id, $event)"
         >
           <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

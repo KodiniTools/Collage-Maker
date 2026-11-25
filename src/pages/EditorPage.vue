@@ -5,6 +5,8 @@
    * `useRestoreDialog`, Teile unter `components/editor/`.
    */
   import './editor-controls.css'
+  import './editor-workspace.css'
+  import { useI18n } from 'vue-i18n'
   import { ref, onMounted, onUnmounted, nextTick } from 'vue'
   import ThumbnailBar from '@/components/ThumbnailBar.vue'
   import CollageCanvas from '@/components/CollageCanvas.vue'
@@ -25,6 +27,7 @@
   import { handoffImageToFile, type HandoffImage } from '@/lib/core/handoff'
   import { useCollageStore } from '@/stores/collage'
 
+  const { t } = useI18n()
   const collage = useCollageStore()
   const showTemplates = ref(false)
   const templateLibraryRef = ref<InstanceType<typeof TemplateLibrary> | null>(null)
@@ -96,9 +99,20 @@
         <EditorToolPanel :active-tool="activeTool" />
 
         <!-- Canvas - Expands to fill available space -->
-        <section class="flex-1 min-w-0">
-          <ThumbnailBar />
+        <section class="collage-workspace flex-1 min-w-0" aria-labelledby="collage-workspace-title">
+          <div class="collage-workspace-header">
+            <h2 id="collage-workspace-title">{{ t('editor.tabCanvas') }}</h2>
+            <span>
+              {{
+                t('editor.canvasDimensions', {
+                  width: collage.settings.width,
+                  height: collage.settings.height,
+                })
+              }}
+            </span>
+          </div>
           <CollageCanvas />
+          <ThumbnailBar />
         </section>
 
         <EditorInspector v-model:open="inspectorOpen" v-model:tab="inspectorTab" />

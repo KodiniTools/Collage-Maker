@@ -104,11 +104,7 @@
 <template>
   <div
     ref="container"
-    class="group w-full bg-surface-2 rounded-md p-4 relative flex items-center justify-center transition-all duration-slow"
-    :style="{
-      height: 'calc(100vh - 12rem)',
-      overflow: 'hidden',
-    }"
+    class="collage-workspace-stage group w-full bg-surface-2 p-4 relative flex items-center justify-center transition-all duration-slow"
   >
     <!-- Zoom-Steuerung: nur aktiv, sobald Bilder auf dem Canvas liegen;
          auf Zeigegeräten erst bei Mouse-Over (oder Tastaturfokus) eingeblendet -->
@@ -152,8 +148,8 @@
       v-if="collage.canvasZoom > 1"
       class="absolute top-2 left-2 z-10 bg-surface-1 border border-line text-ink-2 text-xs px-2 py-1 rounded-sm pointer-events-none"
     >
-      <span class="hidden sm:inline">Space + Drag / Arrows to pan</span>
-      <span class="sm:hidden">2 Finger zum Verschieben</span>
+      <span class="hidden sm:inline">{{ t('editor.panDesktop') }}</span>
+      <span class="sm:hidden">{{ t('editor.panTouch') }}</span>
     </div>
     <!-- Canvas Wrapper - centered with auto-fit scaling and pan offset -->
     <div

@@ -1,11 +1,13 @@
 /* Design-Umbau: Farb- und Verlaufs-Tokens für die Startseite (.collage-landing, Etappe 1)
    die gemeinsame Navigation (.collage-site-header, Etappe 2) sowie Bedienfelder und
-   Dialoge des Editors (.collage-editor, #modal-portal, Etappe 3).
+   Dialoge des Editors (.collage-editor, #modal-portal, Etappe 3) und den
+   Leinwand-Arbeitsbereich (Etappe 4).
    Theme-Mechanik wie tokens-v2.css. */
 .collage-landing,
 .collage-site-header,
 .collage-editor,
 #modal-portal {
+  --collage-stage-pattern: radial-gradient(var(--ds-border-strong) 1px, transparent 1px);
   --collage-control-panel-glow: linear-gradient(160deg, var(--ds-surface-2), transparent 85%);
   --collage-glow: #123449;
   --collage-heading-accent: #69d7e9;
