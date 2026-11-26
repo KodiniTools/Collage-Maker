@@ -44,7 +44,11 @@
       <section class="collage-shell">
         <div class="collage-hero">
           <div class="collage-hero-copy">
-            <h1>{{ t('landing.hero.title') }}</h1>
+            <h1>
+              <span class="collage-hero-title-lead">{{ t('landing.hero.titleLead') }}</span>
+              {{ ' ' }}
+              <span class="collage-hero-title-accent">{{ t('landing.hero.titleAccent') }}</span>
+            </h1>
             <p class="collage-hero-lede">{{ t('landing.hero.lede') }}</p>
             <p class="collage-hero-description">{{ t('landing.hero.subtitle') }}</p>
             <UiButton to="/editor" variant="primary" size="lg">

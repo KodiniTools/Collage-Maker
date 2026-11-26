@@ -39,6 +39,14 @@ describe('LandingPage (Design-Umbau Etappe 1)', () => {
     expect(wrapper.find('.collage-demo video').attributes('src')).toBe('/videos/collage-maker.webm')
   })
 
+  it('teilt den Titel in Gold- und Blauteil, ohne den Text zu ändern', async () => {
+    const wrapper = await mountLanding()
+    const h1 = wrapper.find('.collage-hero h1')
+    expect(h1.find('.collage-hero-title-lead').text()).toBe('Fotocollage erstellen –')
+    expect(h1.find('.collage-hero-title-accent').text()).toBe('kostenlos online')
+    expect(h1.text().replace(/\s+/g, ' ')).toBe(i18n.global.t('landing.hero.title'))
+  })
+
   it('führt mit dem Hauptbutton in den Editor', async () => {
     const wrapper = await mountLanding()
     expect(wrapper.find('.collage-hero a.ui-button--primary').attributes('href')).toBe('/editor')
