@@ -35,6 +35,14 @@
   overflow-wrap: anywhere;
 }
 
+.collage-landing .collage-hero-title-lead {
+  color: var(--collage-title-gold);
+}
+
+.collage-landing .collage-hero-title-accent {
+  color: var(--collage-title-blue);
+}
+
 .collage-landing .collage-hero-lede {
   color: var(--collage-heading-accent);
   font-size: clamp(1.17rem, 2vw, 1.55rem);

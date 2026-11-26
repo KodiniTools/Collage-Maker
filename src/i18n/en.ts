@@ -61,6 +61,8 @@ const en: LocaleMessages = {
       collageAlt: 'A six-photo travel collage with Alpine, beach and city views',
       demo: 'Collage Maker in action',
       title: 'Photo Collage Maker – Free Online',
+      titleLead: 'Photo Collage Maker –',
+      titleAccent: 'Free Online',
       subtitle:
         'Free, directly in your browser, without uploading to servers. Your images stay private on your device.',
     },

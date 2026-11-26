@@ -25,6 +25,9 @@
   --collage-control-panel-glow: linear-gradient(160deg, var(--ds-surface-2), transparent 85%);
   --collage-glow: #123449;
   --collage-heading-accent: #69d7e9;
+  /* Hero-Titel: helleres Gold und helleres Logo-Blau im Dunkelmodus */
+  --collage-title-gold: #e6bc76;
+  --collage-title-blue: #48a0d8;
   --collage-mat: #fcf3df;
   --collage-frame-radius: 23px;
   --collage-mat-radius: 12px;
@@ -42,4 +45,7 @@
   :is(.collage-landing, .collage-site-header, .collage-editor, #modal-portal, .global-nav) {
   --collage-glow: #e0f0f3;
   --collage-heading-accent: #086a80;
+  /* Hero-Titel: dunkles Gold und Logo-Blau (#0058a0) im Hellmodus */
+  --collage-title-gold: #775115;
+  --collage-title-blue: #0058a0;
 }

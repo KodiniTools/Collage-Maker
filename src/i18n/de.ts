@@ -64,6 +64,8 @@ const de = {
       collageAlt: 'Reisecollage aus sechs Motiven mit Alpen, Strand und Stadtansichten',
       demo: 'Collage Maker im Einsatz',
       title: 'Fotocollage erstellen – kostenlos online',
+      titleLead: 'Fotocollage erstellen –',
+      titleAccent: 'kostenlos online',
       subtitle:
         'Kostenlos, direkt im Browser, ohne Upload auf Server. Deine Bilder bleiben privat auf deinem Gerät.',
     },

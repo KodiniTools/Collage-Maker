@@ -142,3 +142,25 @@ test('Theme-Schalter im Header wechselt das Theme und bleibt nach Neuladen erhal
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await expect(page.getByRole('button', { name: 'Helles Design' })).toBeVisible()
 })
+
+const TITLE_COLORS: Record<Theme, { gold: string; blue: string }> = {
+  light: { gold: 'rgb(119, 81, 21)', blue: 'rgb(0, 88, 160)' },
+  dark: { gold: 'rgb(230, 188, 118)', blue: 'rgb(72, 160, 216)' },
+}
+
+for (const theme of ['light', 'dark'] as const satisfies readonly Theme[]) {
+  test(`Startseite · ${theme}: Titel in Gold und Logo-Blau`, async ({ page }) => {
+    await prepare(page, 'de', theme)
+    await page.goto('./')
+
+    const h1 = page.getByRole('heading', { level: 1 })
+    await expect(h1.locator('.collage-hero-title-lead')).toHaveCSS(
+      'color',
+      TITLE_COLORS[theme].gold
+    )
+    await expect(h1.locator('.collage-hero-title-accent')).toHaveCSS(
+      'color',
+      TITLE_COLORS[theme].blue
+    )
+  })
+}
