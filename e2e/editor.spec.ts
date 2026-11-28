@@ -133,6 +133,27 @@ test.describe('Editor (Smoke)', () => {
     await expect(keepOriginal).toHaveAttribute('aria-checked', 'true')
   })
 
+  test('Text: X/Y-Position per Spinner setzen und mit Rückgängig zurücksetzen', async ({
+    page,
+  }) => {
+    await page.getByRole('radio', { name: 'Text' }).click()
+    await page.getByRole('button', { name: 'Text hinzufügen' }).click()
+
+    const undo = page.getByRole('button', { name: 'Rückgängig', exact: true }).last()
+    await expect(undo).toBeDisabled()
+    const startY = await page.getByText(/^Y-Position: /).textContent()
+
+    const ySpinner = page.locator('input[inputmode=decimal][aria-label^="Y-Position"]')
+    await ySpinner.fill('200')
+    await ySpinner.press('Enter')
+    await expect(page.getByText('Y-Position: 200px')).toBeVisible()
+    await expect(undo).toBeEnabled()
+
+    await undo.click()
+    await expect(page.getByText(/^Y-Position: /)).toHaveText(startY!)
+    await expect(undo).toBeDisabled()
+  })
+
   test('Text: hinzufügen, Inhalt ändern, Schatten schalten und löschen', async ({ page }) => {
     await page.getByRole('radio', { name: 'Text' }).click()
     await page.getByRole('button', { name: 'Text hinzufügen' }).click()

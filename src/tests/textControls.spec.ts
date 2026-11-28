@@ -99,6 +99,45 @@ describe('useTextControls', () => {
     expect(api.systemFonts).toContain('Arial')
   })
 
+  it('setzt X/Y-Position und macht sie mit Rückgängig auf den Auswahlstand zurück', () => {
+    const collage = withText()
+    const api = setupApi()
+    const start = { x: collage.selectedText!.x, y: collage.selectedText!.y }
+    expect(api.canUndoPosition.value).toBe(false)
+
+    api.updatePositionX(120)
+    api.updatePositionY(-30)
+    expect(collage.selectedText).toMatchObject({ x: 120, y: -30 })
+    expect(api.positionRange.value).toMatchObject({
+      minX: 0,
+      maxX: collage.settings.width,
+      minY: -30,
+      maxY: collage.settings.height,
+    })
+    expect(api.canUndoPosition.value).toBe(true)
+
+    const undo = vi.spyOn(collage, 'saveStateForUndo')
+    api.undoPosition()
+    expect(undo).toHaveBeenCalledTimes(1)
+    expect(collage.selectedText).toMatchObject(start)
+    expect(api.canUndoPosition.value).toBe(false)
+  })
+
+  it('merkt sich die Ausgangsposition je ausgewähltem Text', async () => {
+    const collage = withText()
+    const api = setupApi()
+    const first = collage.selectedText!
+    api.updatePositionX(10)
+    collage.addText('Zweiter')
+    await nextTick()
+    const second = collage.selectedText!
+    expect(second.id).not.toBe(first.id)
+    expect(api.canUndoPosition.value).toBe(false)
+    api.updatePositionY(5)
+    api.undoPosition()
+    expect(collage.texts.find((x) => x.id === first.id)?.x).toBe(10)
+  })
+
   it('löscht die gewählte Ebene', () => {
     const collage = withText()
     const api = setupApi()
@@ -131,6 +170,11 @@ describe('TextControls (Komponente)', () => {
     await nextTick()
     expect(wrapper.text()).toContain(t('text.shadowBlur'))
     expect(wrapper.find('#text-shadow-color').exists()).toBe(true)
+
+    const undoButton = wrapper.findAll('button').find((b) => b.text() === t('text.undoPosition'))!
+    expect(undoButton.attributes('disabled')).toBeDefined()
+    expect(wrapper.find(`input[aria-label="${t('text.positionX')}"]`).exists()).toBe(true)
+    expect(wrapper.find(`input[aria-label="${t('text.positionY')}"]`).exists()).toBe(true)
 
     await wrapper.get('#text-content').setValue('Geändert')
     expect(useCollageStore().selectedText?.text).toBe('Geändert')

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  /** Inhalt, Schriftart, Größe, Laufweite, Fett und Ausrichtung. */
+  /** Inhalt, Position, Schriftart, Größe, Laufweite, Fett und Ausrichtung. */
   import { useI18n } from 'vue-i18n'
   import ControlSlider from '@/components/image-controls/ControlSlider.vue'
-  import { UiIconButton, UiSegmentedControl } from '@/components/ui'
+  import { UiButton, UiIconButton, UiSegmentedControl } from '@/components/ui'
   import type { CollageText } from '@/types'
   import type { TextControlsApi } from '@/composables/useTextControls'
 
@@ -16,6 +16,11 @@
     updateTextContent,
     updateFontSize,
     updateLetterSpacing,
+    positionRange,
+    updatePositionX,
+    updatePositionY,
+    canUndoPosition,
+    undoPosition,
     isBold,
     toggleFontWeight,
     alignOptions,
@@ -38,6 +43,44 @@
         @input="updateTextContent(($event.target as HTMLTextAreaElement).value)"
       />
     </div>
+
+    <!-- Position X/Y mit Zahlen-Spinner; ein gemeinsamer Rückgängig-Knopf -->
+    <ControlSlider
+      :label="t('text.positionX')"
+      :display-value="`${Math.round(text.x)}px`"
+      :value="Math.round(text.x)"
+      :min="positionRange.minX"
+      :max="positionRange.maxX"
+      :step="1"
+      @input="updatePositionX"
+    />
+    <ControlSlider
+      :label="t('text.positionY')"
+      :display-value="`${Math.round(text.y)}px`"
+      :value="Math.round(text.y)"
+      :min="positionRange.minY"
+      :max="positionRange.maxY"
+      :step="1"
+      @input="updatePositionY"
+    />
+    <UiButton
+      size="sm"
+      variant="secondary"
+      :disabled="!canUndoPosition"
+      :title="t('text.undoPositionTitle')"
+      @click="undoPosition"
+    >
+      <template #icon>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+          />
+        </svg>
+      </template>
+      {{ t('text.undoPosition') }}
+    </UiButton>
 
     <!-- Font Family: natives Select wegen <optgroup> -->
     <div>
