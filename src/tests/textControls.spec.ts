@@ -117,8 +117,13 @@ describe('useTextControls', () => {
     expect(api.canUndoPosition.value).toBe(true)
 
     const undo = vi.spyOn(collage, 'saveStateForUndo')
-    api.undoPosition()
+    api.undoPosition('y')
+    expect(collage.selectedText).toMatchObject({ x: 120, y: start.y })
+    expect(api.positionChanged.value).toEqual({ x: true, y: false })
+    api.undoPosition('y')
     expect(undo).toHaveBeenCalledTimes(1)
+    api.undoPosition()
+    expect(undo).toHaveBeenCalledTimes(2)
     expect(collage.selectedText).toMatchObject(start)
     expect(api.canUndoPosition.value).toBe(false)
   })
@@ -188,8 +193,20 @@ describe('TextControls (Komponente)', () => {
     expect(wrapper.find(`input[aria-label="${t('text.opacity')}"]`).exists()).toBe(true)
     expect(wrapper.text()).toContain(`${t('text.opacity')}: 100%`)
 
-    const undoButton = wrapper.findAll('button').find((b) => b.text() === t('text.undoPosition'))!
-    expect(undoButton.attributes('disabled')).toBeDefined()
+    // Rückgängig ist ein reiner Symbol-Knopf ohne sichtbaren Text, erst nach Änderung da
+    const undoSelector = `button[aria-label="${t('text.undoPosition')}"]`
+    expect(wrapper.find(undoSelector).exists()).toBe(false)
+    expect(wrapper.text()).not.toContain(t('text.undoPosition'))
+    {
+      useCollageStore().updateText(useCollageStore().selectedText!.id, { x: 5 })
+      await nextTick()
+      const undo = wrapper.get(undoSelector)
+      expect(undo.text()).toBe('')
+      expect(wrapper.findAll(undoSelector)).toHaveLength(1)
+      await undo.trigger('click')
+      await nextTick()
+      expect(wrapper.find(undoSelector).exists()).toBe(false)
+    }
     expect(wrapper.find(`input[aria-label="${t('text.positionX')}"]`).exists()).toBe(true)
     expect(wrapper.find(`input[aria-label="${t('text.positionY')}"]`).exists()).toBe(true)
 

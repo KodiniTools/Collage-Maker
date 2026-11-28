@@ -548,7 +548,6 @@ const de = {
     positionX: 'X-Position',
     positionY: 'Y-Position',
     undoPosition: 'Rückgängig',
-    undoPositionTitle: 'Position wiederherstellen, die der Text beim Auswählen hatte',
     fontWeight: 'Schriftstärke',
     textAlign: 'Ausrichtung',
     alignLeft: 'Links',
