@@ -139,19 +139,21 @@ test.describe('Editor (Smoke)', () => {
     await page.getByRole('radio', { name: 'Text' }).click()
     await page.getByRole('button', { name: 'Text hinzufügen' }).click()
 
-    const undo = page.getByRole('button', { name: 'Rückgängig', exact: true }).last()
-    await expect(undo).toBeDisabled()
+    // Rückgängig: reiner Symbol-Knopf neben dem Spinner, erst nach einer Änderung sichtbar
+    const undo = page.getByRole('button', { name: 'Rückgängig', exact: true })
+    await expect(undo).toHaveCount(0)
     const startY = await page.getByText(/^Y-Position: /).textContent()
 
     const ySpinner = page.locator('input[inputmode=decimal][aria-label^="Y-Position"]')
     await ySpinner.fill('200')
     await ySpinner.press('Enter')
     await expect(page.getByText('Y-Position: 200px')).toBeVisible()
-    await expect(undo).toBeEnabled()
+    await expect(undo).toHaveCount(1)
+    await expect(undo).toHaveText('')
 
     await undo.click()
     await expect(page.getByText(/^Y-Position: /)).toHaveText(startY!)
-    await expect(undo).toBeDisabled()
+    await expect(undo).toHaveCount(0)
   })
 
   test('Text: Deckkraft per Spinner setzen und zurücksetzen', async ({ page }) => {

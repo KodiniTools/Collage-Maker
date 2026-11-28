@@ -115,17 +115,25 @@ export function useTextControls() {
     { immediate: true }
   )
 
-  const canUndoPosition = computed(() => {
+  /** Welche Achse seit dem Auswählen verändert wurde. */
+  const positionChanged = computed(() => {
     const txt = collage.selectedText
     const origin = positionOrigin.value
-    return !!txt && !!origin && origin.id === txt.id && (txt.x !== origin.x || txt.y !== origin.y)
+    if (!txt || !origin || origin.id !== txt.id) return { x: false, y: false }
+    return { x: txt.x !== origin.x, y: txt.y !== origin.y }
   })
 
-  function undoPosition() {
+  const canUndoPosition = computed(() => positionChanged.value.x || positionChanged.value.y)
+
+  /** Ohne Achse: X und Y zurück; mit Achse: nur diese. */
+  function undoPosition(axis?: 'x' | 'y') {
     const origin = positionOrigin.value
-    if (!collage.selectedText || !origin || !canUndoPosition.value) return
+    if (!collage.selectedText || !origin) return
+    const changed = axis ? positionChanged.value[axis] : canUndoPosition.value
+    if (!changed) return
     collage.saveStateForUndo()
-    collage.updateText(origin.id, { x: origin.x, y: origin.y })
+    const patch = axis ? { [axis]: origin[axis] } : { x: origin.x, y: origin.y }
+    collage.updateText(origin.id, patch)
   }
 
   /** Deckkraft in Prozent (0–100); gespeichert als 0–1 wie bei Bildern. */
@@ -246,6 +254,7 @@ export function useTextControls() {
     positionRange,
     updatePositionX,
     updatePositionY,
+    positionChanged,
     canUndoPosition,
     undoPosition,
     updateOpacity,

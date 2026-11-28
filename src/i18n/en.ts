@@ -544,7 +544,6 @@ const en: LocaleMessages = {
     positionX: 'X position',
     positionY: 'Y position',
     undoPosition: 'Undo',
-    undoPositionTitle: 'Restore the position the text had when it was selected',
     fontWeight: 'Font Weight',
     textAlign: 'Text Alignment',
     alignLeft: 'Left',
