@@ -555,6 +555,7 @@ const de = {
     alignCenter: 'Mitte',
     alignRight: 'Rechts',
     color: 'Textfarbe',
+    opacity: 'Deckkraft',
     shadow: 'Textschatten',
     shadowOn: 'An',
     shadowOff: 'Aus',

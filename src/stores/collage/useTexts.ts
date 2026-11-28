@@ -48,6 +48,7 @@ export function useTexts(ctx: CollageContext) {
       strokeWidth: 2,
       // Buchstabenabstand Default
       letterSpacing: 0,
+      opacity: 1,
     }
 
     texts.value.push(newText)

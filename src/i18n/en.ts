@@ -551,6 +551,7 @@ const en: LocaleMessages = {
     alignCenter: 'Center',
     alignRight: 'Right',
     color: 'Text Color',
+    opacity: 'Opacity',
     shadow: 'Text Shadow',
     shadowOn: 'On',
     shadowOff: 'Off',
