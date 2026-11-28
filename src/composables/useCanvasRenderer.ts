@@ -390,6 +390,8 @@ export function useCanvasRenderer(
       context.save()
       context.translate(text.x, text.y)
       context.rotate((text.rotation * Math.PI) / 180)
+      // Deckkraft wirkt auf Füllung, Umrandung und Schatten gemeinsam
+      context.globalAlpha = text.opacity ?? 1
 
       // Schatten anwenden, wenn aktiviert
       if (text.shadowEnabled) {
@@ -437,6 +439,8 @@ export function useCanvasRenderer(
       context.shadowOffsetY = 0
       context.shadowBlur = 0
       context.shadowColor = 'transparent'
+      // Auswahlrahmen und Griffe immer voll deckend
+      context.globalAlpha = 1
 
       // Highlight für selektierten Text
       if (collage.selectedTextId === text.id) {

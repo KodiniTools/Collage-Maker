@@ -138,6 +138,20 @@ describe('useTextControls', () => {
     expect(collage.texts.find((x) => x.id === first.id)?.x).toBe(10)
   })
 
+  it('setzt die Deckkraft in Prozent und begrenzt sie auf 0–100', () => {
+    const collage = withText()
+    const api = setupApi()
+    expect(collage.selectedText?.opacity).toBe(1)
+    api.updateOpacity(40)
+    expect(collage.selectedText?.opacity).toBeCloseTo(0.4)
+    api.updateOpacity(150)
+    expect(collage.selectedText?.opacity).toBe(1)
+    api.updateOpacity(-5)
+    expect(collage.selectedText?.opacity).toBe(0)
+    api.updateOpacity(Number.NaN)
+    expect(collage.selectedText?.opacity).toBe(0)
+  })
+
   it('löscht die gewählte Ebene', () => {
     const collage = withText()
     const api = setupApi()
@@ -170,6 +184,9 @@ describe('TextControls (Komponente)', () => {
     await nextTick()
     expect(wrapper.text()).toContain(t('text.shadowBlur'))
     expect(wrapper.find('#text-shadow-color').exists()).toBe(true)
+
+    expect(wrapper.find(`input[aria-label="${t('text.opacity')}"]`).exists()).toBe(true)
+    expect(wrapper.text()).toContain(`${t('text.opacity')}: 100%`)
 
     const undoButton = wrapper.findAll('button').find((b) => b.text() === t('text.undoPosition'))!
     expect(undoButton.attributes('disabled')).toBeDefined()

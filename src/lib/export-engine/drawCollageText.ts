@@ -4,6 +4,8 @@ export function drawCollageText(ctx: CanvasRenderingContext2D, text: CollageText
   ctx.save()
   ctx.translate(text.x, text.y)
   ctx.rotate((text.rotation * Math.PI) / 180)
+  // Deckkraft wirkt auf Füllung, Umrandung und Schatten gemeinsam
+  ctx.globalAlpha = text.opacity ?? 1
 
   if (text.shadowEnabled) {
     ctx.shadowOffsetX = text.shadowOffsetX

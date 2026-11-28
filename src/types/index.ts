@@ -115,6 +115,8 @@ export interface CollageText {
   strokeWidth: number
   // Buchstabenabstand
   letterSpacing: number
+  // Deckkraft 0–1; fehlt bei älteren Speicherständen/Vorlagen → 1
+  opacity?: number
 }
 
 export type LayoutType =

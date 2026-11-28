@@ -128,6 +128,14 @@ export function useTextControls() {
     collage.updateText(origin.id, { x: origin.x, y: origin.y })
   }
 
+  /** Deckkraft in Prozent (0–100); gespeichert als 0–1 wie bei Bildern. */
+  function updateOpacity(percent: number) {
+    if (!collage.selectedText || !Number.isFinite(percent)) return
+    const clamped = Math.min(100, Math.max(0, percent))
+    collage.saveStateForUndoDebounced()
+    collage.updateText(collage.selectedText.id, { opacity: clamped / 100 })
+  }
+
   function updateColor(value: string) {
     if (!collage.selectedText) return
     collage.saveStateForUndoDebounced()
@@ -240,6 +248,7 @@ export function useTextControls() {
     updatePositionY,
     canUndoPosition,
     undoPosition,
+    updateOpacity,
     updateColor,
     isBold,
     toggleFontWeight,

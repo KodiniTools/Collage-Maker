@@ -154,6 +154,20 @@ test.describe('Editor (Smoke)', () => {
     await expect(undo).toBeDisabled()
   })
 
+  test('Text: Deckkraft per Spinner setzen und zurücksetzen', async ({ page }) => {
+    await page.getByRole('radio', { name: 'Text' }).click()
+    await page.getByRole('button', { name: 'Text hinzufügen' }).click()
+    await expect(page.getByText('Deckkraft: 100%')).toBeVisible()
+
+    const spinner = page.locator('input[inputmode=decimal][aria-label^="Deckkraft"]')
+    await spinner.fill('40')
+    await spinner.press('Enter')
+    await expect(page.getByText('Deckkraft: 40%')).toBeVisible()
+
+    await page.getByRole('button', { name: 'Zurücksetzen', exact: true }).last().click()
+    await expect(page.getByText('Deckkraft: 100%')).toBeVisible()
+  })
+
   test('Text: hinzufügen, Inhalt ändern, Schatten schalten und löschen', async ({ page }) => {
     await page.getByRole('radio', { name: 'Text' }).click()
     await page.getByRole('button', { name: 'Text hinzufügen' }).click()
