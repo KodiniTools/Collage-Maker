@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCollageStore } from '@/stores/collage'
 import { availableFonts } from '@/assets/fonts/fontList'
@@ -75,6 +75,57 @@ export function useTextControls() {
     if (!collage.selectedText) return
     collage.saveStateForUndoDebounced()
     collage.updateText(collage.selectedText.id, { letterSpacing: value })
+  }
+
+  // Position (X/Y in Leinwand-Pixeln). Der Slider-Bereich umfasst die Leinwand
+  // und weitet sich aus, wenn der Text per Ziehen außerhalb liegt.
+  const positionRange = computed(() => {
+    const txt = collage.selectedText
+    const x = Math.round(txt?.x ?? 0)
+    const y = Math.round(txt?.y ?? 0)
+    return {
+      minX: Math.min(0, x),
+      maxX: Math.max(collage.settings.width, x),
+      minY: Math.min(0, y),
+      maxY: Math.max(collage.settings.height, y),
+    }
+  })
+
+  function updatePositionX(value: number) {
+    if (!collage.selectedText) return
+    collage.saveStateForUndoDebounced()
+    collage.updateText(collage.selectedText.id, { x: value })
+  }
+
+  function updatePositionY(value: number) {
+    if (!collage.selectedText) return
+    collage.saveStateForUndoDebounced()
+    collage.updateText(collage.selectedText.id, { y: value })
+  }
+
+  // „Rückgängig" für die Position: stellt die Position wieder her, die der Text
+  // beim Auswählen hatte (Regler, Spinner und Ziehen auf der Leinwand).
+  const positionOrigin = ref<{ id: string; x: number; y: number } | null>(null)
+  watch(
+    () => collage.selectedTextId,
+    () => {
+      const txt = collage.selectedText
+      positionOrigin.value = txt ? { id: txt.id, x: txt.x, y: txt.y } : null
+    },
+    { immediate: true }
+  )
+
+  const canUndoPosition = computed(() => {
+    const txt = collage.selectedText
+    const origin = positionOrigin.value
+    return !!txt && !!origin && origin.id === txt.id && (txt.x !== origin.x || txt.y !== origin.y)
+  })
+
+  function undoPosition() {
+    const origin = positionOrigin.value
+    if (!collage.selectedText || !origin || !canUndoPosition.value) return
+    collage.saveStateForUndo()
+    collage.updateText(origin.id, { x: origin.x, y: origin.y })
   }
 
   function updateColor(value: string) {
@@ -184,6 +235,11 @@ export function useTextControls() {
     updateTextContent,
     updateFontSize,
     updateLetterSpacing,
+    positionRange,
+    updatePositionX,
+    updatePositionY,
+    canUndoPosition,
+    undoPosition,
     updateColor,
     isBold,
     toggleFontWeight,
